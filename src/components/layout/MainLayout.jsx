@@ -10,7 +10,7 @@ const MainLayout = ({ children }) => {
       display: 'flex', 
       flexDirection: 'column' 
     }}>
-      <Navbar />
+      {/*<Navbar >*/}
       <main style={{ flex: 1 }}>
         {children}
       </main>

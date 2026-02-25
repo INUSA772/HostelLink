@@ -1,4 +1,13 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MUBAS Hostels – Find Safe & Affordable Accommodation</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --navy: #0d1b3e;
@@ -318,3 +327,323 @@
     .locations-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .loc-card.big { grid-row: auto; }
   }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon"><i class="fa fa-building"></i></div>
+    <div class="logo-text">
+      <strong>MUBAS</strong>
+      <span>HOSTEL FINDER</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Home <span class="caret">▾</span></a>
+    <a href="#">Hostels <span class="caret">▾</span></a>
+    <a href="#">Owners <span class="caret">▾</span></a>
+    <a href="#">Pages <span class="caret">▾</span></a>
+    <a href="#">News <span class="caret">▾</span></a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="nav-actions">
+    <a href="#"><i class="fa fa-search"></i></a>
+    <a href="#"><i class="fa fa-user"></i></a>
+    <button class="btn-add"><i class="fa fa-plus"></i> List Your Hostel</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1>Find Safe & Affordable <span>Hostels Near MUBAS.</span></h1>
+    <p>The smartest way for students to find accommodation and for hostel owners to connect with verified tenants.</p>
+
+    <div class="hero-tabs">
+      <div class="hero-tab active">General</div>
+      <div class="hero-tab">Self-Contain</div>
+      <div class="hero-tab">Shared Room</div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-field">
+        <label>Keyword</label>
+        <input type="text" placeholder="Looking For?"/>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <label>Category</label>
+        <select>
+          <option>Select Category</option>
+          <option>Self-Contain</option>
+          <option>Shared Room</option>
+          <option>Studio</option>
+        </select>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-field">
+        <label>Location</label>
+        <select>
+          <option>Location</option>
+          <option>Near Gate 1</option>
+          <option>Chilobwe</option>
+          <option>Blantyre CBD</option>
+        </select>
+      </div>
+      <button class="btn-search"><i class="fa fa-search"></i> Search</button>
+    </div>
+
+    <div class="quick-links">
+      <div class="quick-link"><i class="fa fa-arrow-right"></i> Shared Rooms</div>
+      <div class="quick-link"><i class="fa fa-arrow-right"></i> Self-Contain</div>
+      <div class="quick-link"><i class="fa fa-arrow-right"></i> Near Campus</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE HOSTEL TYPES -->
+<section class="explore-section">
+  <p class="section-label">Hostel By Requirement</p>
+  <h2 class="section-title">Explore Hostel <em>Types</em></h2>
+  <div class="types-grid">
+    <div class="type-card">
+      <i class="fa fa-bed"></i>
+      <h4>Shared Room</h4>
+      <span>14 Hostels</span>
+    </div>
+    <div class="type-card">
+      <i class="fa fa-home"></i>
+      <h4>Self-Contain</h4>
+      <span>8 Hostels</span>
+    </div>
+    <div class="type-card">
+      <i class="fa fa-building"></i>
+      <h4>Studio Flat</h4>
+      <span>5 Hostels</span>
+    </div>
+    <div class="type-card">
+      <i class="fa fa-users"></i>
+      <h4>Communal</h4>
+      <span>10 Hostels</span>
+    </div>
+    <div class="type-card">
+      <i class="fa fa-star"></i>
+      <h4>Premium</h4>
+      <span>4 Hostels</span>
+    </div>
+  </div>
+</section>
+
+<!-- LISTINGS -->
+<section class="listings-section">
+  <div class="listings-header">
+    <div>
+      <p style="font-size:0.78rem;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Our Listings</p>
+      <h2>Find Hostel Listings<br/><span>Near MUBAS</span></h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active">All</button>
+      <button class="filter-tab">General</button>
+      <button class="filter-tab">Self-Contain</button>
+    </div>
+  </div>
+
+  <div class="listings-grid">
+    <!-- Card 1 -->
+    <div class="listing-card">
+      <div class="listing-img-wrap">
+        <img class="listing-img" src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&auto=format&fit=crop" alt="Hostel"/>
+        <div class="listing-badge">Verified</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-stars">★★★★☆ <span>4.2 (11)</span></div>
+        <div class="listing-name">Sunrise Student Lodge</div>
+        <div class="listing-location"><i class="fa fa-map-marker-alt"></i> Chilobwe, Blantyre</div>
+        <div class="listing-desc">A comfortable shared hostel close to campus with secure fencing, clean bathrooms and reliable electricity.</div>
+        <div class="listing-meta">
+          <span><i class="fa fa-door-open"></i> Rooms: 20</span>
+          <span><i class="fa fa-user"></i> Beds: 3</span>
+          <span><i class="fa fa-bath"></i> Bath: Shared</span>
+        </div>
+        <div class="listing-footer">
+          <div class="listing-price">MK 15,000/mo</div>
+          <button class="btn-details"><i class="fa fa-info-circle"></i> Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="listing-card">
+      <div class="listing-img-wrap">
+        <img class="listing-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&auto=format&fit=crop" alt="Hostel"/>
+        <div class="listing-badge">Verified</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-stars">★★★★★ <span>5.0 (7)</span></div>
+        <div class="listing-name">BluePeak Self-Contain Hostel</div>
+        <div class="listing-location"><i class="fa fa-map-marker-alt"></i> Ndirande, Blantyre</div>
+        <div class="listing-desc">Self-contained units with private kitchens, borehole water, and 24-hour security guard on site.</div>
+        <div class="listing-meta">
+          <span><i class="fa fa-door-open"></i> Units: 12</span>
+          <span><i class="fa fa-user"></i> Beds: 1</span>
+          <span><i class="fa fa-bath"></i> Bath: Private</span>
+        </div>
+        <div class="listing-footer">
+          <div class="listing-price">MK 35,000/mo</div>
+          <button class="btn-details"><i class="fa fa-info-circle"></i> Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="listing-card">
+      <div class="listing-img-wrap">
+        <img class="listing-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&auto=format&fit=crop" alt="Hostel"/>
+        <div class="listing-badge">Verified</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-stars">★★★★☆ <span>4.0 (9)</span></div>
+        <div class="listing-name">Campus Gate Residence</div>
+        <div class="listing-location"><i class="fa fa-map-marker-alt"></i> Near MUBAS Gate, Blantyre</div>
+        <div class="listing-desc">Popular communal hostel just 5 minutes walk from the main MUBAS campus with fast WiFi and meals available.</div>
+        <div class="listing-meta">
+          <span><i class="fa fa-door-open"></i> Rooms: 30</span>
+          <span><i class="fa fa-user"></i> Beds: 4</span>
+          <span><i class="fa fa-bath"></i> Bath: Shared</span>
+        </div>
+        <div class="listing-footer">
+          <div class="listing-price">MK 12,000/mo</div>
+          <button class="btn-details"><i class="fa fa-info-circle"></i> Details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOP LOCATIONS -->
+<section class="locations-section">
+  <p class="section-label">Our Property List</p>
+  <h2 class="section-title" style="color:white;">Our Top Locations Near <em>MUBAS</em></h2>
+  <div class="locations-grid">
+    <div class="loc-card big">
+      <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop" alt="Chilobwe"/>
+      <div class="loc-overlay">
+        <small>7 Hostels Available</small>
+        <h4>Chilobwe</h4>
+        <p>Close Campus Accommodation</p>
+      </div>
+    </div>
+    <div class="loc-card">
+      <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop" alt="Ndirande"/>
+      <div class="loc-overlay">
+        <small>5 Hostels Available</small>
+        <h4>Ndirande</h4>
+        <p>Affordable Options</p>
+      </div>
+    </div>
+    <div class="loc-card">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop" alt="Blantyre CBD"/>
+      <div class="loc-overlay">
+        <small>4 Hostels Available</small>
+        <h4>Blantyre CBD</h4>
+        <p>Premium Listings</p>
+      </div>
+    </div>
+    <div class="loc-card">
+      <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&auto=format&fit=crop" alt="Bangwe"/>
+      <div class="loc-overlay">
+        <small>3 Hostels Available</small>
+        <h4>Bangwe</h4>
+        <p>Budget Friendly</p>
+      </div>
+    </div>
+    <div class="loc-card">
+      <img src="https://images.unsplash.com/photo-1560184897-ae75f418493e?w=600&auto=format&fit=crop" alt="Zingwangwa"/>
+      <div class="loc-overlay">
+        <small>6 Hostels Available</small>
+        <h4>Zingwangwa</h4>
+        <p>Popular Student Area</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR STUDENTS / OWNERS -->
+<div class="dual-section">
+  <div class="dual-card">
+    <div class="dual-icon student"><i class="fa fa-user-graduate"></i></div>
+    <h3>For Students</h3>
+    <p>Search verified hostels, compare prices, view photos, and contact owners directly — all in one place.</p>
+    <button class="btn-outline">Find a Hostel</button>
+  </div>
+  <div class="dual-card">
+    <div class="dual-icon owner"><i class="fa fa-building"></i></div>
+    <h3>For Hostel Owners</h3>
+    <p>List your property, receive booking requests, and manage payments securely from one dashboard.</p>
+    <button class="btn-outline">Start Listing</button>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <p class="section-label">Why Us</p>
+  <h2 class="section-title">Why Choose <em>Our Platform?</em></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa fa-search"></i></div>
+      <h4>Smart Search</h4>
+      <p>Filter by price, location, amenities and availability to find your perfect match.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa fa-home"></i></div>
+      <h4>Direct Communication</h4>
+      <p>No agents. Students connect directly with hostel owners for faster responses.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa fa-shield-alt"></i></div>
+      <h4>Verified Listings</h4>
+      <p>We verify owners to ensure trust and safety for all students on the platform.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa fa-money-bill-wave"></i></div>
+      <h4>Secure Payments</h4>
+      <p>Safe deposit system with Airtel Money &amp; TNM Mpamba for worry-free payments.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to Get Started?</h2>
+  <p>Join the growing MUBAS accommodation network today.</p>
+  <button class="btn-primary"><i class="fa fa-user-plus"></i> Create Free Account</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 MUBAS Hostel Finder. All rights reserved.</p>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.hero-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.hero-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

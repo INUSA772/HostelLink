@@ -142,7 +142,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
+    <p style={{ color: 'var(--gray-light)', fontSize: '0.5rem' }}> Powered by forjiteck.</p>
         {/* Bottom Bar */}
         <div style={{
           borderTop: '1px solid var(--gray-dark)',
@@ -152,6 +152,7 @@ const Footer = () => {
         }}>
           <p>&copy; {currentYear} HostelLink. All rights reserved.</p>
         </div>
+      
       </div>
     </footer>
   );

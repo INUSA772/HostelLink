@@ -1,8 +1,9 @@
+// src/routes/AppRoutes.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
-// Pages (we'll create these next)
+// ✅ Import all pages with CORRECT names
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
@@ -21,11 +22,12 @@ import About from '../pages/About';
 import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
 import ForgotPassword from '../components/auth/ForgotPassword';
+import PaymentConfirmation from '../pages/PaymentConfirmation';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* PUBLIC ROUTES */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -35,7 +37,7 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
 
-      {/* Protected Routes - All authenticated users */}
+      {/* PROTECTED ROUTES */}
       <Route
         path="/dashboard"
         element={
@@ -69,7 +71,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Student Only Routes */}
+      {/* STUDENT ROUTES */}
       <Route
         path="/bookings"
         element={
@@ -87,7 +89,17 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Owner Only Routes */}
+      {/* ✅ PAYMENT ROUTE */}
+      <Route
+        path="/payment/confirm/:transactionId"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <PaymentConfirmation />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* OWNER ROUTES */}
       <Route
         path="/my-hostels"
         element={
@@ -113,7 +125,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* 404 Page */}
+      {/* 404 */}
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>

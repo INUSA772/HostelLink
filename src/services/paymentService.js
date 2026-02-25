@@ -1,89 +1,108 @@
 import api from './api';
 
 const paymentService = {
-  // Initiate payment
-  initiatePayment: async (paymentData) => {
+  /**
+   * Initiate payment for a booking
+   * @param {string} bookingId - Booking ID
+   * @param {string} paymentMethod - Payment method (mobile_money, bank_transfer, card)
+   * @param {string} phoneNumber - Phone number for mobile money (optional)
+   * @returns {Promise} Payment initialization response with payment URL
+   */
+  initiatePayment: async (bookingId, paymentMethod, phoneNumber = null) => {
     try {
-      const response = await api.post('/payments/initiate', paymentData);
+      const payload = {
+        bookingId,
+        paymentMethod,
+        phoneNumber
+      };
+
+      const response = await api.post('/payments/initiate', payload);
       return response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  // Verify payment
-  verifyPayment: async (paymentId, transactionId) => {
+  /**
+   * Verify payment status after callback
+   * @param {string} transactionId - Transaction ID from payment response
+   * @returns {Promise} Payment verification details
+   */
+  verifyPayment: async (transactionId) => {
     try {
-      const response = await api.post('/payments/verify', {
-        paymentId,
-        transactionId
-      });
+      const response = await api.get(`/payments/verify/${transactionId}`);
       return response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get payment by ID
-  getPaymentById: async (id) => {
+  /**
+   * Get all transactions for current user
+   * @param {object} options - Filter and pagination options
+   * @returns {Promise} List of transactions with pagination
+   */
+  getTransactions: async (options = {}) => {
     try {
-      const response = await api.get(`/payments/${id}`);
+      const { status, page = 1, limit = 10 } = options;
+
+      const params = new URLSearchParams();
+      if (status) params.append('status', status);
+      params.append('page', page);
+      params.append('limit', limit);
+
+      const response = await api.get(`/payments/transactions?${params.toString()}`);
       return response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get user's payment history
-  getPaymentHistory: async () => {
+  /**
+   * Get completed transactions (for receipt/invoice)
+   * @returns {Promise} List of completed transactions
+   */
+  getCompletedTransactions: async () => {
     try {
-      const response = await api.get('/payments/my-payments');
-      return response.data;
+      return await paymentService.getTransactions({ status: 'completed' });
     } catch (error) {
       throw error;
     }
   },
 
-  // Get payments for a hostel (Owner only)
-  getHostelPayments: async (hostelId) => {
-    try {
-      const response = await api.get(`/payments/hostel/${hostelId}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  /**
+   * Format currency (MWK)
+   * @param {number} amount - Amount in MWK
+   * @returns {string} Formatted amount
+   */
+  formatCurrency: (amount) => {
+    return new Intl.NumberFormat('en-MW', {
+      style: 'currency',
+      currency: 'MWK',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   },
 
-  // Request refund
-  requestRefund: async (paymentId, reason) => {
-    try {
-      const response = await api.post(`/payments/${paymentId}/refund`, {
-        reason
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+  /**
+   * Calculate total with platform fee
+   * @param {number} roomRent - Room rent amount
+   * @returns {object} Breakdown with platform fee
+   */
+  calculateTotal: (roomRent) => {
+    const platformFee = 2000; // Fixed 2000 MWK
+    const totalAmount = roomRent + platformFee;
 
-  // Process refund (Admin only)
-  processRefund: async (paymentId) => {
-    try {
-      const response = await api.post(`/payments/${paymentId}/process-refund`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Get payment statistics (Owner only)
-  getPaymentStats: async (hostelId) => {
-    try {
-      const response = await api.get(`/payments/stats/${hostelId}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    return {
+      roomRent,
+      platformFee,
+      totalAmount,
+      breakdown: {
+        roomRent: `${paymentService.formatCurrency(roomRent)}`,
+        platformFee: `${paymentService.formatCurrency(platformFee)} (Platform fee)`,
+        total: `${paymentService.formatCurrency(totalAmount)}`
+      }
+    };
   }
 };
 

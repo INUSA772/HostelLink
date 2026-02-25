@@ -8,7 +8,8 @@ import { BookingProvider } from './context/BookingContext';
 import { ThemeProvider } from './context/ThemeContext';
 import MainLayout from './components/layout/MainLayout';
 import AppRoutes from './routes/AppRoutes';
-import './styles/global.css';
+import "./styles/global.css";            
+import "./styles/paymentStyles.css";
 
 function App() {
   return (
