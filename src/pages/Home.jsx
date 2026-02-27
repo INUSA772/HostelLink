@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -116,6 +118,18 @@ const styles = `
   .type-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
   .type-card span { font-size: 0.78rem; opacity: 0.6; }
 
+  .type-card-skeleton {
+    background: rgba(255,255,255,0.06);
+    border-radius: var(--card-radius); padding: 1.8rem 2rem; text-align: center;
+    flex: 1; min-width: 150px; max-width: 200px;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .skeleton-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); margin: 0 auto 0.8rem; }
+  .skeleton-line { height: 12px; border-radius: 6px; background: rgba(255,255,255,0.1); margin: 0 auto 0.5rem; }
+  .skeleton-line.short { width: 60%; }
+  .skeleton-line.shorter { width: 40%; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
   .locations-section { background: var(--navy); padding: 5rem 2rem; }
   .locations-section .section-title { color: white; }
   .locations-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 220px 220px; gap: 1rem; max-width: 1100px; margin: 2.5rem auto 0; }
@@ -157,8 +171,6 @@ const styles = `
   }
   .btn-primary:hover { opacity: 0.9; }
 
-  footer { background: #070f24; color: rgba(255,255,255,0.6); text-align: center; padding: 1.5rem; font-size: 0.82rem; }
-
   @media (max-width: 768px) {
     nav { padding: 0 1rem; }
     .hero-content { padding: 0 1.5rem; }
@@ -169,39 +181,35 @@ const styles = `
   }
 `;
 
+const AREA_DEFINITIONS = [
+  { icon: "fa fa-bed",      label: "Chitawira" },
+  { icon: "fa fa-home",     label: "Nkolokosa" },
+  { icon: "fa fa-building", label: "Chichiri"  },
+  { icon: "fa fa-users",    label: "Mandala"   },
+  { icon: "fa fa-star",     label: "Queens"    },
+];
+
 function Navbar({ isAuthenticated, user }) {
   const navigate = useNavigate();
-
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-
   return (
     <nav>
-      <button onClick={handleLogoClick} className="logo" style={{ background: 'none', border: 'none', padding: 0 }}>
-        <div className="logo-icon">
-          <img src="/logo2.png" alt="HostelLink" />
-        </div>
+      <button onClick={() => navigate('/')} className="logo" style={{ background: 'none', border: 'none', padding: 0 }}>
+        <div className="logo-icon"><img src="/logo2.png" alt="HostelLink" /></div>
         <div className="logo-text">
           <strong>HOSTELLINK</strong>
           <span>OFF-CAMPUS ACCOMMODATION</span>
         </div>
       </button>
-
       <div className="nav-actions">
         {isAuthenticated ? (
           <>
             <a href="/profile"><i className="fa fa-user" /> {user?.firstName}</a>
-            <a href="/dashboard" className="btn-add">
-              <i className="fa fa-th-large" /> Dashboard
-            </a>
+            <a href="/dashboard" className="btn-add"><i className="fa fa-th-large" /> Dashboard</a>
           </>
         ) : (
           <>
             <a href="/login"><i className="fa fa-sign-in-alt" /> Login</a>
-            <a href="/register" className="btn-add">
-              <i className="fa fa-user-plus" /> Sign Up
-            </a>
+            <a href="/register" className="btn-add"><i className="fa fa-user-plus" /> Sign Up</a>
           </>
         )}
       </div>
@@ -211,22 +219,13 @@ function Navbar({ isAuthenticated, user }) {
 
 function Hero({ isAuthenticated }) {
   const navigate = useNavigate();
-
-  const handleSearch = () => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    } else {
-      navigate('/login');
-    }
-  };
-
+  const handleSearch = () => navigate(isAuthenticated ? '/hostels' : '/login');
   return (
     <section className="hero">
       <div className="hero-bg" />
       <div className="hero-content">
         <h1>Find Safe & Affordable <span>Hostels Near MUBAS.</span></h1>
         <p>The smartest way for students to find accommodation and for hostel owners to connect with verified tenants.</p>
-        
         <div className="search-bar">
           <div className="search-field">
             <label>Keyword</label>
@@ -247,16 +246,13 @@ function Hero({ isAuthenticated }) {
             <label>Location</label>
             <select>
               <option>All Locations</option>
-              <option>Near Gate 1</option>
-              <option>Chitawira</option>
-              <option>Nkolokosa</option>
+              {AREA_DEFINITIONS.map(a => <option key={a.label}>{a.label}</option>)}
             </select>
           </div>
           <button className="btn-search" onClick={handleSearch}>
             <i className="fa fa-search" /> Search
           </button>
         </div>
-
         <div className="quick-links">
           <button className="quick-link" onClick={handleSearch}><i className="fa fa-arrow-right" /> Shared Rooms</button>
           <button className="quick-link" onClick={handleSearch}><i className="fa fa-arrow-right" /> Self-Contain</button>
@@ -269,21 +265,47 @@ function Hero({ isAuthenticated }) {
 
 function ExploreSection({ isAuthenticated }) {
   const navigate = useNavigate();
+  const [areas, setAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const hostelTypes = [
-    { icon: "fa fa-bed", label: "Chitawira", count: "14 Hostels" },
-    { icon: "fa fa-home", label: "Nkolokosa", count: "8 Hostels" },
-    { icon: "fa fa-building", label: "Chichiri", count: "5 Hostels" },
-    { icon: "fa fa-users", label: "Mandala", count: "10 Hostels" },
-    { icon: "fa fa-star", label: "Queens", count: "4 Hostels" },
-  ];
+  useEffect(() => {
+    const fetchAreaCounts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/hostels?limit=500`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.hostels)) {
+          const counts = {};
+          data.hostels.forEach(hostel => {
+            const addr = (hostel.address || "").toLowerCase();
+            AREA_DEFINITIONS.forEach(area => {
+              if (addr.includes(area.label.toLowerCase())) {
+                counts[area.label] = (counts[area.label] || 0) + 1;
+              }
+            });
+          });
+          setAreas(AREA_DEFINITIONS.map(area => ({
+            ...area,
+            count: counts[area.label]
+              ? `${counts[area.label]} Hostel${counts[area.label] !== 1 ? "s" : ""}`
+              : "Coming Soon",
+          })));
+        } else {
+          setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: "View Hostels" })));
+        }
+      } catch (err) {
+        setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: "View Hostels" })));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAreaCounts();
+  }, []);
 
-  const handleClick = () => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    } else {
-      navigate('/login');
-    }
+  const handleClick = (areaLabel) => {
+    navigate(isAuthenticated
+      ? `/hostels?search=${encodeURIComponent(areaLabel)}`
+      : '/login'
+    );
   };
 
   return (
@@ -291,17 +313,23 @@ function ExploreSection({ isAuthenticated }) {
       <p className="section-label">Hostel By Location</p>
       <h2 className="section-title">Explore Hostel <em>Areas</em></h2>
       <div className="types-grid">
-        {hostelTypes.map(t => (
-          <button 
-            key={t.label} 
-            className="type-card" 
-            onClick={handleClick}
-          >
-            <i className={t.icon} />
-            <h4>{t.label}</h4>
-            <span>{t.count}</span>
-          </button>
-        ))}
+        {loading ? (
+          AREA_DEFINITIONS.map((_, i) => (
+            <div key={i} className="type-card-skeleton">
+              <div className="skeleton-circle" />
+              <div className="skeleton-line short" />
+              <div className="skeleton-line shorter" />
+            </div>
+          ))
+        ) : (
+          areas.map(t => (
+            <button key={t.label} className="type-card" onClick={() => handleClick(t.label)}>
+              <i className={t.icon} />
+              <h4>{t.label}</h4>
+              <span>{t.count}</span>
+            </button>
+          ))
+        )}
       </div>
     </section>
   );
@@ -309,15 +337,7 @@ function ExploreSection({ isAuthenticated }) {
 
 function LocationsSection({ isAuthenticated }) {
   const navigate = useNavigate();
-
-  const handleClick = () => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    } else {
-      navigate('/login');
-    }
-  };
-
+  const handleClick = () => navigate(isAuthenticated ? '/hostels' : '/login');
   const locations = [
     { img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop", big: true, count: "7 Hostels Available", name: "Chitawira", desc: "Close Campus Accommodation" },
     { img: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop", count: "5 Hostels Available", name: "Ndirande", desc: "Affordable Options" },
@@ -325,18 +345,13 @@ function LocationsSection({ isAuthenticated }) {
     { img: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&auto=format&fit=crop", count: "3 Hostels Available", name: "Near Queens", desc: "Budget Friendly" },
     { img: "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=600&auto=format&fit=crop", count: "6 Hostels Available", name: "Zingwangwa", desc: "Popular Student Area" },
   ];
-
   return (
     <section className="locations-section">
       <p className="section-label">Our Property Areas</p>
       <h2 className="section-title" style={{color:"white"}}>Top Locations Near <em>MUBAS</em></h2>
       <div className="locations-grid">
         {locations.map(loc => (
-          <button
-            key={loc.name}
-            className={`loc-card${loc.big ? " big" : ""}`}
-            onClick={handleClick}
-          >
+          <button key={loc.name} className={`loc-card${loc.big ? " big" : ""}`} onClick={handleClick}>
             <img src={loc.img} alt={loc.name} />
             <div className="loc-overlay">
               <small>{loc.count}</small>
@@ -376,7 +391,6 @@ function FeaturesSection() {
     { icon: "fa fa-shield-alt", title: "Verified Listings", desc: "We verify owners to ensure trust and safety for all students." },
     { icon: "fa fa-money-bill-wave", title: "Secure Payments", desc: "Safe deposit system with Airtel Money & TNM Mpamba." },
   ];
-
   return (
     <section className="features-section">
       <p className="section-label">Why Us</p>
@@ -398,7 +412,6 @@ export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
-  // Redirect to dashboard if already logged in
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
@@ -409,21 +422,17 @@ export default function Home() {
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-      
       <Navbar isAuthenticated={isAuthenticated} user={user} />
       <Hero isAuthenticated={isAuthenticated} />
       <ExploreSection isAuthenticated={isAuthenticated} />
       <LocationsSection isAuthenticated={isAuthenticated} />
       <DualSection />
       <FeaturesSection />
-      
       <section className="cta-section">
         <h2>Ready to Get Started?</h2>
         <p>Join the growing MUBAS accommodation network today.</p>
         <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
-
-    
     </>
   );
 }
