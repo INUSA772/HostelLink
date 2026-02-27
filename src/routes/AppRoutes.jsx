@@ -5,8 +5,8 @@ import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 // ✅ Import all pages with CORRECT names
 import Home from '../pages/Home';
-import Login from '../pages/login';
-import Register from '../pages/register';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 import HostelListPage from '../pages/HostelListPage';
 import HostelDetailsPage from '../pages/HostelDetailsPage';
 import Dashboard from '../pages/Dashboard';
