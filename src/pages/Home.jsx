@@ -187,6 +187,10 @@ const AREA_DEFINITIONS = [
   { icon: "fa fa-building", label: "Chichiri"  },
   { icon: "fa fa-users",    label: "Mandala"   },
   { icon: "fa fa-star",     label: "Queens"    },
+  { icon: "fa fa-star",     label: "Manja"    },
+  { icon: "fa fa-star",     label: "Mjamba"    },
+  { icon: "fa fa-star",     label: "Kamba"    },
+  { icon: "fa fa-star",     label: "Chinyonga"    },
 ];
 
 function Navbar({ isAuthenticated, user }) {
@@ -287,7 +291,7 @@ function ExploreSection({ isAuthenticated }) {
             ...area,
             count: counts[area.label]
               ? `${counts[area.label]} Hostel${counts[area.label] !== 1 ? "s" : ""}`
-              : "Coming Soon",
+              : "View Hostels",
           })));
         } else {
           setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: "View Hostels" })));
@@ -372,13 +376,13 @@ function DualSection() {
         <div className="dual-icon student"><i className="fa fa-user-graduate" /></div>
         <h3>For Students</h3>
         <p>Search verified hostels, compare prices, view photos, and contact owners directly — all in one place.</p>
-        <a href="/register" className="btn-outline">Find a Hostel</a>
+        <a href="/Register" className="btn-outline">Find a Hostel</a>
       </div>
       <div className="dual-card">
         <div className="dual-icon owner"><i className="fa fa-building" /></div>
         <h3>For Hostel Owners</h3>
         <p>List your property, receive booking requests, and manage payments securely from one dashboard.</p>
-        <a href="/register" className="btn-outline">Start Listing</a>
+        <a href="/Register" className="btn-outline">Start Listing</a>
       </div>
     </div>
   );
@@ -414,7 +418,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/Dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -431,7 +435,7 @@ export default function Home() {
       <section className="cta-section">
         <h2>Ready to Get Started?</h2>
         <p>Join the growing MUBAS accommodation network today.</p>
-        <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
+        <a href="/Register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
     </>
   );
