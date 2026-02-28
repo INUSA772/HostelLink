@@ -4,6 +4,18 @@ import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+const AREA_ICONS = [
+  "fa fa-bed",
+  "fa fa-home",
+  "fa fa-building",
+  "fa fa-users",
+  "fa fa-star",
+  "fa fa-map-marker-alt",
+  "fa fa-city",
+  "fa fa-flag",
+  "fa fa-map",
+];
+
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,7 +46,7 @@ const styles = `
   .logo-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .logo-text strong { display: block; font-size: 1rem; font-weight: 800; letter-spacing: 1px; color: white; }
   .logo-text span { font-size: 0.65rem; opacity: 0.7; letter-spacing: 0.5px; color: white; }
-  
+
   .nav-actions { display: flex; align-items: center; gap: 1rem; }
   .nav-actions a { color: rgba(255,255,255,0.8); font-size: 0.9rem; text-decoration: none; }
   .btn-add {
@@ -106,29 +118,81 @@ const styles = `
   .explore-section { background: var(--navy); padding: 4rem 2rem; }
   .explore-section .section-label, .explore-section .section-title { color: white; }
   .explore-section .section-title em { color: var(--orange); }
-  .types-grid { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; margin-top: 3rem; max-width: 1100px; margin-left: auto; margin-right: auto; }
-  .type-card {
-    background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: var(--card-radius); padding: 1.8rem 2rem; text-align: center;
-    flex: 1; min-width: 150px; max-width: 200px; cursor: pointer; transition: all 0.25s; color: white;
-    border: none;
+
+  .types-grid {
+    display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto;
   }
-  .type-card:hover { background: rgba(255,255,255,0.13); border-color: var(--orange); transform: translateY(-4px); }
-  .type-card i { font-size: 2rem; margin-bottom: 0.8rem; display: block; }
-  .type-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
-  .type-card span { font-size: 0.78rem; opacity: 0.6; }
+
+  /* THE FIX: make cards clearly readable */
+  .type-card {
+    background: rgba(255,255,255,0.10);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: var(--card-radius);
+    padding: 1.8rem 1.5rem;
+    text-align: center;
+    flex: 1;
+    min-width: 160px;
+    max-width: 200px;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: white;
+  }
+  .type-card:hover {
+    background: var(--orange);
+    border-color: var(--orange);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(232,80,26,0.35);
+  }
+  .type-card i {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    color: var(--orange);
+    transition: color 0.25s;
+  }
+  .type-card:hover i { color: white; }
+
+  /* AREA NAME — big, bold, white, fully visible */
+  .type-card h4 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  /* HOSTEL COUNT — orange pill badge */
+  .type-card .area-count {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(232,80,26,0.75);
+    border-radius: 20px;
+    padding: 3px 12px;
+    margin-top: 4px;
+  }
+  .type-card:hover .area-count {
+    background: rgba(255,255,255,0.25);
+  }
 
   .type-card-skeleton {
-    background: rgba(255,255,255,0.06);
-    border-radius: var(--card-radius); padding: 1.8rem 2rem; text-align: center;
-    flex: 1; min-width: 150px; max-width: 200px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: var(--card-radius); padding: 1.8rem 1.5rem; text-align: center;
+    flex: 1; min-width: 160px; max-width: 200px;
     animation: pulse 1.4s ease-in-out infinite;
   }
   .skeleton-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); margin: 0 auto 0.8rem; }
   .skeleton-line { height: 12px; border-radius: 6px; background: rgba(255,255,255,0.1); margin: 0 auto 0.5rem; }
-  .skeleton-line.short { width: 60%; }
-  .skeleton-line.shorter { width: 40%; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .skeleton-line.short { width: 70%; }
+  .skeleton-line.shorter { width: 45%; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .explore-empty { color: rgba(255,255,255,0.55); text-align: center; padding: 2rem; font-size: 0.95rem; width: 100%; }
+  .explore-empty a { color: var(--orange); }
 
   .locations-section { background: var(--navy); padding: 5rem 2rem; }
   .locations-section .section-title { color: white; }
@@ -178,19 +242,22 @@ const styles = `
     .search-divider { display: none; }
     .locations-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .loc-card.big { grid-row: auto; }
+    .types-grid { gap: 0.8rem; }
+    .type-card { min-width: 130px; padding: 1.4rem 1rem; }
+    .type-card h4 { font-size: 0.92rem; }
   }
 `;
 
 const AREA_DEFINITIONS = [
-  { icon: "fa fa-bed",      label: "Chitawira" },
-  { icon: "fa fa-home",     label: "Nkolokosa" },
-  { icon: "fa fa-building", label: "Chichiri"  },
-  { icon: "fa fa-users",    label: "Mandala"   },
-  { icon: "fa fa-star",     label: "Queens"    },
-  { icon: "fa fa-star",     label: "Manja"    },
-  { icon: "fa fa-star",     label: "Mjamba"    },
-  { icon: "fa fa-star",     label: "Kamba"    },
-  { icon: "fa fa-star",     label: "Chinyonga"    },
+  { icon: "fa fa-bed",            label: "Chitawira"  },
+  { icon: "fa fa-home",           label: "Nkolokosa"  },
+  { icon: "fa fa-building",       label: "Chichiri"   },
+  { icon: "fa fa-users",          label: "Mandala"    },
+  { icon: "fa fa-star",           label: "Queens"     },
+  { icon: "fa fa-map-marker-alt", label: "Manja"      },
+  { icon: "fa fa-city",           label: "Mjamba"     },
+  { icon: "fa fa-flag",           label: "Kamba"      },
+  { icon: "fa fa-map",            label: "Chinyonga"  },
 ];
 
 function Navbar({ isAuthenticated, user }) {
@@ -289,15 +356,13 @@ function ExploreSection({ isAuthenticated }) {
           });
           setAreas(AREA_DEFINITIONS.map(area => ({
             ...area,
-            count: counts[area.label]
-              ? `${counts[area.label]} Hostel${counts[area.label] !== 1 ? "s" : ""}`
-              : "View Hostels",
+            count: counts[area.label] || 0,
           })));
         } else {
-          setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: "View Hostels" })));
+          setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: 0 })));
         }
       } catch (err) {
-        setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: "View Hostels" })));
+        setAreas(AREA_DEFINITIONS.map(a => ({ ...a, count: 0 })));
       } finally {
         setLoading(false);
       }
@@ -306,10 +371,7 @@ function ExploreSection({ isAuthenticated }) {
   }, []);
 
   const handleClick = (areaLabel) => {
-    navigate(isAuthenticated
-      ? `/hostels?search=${encodeURIComponent(areaLabel)}`
-      : '/login'
-    );
+    navigate(isAuthenticated ? `/hostels?search=${encodeURIComponent(areaLabel)}` : '/login');
   };
 
   return (
@@ -330,7 +392,9 @@ function ExploreSection({ isAuthenticated }) {
             <button key={t.label} className="type-card" onClick={() => handleClick(t.label)}>
               <i className={t.icon} />
               <h4>{t.label}</h4>
-              <span>{t.count}</span>
+              <span className="area-count">
+                {t.count > 0 ? `${t.count} Hostel${t.count !== 1 ? 's' : ''}` : 'View Hostels'}
+              </span>
             </button>
           ))
         )}
@@ -352,7 +416,7 @@ function LocationsSection({ isAuthenticated }) {
   return (
     <section className="locations-section">
       <p className="section-label">Our Property Areas</p>
-      <h2 className="section-title" style={{color:"white"}}>Top Locations Near <em>MUBAS</em></h2>
+      <h2 className="section-title" style={{ color: "white" }}>Top Locations Near <em>MUBAS</em></h2>
       <div className="locations-grid">
         {locations.map(loc => (
           <button key={loc.name} className={`loc-card${loc.big ? " big" : ""}`} onClick={handleClick}>
@@ -376,13 +440,13 @@ function DualSection() {
         <div className="dual-icon student"><i className="fa fa-user-graduate" /></div>
         <h3>For Students</h3>
         <p>Search verified hostels, compare prices, view photos, and contact owners directly — all in one place.</p>
-        <a href="/Register" className="btn-outline">Find a Hostel</a>
+        <a href="/register" className="btn-outline">Find a Hostel</a>
       </div>
       <div className="dual-card">
         <div className="dual-icon owner"><i className="fa fa-building" /></div>
         <h3>For Hostel Owners</h3>
         <p>List your property, receive booking requests, and manage payments securely from one dashboard.</p>
-        <a href="/Register" className="btn-outline">Start Listing</a>
+        <a href="/register" className="btn-outline">Start Listing</a>
       </div>
     </div>
   );
@@ -418,7 +482,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/Dashboard');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -435,7 +499,7 @@ export default function Home() {
       <section className="cta-section">
         <h2>Ready to Get Started?</h2>
         <p>Join the growing MUBAS accommodation network today.</p>
-        <a href="/Register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
+        <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
     </>
   );
