@@ -3,614 +3,506 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import {
-  FaUser,
-  FaHome,
-  FaBookmark,
-  FaEnvelope,
-  FaHeart,
-  FaBell,
-  FaCog,
-  FaSignOutAlt,
-  FaArrowRight,
-  FaChartLine,
-  FaCheckCircle,
-  FaMapMarkerAlt,
-  FaStar,
-  FaPhone,
-  FaFilter,
-  FaSearch,
-  FaVideo,
-  FaThumbsUp,
-  FaComment,
-  FaShare,
-  FaEllipsisH,
-  FaPlay,
-  FaTimes,
-  FaImages,
-  FaUserFriends,
-  FaStore,
-  FaNewspaper,
-  FaChevronDown,
-  FaChevronRight
+  FaUser, FaHome, FaBookmark, FaEnvelope, FaHeart, FaBell,
+  FaCog, FaSignOutAlt, FaArrowRight, FaChartLine, FaCheckCircle,
+  FaMapMarkerAlt, FaStar, FaPhone, FaFilter, FaSearch, FaVideo,
+  FaThumbsUp, FaComment, FaShare, FaEllipsisH, FaImages,
+  FaUserFriends, FaChevronDown, FaChevronRight, FaBars, FaTimes
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import HostelFilters from '../components/hostel/HostelFilters';
 import Pagination from '../components/common/Pagination';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --navy: #0d1b3e;
     --blue: #1a3fa4;
-    --fb-blue: #1877f2;
     --orange: #e8501a;
+    --orange-light: rgba(232,80,26,0.1);
     --white: #ffffff;
     --gray-bg: #f0f2f5;
     --gray-light: #e4e6eb;
-    --gray-hover: #e4e6eb;
     --text-dark: #050505;
     --text-mid: #65676b;
     --success: #10b981;
-    --radius: 8px;
+    --danger: #e41e3f;
+    --shadow: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.14);
     --transition: all 0.2s ease;
-    --shadow: 0 1px 2px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --topbar-h: 60px;
+    --left-w: 280px;
+    --right-w: 320px;
   }
 
-  body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); -webkit-font-smoothing: antialiased; }
 
-  /* ====== TOPBAR (Facebook-style) ====== */
+  /* ══════════ TOPBAR ══════════ */
   .fb-topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-    background: var(--white); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    height: 56px; display: flex; align-items: center;
-    padding: 0 1rem; gap: 0.5rem;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: var(--topbar-h); background: var(--white); box-shadow: var(--shadow);
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
   }
-
-  .fb-topbar-left {
-    display: flex; align-items: center; gap: 0.5rem; min-width: 240px;
+  .fb-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+  .fb-logo-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange) 0%, #c0390e 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; box-shadow: 0 2px 8px rgba(232,80,26,0.35); flex-shrink: 0;
   }
-
-  .fb-logo {
-    font-size: 1.55rem; font-weight: 900; color: var(--orange);
-    text-decoration: none; line-height: 1; letter-spacing: -1px;
-    display: flex; align-items: center; gap: 0.3rem;
+  .fb-logo-text { font-size: 1.2rem; font-weight: 900; color: var(--orange); letter-spacing: -0.5px; }
+  .fb-search-form {
+    display: flex; align-items: center; gap: 8px; background: var(--gray-bg);
+    border-radius: 20px; padding: 8px 14px; flex: 1; max-width: 260px;
+    transition: var(--transition);
   }
-
-  .fb-search-wrap {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: var(--gray-bg); padding: 0.5rem 1rem;
-    border-radius: 20px; min-width: 200px;
-  }
-  .fb-search-wrap svg { color: var(--text-mid); flex-shrink: 0; }
-  .fb-search-wrap input {
+  .fb-search-form:focus-within { box-shadow: 0 0 0 2px var(--orange); background: var(--white); }
+  .fb-search-form svg { color: var(--text-mid); flex-shrink: 0; font-size: 0.9rem; }
+  .fb-search-form input {
     border: none; background: transparent; outline: none;
-    font-family: 'Manrope', sans-serif; font-size: 0.9rem; width: 100%;
+    font-family: 'Manrope', sans-serif; font-size: 0.88rem;
+    color: var(--text-dark); width: 100%; font-weight: 600;
   }
-
-  /* CENTER NAV TABS */
-  .fb-topbar-center {
-    flex: 1; display: flex; justify-content: center; gap: 0.25rem;
-  }
-
+  .fb-search-form input::placeholder { color: var(--text-mid); font-weight: 500; }
+  .fb-topbar-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 4px; }
   .fb-nav-tab {
     display: flex; align-items: center; justify-content: center;
-    width: 110px; height: 48px; border-radius: 8px;
-    cursor: pointer; color: var(--text-mid); font-size: 1.4rem;
-    transition: var(--transition); position: relative; border: none;
-    background: transparent; text-decoration: none;
+    width: 96px; height: 48px; border-radius: 8px; cursor: pointer;
+    color: var(--text-mid); font-size: 1.35rem; transition: var(--transition);
+    position: relative; border: none; background: transparent; text-decoration: none;
   }
-  .fb-nav-tab:hover { background: var(--gray-bg); color: var(--fb-blue); }
+  .fb-nav-tab:hover { background: var(--gray-bg); color: var(--navy); }
   .fb-nav-tab.active { color: var(--orange); }
   .fb-nav-tab.active::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
-    height: 3px; background: var(--orange); border-radius: 2px;
+    content: ''; position: absolute; bottom: -6px; left: 8px; right: 8px;
+    height: 3px; background: var(--orange); border-radius: 3px 3px 0 0;
   }
   .fb-nav-badge {
-    position: absolute; top: 6px; right: 18px;
-    background: #e41e3f; color: white; font-size: 0.65rem;
-    font-weight: 800; padding: 1px 5px; border-radius: 10px; min-width: 16px;
-    text-align: center;
+    position: absolute; top: 5px; right: 14px; background: var(--danger);
+    color: white; font-size: 0.62rem; font-weight: 900; padding: 1px 5px;
+    border-radius: 10px; min-width: 17px; text-align: center; line-height: 1.4;
   }
-
-  /* RIGHT ICONS */
-  .fb-topbar-right {
-    display: flex; align-items: center; gap: 0.5rem; min-width: 220px; justify-content: flex-end;
-  }
-
+  .fb-topbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .fb-icon-btn {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--gray-bg); display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--text-dark); font-size: 1rem; border: none;
-    transition: var(--transition); text-decoration: none; position: relative;
+    width: 40px; height: 40px; border-radius: 50%; background: var(--gray-bg);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    color: var(--text-dark); font-size: 1rem; border: none; transition: var(--transition);
+    text-decoration: none; position: relative; flex-shrink: 0;
   }
-  .fb-icon-btn:hover { background: var(--gray-light); }
-  .fb-icon-btn .notif-dot {
-    position: absolute; top: 2px; right: 2px; width: 10px; height: 10px;
-    background: #e41e3f; border-radius: 50%; border: 2px solid white;
+  .fb-icon-btn:hover { background: var(--gray-light); transform: scale(1.05); }
+  .fb-icon-btn .dot {
+    position: absolute; top: 3px; right: 3px; width: 9px; height: 9px;
+    background: var(--danger); border-radius: 50%; border: 2px solid white;
   }
-
-  .fb-user-avatar-sm {
+  .fb-avatar-btn {
     width: 40px; height: 40px; border-radius: 50%;
     background: linear-gradient(135deg, var(--navy), var(--blue));
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1rem; font-weight: 800; cursor: pointer;
-    border: none; transition: var(--transition); overflow: hidden;
-    flex-shrink: 0;
+    color: white; font-size: 0.88rem; font-weight: 900; cursor: pointer;
+    border: 2px solid transparent; transition: var(--transition); flex-shrink: 0;
   }
-  .fb-user-avatar-sm:hover { opacity: 0.85; }
-
-  /* ====== THREE-COLUMN LAYOUT ====== */
-  .fb-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr 340px;
-    gap: 0; max-width: 1500px; margin: 0 auto;
-    padding-top: 56px;
+  .fb-avatar-btn:hover { border-color: var(--orange); transform: scale(1.05); }
+  .fb-menu-btn {
+    display: none; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-bg); align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-dark); font-size: 1rem; border: none; flex-shrink: 0;
   }
 
-  /* ====== LEFT SIDEBAR ====== */
+  /* ══════════ PAGE LAYOUT ══════════ */
+  .fb-page {
+    padding-top: var(--topbar-h); min-height: 100vh;
+    display: grid; grid-template-columns: var(--left-w) 1fr var(--right-w);
+    grid-template-areas: "left center right";
+    max-width: 1600px; margin: 0 auto; align-items: start;
+  }
+
+  /* ══════════ LEFT SIDEBAR ══════════ */
   .fb-left {
-    position: fixed; top: 56px; left: 0;
-    width: 280px; height: calc(100vh - 56px);
-    overflow-y: auto; padding: 1rem 0.5rem;
+    grid-area: left; position: sticky; top: var(--topbar-h);
+    height: calc(100vh - var(--topbar-h)); overflow-y: auto;
+    padding: 12px 8px 24px; border-right: 1px solid var(--gray-light);
     background: var(--white);
-    border-right: 1px solid var(--gray-light);
   }
-  .fb-left::-webkit-scrollbar { width: 4px; }
+  .fb-left::-webkit-scrollbar { width: 3px; }
   .fb-left::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 4px; }
-
-  .fb-sidebar-user {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.6rem 0.75rem; border-radius: 8px;
-    cursor: pointer; transition: var(--transition);
-    text-decoration: none; color: var(--text-dark);
-    margin-bottom: 0.5rem;
+  .fb-left-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 998; backdrop-filter: blur(2px);
   }
-  .fb-sidebar-user:hover { background: var(--gray-bg); }
-
+  .fb-sidebar-profile {
+    display: flex; align-items: center; gap: 10px; padding: 10px;
+    border-radius: 10px; text-decoration: none; color: var(--text-dark);
+    transition: var(--transition); margin-bottom: 6px;
+  }
+  .fb-sidebar-profile:hover { background: var(--gray-bg); }
   .fb-sidebar-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 38px; height: 38px; border-radius: 50%;
     background: linear-gradient(135deg, var(--navy), var(--blue));
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.9rem; font-weight: 800; flex-shrink: 0;
+    color: white; font-size: 0.85rem; font-weight: 900; flex-shrink: 0;
   }
-
-  .fb-sidebar-username { font-weight: 700; font-size: 0.95rem; }
-
-  .fb-sidebar-item {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.65rem 0.75rem; border-radius: 8px;
-    cursor: pointer; transition: var(--transition);
-    text-decoration: none; color: var(--text-dark);
-    font-size: 0.92rem; font-weight: 600;
+  .fb-sidebar-name { font-weight: 800; font-size: 0.95rem; line-height: 1.2; }
+  .fb-sidebar-role { font-size: 0.72rem; color: var(--text-mid); font-weight: 600; }
+  .fb-sidebar-link {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+    border-radius: 8px; text-decoration: none; color: var(--text-dark);
+    font-size: 0.93rem; font-weight: 700; transition: var(--transition);
+    cursor: pointer; border: none; background: transparent; width: 100%;
+    font-family: 'Manrope', sans-serif;
   }
-  .fb-sidebar-item:hover { background: var(--gray-bg); }
-  .fb-sidebar-item.active { background: rgba(232,80,26,0.08); color: var(--orange); }
-
+  .fb-sidebar-link:hover { background: var(--gray-bg); }
+  .fb-sidebar-link.danger:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
   .fb-sidebar-icon {
     width: 36px; height: 36px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; flex-shrink: 0;
+    font-size: 1rem; flex-shrink: 0;
   }
-
   .fb-sidebar-badge {
-    margin-left: auto; background: #e41e3f; color: white;
-    font-size: 0.7rem; font-weight: 800; padding: 2px 7px;
+    margin-left: auto; background: var(--danger); color: white;
+    font-size: 0.68rem; font-weight: 900; padding: 2px 7px;
     border-radius: 10px; min-width: 20px; text-align: center;
   }
-
-  .fb-sidebar-divider {
-    border: none; border-top: 1px solid var(--gray-light);
-    margin: 0.75rem 0.75rem;
+  .fb-sidebar-divider { border: none; border-top: 1px solid var(--gray-light); margin: 8px 10px; }
+  .fb-sidebar-section {
+    font-size: 0.74rem; color: var(--text-mid); font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.6px; padding: 6px 10px 4px;
   }
 
-  .fb-sidebar-section-title {
-    font-size: 0.8rem; color: var(--text-mid); font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    padding: 0.5rem 0.75rem;
-  }
-
-  /* ====== CENTER FEED ====== */
+  /* ══════════ CENTER FEED ══════════ */
   .fb-center {
-    margin-left: 280px;
-    margin-right: 340px;
-    padding: 1.5rem 1rem;
-    min-height: calc(100vh - 56px);
+    grid-area: center; padding: 20px 16px 40px;
+    min-height: calc(100vh - var(--topbar-h));
+    max-width: 680px; margin: 0 auto; width: 100%;
   }
 
-  /* CREATE POST BOX */
-  .fb-create-post {
-    background: var(--white); border-radius: 10px;
-    padding: 0.75rem 1rem; box-shadow: var(--shadow);
-    margin-bottom: 1.25rem;
+  /* Welcome Banner */
+  .fb-welcome {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 55%, #2655d4 100%);
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 16px;
+    color: white; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
   }
-  .fb-create-top {
-    display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;
+  .fb-welcome::after {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 180px; height: 180px; background: rgba(255,255,255,0.06); border-radius: 50%;
   }
-  .fb-create-input {
-    flex: 1; background: var(--gray-bg); border: none; border-radius: 20px;
-    padding: 0.65rem 1rem; font-family: 'Manrope', sans-serif;
-    font-size: 0.95rem; color: var(--text-mid); cursor: pointer;
-    outline: none; transition: var(--transition);
+  .fb-welcome::before {
+    content: ''; position: absolute; bottom: -30px; right: 70px;
+    width: 110px; height: 110px; background: rgba(255,255,255,0.04); border-radius: 50%;
   }
-  .fb-create-input:hover { background: #e4e6eb; }
-  .fb-create-divider { border: none; border-top: 1px solid var(--gray-light); margin: 0.25rem 0 0.5rem; }
-  .fb-create-actions {
-    display: flex; gap: 0;
+  .fb-welcome h2 {
+    font-size: 1.4rem; font-weight: 900; margin-bottom: 5px;
+    color: #ffffff; text-shadow: 0 1px 4px rgba(0,0,0,0.25); position: relative; z-index: 1;
   }
-  .fb-create-action {
+  .fb-welcome p {
+    font-size: 0.9rem; color: rgba(255,255,255,0.92); font-weight: 700;
+    position: relative; z-index: 1;
+  }
+
+  /* Stories */
+  .fb-stories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px; scrollbar-width: none; }
+  .fb-stories::-webkit-scrollbar { display: none; }
+  .fb-story {
+    flex-shrink: 0; width: 108px; height: 180px; border-radius: 12px;
+    overflow: hidden; position: relative; cursor: pointer;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    transition: var(--transition); box-shadow: var(--shadow);
+  }
+  .fb-story:hover { transform: scale(1.04); box-shadow: var(--shadow-md); }
+  .fb-story img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fb-story-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.78) 100%); }
+  .fb-story-ava {
+    position: absolute; top: 10px; left: 10px; width: 34px; height: 34px;
+    border-radius: 50%; border: 3px solid var(--orange);
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.8rem; font-weight: 900;
+  }
+  .fb-story-label { position: absolute; bottom: 10px; left: 8px; right: 8px; font-size: 0.76rem; font-weight: 800; color: white; line-height: 1.3; }
+  .fb-story-price { font-size: 0.68rem; opacity: 0.9; margin-top: 2px; font-weight: 700; }
+  .fb-story-add {
+    background: var(--white); border: 2px solid var(--gray-light);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 14px;
+  }
+  .fb-story-add-ring {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.25rem; font-weight: 900; border: 3px solid white;
+    margin-bottom: 8px; box-shadow: 0 2px 8px rgba(232,80,26,0.3);
+  }
+  .fb-story-add span { font-size: 0.75rem; font-weight: 800; color: var(--text-dark); text-align: center; line-height: 1.3; }
+
+  /* Compose */
+  .fb-compose { background: var(--white); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .fb-compose-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .fb-compose-input {
+    flex: 1; background: var(--gray-bg); border: none; border-radius: 22px;
+    padding: 10px 16px; font-family: 'Manrope', sans-serif;
+    font-size: 0.92rem; color: var(--text-mid); cursor: pointer;
+    outline: none; transition: var(--transition); font-weight: 600;
+  }
+  .fb-compose-input:hover, .fb-compose-input:focus { background: #e4e6eb; }
+  .fb-compose-search-btn {
+    background: var(--orange); color: white; border: none; border-radius: 22px;
+    padding: 10px 18px; cursor: pointer; font-weight: 900; font-size: 0.85rem;
+    font-family: 'Manrope', sans-serif; transition: var(--transition); white-space: nowrap;
+  }
+  .fb-compose-search-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .fb-compose-divider { border: none; border-top: 1px solid var(--gray-light); margin: 2px 0 8px; }
+  .fb-compose-actions { display: flex; }
+  .fb-compose-action {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 0.4rem; padding: 0.5rem; border-radius: 8px; cursor: pointer;
-    font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
+    gap: 6px; padding: 8px 4px; border-radius: 8px; cursor: pointer;
+    font-size: 0.83rem; font-weight: 800; color: var(--text-mid);
     transition: var(--transition); border: none; background: transparent;
     font-family: 'Manrope', sans-serif;
   }
-  .fb-create-action:hover { background: var(--gray-bg); }
-  .fb-create-action svg { font-size: 1.1rem; }
+  .fb-compose-action:hover { background: var(--gray-bg); }
 
-  /* HOSTEL CARD AS POST (Facebook-style) */
-  .fb-post-card {
-    background: var(--white); border-radius: 10px;
-    box-shadow: var(--shadow); margin-bottom: 1.25rem;
-    overflow: hidden; transition: var(--transition);
+  /* Filters */
+  .fb-filters-box { background: var(--white); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .fb-filters-hd { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .fb-filters-hd h3 { font-size: 0.98rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+  .fb-filters-hd h3 svg { color: var(--orange); }
+  .fb-filter-toggle {
+    background: var(--gray-bg); border: none; border-radius: 6px; padding: 5px 12px;
+    cursor: pointer; font-weight: 800; font-size: 0.78rem; font-family: 'Manrope', sans-serif;
+    color: var(--text-dark); transition: var(--transition); display: flex; align-items: center; gap: 4px;
   }
-  .fb-post-card:hover { box-shadow: var(--shadow-md); }
+  .fb-filter-toggle:hover { background: var(--gray-light); }
 
-  .fb-post-header {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.9rem 1rem 0.6rem;
-  }
-  .fb-post-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--navy), var(--blue));
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1rem; font-weight: 800; flex-shrink: 0;
-    overflow: hidden;
-  }
-  .fb-post-meta { flex: 1; }
-  .fb-post-owner-name { font-weight: 800; font-size: 0.95rem; color: var(--text-dark); }
-  .fb-post-subtitle {
-    font-size: 0.78rem; color: var(--text-mid);
-    display: flex; align-items: center; gap: 0.3rem;
-  }
-  .fb-post-more {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: transparent; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-mid); font-size: 1.1rem; transition: var(--transition);
-  }
-  .fb-post-more:hover { background: var(--gray-bg); }
-
-  .fb-post-caption {
-    padding: 0 1rem 0.75rem; font-size: 0.95rem;
-    color: var(--text-dark); line-height: 1.5;
-  }
-  .fb-post-caption strong { color: var(--orange); }
-
-  .fb-post-image-wrap {
-    width: 100%; position: relative; overflow: hidden;
-    background: #111; max-height: 460px;
-  }
-  .fb-post-image {
-    width: 100%; max-height: 460px; object-fit: cover; display: block;
-    transition: var(--transition);
-  }
-  .fb-post-image:hover { transform: scale(1.01); }
-  .fb-post-no-image {
-    width: 100%; height: 220px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 3rem; flex-direction: column; gap: 0.5rem;
-  }
-  .fb-post-no-image span { font-size: 0.9rem; opacity: 0.7; }
-
-  /* IMAGE GALLERY (multi-image grid) */
-  .fb-post-image-grid-2 {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-    max-height: 300px;
-  }
-  .fb-post-image-grid-2 img { width: 100%; height: 150px; object-fit: cover; display: block; }
-
-  .fb-post-image-grid-3 {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-    max-height: 300px;
-  }
-  .fb-post-image-grid-3 img:first-child { grid-row: span 2; height: 300px; object-fit: cover; width: 100%; }
-  .fb-post-image-grid-3 img:not(:first-child) { height: 148px; object-fit: cover; width: 100%; }
-
-  .fb-post-image-more {
-    position: relative; overflow: hidden;
-  }
-  .fb-post-image-more img { width: 100%; height: 148px; object-fit: cover; display: block; }
-  .fb-post-image-more-overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1.5rem; font-weight: 800;
-  }
-
-  /* VERIFIED + PRICE BADGE over image */
-  .fb-post-image-badges {
-    position: absolute; top: 10px; left: 10px; display: flex; gap: 0.4rem; flex-wrap: wrap;
-  }
-  .fb-badge {
-    padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
-    backdrop-filter: blur(4px);
-  }
-  .fb-badge-verified { background: rgba(16,185,129,0.9); color: white; }
-  .fb-badge-price { background: rgba(232,80,26,0.92); color: white; font-size: 0.82rem; }
-  .fb-badge-rooms { background: rgba(13,27,62,0.85); color: white; }
-
-  /* POST INFO ROW */
-  .fb-post-info {
-    display: flex; flex-wrap: wrap; gap: 1rem;
-    padding: 0.75rem 1rem 0.5rem;
-    border-bottom: 1px solid var(--gray-light);
-  }
-  .fb-post-info-item {
-    display: flex; align-items: center; gap: 0.35rem;
-    font-size: 0.82rem; color: var(--text-mid); font-weight: 600;
-  }
-  .fb-post-info-item svg { color: var(--orange); }
-  .fb-post-info-item strong { color: var(--text-dark); }
-
-  /* REACTION ROW */
-  .fb-post-reaction-summary {
-    padding: 0.4rem 1rem; display: flex; justify-content: space-between;
-    align-items: center; font-size: 0.85rem; color: var(--text-mid);
-  }
-  .fb-reaction-icons { display: flex; gap: 0.15rem; }
-  .fb-reaction-emoji { font-size: 1rem; }
-
-  /* ACTION BUTTONS */
-  .fb-post-actions {
-    display: flex; border-top: 1px solid var(--gray-light);
-    padding: 0.25rem 0.5rem;
-  }
-  .fb-post-action {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 0.4rem; padding: 0.5rem; border-radius: 6px;
-    cursor: pointer; font-size: 0.88rem; font-weight: 700;
-    color: var(--text-mid); transition: var(--transition);
-    border: none; background: transparent; font-family: 'Manrope', sans-serif;
-  }
-  .fb-post-action:hover { background: var(--gray-bg); color: var(--text-dark); }
-  .fb-post-action.primary { color: var(--orange); }
-  .fb-post-action.primary:hover { background: rgba(232,80,26,0.08); }
-
-  /* ====== RIGHT SIDEBAR ====== */
-  .fb-right {
-    position: fixed; top: 56px; right: 0;
-    width: 340px; height: calc(100vh - 56px);
-    overflow-y: auto; padding: 1.25rem 1rem;
-    background: var(--white);
-    border-left: 1px solid var(--gray-light);
-  }
-  .fb-right::-webkit-scrollbar { width: 4px; }
-  .fb-right::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 4px; }
-
-  .fb-right-section { margin-bottom: 1.5rem; }
-  .fb-right-title {
-    font-size: 1.1rem; font-weight: 800; color: var(--text-dark);
-    margin-bottom: 0.75rem;
-  }
-
-  /* STATS CARDS (right panel) */
-  .fb-stat-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .fb-stat-box {
-    background: var(--gray-bg); padding: 1rem; border-radius: 10px;
-    border: 1px solid var(--gray-light); transition: var(--transition);
-  }
-  .fb-stat-box:hover { background: var(--gray-light); transform: translateY(-2px); }
-  .fb-stat-box-icon { font-size: 1.2rem; color: var(--orange); margin-bottom: 0.4rem; }
-  .fb-stat-box-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); }
-  .fb-stat-box-label { font-size: 0.75rem; color: var(--text-mid); font-weight: 600; }
-
-  /* QUICK ACTIONS (right panel) */
-  .fb-quick-link {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.6rem 0.75rem; border-radius: 8px;
-    cursor: pointer; transition: var(--transition);
-    text-decoration: none; color: var(--text-dark);
-    font-size: 0.9rem; font-weight: 600; margin-bottom: 0.1rem;
-  }
-  .fb-quick-link:hover { background: var(--gray-bg); }
-  .fb-quick-icon {
-    width: 36px; height: 36px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; flex-shrink: 0;
-  }
-
-  /* CONTACTS / ACTIVE USERS */
-  .fb-contact {
-    display: flex; align-items: center; gap: 0.75rem;
-    padding: 0.5rem 0.75rem; border-radius: 8px;
-    cursor: pointer; transition: var(--transition); position: relative;
-  }
-  .fb-contact:hover { background: var(--gray-bg); }
-  .fb-contact-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--navy), var(--blue));
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.85rem; font-weight: 800; position: relative;
-  }
-  .fb-contact-online {
-    position: absolute; bottom: 0; right: 0;
-    width: 10px; height: 10px; background: var(--success);
-    border-radius: 50%; border: 2px solid white;
-  }
-  .fb-contact-name { font-size: 0.9rem; font-weight: 600; }
-
-  /* FILTERS MODAL SECTION */
-  .fb-filters-wrap {
-    background: var(--white); border-radius: 10px;
-    padding: 1rem; box-shadow: var(--shadow); margin-bottom: 1.25rem;
-  }
-  .fb-filters-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 0.75rem; cursor: pointer;
-  }
-  .fb-filters-header h3 { font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-  .fb-filters-toggle {
-    background: var(--gray-bg); border: none; border-radius: 6px;
-    padding: 0.3rem 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.8rem;
-    font-family: 'Manrope', sans-serif; transition: var(--transition);
-  }
-  .fb-filters-toggle:hover { background: var(--gray-light); }
-
-  /* LOADING */
-  .fb-loading {
-    text-align: center; padding: 3rem 2rem;
-    background: var(--white); border-radius: 10px;
-    box-shadow: var(--shadow);
-  }
-  .fb-spinner {
-    width: 44px; height: 44px; border: 4px solid var(--gray-light);
-    border-top-color: var(--orange); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin: 0 auto 1rem;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* EMPTY STATE */
-  .fb-empty {
-    text-align: center; padding: 3rem 2rem;
-    background: var(--white); border-radius: 10px; box-shadow: var(--shadow);
-  }
-  .fb-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .fb-empty h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-  .fb-empty p { color: var(--text-mid); margin-bottom: 1rem; }
-  .fb-empty-btn {
-    background: var(--orange); color: white; border: none;
-    padding: 0.6rem 1.4rem; border-radius: 6px; cursor: pointer;
-    font-weight: 700; font-size: 0.9rem; font-family: 'Manrope', sans-serif;
-    transition: var(--transition);
-  }
-  .fb-empty-btn:hover { opacity: 0.9; }
-
-  /* RESULTS BAR */
+  /* Results bar */
   .fb-results-bar {
-    background: var(--white); border-radius: 10px; padding: 0.75rem 1rem;
-    margin-bottom: 1.25rem; display: flex; justify-content: space-between;
-    align-items: center; box-shadow: var(--shadow); font-size: 0.88rem;
+    background: var(--white); border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 14px; display: flex; justify-content: space-between;
+    align-items: center; box-shadow: var(--shadow);
   }
-  .fb-results-count { font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 0.4rem; }
+  .fb-results-count { font-weight: 800; font-size: 0.9rem; color: var(--navy); display: flex; align-items: center; gap: 6px; }
+  .fb-results-count svg { color: var(--orange); }
+  .fb-results-page { font-size: 0.8rem; color: var(--text-mid); font-weight: 700; }
 
-  /* VIDEO ICON on post images */
-  .fb-video-overlay {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 56px; height: 56px; border-radius: 50%;
-    background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1.4rem; cursor: pointer; transition: var(--transition);
-  }
-  .fb-video-overlay:hover { background: rgba(0,0,0,0.85); transform: translate(-50%,-50%) scale(1.05); }
-
-  /* STORIES ROW */
-  .fb-stories-row {
-    display: flex; gap: 0.75rem; overflow-x: auto;
-    padding-bottom: 0.5rem; margin-bottom: 1.25rem;
-    scrollbar-width: none;
-  }
-  .fb-stories-row::-webkit-scrollbar { display: none; }
-
-  .fb-story-card {
-    flex-shrink: 0; width: 110px; height: 185px; border-radius: 12px;
-    overflow: hidden; position: relative; cursor: pointer;
-    background: linear-gradient(135deg, var(--navy), var(--blue));
-    transition: var(--transition);
-  }
-  .fb-story-card:hover { transform: scale(1.03); }
-
-  .fb-story-add {
-    background: var(--white); border: 2px solid var(--gray-light);
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    padding-bottom: 1rem;
-  }
-  .fb-story-add-icon {
-    width: 40px; height: 40px; border-radius: 50%; background: var(--orange);
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1.2rem; margin-bottom: 0.5rem;
-    border: 3px solid white;
-  }
-  .fb-story-add span { font-size: 0.78rem; font-weight: 700; color: var(--text-dark); text-align: center; line-height: 1.3; }
-
-  .fb-story-img { width: 100%; height: 100%; object-fit: cover; }
-  .fb-story-gradient {
-    width: 100%; height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%);
-    position: absolute; inset: 0;
-  }
-  .fb-story-avatar {
-    position: absolute; top: 10px; left: 10px;
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 3px solid var(--orange); overflow: hidden;
+  /* ══════════ POST CARD ══════════ */
+  .fb-post { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; transition: var(--transition); }
+  .fb-post:hover { box-shadow: var(--shadow-md); }
+  .fb-post-hd { display: flex; align-items: center; gap: 10px; padding: 14px 14px 8px; }
+  .fb-post-ava {
+    width: 42px; height: 42px; border-radius: 50%;
     background: linear-gradient(135deg, var(--navy), var(--blue));
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.85rem; font-weight: 800;
+    color: white; font-size: 1rem; font-weight: 900; flex-shrink: 0;
   }
-  .fb-story-label {
-    position: absolute; bottom: 10px; left: 8px; right: 8px;
-    font-size: 0.78rem; font-weight: 700; color: white; line-height: 1.3;
+  .fb-post-meta { flex: 1; min-width: 0; }
+  .fb-post-owner { font-weight: 900; font-size: 0.97rem; color: var(--text-dark); line-height: 1.2; }
+  .fb-post-loc { font-size: 0.77rem; color: var(--text-mid); font-weight: 700; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+  .fb-post-loc svg { color: var(--orange); flex-shrink: 0; }
+  .fb-post-more-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent;
+    cursor: pointer; color: var(--text-mid); display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: var(--transition); flex-shrink: 0;
   }
+  .fb-post-more-btn:hover { background: var(--gray-bg); }
+  .fb-post-caption { padding: 0 14px 10px; font-size: 0.93rem; font-weight: 700; color: var(--text-dark); line-height: 1.65; }
+  .fb-post-caption strong { color: var(--orange); font-weight: 900; font-size: 1rem; display: block; margin-bottom: 2px; }
 
-  /* PAGINATION */
-  .fb-pagination { margin: 1.5rem 0; }
+  /* Images */
+  .fb-post-imgs { position: relative; background: #111; overflow: hidden; }
+  .fb-post-img-single img { width: 100%; max-height: 480px; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .fb-post-img-single:hover img { transform: scale(1.01); }
+  .fb-post-img-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .fb-post-img-grid2 img { width: 100%; height: 220px; object-fit: cover; display: block; }
+  .fb-post-img-grid3 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .fb-post-img-grid3 .img-main { grid-row: span 2; }
+  .fb-post-img-grid3 .img-main img { width: 100%; height: 302px; object-fit: cover; display: block; }
+  .fb-post-img-grid3 .img-sub img { width: 100%; height: 150px; object-fit: cover; display: block; }
+  .fb-post-img-more { position: relative; overflow: hidden; }
+  .fb-post-img-more img { width: 100%; height: 150px; object-fit: cover; display: block; filter: brightness(0.5); }
+  .fb-post-img-more-lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; font-weight: 900; }
+  .fb-post-no-img { height: 200px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; color: white; flex-direction: column; gap: 8px; }
+  .fb-post-no-img span { font-size: 0.88rem; opacity: 0.75; font-weight: 700; }
+  .fb-img-badges { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 2; }
+  .fb-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 900; backdrop-filter: blur(6px); }
+  .fb-badge-verified { background: rgba(16,185,129,0.92); color: white; }
+  .fb-badge-price { background: rgba(232,80,26,0.92); color: white; font-size: 0.78rem; }
+  .fb-badge-rooms { background: rgba(13,27,62,0.88); color: white; }
 
-  /* RESPONSIVE */
+  /* View Details bar */
+  .fb-view-details-bar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 14px; cursor: pointer; transition: var(--transition);
+    font-weight: 900; font-size: 0.92rem; color: var(--orange);
+    border: none; width: 100%; font-family: 'Manrope', sans-serif;
+    background: linear-gradient(90deg, rgba(232,80,26,0.07) 0%, rgba(26,63,164,0.07) 100%);
+    border-top: 1px solid var(--gray-light); letter-spacing: 0.2px;
+  }
+  .fb-view-details-bar:hover { background: rgba(232,80,26,0.12); }
+  .fb-view-details-bar svg { font-size: 1rem; transition: transform 0.2s; }
+  .fb-view-details-bar:hover svg { transform: translateX(5px); }
+
+  /* Info chips */
+  .fb-post-chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 14px 7px; border-bottom: 1px solid var(--gray-light); }
+  .fb-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--gray-bg); padding: 5px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 800; color: var(--text-dark); }
+  .fb-chip svg { font-size: 0.75rem; }
+  .chip-orange { color: var(--orange); }
+  .chip-green { color: var(--success); }
+  .chip-gold { color: #f59e0b; }
+
+  /* Reactions */
+  .fb-post-reactions { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.83rem; color: var(--text-mid); font-weight: 700; }
+  .fb-react-row { display: flex; align-items: center; gap: 4px; }
+  .fb-react-emojis span { font-size: 1.05rem; }
+
+  /* Action buttons */
+  .fb-post-actions { display: flex; border-top: 1px solid var(--gray-light); padding: 2px 6px; }
+  .fb-act-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 8px 4px; border-radius: 8px; cursor: pointer; font-size: 0.83rem; font-weight: 800;
+    color: var(--text-mid); transition: var(--transition); border: none; background: transparent;
+    font-family: 'Manrope', sans-serif; white-space: nowrap;
+  }
+  .fb-act-btn:hover { background: var(--gray-bg); color: var(--text-dark); }
+  .fb-act-btn.cta {
+    color: var(--white); background: var(--orange); border-radius: 8px;
+    margin: 4px; flex: 1.2; font-weight: 900;
+  }
+  .fb-act-btn.cta:hover { background: #c0390e; transform: translateY(-1px); }
+  .fb-act-btn svg { font-size: 0.95rem; }
+
+  /* ══════════ RIGHT SIDEBAR ══════════ */
+  .fb-right {
+    grid-area: right; position: sticky; top: var(--topbar-h);
+    height: calc(100vh - var(--topbar-h)); overflow-y: auto;
+    padding: 16px 12px 24px; border-left: 1px solid var(--gray-light); background: var(--white);
+  }
+  .fb-right::-webkit-scrollbar { width: 3px; }
+  .fb-right::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 4px; }
+  .fb-right-title { font-size: 1.05rem; font-weight: 900; color: var(--text-dark); margin-bottom: 10px; }
+  .fb-right-divider { border: none; border-top: 1px solid var(--gray-light); margin: 14px 0; }
+  .fb-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .fb-stat-card {
+    background: var(--gray-bg); padding: 12px 10px; border-radius: 10px;
+    border: 1px solid var(--gray-light); transition: var(--transition); cursor: pointer;
+  }
+  .fb-stat-card:hover { background: var(--gray-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .fb-stat-card-icon { font-size: 1.15rem; margin-bottom: 5px; }
+  .fb-stat-card-val { font-size: 1.55rem; font-weight: 900; color: var(--navy); line-height: 1; }
+  .fb-stat-card-lbl { font-size: 0.72rem; color: var(--text-mid); font-weight: 800; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .fb-ql { display: flex; align-items: center; gap: 10px; padding: 8px 8px; border-radius: 8px; text-decoration: none; color: var(--text-dark); font-size: 0.88rem; font-weight: 800; transition: var(--transition); margin-bottom: 2px; }
+  .fb-ql:hover { background: var(--gray-bg); }
+  .fb-ql-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+  .fb-ql-lbl { flex: 1; }
+  .fb-ql-sub { font-size: 0.72rem; color: var(--text-mid); font-weight: 600; }
+  .fb-listing-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; transition: var(--transition); }
+  .fb-listing-item:hover { background: var(--gray-bg); }
+  .fb-listing-ava { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: 900; position: relative; }
+  .fb-online-dot { position: absolute; bottom: 1px; right: 1px; width: 9px; height: 9px; background: var(--success); border-radius: 50%; border: 2px solid white; }
+  .fb-listing-name { font-size: 0.85rem; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+  .fb-listing-price { font-size: 0.73rem; color: var(--text-mid); font-weight: 700; }
+  .fb-right-footer { font-size: 0.72rem; color: var(--text-mid); line-height: 1.9; padding: 0 8px; font-weight: 600; }
+  .fb-right-footer a { color: var(--text-mid); text-decoration: none; }
+  .fb-right-footer a:hover { text-decoration: underline; }
+
+  /* ══════════ LOADING / EMPTY ══════════ */
+  .fb-loading, .fb-empty { text-align: center; padding: 3rem 2rem; background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .fb-spinner { width: 44px; height: 44px; border: 4px solid var(--gray-light); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .fb-loading p, .fb-empty p { color: var(--text-mid); font-weight: 700; font-size: 0.9rem; }
+  .fb-empty h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 6px; }
+  .fb-empty-icon { font-size: 3rem; margin-bottom: 10px; }
+  .fb-empty-btn { background: var(--orange); color: white; border: none; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 0.9rem; font-family: 'Manrope', sans-serif; transition: var(--transition); margin-top: 12px; }
+  .fb-empty-btn:hover { opacity: 0.9; }
+  .fb-pagination { margin: 16px 0 8px; }
+
+  /* ══════════ MOBILE BOTTOM NAV ══════════ */
+  .fb-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; background: var(--white); border-top: 1px solid var(--gray-light); padding: 6px 0 8px; box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
+  .fb-bottom-nav-inner { display: flex; justify-content: space-around; align-items: center; }
+  .fb-bottom-tab { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--text-mid); font-size: 1.2rem; transition: var(--transition); padding: 4px 12px; border: none; background: transparent; position: relative; text-decoration: none; font-family: 'Manrope', sans-serif; }
+  .fb-bottom-tab.active { color: var(--orange); }
+  .fb-bottom-tab span.lbl { font-size: 0.62rem; font-weight: 800; }
+  .fb-bottom-badge { position: absolute; top: 0; right: 8px; background: var(--danger); color: white; font-size: 0.58rem; font-weight: 900; padding: 1px 4px; border-radius: 8px; }
+
+  /* ══════════ RESPONSIVE ══════════ */
+  @media (min-width: 1400px) { .fb-center { max-width: 720px; } }
+
   @media (max-width: 1200px) {
-    .fb-layout { grid-template-columns: 240px 1fr 300px; }
-    .fb-left { width: 240px; }
-    .fb-right { width: 300px; }
-    .fb-center { margin-left: 240px; margin-right: 300px; }
+    :root { --left-w: 240px; --right-w: 280px; }
   }
 
-  @media (max-width: 992px) {
-    .fb-layout { grid-template-columns: 1fr; }
-    .fb-left { display: none; }
+  @media (max-width: 1024px) {
+    :root { --left-w: 72px; --right-w: 0px; }
     .fb-right { display: none; }
-    .fb-center { margin: 0; padding: 1rem 0.5rem; }
+    .fb-page { grid-template-columns: var(--left-w) 1fr; grid-template-areas: "left center"; }
+    .fb-sidebar-name, .fb-sidebar-role, .fb-sidebar-section { display: none; }
+    .fb-sidebar-link span:not(.fb-sidebar-badge) { display: none; }
+    .fb-sidebar-link { padding: 10px; justify-content: center; }
+    .fb-sidebar-icon { margin: 0; }
+    .fb-sidebar-profile { justify-content: center; }
+    .fb-sidebar-profile .fb-sidebar-name { display: none; }
+    .fb-center { max-width: 100%; }
+    .fb-logo-text { display: block; }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
+    :root { --left-w: 0px; --right-w: 0px; --topbar-h: 56px; }
+    .fb-page { grid-template-columns: 1fr; grid-template-areas: "center"; }
+    .fb-left { display: none; }
+    .fb-left.mobile-open {
+      display: flex; flex-direction: column;
+      position: fixed; top: var(--topbar-h); left: 0;
+      width: 280px; height: calc(100vh - var(--topbar-h));
+      z-index: 999; box-shadow: var(--shadow-md); transform: translateX(0);
+      padding: 12px 8px 24px;
+    }
+    .fb-left-overlay { display: block; }
+    .fb-left-overlay.hidden { display: none; }
+    .fb-menu-btn { display: flex; }
     .fb-topbar-center { display: none; }
-    .fb-post-actions { gap: 0; }
-    .fb-post-action span { display: none; }
+    .fb-center { padding: 14px 10px 80px; }
+    .fb-bottom-nav { display: block; }
   }
 
-  /* WELCOME BANNER */
-  .fb-welcome-banner {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 60%, #2d5be3 100%);
-    border-radius: 10px; padding: 1.5rem; margin-bottom: 1.25rem;
-    color: white; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+  @media (max-width: 480px) {
+    .fb-center { padding: 10px 8px 76px; }
+    .fb-welcome { padding: 18px 16px; border-radius: 10px; }
+    .fb-welcome h2 { font-size: 1.18rem; }
+    .fb-welcome p { font-size: 0.85rem; }
+    .fb-post { border-radius: 8px; }
+    .fb-post-owner { font-size: 0.93rem; }
+    .fb-post-caption { font-size: 0.88rem; }
+    .fb-chip { font-size: 0.72rem; padding: 4px 8px; }
+    .fb-act-btn { font-size: 0.78rem; padding: 7px 3px; }
+    .fb-act-btn span { display: none; }
+    .fb-act-btn.cta span { display: inline; font-size: 0.8rem; }
+    .fb-story { width: 94px; height: 158px; }
+    .fb-search-form { max-width: 140px; padding: 7px 10px; }
+    .fb-post-img-grid2 img { height: 155px; }
+    .fb-post-img-grid3 .img-main img { height: 230px; }
+    .fb-post-img-grid3 .img-sub img { height: 114px; }
+    .fb-post-img-grid3 .fb-post-img-more img { height: 114px; }
+    .fb-view-details-bar { font-size: 0.88rem; padding: 10px; }
   }
-  .fb-welcome-banner::before {
-    content: '🏠'; position: absolute; right: 1.5rem; top: 50%;
-    transform: translateY(-50%) rotate(-10deg); font-size: 4rem; opacity: 0.15;
-  }
-  .fb-welcome-banner h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.25rem; }
-  .fb-welcome-banner p { font-size: 0.88rem; opacity: 0.85; }
 `;
+
+// Real SVG-based HostelLink Logo
+const HostelLinkLogo = () => (
+  <div className="fb-logo-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10.5L12 3L21 10.5V21C21 21.55 20.55 22 20 22H15V16H9V22H4C3.45 22 3 21.55 3 21V10.5Z" fill="white"/>
+      <circle cx="12" cy="12" r="2" fill="rgba(232,80,26,0.85)"/>
+    </svg>
+  </div>
+);
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
-  const {
-    hostels,
-    loading,
-    filters,
-    pagination,
-    fetchHostels,
-    updateFilters,
-    resetFilters,
-    changePage
-  } = useHostel();
+  const { hostels, loading, filters, pagination, fetchHostels, updateFilters, resetFilters, changePage } = useHostel();
 
   const [searchInput, setSearchInput] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) { navigate('/login'); return; }
@@ -627,409 +519,312 @@ const StudentDashboard = () => {
 
   if (!isAuthenticated) return null;
 
-  const initials = (user?.firstName?.[0] || '') + (user?.lastName?.[0] || '') || '?';
+  const initials = ((user?.firstName?.[0] || '') + (user?.lastName?.[0] || '')).toUpperCase() || 'HL';
 
   const stats = [
-    { label: 'My Bookings', value: '3', icon: <FaBookmark />, color: '#e8501a', bg: 'rgba(232,80,26,0.1)' },
-    { label: 'Messages', value: '12', icon: <FaEnvelope />, color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)' },
-    { label: 'Favorites', value: '8', icon: <FaHeart />, color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
-    { label: 'Available', value: pagination?.total || hostels.length, icon: <FaHome />, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    { label: 'Bookings', value: '3', icon: '📋', color: '#e8501a', bg: 'rgba(232,80,26,0.1)', link: '/bookings' },
+    { label: 'Messages', value: '12', icon: '💬', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)', link: '/messages' },
+    { label: 'Saved', value: '8', icon: '❤️', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', link: '/favorites' },
+    { label: 'Hostels', value: pagination?.total || hostels.length, icon: '🏠', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
   ];
 
-  const navItems = [
-    { icon: <FaHome />, label: 'Feed', key: 'home' },
-    { icon: <FaVideo />, label: 'Videos', key: 'videos' },
-    { icon: <FaBookmark />, label: 'Bookings', key: 'bookings', link: '/bookings' },
-    { icon: <FaUserFriends />, label: 'Messages', key: 'messages', link: '/messages', badge: 12 },
-    { icon: <FaBell />, label: 'Alerts', key: 'notifications', link: '/notifications', badge: 3 },
+  const sidebarLinks = [
+    { icon: <FaHome />, label: 'Browse Hostels', link: '/hostels', color: '#e8501a', bg: 'rgba(232,80,26,0.1)' },
+    { icon: <FaBookmark />, label: 'My Bookings', link: '/bookings', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)' },
+    { icon: <FaHeart />, label: 'Saved Hostels', link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+    { icon: <FaEnvelope />, label: 'Messages', link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)', badge: 12 },
+    { icon: <FaBell />, label: 'Notifications', link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', badge: 3 },
+    { icon: <FaVideo />, label: 'Hostel Videos', link: '/videos', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+    { icon: <FaCog />, label: 'Settings', link: '/profile', color: '#6b7280', bg: 'rgba(107,114,128,0.1)' },
   ];
 
-  const leftSidebarLinks = [
-    { icon: <FaHome />, label: 'Browse Hostels', link: '/hostels', color: '#e8501a', bg: 'rgba(232,80,26,0.12)', key: 'home' },
-    { icon: <FaBookmark />, label: 'My Bookings', link: '/bookings', color: '#1a3fa4', bg: 'rgba(26,63,164,0.12)', key: 'bookings' },
-    { icon: <FaHeart />, label: 'Saved Hostels', link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.12)', key: 'favorites' },
-    { icon: <FaEnvelope />, label: 'Messages', link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.12)', key: 'messages', badge: 12 },
-    { icon: <FaBell />, label: 'Notifications', link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', key: 'notifications', badge: 3 },
-    { icon: <FaVideo />, label: 'Hostel Videos', link: '/videos', color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', key: 'videos' },
-    { icon: <FaCog />, label: 'Settings', link: '/profile', color: '#6b7280', bg: 'rgba(107,114,128,0.12)', key: 'settings' },
+  const quickLinks = [
+    { icon: <FaBookmark />, label: 'My Bookings', sub: 'View reservations', link: '/bookings', color: '#e8501a', bg: 'rgba(232,80,26,0.1)' },
+    { icon: <FaHeart />, label: 'Saved Hostels', sub: '8 saved', link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+    { icon: <FaEnvelope />, label: 'Messages', sub: '12 unread', link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)' },
+    { icon: <FaVideo />, label: 'Hostel Videos', sub: 'Watch tours', link: '/videos', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
   ];
 
-  // Story-style featured hostels (first 4)
-  const featuredHostels = hostels.slice(0, 4);
+  const renderImages = (hostel) => {
+    const images = hostel.images || [];
+    const badges = (
+      <div className="fb-img-badges">
+        {hostel.verified && <span className="fb-badge fb-badge-verified">✓ Verified</span>}
+        <span className="fb-badge fb-badge-price">MK {hostel.price?.toLocaleString()}/mo</span>
+        {hostel.availableRooms > 0 && <span className="fb-badge fb-badge-rooms">{hostel.availableRooms} free</span>}
+      </div>
+    );
 
-  // Render hostel as a Facebook post
-  const renderHostelPost = (hostel) => {
+    if (images.length === 0) return (
+      <div className="fb-post-no-img" style={{ position: 'relative' }}>
+        <span style={{ fontSize: '2.5rem' }}>🏠</span>
+        <span>No photos uploaded yet</span>
+        {badges}
+      </div>
+    );
+    if (images.length === 1) return (
+      <div className="fb-post-img-single" style={{ position: 'relative' }}>
+        <img src={images[0]} alt={hostel.name} />
+        {badges}
+      </div>
+    );
+    if (images.length === 2) return (
+      <div style={{ position: 'relative' }}>
+        <div className="fb-post-img-grid2">
+          {images.slice(0, 2).map((img, i) => <img key={i} src={img} alt={hostel.name} />)}
+        </div>
+        {badges}
+      </div>
+    );
+    return (
+      <div style={{ position: 'relative' }}>
+        <div className="fb-post-img-grid3">
+          <div className="img-main"><img src={images[0]} alt={hostel.name} /></div>
+          <div className="img-sub"><img src={images[1]} alt={hostel.name} /></div>
+          {images.length > 3 ? (
+            <div className="img-sub fb-post-img-more">
+              <img src={images[2]} alt="" />
+              <div className="fb-post-img-more-lbl">+{images.length - 2}</div>
+            </div>
+          ) : (
+            <div className="img-sub"><img src={images[2]} alt={hostel.name} /></div>
+          )}
+        </div>
+        {badges}
+      </div>
+    );
+  };
+
+  const renderPost = (hostel) => {
     const ownerName = hostel.owner
       ? `${hostel.owner.firstName || ''} ${hostel.owner.lastName || ''}`.trim() || 'HostelLink Owner'
       : 'HostelLink Owner';
-    const ownerInitials = hostel.owner?.firstName?.[0]?.toUpperCase() || 'H';
-    const images = hostel.images || [];
+    const ownerInitial = hostel.owner?.firstName?.[0]?.toUpperCase() || 'H';
     const rating = (hostel.averageRating || 4.5).toFixed(1);
 
-    const renderImages = () => {
-      if (images.length === 0) {
-        return (
-          <div className="fb-post-no-image">
-            <span>📷</span>
-            <span>No photos yet</span>
-          </div>
-        );
-      }
-      if (images.length === 1) {
-        return (
-          <div style={{ position: 'relative' }}>
-            <img src={images[0]} alt={hostel.name} className="fb-post-image" />
-            <div className="fb-post-image-badges">
-              {hostel.verified && <span className="fb-badge fb-badge-verified">✓ Verified</span>}
-              <span className="fb-badge fb-badge-price">MK {hostel.price?.toLocaleString()}/mo</span>
-              <span className="fb-badge fb-badge-rooms">{hostel.availableRooms} rooms free</span>
-            </div>
-          </div>
-        );
-      }
-      if (images.length === 2) {
-        return (
-          <div style={{ position: 'relative' }}>
-            <div className="fb-post-image-grid-2">
-              {images.slice(0, 2).map((img, i) => <img key={i} src={img} alt={`${hostel.name} ${i+1}`} />)}
-            </div>
-            <div className="fb-post-image-badges">
-              {hostel.verified && <span className="fb-badge fb-badge-verified">✓ Verified</span>}
-              <span className="fb-badge fb-badge-price">MK {hostel.price?.toLocaleString()}/mo</span>
-            </div>
-          </div>
-        );
-      }
-      // 3+ images
-      return (
-        <div style={{ position: 'relative' }}>
-          <div className="fb-post-image-grid-3">
-            {images.slice(0, 2).map((img, i) => <img key={i} src={img} alt={`${hostel.name} ${i+1}`} />)}
-            {images.length > 3 ? (
-              <div className="fb-post-image-more">
-                <img src={images[2]} alt="" />
-                <div className="fb-post-image-more-overlay">+{images.length - 2}</div>
-              </div>
-            ) : (
-              <img src={images[2]} alt="" style={{ height: '148px', objectFit: 'cover', width: '100%' }} />
-            )}
-          </div>
-          <div className="fb-post-image-badges">
-            {hostel.verified && <span className="fb-badge fb-badge-verified">✓ Verified</span>}
-            <span className="fb-badge fb-badge-price">MK {hostel.price?.toLocaleString()}/mo</span>
-          </div>
-        </div>
-      );
-    };
-
     return (
-      <div key={hostel._id} className="fb-post-card">
-        {/* POST HEADER */}
-        <div className="fb-post-header">
-          <div className="fb-post-avatar">{ownerInitials}</div>
+      <div key={hostel._id} className="fb-post">
+        <div className="fb-post-hd">
+          <div className="fb-post-ava">{ownerInitial}</div>
           <div className="fb-post-meta">
-            <div className="fb-post-owner-name">{ownerName}</div>
-            <div className="fb-post-subtitle">
-              <FaMapMarkerAlt style={{ color: 'var(--orange)' }} />
-              {hostel.address}
-              &nbsp;·&nbsp;🌐 Public listing
+            <div className="fb-post-owner">{ownerName}</div>
+            <div className="fb-post-loc">
+              <FaMapMarkerAlt /> {hostel.address} &nbsp;·&nbsp; 🌐 Public
             </div>
           </div>
-          <button className="fb-post-more" title="More options"><FaEllipsisH /></button>
+          <button className="fb-post-more-btn"><FaEllipsisH /></button>
         </div>
 
-        {/* CAPTION */}
         <div className="fb-post-caption">
-          <strong>{hostel.name}</strong> — {hostel.description
-            ? hostel.description.length > 120
-              ? hostel.description.slice(0, 120) + '...'
+          <strong>{hostel.name}</strong>
+          {hostel.description
+            ? hostel.description.length > 110
+              ? hostel.description.slice(0, 110) + '…'
               : hostel.description
             : 'Quality student accommodation near campus.'}
         </div>
 
-        {/* IMAGES */}
-        <div className="fb-post-image-wrap">
-          {renderImages()}
+        <div className="fb-post-imgs">{renderImages(hostel)}</div>
+
+        {/* ✅ VIEW DETAILS BAR — clearly below the image */}
+        <button className="fb-view-details-bar" onClick={() => navigate(`/hostels/${hostel._id}`)}>
+          View Details &nbsp;<FaArrowRight />
+        </button>
+
+        <div className="fb-post-chips">
+          <span className="fb-chip"><FaHome className="chip-orange" /> {hostel.type}</span>
+          <span className="fb-chip"><span>👥</span> {hostel.gender}</span>
+          <span className="fb-chip"><FaCheckCircle className="chip-green" /> <span style={{ color: 'var(--success)', fontWeight: 900 }}>{hostel.availableRooms}</span>/{hostel.totalRooms}</span>
+          <span className="fb-chip"><FaStar className="chip-gold" /> {rating}</span>
+          {hostel.contactPhone && <span className="fb-chip"><FaPhone className="chip-orange" /> {hostel.contactPhone}</span>}
         </div>
 
-        {/* INFO ROW */}
-        <div className="fb-post-info">
-          <div className="fb-post-info-item">
-            <FaHome /><span>Type: <strong>{hostel.type}</strong></span>
-          </div>
-          <div className="fb-post-info-item">
-            <span>👥</span><span>Gender: <strong style={{ textTransform: 'capitalize' }}>{hostel.gender}</strong></span>
-          </div>
-          <div className="fb-post-info-item">
-            <FaCheckCircle style={{ color: 'var(--success)' }} />
-            <span><strong style={{ color: 'var(--success)' }}>{hostel.availableRooms}</strong> of {hostel.totalRooms} rooms free</span>
-          </div>
-          <div className="fb-post-info-item">
-            <FaStar style={{ color: '#f59e0b' }} /><span><strong>{rating}</strong> rating</span>
-          </div>
-          {hostel.contactPhone && (
-            <div className="fb-post-info-item">
-              <FaPhone /><span><strong>{hostel.contactPhone}</strong></span>
+        <div className="fb-post-reactions">
+          <div className="fb-react-row">
+            <div className="fb-react-emojis">
+              <span>👍</span><span>❤️</span><span>😍</span>
             </div>
-          )}
-        </div>
-
-        {/* REACTION SUMMARY */}
-        <div className="fb-post-reaction-summary">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <div className="fb-reaction-icons">
-              <span className="fb-reaction-emoji">👍</span>
-              <span className="fb-reaction-emoji">❤️</span>
-              <span className="fb-reaction-emoji">😍</span>
-            </div>
-            <span>{Math.floor(Math.random() * 80) + 20}</span>
+            <span style={{ marginLeft: 4 }}>{(hostel.viewCount || 0) + 15}</span>
           </div>
-          <span>{hostel.viewCount || Math.floor(Math.random() * 30) + 5} views</span>
+          <span>{hostel.viewCount || 0} views</span>
         </div>
 
-        {/* ACTION BUTTONS */}
         <div className="fb-post-actions">
-          <button className="fb-post-action">
-            <FaThumbsUp /><span>Interested</span>
-          </button>
-          <button className="fb-post-action" onClick={() => navigate(`/messages?to=${hostel.owner?._id}`)}>
-            <FaComment /><span>Message</span>
-          </button>
-          <button className="fb-post-action" onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/hostels/' + hostel._id); toast.success('Link copied!'); }}>
-            <FaShare /><span>Share</span>
-          </button>
-          <button
-            className="fb-post-action primary"
-            onClick={() => navigate(`/hostels/${hostel._id}`)}
-          >
-            <FaArrowRight /><span>View Details</span>
-          </button>
+          <button className="fb-act-btn"><FaThumbsUp /><span>Interested</span></button>
+          <button className="fb-act-btn" onClick={() => navigate(`/messages?to=${hostel.owner?._id}`)}><FaComment /><span>Message</span></button>
+          <button className="fb-act-btn" onClick={() => { navigator.clipboard?.writeText(`${window.location.origin}/hostels/${hostel._id}`); toast.success('Link copied!'); }}><FaShare /><span>Share</span></button>
+          <button className="fb-act-btn cta" onClick={() => navigate(`/hostels/${hostel._id}`)}>View Details <FaArrowRight /></button>
         </div>
       </div>
     );
   };
 
+  const SidebarContent = () => (
+    <>
+      <Link to="/profile" className="fb-sidebar-profile" onClick={() => setMobileMenuOpen(false)}>
+        <div className="fb-sidebar-avatar">{initials}</div>
+        <div>
+          <div className="fb-sidebar-name">{user?.firstName} {user?.lastName}</div>
+          <div className="fb-sidebar-role">Student · MUBAS</div>
+        </div>
+      </Link>
+      <hr className="fb-sidebar-divider" />
+      {sidebarLinks.map((item, i) => (
+        <Link key={i} to={item.link} className="fb-sidebar-link" onClick={() => setMobileMenuOpen(false)}>
+          <div className="fb-sidebar-icon" style={{ background: item.bg, color: item.color }}>{item.icon}</div>
+          <span>{item.label}</span>
+          {item.badge && <span className="fb-sidebar-badge">{item.badge}</span>}
+        </Link>
+      ))}
+      <hr className="fb-sidebar-divider" />
+      <div className="fb-sidebar-section">Your Stats</div>
+      {stats.map((s, i) => (
+        <div key={i} className="fb-sidebar-link" style={{ cursor: 'default' }}>
+          <div className="fb-sidebar-icon" style={{ background: s.bg, fontSize: '1rem' }}>{s.icon}</div>
+          <span>{s.label}: <strong>{s.value}</strong></span>
+        </div>
+      ))}
+      <hr className="fb-sidebar-divider" />
+      <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="fb-sidebar-link danger">
+        <div className="fb-sidebar-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}><FaSignOutAlt /></div>
+        <span>Logout</span>
+      </button>
+    </>
+  );
+
+  const featuredHostels = hostels.slice(0, 5);
+
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* ===== FACEBOOK-STYLE TOPBAR ===== */}
+      {/* TOPBAR */}
       <nav className="fb-topbar">
-        {/* LEFT: Logo + Search */}
-        <div className="fb-topbar-left">
-          <a href="/" className="fb-logo">🏠 HostelLink</a>
-          <form onSubmit={handleSearch} className="fb-search-wrap">
-            <FaSearch />
-            <input
-              type="text"
-              placeholder="Search hostels..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-          </form>
-        </div>
-
-        {/* CENTER: Nav Tabs */}
+        <button className="fb-menu-btn" onClick={() => setMobileMenuOpen(o => !o)}>
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <Link to="/" className="fb-logo">
+          <HostelLinkLogo />
+          <span className="fb-logo-text">HostelLink</span>
+        </Link>
+        <form onSubmit={handleSearch} className="fb-search-form">
+          <FaSearch />
+          <input type="text" placeholder="Search hostels..." value={searchInput} onChange={e => setSearchInput(e.target.value)} />
+        </form>
         <div className="fb-topbar-center">
-          {navItems.map(tab => (
-            tab.link ? (
-              <Link
-                key={tab.key}
-                to={tab.link}
-                className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`}
-                onClick={() => setActiveTab(tab.key)}
-                title={tab.label}
-              >
-                {tab.icon}
-                {tab.badge && <span className="fb-nav-badge">{tab.badge}</span>}
-              </Link>
-            ) : (
-              <button
-                key={tab.key}
-                className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`}
-                onClick={() => setActiveTab(tab.key)}
-                title={tab.label}
-              >
-                {tab.icon}
-                {tab.badge && <span className="fb-nav-badge">{tab.badge}</span>}
-              </button>
-            )
+          {[
+            { icon: <FaHome />, key: 'home' },
+            { icon: <FaVideo />, key: 'videos', link: '/videos' },
+            { icon: <FaBookmark />, key: 'bookings', link: '/bookings' },
+            { icon: <FaUserFriends />, key: 'messages', link: '/messages', badge: 12 },
+            { icon: <FaBell />, key: 'notifications', link: '/notifications', badge: 3 },
+          ].map(tab => tab.link ? (
+            <Link key={tab.key} to={tab.link} className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`} onClick={() => setActiveTab(tab.key)}>
+              {tab.icon}
+              {tab.badge && <span className="fb-nav-badge">{tab.badge}</span>}
+            </Link>
+          ) : (
+            <button key={tab.key} className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`} onClick={() => setActiveTab(tab.key)}>
+              {tab.icon}
+            </button>
           ))}
         </div>
-
-        {/* RIGHT: User controls */}
         <div className="fb-topbar-right">
-          <Link to="/profile" className="fb-icon-btn" title="Profile & Settings"><FaUser /></Link>
-          <Link to="/messages" className="fb-icon-btn" title="Messages">
-            <FaEnvelope /><span className="notif-dot" />
-          </Link>
-          <Link to="/notifications" className="fb-icon-btn" title="Notifications">
-            <FaBell /><span className="notif-dot" />
-          </Link>
-          <button className="fb-user-avatar-sm" onClick={handleLogout} title={`${user?.firstName} — click to logout`}>
-            {initials}
-          </button>
+          <Link to="/profile" className="fb-icon-btn"><FaUser /></Link>
+          <Link to="/messages" className="fb-icon-btn"><FaEnvelope /><span className="dot" /></Link>
+          <Link to="/notifications" className="fb-icon-btn"><FaBell /><span className="dot" /></Link>
+          <button className="fb-avatar-btn" onClick={handleLogout} title="Logout">{initials}</button>
         </div>
       </nav>
 
-      {/* ===== THREE-COLUMN LAYOUT ===== */}
-      <div className="fb-layout">
+      {/* Mobile sidebar overlay */}
+      {mobileMenuOpen && <div className="fb-left-overlay" onClick={() => setMobileMenuOpen(false)} />}
 
-        {/* ===== LEFT SIDEBAR ===== */}
-        <div className="fb-left">
-          <Link to="/profile" className="fb-sidebar-user">
-            <div className="fb-sidebar-avatar">{initials}</div>
-            <div className="fb-sidebar-username">{user?.firstName} {user?.lastName}</div>
-          </Link>
+      {/* PAGE */}
+      <div className="fb-page">
 
-          <hr className="fb-sidebar-divider" />
+        {/* LEFT */}
+        <aside className={`fb-left${mobileMenuOpen ? ' mobile-open' : ''}`}>
+          <SidebarContent />
+        </aside>
 
-          {leftSidebarLinks.map(item => (
-            <Link key={item.key} to={item.link} className="fb-sidebar-item">
-              <div className="fb-sidebar-icon" style={{ background: item.bg, color: item.color }}>
-                {item.icon}
-              </div>
-              {item.label}
-              {item.badge && <span className="fb-sidebar-badge">{item.badge}</span>}
-            </Link>
-          ))}
-
-          <hr className="fb-sidebar-divider" />
-          <div className="fb-sidebar-section-title">Your Stats</div>
-
-          {stats.map((s, i) => (
-            <div key={i} className="fb-sidebar-item" style={{ cursor: 'default' }}>
-              <div className="fb-sidebar-icon" style={{ background: s.bg, color: s.color }}>{s.icon}</div>
-              <div>
-                <div style={{ fontSize: '0.92rem', fontWeight: 700 }}>{s.label}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-mid)', fontWeight: 600 }}>{s.value}</div>
-              </div>
-            </div>
-          ))}
-
-          <hr className="fb-sidebar-divider" />
-
-          <button
-            onClick={handleLogout}
-            className="fb-sidebar-item"
-            style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'Manrope, sans-serif' }}
-          >
-            <div className="fb-sidebar-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>
-              <FaSignOutAlt />
-            </div>
-            Logout
-          </button>
-        </div>
-
-        {/* ===== CENTER FEED ===== */}
-        <div className="fb-center">
-
-          {/* WELCOME BANNER */}
-          <div className="fb-welcome-banner">
+        {/* CENTER */}
+        <main className="fb-center">
+          <div className="fb-welcome">
             <h2>Welcome back, {user?.firstName}! 👋</h2>
             <p>Discover your perfect student hostel near MUBAS campus</p>
           </div>
 
-          {/* STORIES / FEATURED HOSTELS */}
+          {/* Stories */}
           {featuredHostels.length > 0 && (
-            <div className="fb-stories-row">
-              {/* Add Story card */}
-              <div className="fb-story-card fb-story-add" onClick={() => navigate('/bookings')}>
-                <div className="fb-story-add-icon">+</div>
+            <div className="fb-stories">
+              <div className="fb-story fb-story-add" onClick={() => navigate('/bookings')}>
+                <div style={{ flex: 1 }} />
+                <div className="fb-story-add-ring">+</div>
                 <span>My Bookings</span>
+                <div style={{ height: 14 }} />
               </div>
-              {featuredHostels.map(hostel => (
-                <div
-                  key={hostel._id}
-                  className="fb-story-card"
-                  onClick={() => navigate(`/hostels/${hostel._id}`)}
-                >
-                  {hostel.images?.[0]
-                    ? <img src={hostel.images[0]} alt={hostel.name} className="fb-story-img" />
-                    : null
-                  }
-                  <div className="fb-story-gradient" />
-                  <div className="fb-story-avatar">
-                    {hostel.owner?.firstName?.[0]?.toUpperCase() || 'H'}
-                  </div>
+              {featuredHostels.map(h => (
+                <div key={h._id} className="fb-story" onClick={() => navigate(`/hostels/${h._id}`)}>
+                  {h.images?.[0] && <img src={h.images[0]} alt={h.name} />}
+                  <div className="fb-story-grad" />
+                  <div className="fb-story-ava">{h.owner?.firstName?.[0]?.toUpperCase() || 'H'}</div>
                   <div className="fb-story-label">
-                    {hostel.name}
-                    <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '2px' }}>
-                      MK {hostel.price?.toLocaleString()}/mo
-                    </div>
+                    {h.name}
+                    <div className="fb-story-price">MK {h.price?.toLocaleString()}/mo</div>
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* CREATE POST / SEARCH BOX */}
-          <div className="fb-create-post">
-            <div className="fb-create-top">
-              <div className="fb-user-avatar-sm" style={{ cursor: 'default' }}>{initials}</div>
-              <form onSubmit={handleSearch} style={{ flex: 1, display: 'flex', gap: '0.5rem' }}>
-                <input
-                  className="fb-create-input"
-                  placeholder="Search hostels by name, location..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                />
-                <button type="submit" style={{ background: 'var(--orange)', color: 'white', border: 'none', borderRadius: '20px', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 700, fontFamily: 'Manrope, sans-serif' }}>
-                  Search
-                </button>
+          {/* Compose */}
+          <div className="fb-compose">
+            <div className="fb-compose-row">
+              <div className="fb-avatar-btn" style={{ cursor: 'default', fontSize: '0.8rem', border: 'none' }}>{initials}</div>
+              <form onSubmit={handleSearch} style={{ flex: 1, display: 'flex', gap: 8 }}>
+                <input className="fb-compose-input" placeholder="Search hostels by name or location..." value={searchInput} onChange={e => setSearchInput(e.target.value)} />
+                <button type="submit" className="fb-compose-search-btn">Search</button>
               </form>
             </div>
-            <div className="fb-create-divider" />
-            <div className="fb-create-actions">
-              <button className="fb-create-action" onClick={() => navigate('/videos')} style={{ color: '#f02849' }}>
+            <div className="fb-compose-divider" />
+            <div className="fb-compose-actions">
+              <button className="fb-compose-action" onClick={() => navigate('/videos')} style={{ color: '#f02849' }}>
                 <FaVideo style={{ color: '#f02849' }} /> <span>Videos</span>
               </button>
-              <button className="fb-create-action" onClick={() => setShowFilters(!showFilters)} style={{ color: '#45bd62' }}>
+              <button className="fb-compose-action" onClick={() => setShowFilters(s => !s)} style={{ color: '#45bd62' }}>
                 <FaImages style={{ color: '#45bd62' }} /> <span>Filter</span>
               </button>
-              <button className="fb-create-action" onClick={() => navigate('/bookings')} style={{ color: '#f7b928' }}>
+              <button className="fb-compose-action" onClick={() => navigate('/bookings')} style={{ color: '#f7b928' }}>
                 <FaBookmark style={{ color: '#f7b928' }} /> <span>Bookings</span>
               </button>
             </div>
           </div>
 
-          {/* FILTERS */}
-          <div className="fb-filters-wrap">
-            <div className="fb-filters-header" onClick={() => setShowFilters(!showFilters)}>
-              <h3><FaFilter style={{ color: 'var(--orange)' }} /> Filter Hostels</h3>
-              <button className="fb-filters-toggle">
-                {showFilters ? 'Hide' : 'Show'} Filters {showFilters ? <FaChevronDown style={{ display: 'inline' }} /> : <FaChevronRight style={{ display: 'inline' }} />}
+          {/* Filters */}
+          <div className="fb-filters-box">
+            <div className="fb-filters-hd" onClick={() => setShowFilters(s => !s)}>
+              <h3><FaFilter /> Filter Hostels</h3>
+              <button className="fb-filter-toggle">
+                {showFilters ? 'Hide' : 'Show'} {showFilters ? <FaChevronDown /> : <FaChevronRight />}
               </button>
             </div>
             {showFilters && (
-              <HostelFilters
-                filters={filters}
-                onFilterChange={updateFilters}
-                onReset={resetFilters}
-              />
+              <div style={{ marginTop: 12 }}>
+                <HostelFilters filters={filters} onFilterChange={updateFilters} onReset={resetFilters} />
+              </div>
             )}
           </div>
 
-          {/* RESULTS COUNT */}
           {!loading && hostels.length > 0 && (
             <div className="fb-results-bar">
-              <div className="fb-results-count">
-                <FaHome style={{ color: 'var(--orange)' }} />
-                {hostels.length} of {pagination?.total || hostels.length} hostels
-              </div>
-              <span style={{ color: 'var(--text-mid)', fontSize: '0.82rem' }}>
-                Page {pagination?.page} of {pagination?.totalPages}
-              </span>
+              <div className="fb-results-count"><FaHome /> {hostels.length} of {pagination?.total || hostels.length} hostels</div>
+              <span className="fb-results-page">Page {pagination?.page || 1} of {pagination?.totalPages || 1}</span>
             </div>
           )}
 
-          {/* FEED: HOSTEL POSTS */}
           {loading ? (
-            <div className="fb-loading">
-              <div className="fb-spinner" />
-              <p style={{ color: 'var(--text-mid)' }}>Loading hostels...</p>
-            </div>
+            <div className="fb-loading"><div className="fb-spinner" /><p>Loading hostels...</p></div>
           ) : hostels.length === 0 ? (
             <div className="fb-empty">
               <div className="fb-empty-icon">🏠</div>
@@ -1039,90 +834,82 @@ const StudentDashboard = () => {
             </div>
           ) : (
             <>
-              {hostels.map(hostel => renderHostelPost(hostel))}
+              {hostels.map(h => renderPost(h))}
               {pagination?.totalPages > 1 && (
                 <div className="fb-pagination">
-                  <Pagination
-                    currentPage={pagination.page}
-                    totalPages={pagination.totalPages}
-                    onPageChange={(page) => { changePage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  />
+                  <Pagination currentPage={pagination.page} totalPages={pagination.totalPages} onPageChange={page => { changePage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
                 </div>
               )}
             </>
           )}
-        </div>
+        </main>
 
-        {/* ===== RIGHT SIDEBAR ===== */}
-        <div className="fb-right">
-
-          {/* STATS */}
-          <div className="fb-right-section">
-            <div className="fb-right-title">Your Overview</div>
-            <div className="fb-stat-row">
-              {stats.map((s, i) => (
-                <div key={i} className="fb-stat-box">
-                  <div className="fb-stat-box-icon" style={{ color: s.color }}>{s.icon}</div>
-                  <div className="fb-stat-box-value">{s.value}</div>
-                  <div className="fb-stat-box-label">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <hr style={{ border: 'none', borderTop: '1px solid var(--gray-light)', margin: '0 0 1.25rem' }} />
-
-          {/* QUICK LINKS */}
-          <div className="fb-right-section">
-            <div className="fb-right-title">Quick Access</div>
-            {[
-              { icon: <FaBookmark />, label: 'My Bookings', sub: 'View all reservations', link: '/bookings', color: '#e8501a', bg: 'rgba(232,80,26,0.1)' },
-              { icon: <FaHeart />, label: 'Saved Hostels', sub: 'Your favorites', link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
-              { icon: <FaEnvelope />, label: 'Messages', sub: '12 unread', link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)' },
-              { icon: <FaVideo />, label: 'Videos', sub: 'Hostel tours', link: '/videos', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-            ].map((item, i) => (
-              <Link key={i} to={item.link} className="fb-quick-link">
-                <div className="fb-quick-icon" style={{ background: item.bg, color: item.color }}>{item.icon}</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{item.label}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-mid)' }}>{item.sub}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <hr style={{ border: 'none', borderTop: '1px solid var(--gray-light)', margin: '0 0 1.25rem' }} />
-
-          {/* CONTACTS / NEARBY ACTIVE HOSTELS */}
-          <div className="fb-right-section">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-              <div className="fb-right-title" style={{ marginBottom: 0 }}>Active Listings</div>
-              <FaSearch style={{ color: 'var(--text-mid)', cursor: 'pointer' }} />
-            </div>
-            {hostels.slice(0, 6).map((h, i) => (
-              <div key={h._id} className="fb-contact" onClick={() => navigate(`/hostels/${h._id}`)}>
-                <div className="fb-contact-avatar">
-                  {h.owner?.firstName?.[0]?.toUpperCase() || 'H'}
-                  {h.availableRooms > 0 && <div className="fb-contact-online" />}
-                </div>
-                <div>
-                  <div className="fb-contact-name" style={{ fontSize: '0.85rem' }}>{h.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-mid)' }}>
-                    MK {h.price?.toLocaleString()}/mo · {h.availableRooms} free
-                  </div>
-                </div>
+        {/* RIGHT */}
+        <aside className="fb-right">
+          <div className="fb-right-title">Your Overview</div>
+          <div className="fb-stats-grid">
+            {stats.map((s, i) => (
+              <div key={i} className="fb-stat-card" onClick={() => s.link && navigate(s.link)}>
+                <div className="fb-stat-card-icon">{s.icon}</div>
+                <div className="fb-stat-card-val" style={{ color: s.color }}>{s.value}</div>
+                <div className="fb-stat-card-lbl">{s.label}</div>
               </div>
             ))}
           </div>
-
-          <hr style={{ border: 'none', borderTop: '1px solid var(--gray-light)', margin: '0 0 1rem' }} />
-
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-mid)', lineHeight: 1.7, padding: '0 0.75rem' }}>
-            HostelLink · About · Privacy · Terms ·<br />
-            © 2025 HostelLink MUBAS
+          <hr className="fb-right-divider" />
+          <div className="fb-right-title">Quick Access</div>
+          {quickLinks.map((ql, i) => (
+            <Link key={i} to={ql.link} className="fb-ql">
+              <div className="fb-ql-icon" style={{ background: ql.bg, color: ql.color }}>{ql.icon}</div>
+              <div className="fb-ql-lbl">
+                <div>{ql.label}</div>
+                <div className="fb-ql-sub">{ql.sub}</div>
+              </div>
+            </Link>
+          ))}
+          <hr className="fb-right-divider" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <div className="fb-right-title" style={{ marginBottom: 0 }}>Active Listings</div>
+            <FaSearch style={{ color: 'var(--text-mid)', cursor: 'pointer', fontSize: '0.85rem' }} />
           </div>
-        </div>
+          {hostels.slice(0, 7).map(h => (
+            <div key={h._id} className="fb-listing-item" onClick={() => navigate(`/hostels/${h._id}`)}>
+              <div className="fb-listing-ava">
+                {h.owner?.firstName?.[0]?.toUpperCase() || 'H'}
+                {h.availableRooms > 0 && <div className="fb-online-dot" />}
+              </div>
+              <div>
+                <div className="fb-listing-name">{h.name}</div>
+                <div className="fb-listing-price">MK {h.price?.toLocaleString()}/mo · {h.availableRooms} free</div>
+              </div>
+            </div>
+          ))}
+          <hr className="fb-right-divider" />
+          <div className="fb-right-footer">
+            <a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/help">Help</a><br />
+            © {new Date().getFullYear()} HostelLink MUBAS
+          </div>
+        </aside>
       </div>
+
+      {/* MOBILE BOTTOM NAV */}
+      <nav className="fb-bottom-nav">
+        <div className="fb-bottom-nav-inner">
+          {[
+            { icon: <FaHome />, label: 'Home', key: 'home', action: () => setActiveTab('home') },
+            { icon: <FaVideo />, label: 'Videos', key: 'videos', action: () => navigate('/videos') },
+            { icon: <FaBookmark />, label: 'Bookings', key: 'bookings', action: () => navigate('/bookings') },
+            { icon: <FaEnvelope />, label: 'Messages', key: 'messages', action: () => navigate('/messages'), badge: 12 },
+            { icon: <FaUser />, label: 'Profile', key: 'profile', action: () => navigate('/profile') },
+          ].map(tab => (
+            <button key={tab.key} className={`fb-bottom-tab${activeTab === tab.key ? ' active' : ''}`} onClick={tab.action}>
+              {tab.icon}
+              <span className="lbl">{tab.label}</span>
+              {tab.badge && <span className="fb-bottom-badge">{tab.badge}</span>}
+            </button>
+          ))}
+        </div>
+      </nav>
     </>
   );
 };
