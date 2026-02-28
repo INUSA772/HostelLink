@@ -9,7 +9,7 @@ import Login from '../pages/login';
 import Register from '../pages/register';
 import HostelListPage from '../pages/HostelListPage';
 import HostelDetailsPage from '../pages/HostelDetailsPage';
-import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/StudentDashboard';
 import ProfilePage from '../pages/ProfilePage';
 import MyBookings from '../pages/MyBookings';
 import MyHostels from '../pages/MyHostels';
@@ -38,14 +38,25 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
 
       {/* PROTECTED ROUTES */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+   {/* STUDENT DASHBOARD */}
+<Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={['student']}>
+      <StudentDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+{/* LANDLORD DASHBOARD */}
+<Route
+  path="/landlord-dashboard"
+  element={
+    <ProtectedRoute allowedRoles={['owner']}>
+      <LandlordDashboard />
+    </ProtectedRoute>
+  }
+/>
       <Route
         path="/profile"
         element={

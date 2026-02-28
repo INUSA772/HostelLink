@@ -25,13 +25,28 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // ✅ NEW: Get dashboard URL based on role
+  const getDashboardUrl = (userRole) => {
+    if (userRole === 'student') {
+      return '/dashboard';
+    } else if (userRole === 'owner') {
+      return '/landlord-dashboard';
+    }
+    return '/';
+  };
+
   // Login
   const login = async (credentials) => {
     try {
       const data = await authService.login(credentials);
       setUser(data.user);
       setIsAuthenticated(true);
-      return data;
+      
+      // ✅ NEW: Return dashboard URL along with data
+      return {
+        ...data,
+        dashboardUrl: getDashboardUrl(data.user.role)
+      };
     } catch (error) {
       throw error;
     }
@@ -43,7 +58,12 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.register(userData);
       setUser(data.user);
       setIsAuthenticated(true);
-      return data;
+      
+      // ✅ NEW: Return dashboard URL along with data
+      return {
+        ...data,
+        dashboardUrl: getDashboardUrl(data.user.role)
+      };
     } catch (error) {
       throw error;
     }
@@ -69,7 +89,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    updateUser
+    updateUser,
+    getDashboardUrl  // ✅ NEW: Export function for use in components
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

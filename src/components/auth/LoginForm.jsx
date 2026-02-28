@@ -258,6 +258,7 @@ const LoginForm = () => {
     }, 1200);
   };
 
+  // ✅ UPDATED: Get dashboardUrl from login response
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -269,9 +270,12 @@ const LoginForm = () => {
     setLoading(true);
 
     try {
-      await login(formData);
+      // ✅ NEW: login() now returns dashboardUrl based on role
+      const response = await login(formData);
       toast.success('Login successful!');
-      navigate('/dashboard');
+      
+      // ✅ NEW: Redirect to role-specific dashboard
+      navigate(response.dashboardUrl || '/dashboard');
     } catch (error) {
       toast.error(handleApiError(error));
     } finally {

@@ -5,7 +5,6 @@ import api from '../../services/api';
 import paymentService from '../../services/paymentService';
 import { useAuth } from '../../context/AuthContext';
 import PaymentModal from '../components/payment/PaymentModal';
-//import './HostelDetailsPage.css';
 
 /**
  * HostelDetailsPage Component
@@ -208,12 +207,6 @@ const HostelDetailsPage = () => {
               {hostel.location?.formattedAddress && (
                 <p className="formatted-address">{hostel.location.formattedAddress}</p>
               )}
-            </div>
-
-            {/* Contact */}
-            <div className="contact">
-              <h3>📞 Contact</h3>
-              <p>{hostel.contactPhone}</p>
             </div>
 
             {/* Room Availability */}

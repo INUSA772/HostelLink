@@ -232,7 +232,7 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
-  const { register, logout } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -243,6 +243,7 @@ const RegisterForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200);
   };
 
+  // ✅ UPDATED: Get dashboardUrl from register response
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!captchaChecked) { toast.error('Please verify you are not a robot!'); return; }
@@ -251,10 +252,16 @@ const RegisterForm = () => {
     setLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = formData;
-      await register(dataToSend);
-      logout();
-      toast.success('Registration successful! Please login to continue.');
-      navigate('/login');
+      
+      // ✅ NEW: register() now returns dashboardUrl based on role
+      const response = await register(dataToSend);
+      
+      toast.success('Registration successful! Redirecting to your dashboard...');
+      
+      // ✅ NEW: Redirect to role-specific dashboard
+      setTimeout(() => {
+        navigate(response.dashboardUrl || '/dashboard');
+      }, 500);
     } catch (error) {
       toast.error(handleApiError(error));
     } finally {
