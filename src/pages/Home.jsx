@@ -4,18 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const AREA_ICONS = [
-  "fa fa-bed",
-  "fa fa-home",
-  "fa fa-building",
-  "fa fa-users",
-  "fa fa-star",
-  "fa fa-map-marker-alt",
-  "fa fa-city",
-  "fa fa-flag",
-  "fa fa-map",
-];
-
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,31 +23,61 @@ const styles = `
   body { font-family: 'Manrope', sans-serif; color: var(--text-dark); background: #fff; }
   a { text-decoration: none; color: inherit; }
 
+  /* ── NAVBAR ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 2.5rem; height: 68px;
     background: rgba(13,27,62,0.96); backdrop-filter: blur(8px);
   }
-  .logo { display: flex; align-items: center; gap: 10px; color: white; cursor: pointer; }
-  .logo-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .logo-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .logo {
+    display: flex; align-items: center; gap: 10px; color: white;
+    cursor: pointer; background: none; border: none; padding: 0;
+  }
+  .logo-icon { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
   .logo-text strong { display: block; font-size: 1rem; font-weight: 800; letter-spacing: 1px; color: white; }
   .logo-text span { font-size: 0.65rem; opacity: 0.7; letter-spacing: 0.5px; color: white; }
 
-  .nav-actions { display: flex; align-items: center; gap: 1rem; }
-  .nav-actions a { color: rgba(255,255,255,0.8); font-size: 0.9rem; text-decoration: none; }
-  .btn-add {
-    background: var(--orange); color: white; border: none; cursor: pointer;
-    padding: 0.5rem 1.1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
-    display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; text-decoration: none;
-  }
-  .btn-add:hover { opacity: 0.9; }
+  .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
 
+  .nav-login {
+    color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 600;
+    text-decoration: none; display: flex; align-items: center; gap: 5px;
+    padding: 0.4rem 0.9rem; border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,0.25); transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-login:hover { border-color: rgba(255,255,255,0.6); color: white; }
+
+  .nav-signup {
+    background: var(--orange); color: white; border: none; cursor: pointer;
+    padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700;
+    display: flex; align-items: center; gap: 5px; transition: opacity 0.2s;
+    text-decoration: none; white-space: nowrap;
+  }
+  .nav-signup:hover { opacity: 0.88; }
+
+  /* Hide text labels on very small screens, show only icons */
+  @media (max-width: 400px) {
+    nav { padding: 0 0.8rem; }
+    .logo-text { display: none; }
+    .nav-login-text { display: none; }
+    .nav-signup-text { display: none; }
+    .nav-login { padding: 0.4rem 0.6rem; }
+    .nav-signup { padding: 0.45rem 0.6rem; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .logo-text span { display: none; }
+  }
+
+  /* ── HERO ── */
   .hero {
     position: relative; min-height: 100vh; overflow: hidden;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding-bottom: 3rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 6rem 1.5rem 4rem;
+    text-align: center;
   }
   .hero-bg {
     position: absolute; inset: 0;
@@ -69,120 +87,119 @@ const styles = `
     content: '';
     position: absolute; inset: 0;
     background: url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1400&auto=format&fit=crop') center/cover no-repeat;
-    opacity: 0.22;
+    opacity: 0.18;
   }
   .hero-content {
     position: relative; z-index: 2;
-    max-width: 700px; padding: 0 3rem; margin-top: 6rem;
+    max-width: 680px; width: 100%;
   }
   .hero-content h1 {
-    color: white; font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 800;
-    line-height: 1.15; margin-bottom: 1rem;
+    color: white; font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1.2rem;
   }
   .hero-content h1 span { color: #facc15; }
-  .hero-content p { color: rgba(255,255,255,0.8); font-size: 1.05rem; max-width: 520px; margin-bottom: 2rem; }
+  .hero-content p {
+    color: rgba(255,255,255,0.82); font-size: clamp(0.95rem, 2vw, 1.1rem);
+    margin-bottom: 2.5rem; line-height: 1.7;
+  }
 
-  .search-bar {
-    display: flex; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap;
-    background: white; border-radius: 12px; padding: 1.2rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-bottom: 1.5rem;
+  /* CTA buttons in hero */
+  .hero-btns {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
   }
-  .search-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
-  .search-field label { font-size: 0.7rem; color: #9ca3af; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
-  .search-field input, .search-field select {
-    border: none; outline: none; font-size: 0.9rem; font-family: inherit;
-    color: var(--text-dark); font-weight: 500; background: transparent;
-    border-bottom: 1.5px solid #e5e7eb; padding-bottom: 4px;
-  }
-  .search-divider { width: 1px; height: 40px; background: #e5e7eb; align-self: flex-end; }
-  .btn-search {
+  .hero-btn-primary {
     background: var(--orange); color: white; border: none; cursor: pointer;
-    padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700;
-    display: flex; align-items: center; gap: 7px; white-space: nowrap; transition: opacity 0.2s;
+    padding: 0.85rem 2rem; border-radius: 10px; font-size: 1rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
+    text-decoration: none;
   }
-  .btn-search:hover { opacity: 0.9; }
-
-  .quick-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .quick-link {
-    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9);
-    padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.82rem; font-weight: 500;
-    display: flex; align-items: center; gap: 6px; cursor: pointer; transition: background 0.2s;
-    border: none;
+  .hero-btn-primary:hover { opacity: 0.9; }
+  .hero-btn-ghost {
+    background: rgba(255,255,255,0.12); color: white;
+    border: 1.5px solid rgba(255,255,255,0.35); cursor: pointer;
+    padding: 0.85rem 2rem; border-radius: 10px; font-size: 1rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+    text-decoration: none;
   }
-  .quick-link:hover { background: rgba(255,255,255,0.22); }
+  .hero-btn-ghost:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
 
+  /* Hero stats */
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: #facc15; }
+  .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+
+  /* ── SECTIONS ── */
   .section-label { font-size: 0.8rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; text-align: center; }
   .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; text-align: center; color: var(--navy); }
   .section-title em { font-style: normal; color: var(--orange); }
 
-  .explore-section { background: var(--navy); padding: 4rem 2rem; }
-  .explore-section .section-label, .explore-section .section-title { color: white; }
+  /* ── EXPLORE SECTION ── */
+  .explore-section { background: var(--navy); padding: 5rem 1.5rem; }
+  .explore-section .section-label { color: rgba(255,255,255,0.6); }
+  .explore-section .section-title { color: white; }
   .explore-section .section-title em { color: var(--orange); }
 
   .types-grid {
-    display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;
-    margin-top: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  /* THE FIX: make cards clearly readable */
   .type-card {
-    background: rgba(255,255,255,0.10);
-    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
     border-radius: var(--card-radius);
-    padding: 1.8rem 1.5rem;
+    padding: 1.8rem 1rem;
     text-align: center;
-    flex: 1;
-    min-width: 160px;
-    max-width: 200px;
     cursor: pointer;
     transition: all 0.25s;
     color: white;
+    width: 100%;
   }
   .type-card:hover {
     background: var(--orange);
     border-color: var(--orange);
-    transform: translateY(-6px);
+    transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(232,80,26,0.35);
   }
   .type-card i {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     margin-bottom: 0.75rem;
     display: block;
     color: var(--orange);
     transition: color 0.25s;
   }
   .type-card:hover i { color: white; }
-
-  /* AREA NAME — big, bold, white, fully visible */
   .type-card h4 {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 800;
     color: #ffffff;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.3px;
     text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   }
-
-  /* HOSTEL COUNT — orange pill badge */
   .type-card .area-count {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    color: #ffffff;
-    background: rgba(232,80,26,0.75);
+    color: #fff;
+    background: rgba(232,80,26,0.8);
     border-radius: 20px;
-    padding: 3px 12px;
-    margin-top: 4px;
+    padding: 3px 10px;
   }
-  .type-card:hover .area-count {
-    background: rgba(255,255,255,0.25);
-  }
+  .type-card:hover .area-count { background: rgba(255,255,255,0.25); }
 
   .type-card-skeleton {
     background: rgba(255,255,255,0.05);
     border: 1.5px solid rgba(255,255,255,0.08);
-    border-radius: var(--card-radius); padding: 1.8rem 1.5rem; text-align: center;
-    flex: 1; min-width: 160px; max-width: 200px;
+    border-radius: var(--card-radius); padding: 1.8rem 1rem;
     animation: pulse 1.4s ease-in-out infinite;
   }
   .skeleton-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); margin: 0 auto 0.8rem; }
@@ -191,12 +208,15 @@ const styles = `
   .skeleton-line.shorter { width: 45%; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  .explore-empty { color: rgba(255,255,255,0.55); text-align: center; padding: 2rem; font-size: 0.95rem; width: 100%; }
-  .explore-empty a { color: var(--orange); }
-
-  .locations-section { background: var(--navy); padding: 5rem 2rem; }
+  /* ── LOCATIONS ── */
+  .locations-section { background: #0a1630; padding: 5rem 1.5rem; }
   .locations-section .section-title { color: white; }
-  .locations-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 220px 220px; gap: 1rem; max-width: 1100px; margin: 2.5rem auto 0; }
+  .locations-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 220px 220px;
+    gap: 1rem; max-width: 1100px; margin: 2.5rem auto 0;
+  }
   .loc-card { border-radius: var(--card-radius); overflow: hidden; position: relative; cursor: pointer; border: none; background: transparent; padding: 0; }
   .loc-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
   .loc-card:hover img { transform: scale(1.05); }
@@ -206,7 +226,8 @@ const styles = `
   .loc-overlay h4 { color: white; font-size: 1rem; font-weight: 700; }
   .loc-overlay p { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
 
-  .dual-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+  /* ── DUAL CARDS ── */
+  .dual-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
   .dual-card { background: white; padding: 2.5rem; border-radius: var(--card-radius); text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.07); transition: 0.3s ease; }
   .dual-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
   .dual-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -217,16 +238,18 @@ const styles = `
   .btn-outline { border: 2px solid var(--navy); color: var(--navy); background: transparent; padding: 0.55rem 1.4rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
   .btn-outline:hover { background: var(--navy); color: white; }
 
-  .features-section { padding: 5rem 2rem; background: var(--gray-bg); text-align: center; }
-  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 3rem auto 0; }
+  /* ── FEATURES ── */
+  .features-section { padding: 5rem 1.5rem; background: var(--gray-bg); text-align: center; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 3rem auto 0; }
   .feature-card { background: white; padding: 2rem; border-radius: var(--card-radius); box-shadow: 0 6px 20px rgba(0,0,0,0.06); transition: 0.3s; }
   .feature-card:hover { transform: translateY(-6px); }
   .feature-icon { font-size: 2rem; color: var(--blue); margin-bottom: 1rem; }
   .feature-card h4 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
   .feature-card p { font-size: 0.85rem; color: var(--text-mid); line-height: 1.6; }
 
-  .cta-section { background: linear-gradient(135deg, #0d1b3e 0%, #1a3fa4 100%); color: white; text-align: center; padding: 5rem 2rem; }
-  .cta-section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 0.75rem; color: white; }
+  /* ── CTA ── */
+  .cta-section { background: linear-gradient(135deg, #0d1b3e 0%, #1a3fa4 100%); color: white; text-align: center; padding: 5rem 1.5rem; }
+  .cta-section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; margin-bottom: 0.75rem; color: white; }
   .cta-section p { opacity: 0.85; margin-bottom: 2rem; font-size: 1rem; color: white; }
   .btn-primary {
     background: var(--orange); color: white; border: none; cursor: pointer;
@@ -235,16 +258,56 @@ const styles = `
   }
   .btn-primary:hover { opacity: 0.9; }
 
+  /* ── FOOTER ── */
+  footer {
+    background: #070f24;
+    color: rgba(255,255,255,0.55);
+    padding: 3rem 1.5rem 1.5rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+  }
+  .footer-brand strong { color: white; font-size: 1rem; font-weight: 800; letter-spacing: 1px; display: block; margin-bottom: 0.5rem; }
+  .footer-brand p { font-size: 0.83rem; line-height: 1.7; color: rgba(255,255,255,0.45); max-width: 260px; }
+  .footer-col h5 { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+  .footer-col a { display: block; color: rgba(255,255,255,0.45); font-size: 0.83rem; margin-bottom: 0.5rem; text-decoration: none; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--orange); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1.2rem;
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
-    nav { padding: 0 1rem; }
-    .hero-content { padding: 0 1.5rem; }
-    .search-bar { flex-direction: column; }
-    .search-divider { display: none; }
     .locations-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .loc-card.big { grid-row: auto; }
-    .types-grid { gap: 0.8rem; }
-    .type-card { min-width: 130px; padding: 1.4rem 1rem; }
-    .type-card h4 { font-size: 0.92rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-brand p { max-width: 100%; }
+  }
+
+  @media (max-width: 520px) {
+    .hero-btns { flex-direction: column; align-items: center; }
+    .hero-btn-primary, .hero-btn-ghost { width: 100%; max-width: 300px; justify-content: center; }
+    .hero-stats { gap: 1.5rem; }
+    .types-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .type-card { padding: 1.4rem 0.75rem; }
+    .type-card h4 { font-size: 0.88rem; }
+    .locations-grid { grid-template-columns: 1fr; }
+    .loc-card.big { grid-row: auto; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .dual-section { padding: 3rem 1rem; }
+    .features-section { padding: 3rem 1rem; }
+    .cta-section { padding: 3rem 1rem; }
   }
 `;
 
@@ -264,7 +327,7 @@ function Navbar({ isAuthenticated, user }) {
   const navigate = useNavigate();
   return (
     <nav>
-      <button onClick={() => navigate('/')} className="logo" style={{ background: 'none', border: 'none', padding: 0 }}>
+      <button onClick={() => navigate('/')} className="logo">
         <div className="logo-icon"><img src="/logo2.png" alt="HostelLink" /></div>
         <div className="logo-text">
           <strong>HOSTELLINK</strong>
@@ -274,13 +337,25 @@ function Navbar({ isAuthenticated, user }) {
       <div className="nav-actions">
         {isAuthenticated ? (
           <>
-            <a href="/profile"><i className="fa fa-user" /> {user?.firstName}</a>
-            <a href="/dashboard" className="btn-add"><i className="fa fa-th-large" /> Dashboard</a>
+            <a href="/profile" className="nav-login">
+              <i className="fa fa-user" />
+              <span className="nav-login-text">{user?.firstName}</span>
+            </a>
+            <a href="/dashboard" className="nav-signup">
+              <i className="fa fa-th-large" />
+              <span className="nav-signup-text"> Dashboard</span>
+            </a>
           </>
         ) : (
           <>
-            <a href="/login"><i className="fa fa-sign-in-alt" /> Login</a>
-            <a href="/register" className="btn-add"><i className="fa fa-user-plus" /> Sign Up</a>
+            <a href="/login" className="nav-login">
+              <i className="fa fa-sign-in-alt" />
+              <span className="nav-login-text"> Login</span>
+            </a>
+            <a href="/register" className="nav-signup">
+              <i className="fa fa-user-plus" />
+              <span className="nav-signup-text"> Sign Up</span>
+            </a>
           </>
         )}
       </div>
@@ -290,44 +365,33 @@ function Navbar({ isAuthenticated, user }) {
 
 function Hero({ isAuthenticated }) {
   const navigate = useNavigate();
-  const handleSearch = () => navigate(isAuthenticated ? '/hostels' : '/login');
   return (
     <section className="hero">
       <div className="hero-bg" />
       <div className="hero-content">
         <h1>Find Safe & Affordable <span>Hostels Near MUBAS.</span></h1>
         <p>The smartest way for students to find accommodation and for hostel owners to connect with verified tenants.</p>
-        <div className="search-bar">
-          <div className="search-field">
-            <label>Keyword</label>
-            <input type="text" placeholder="Looking For?" />
-          </div>
-          <div className="search-divider" />
-          <div className="search-field">
-            <label>Category</label>
-            <select>
-              <option>All Categories</option>
-              <option>General</option>
-              <option>Girls Hostels</option>
-              <option>Boys Hostels</option>
-            </select>
-          </div>
-          <div className="search-divider" />
-          <div className="search-field">
-            <label>Location</label>
-            <select>
-              <option>All Locations</option>
-              {AREA_DEFINITIONS.map(a => <option key={a.label}>{a.label}</option>)}
-            </select>
-          </div>
-          <button className="btn-search" onClick={handleSearch}>
-            <i className="fa fa-search" /> Search
-          </button>
+        <div className="hero-btns">
+          <a href="/register" className="hero-btn-primary">
+            <i className="fa fa-search" /> Find a Hostel
+          </a>
+          <a href="/register" className="hero-btn-ghost">
+            <i className="fa fa-building" /> List Your Hostel
+          </a>
         </div>
-        <div className="quick-links">
-          <button className="quick-link" onClick={handleSearch}><i className="fa fa-arrow-right" /> Shared Rooms</button>
-          <button className="quick-link" onClick={handleSearch}><i className="fa fa-arrow-right" /> Self-Contain</button>
-          <button className="quick-link" onClick={handleSearch}><i className="fa fa-arrow-right" /> Near Campus</button>
+        <div className="hero-stats">
+          <div className="hero-stat">
+            <strong>200+</strong>
+            <span>Students Housed</span>
+          </div>
+          <div className="hero-stat">
+            <strong>50+</strong>
+            <span>Listed Hostels</span>
+          </div>
+          <div className="hero-stat">
+            <strong>9</strong>
+            <span>Areas Covered</span>
+          </div>
         </div>
       </div>
     </section>
@@ -476,6 +540,37 @@ function FeaturesSection() {
   );
 }
 
+function Footer() {
+  return (
+    <footer>
+      <div className="footer-grid">
+        <div className="footer-brand">
+          <strong>🏠 HOSTELLINK</strong>
+          <p>The smartest way for MUBAS students to find off-campus accommodation and for owners to connect with verified tenants.</p>
+        </div>
+        <div className="footer-col">
+          <h5>Quick Links</h5>
+          <a href="/register">Find a Hostel</a>
+          <a href="/register">List Your Hostel</a>
+          <a href="/login">Login</a>
+          <a href="/register">Sign Up</a>
+        </div>
+        <div className="footer-col">
+          <h5>Areas</h5>
+          <a href="/register">Chitawira</a>
+          <a href="/register">Chichiri</a>
+          <a href="/register">Mandala</a>
+          <a href="/register">Queens</a>
+          <a href="/register">Nkolokosa</a>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        © {new Date().getFullYear()} HostelLink · Built for MUBAS Students
+      </div>
+    </footer>
+  );
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
@@ -501,6 +596,7 @@ export default function Home() {
         <p>Join the growing MUBAS accommodation network today.</p>
         <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
+      <Footer />
     </>
   );
 }
