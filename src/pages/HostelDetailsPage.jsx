@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
@@ -148,19 +148,23 @@ const styles = `
   .book-rooms-badge { background: rgba(16,185,129,0.12); color: var(--success); font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 20px; }
   .book-btn { width: 100%; padding: 0.85rem; background: var(--orange); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; font-family: 'Manrope', sans-serif; }
   .book-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .book-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .book-divider { border: none; border-top: 1px solid var(--gray-light); margin: 1rem 0; }
   .book-info-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem; }
   .book-info-row span { color: var(--text-mid); }
   .book-info-row strong { color: var(--text-dark); text-transform: capitalize; }
 
-  /* MAP */
+  /* MAP - GOOGLE MAPS INTEGRATION */
   .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; }
   .map-box { 
-    width: 100%; height: 250px; border-radius: 10px; overflow: hidden;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 100%; height: 320px; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .map-box.loading {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.9rem; text-align: center; flex-direction: column; gap: 0.5rem;
+    color: #6b7280; font-size: 0.9rem;
   }
   .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
   .map-address i { color: var(--orange); margin-top: 2px; }
@@ -196,6 +200,11 @@ const styles = `
   }
   .booking-form-container.open {
     display: block;
+    animation: slideIn 0.3s ease-out;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .booking-form-container h3 {
     font-size: 1.1rem;
@@ -215,17 +224,20 @@ const styles = `
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
-  .form-group input {
+  .form-group input, .form-group select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--gray-light);
+    border: 1.5px solid var(--gray-light);
     border-radius: 8px;
     font-size: 0.95rem;
     font-family: 'Manrope', sans-serif;
+    background: #fafafa;
+    transition: all 0.2s;
   }
-  .form-group input:focus {
+  .form-group input:focus, .form-group select:focus {
     outline: none;
     border-color: var(--orange);
+    background: var(--white);
     box-shadow: 0 0 0 3px rgba(232,80,26,0.1);
   }
   .price-breakdown {
@@ -245,6 +257,7 @@ const styles = `
   }
   .price-row strong {
     color: var(--text-dark);
+    font-weight: 600;
   }
   .price-row.total {
     border-top: 1px solid var(--gray-light);
@@ -255,6 +268,23 @@ const styles = `
   }
   .price-row.total strong {
     color: var(--orange);
+  }
+
+  /* SUCCESS MESSAGE */
+  .success-message {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid #10b981;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #059669;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .success-message i {
+    font-size: 1.2rem;
   }
 
   @media (max-width: 960px) {
@@ -268,6 +298,7 @@ const styles = `
     .detail-grid { grid-template-columns: 1fr; }
     .amenities-grid { grid-template-columns: 1fr; }
     .thumb-row { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
+    .map-box { height: 250px; }
   }
 `;
 
@@ -293,6 +324,78 @@ const MOCK_REVIEWS = [
   { name: 'Mercy Tembo', date: '2 months ago', stars: 5, text: 'Best hostel I have stayed in near campus. Security is excellent and the rooms are spacious.' },
 ];
 
+// ✅ Google Maps Component
+const GoogleMap = ({ address, coordinates, hostelName }) => {
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    // Load Google Maps script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY_HERE'}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = initMap;
+    document.head.appendChild(script);
+
+    const initMap = () => {
+      if (!mapContainerRef.current || !window.google) return;
+
+      // Default coordinates (Lilongwe, Malawi) if not provided
+      const defaultLat = -13.9626;
+      const defaultLng = 34.3015;
+
+      const location = coordinates && coordinates.length === 2
+        ? { lat: coordinates[1], lng: coordinates[0] }
+        : { lat: defaultLat, lng: defaultLng };
+
+      mapRef.current = new window.google.maps.Map(mapContainerRef.current, {
+        zoom: 15,
+        center: location,
+        mapTypeControl: true,
+        fullscreenControl: true,
+        streetViewControl: true,
+      });
+
+      // Add marker
+      new window.google.maps.Marker({
+        position: location,
+        map: mapRef.current,
+        title: hostelName,
+        animation: window.google.maps.Animation.DROP,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+      });
+
+      // Add info window
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: `<div style="color:#000; padding:8px; font-weight:600; font-size:0.85rem;">
+          <strong>${hostelName}</strong><br>
+          <i class="fa fa-map-marker-alt" style="color:#e8501a;"></i> ${address}
+        </div>`,
+      });
+
+      const marker = new window.google.maps.Marker({
+        position: location,
+        map: mapRef.current,
+        title: hostelName,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.open(mapRef.current, marker);
+      });
+    };
+
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, [address, coordinates, hostelName]);
+
+  return <div ref={mapContainerRef} className="map-box" />;
+};
+
 export default function HostelDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -304,6 +407,7 @@ export default function HostelDetailsPage() {
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [booking, setBooking] = useState(null);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingData, setBookingData] = useState({
     checkInDate: '',
     duration: 1,
@@ -377,7 +481,7 @@ export default function HostelDetailsPage() {
     }
   };
 
-  // ✅ NEW: Handle booking creation with payment
+  // ✅ FIXED: Handle booking creation with proper error handling
   const handleCreateBooking = async (e) => {
     e.preventDefault();
 
@@ -400,26 +504,44 @@ export default function HostelDetailsPage() {
     setBookingLoading(true);
 
     try {
+      // ✅ Create booking
       const response = await bookingService.createBooking({
         hostelId: id,
         checkInDate: new Date(bookingData.checkInDate),
         duration: parseInt(bookingData.duration),
       });
 
-      setBooking(response.booking);
-      setShowBookingForm(false);
-      setShowPaymentModal(true);
-      toast.success('Booking created! Proceed to payment');
+      if (response && response.booking) {
+        setBooking(response.booking);
+        setBookingSuccess(true);
+        toast.success('✅ Booking created successfully! Proceeding to payment...');
+        
+        // Show success message for 2 seconds then open payment modal
+        setTimeout(() => {
+          setBookingSuccess(false);
+          setShowPaymentModal(true);
+        }, 2000);
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to create booking');
+      console.error('Booking error:', error);
+      toast.error(error.response?.data?.message || error.message || 'Failed to create booking');
+      setBookingSuccess(false);
     } finally {
       setBookingLoading(false);
     }
   };
 
-  // ✅ NEW: Calculate total price with payment fee
+  // ✅ FIXED: Calculate total price with payment fee
   const calculatePrice = () => {
-    return paymentService.calculateTotal(currentHostel.price * bookingData.duration);
+    const basePrice = currentHostel.price * bookingData.duration;
+    const platformFee = 2000; // Fixed fee
+    return {
+      basePrice,
+      platformFee,
+      totalAmount: basePrice + platformFee,
+    };
   };
 
   const priceBreakdown = bookingData.duration > 0 ? calculatePrice() : null;
@@ -429,8 +551,17 @@ export default function HostelDetailsPage() {
     setShowPaymentModal(false);
     setShowBookingForm(false);
     setBookingData({ checkInDate: '', duration: 1 });
-    toast.success('Payment successful! Booking confirmed.');
+    setBooking(null);
+    toast.success('🎉 Payment successful! Your booking is confirmed.');
     setTimeout(() => navigate('/bookings'), 1500);
+  };
+
+  // ✅ NEW: Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-MW', {
+      style: 'currency',
+      currency: 'MWK',
+    }).format(amount);
   };
 
   return (
@@ -588,21 +719,14 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
-          {/* MAP */}
+          {/* ✅ GOOGLE MAP - FACEBOOK MARKETPLACE STYLE */}
           <div className="map-card">
-            <h3><i className="fa fa-map-marked-alt" style={{color:'var(--orange)', marginRight:'0.4rem'}} /> Location</h3>
-            <div className="map-box">
-              <i className="fa fa-map-marker-alt" style={{fontSize:'2.5rem', opacity:0.7}} />
-              <div>
-                <div style={{fontWeight:700, fontSize:'1rem'}}>{currentHostel.address}</div>
-                {currentHostel.location?.coordinates && (
-                  <div style={{fontSize:'0.78rem', opacity:0.7, marginTop:'0.3rem'}}>
-                    {currentHostel.location.coordinates[1].toFixed(4)}, {currentHostel.location.coordinates[0].toFixed(4)}
-                  </div>
-                )}
-                <div style={{fontSize:'0.75rem', opacity:0.55, marginTop:'0.25rem'}}>Map integration coming soon</div>
-              </div>
-            </div>
+            <h3><i className="fa fa-map" style={{color:'var(--orange)', marginRight:'0.4rem'}} /> Location</h3>
+            <GoogleMap
+              address={currentHostel.address}
+              coordinates={currentHostel.location?.coordinates}
+              hostelName={currentHostel.name}
+            />
             <div className="map-address">
               <i className="fa fa-map-marker-alt" />
               <span>{currentHostel.address}</span>
@@ -651,9 +775,16 @@ export default function HostelDetailsPage() {
             <div className="book-info-row"><span>Status</span><strong style={{color: currentHostel.verified ? '#10b981' : '#6b7280'}}>{currentHostel.verified ? '✓ Verified' : 'Unverified'}</strong></div>
           </div>
 
-          {/* ✅ NEW: BOOKING FORM */}
+          {/* ✅ FIXED: BOOKING FORM WITH SUCCESS MESSAGE */}
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
             <h3>📅 Book This Hostel</h3>
+            
+            {bookingSuccess && (
+              <div className="success-message">
+                <i className="fa fa-check-circle" />
+                <span>Booking created! Processing payment...</span>
+              </div>
+            )}
             
             <div className="form-group">
               <label>Check-in Date *</label>
@@ -677,28 +808,32 @@ export default function HostelDetailsPage() {
               />
             </div>
 
-            {/* ✅ NEW: PRICE BREAKDOWN */}
+            {/* ✅ FIXED: PRICE BREAKDOWN */}
             {priceBreakdown && (
               <div className="price-breakdown">
                 <div className="price-row">
-                  <span>Room Rent ({bookingData.duration}m):</span>
-                  <strong>{paymentService.formatCurrency(currentHostel.price * bookingData.duration)}</strong>
+                  <span>Room Rent ({bookingData.duration}m @ MK {currentHostel.price.toLocaleString()}):</span>
+                  <strong>{formatCurrency(priceBreakdown.basePrice)}</strong>
                 </div>
                 <div className="price-row">
                   <span>Platform Fee:</span>
-                  <strong>{paymentService.formatCurrency(2000)}</strong>
+                  <strong>{formatCurrency(priceBreakdown.platformFee)}</strong>
                 </div>
                 <div className="price-row total">
                   <span>Total to Pay:</span>
-                  <strong>{paymentService.formatCurrency(priceBreakdown.totalAmount)}</strong>
+                  <strong>{formatCurrency(priceBreakdown.totalAmount)}</strong>
                 </div>
               </div>
             )}
 
-            <button type="submit" className="book-btn" disabled={bookingLoading} style={{marginTop: '0.5rem'}}>
+            <button type="submit" className="book-btn" disabled={bookingLoading || bookingSuccess} style={{marginTop: '0.5rem'}}>
               {bookingLoading ? (
                 <>
                   <i className="fa fa-spinner fa-spin" /> Creating Booking...
+                </>
+              ) : bookingSuccess ? (
+                <>
+                  <i className="fa fa-check" /> Booking Created!
                 </>
               ) : (
                 <>
@@ -708,8 +843,8 @@ export default function HostelDetailsPage() {
             </button>
           </form>
 
-          {/* ✅ NEW: PAYMENT MODAL */}
-          {booking && (
+          {/* ✅ FIXED: PAYMENT MODAL */}
+          {booking && showPaymentModal && (
             <PaymentModal
               booking={booking}
               hostel={currentHostel}
@@ -718,6 +853,7 @@ export default function HostelDetailsPage() {
                 setShowPaymentModal(false);
                 setShowBookingForm(false);
                 setBookingData({ checkInDate: '', duration: 1 });
+                setBooking(null);
               }}
               onSuccess={handlePaymentSuccess}
             />
