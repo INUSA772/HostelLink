@@ -26,14 +26,13 @@ app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'API is working correctly!' });
 });
 
-// ─── Routes ──────────────────────────────────────────────────
-app.use('/api/auth',     require('./routes/authRoutes'));
-app.use('/api/hostels',  require('./routes/hostelRoutes'));
-//app.use('/api/users',    require('./routes/userRoutes'));
-//app.use('/api/bookings', require('./routes/bookingRoutes'));
-//app.use('/api/payments', require('./routes/paymentRoutes'));  // ← THIS was missing
-//app.use('/api/reviews',  require('./routes/reviewRoutes'));
-
+// Route imports
+const authRoutes = require('./routes/authRoutes');
+const hostelRoutes = require('./routes/hostelRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const userRoutes = require('./routes/userRoutes');
 // ─── Global error handler ────────────────────────────────────
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
