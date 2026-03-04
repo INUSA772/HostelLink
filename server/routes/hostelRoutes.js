@@ -1,34 +1,40 @@
 const express = require('express');
 const router = express.Router();
-const {
-  getHostels,
-  getHostelById,
-  createHostel,
-  updateHostel,
-  deleteHostel,
-  getOwnerHostels,
-  getNearbyHostels
-} = require('../controllers/hostelController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
-// Public routes
-router.get('/', getHostels);
-router.get('/nearby', getNearbyHostels);
-router.get('/:id', getHostelById);
+// ✅ Import controller - using the ACTUAL function names you have
+const hostelController = require('../controllers/hostelController');
 
-// Protected routes - Owner only
-router.post('/', protect, authorize('owner'), createHostel);
-router.put('/:id', protect, authorize('owner'), updateHostel);
-router.delete('/:id', protect, authorize('owner'), deleteHostel);
-router.get('/owner/my-hostels', protect, authorize('owner'), getOwnerHostels);
+// ═══════════════════════════════════════════════════════════════
+// PUBLIC ROUTES (NO AUTH REQUIRED)
+// ═══════════════════════════════════════════════════════════════
 
-router.get('/', getHostels);
-router.get('/my-hostels', protect, authorize('landlord', 'admin'), getMyHostels);
-router.get('/:id', getHostel);
-router.get('/:id/availability', getHostelAvailability);
-router.post('/', protect, authorize('landlord', 'admin'), createHostel);
-router.put('/:id', protect, authorize('landlord', 'admin'), updateHostel);
-router.delete('/:id', protect, authorize('landlord', 'admin'), deleteHostel);
+// Get all hostels
+router.get('/', hostelController.getHostels);
+
+// Get nearby hostels
+router.get('/nearby', hostelController.getNearbyHostels);
+
+// Get single hostel by ID
+router.get('/:id', hostelController.getHostel);
+
+// Get hostel availability
+router.get('/:id/availability', hostelController.getHostelAvailability);
+
+// ═══════════════════════════════════════════════════════════════
+// PROTECTED ROUTES (AUTH REQUIRED - OWNER/LANDLORD ONLY)
+// ═══════════════════════════════════════════════════════════════
+
+// Create new hostel
+router.post('/', protect, authorize(['owner', 'landlord']), hostelController.createHostel);
+
+// Update hostel
+router.put('/:id', protect, authorize(['owner', 'landlord']), hostelController.updateHostel);
+
+// Delete hostel
+router.delete('/:id', protect, authorize(['owner', 'landlord']), hostelController.deleteHostel);
+
+// Get user's hostels
+router.get('/my-hostels/all', protect, authorize(['owner', 'landlord']), hostelController.getMyHostels);
 
 module.exports = router;
-
