@@ -565,7 +565,7 @@ export default function Home() {
         <p>Join the growing MUBAS accommodation network today.</p>
         <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
-      <Footer />
+   
     </>
   );
 }
