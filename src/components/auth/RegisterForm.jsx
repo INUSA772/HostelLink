@@ -20,10 +20,10 @@ const styles = `
   }
 
   /* Lock entire page — zero scroll */
-  html, body, #root {
+ html, body, #root {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow: auto;
     font-family: 'Manrope', sans-serif;
   }
 
