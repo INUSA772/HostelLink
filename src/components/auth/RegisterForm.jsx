@@ -277,9 +277,9 @@ const RegisterForm = () => {
       {/* ── TOPBAR ── */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/logo2.png" alt="HostelLink" /></div>
+          <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="HostelLink" /></div>
           <div className="rp-bar-brand">
-            <strong>HOSTELLINK</strong>
+          
             <span>OFF-CAMPUS ACCOMODATION</span>
           </div>
         </Link>

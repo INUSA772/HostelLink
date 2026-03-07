@@ -209,7 +209,8 @@ const Footer = () => {
           <div className="footer-content">
             {/* About Section */}
             <div className="footer-section">
-              <h3>🏠 HostelLink</h3>
+       <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /><h3>PezaHostel</h3> 
+       </div>
               <p>
                 Making it easy for MUBAS students to find quality accommodation near campus. 
                 Connect directly with hostel owners and find your perfect home away from home.
@@ -288,7 +289,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <FaPhone />
-                  +265 986584136
+                  +265 920 943 91
                 </li>
                 <li>
                   <FaEnvelope />
@@ -321,7 +322,7 @@ const Footer = () => {
                 Powered by <strong>ForjiTech</strong> • Connecting Students to Quality Accommodation
               </p>
               <p className="footer-copyright">
-                &copy; {currentYear} HostelLink. All rights reserved.
+                &copy; {currentYear} PezaHostel. All rights reserved.
               </p>
             </div>
           </div>

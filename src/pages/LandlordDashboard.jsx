@@ -634,8 +634,8 @@ const LandlordDashboard = () => {
         <div className="ld-topbar-left">
           <button className="ld-hamburger" onClick={() => setDrawerOpen(true)}><FaBars /></button>
           <a href="/" className="ld-logo">
-            <div className="ld-logo-mark"><FaHome /></div>
-            <span className="ld-logo-name">HostelLink</span>
+               <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+            <span className="ld-logo-name">PezaHostel</span>
             <span className="ld-logo-badge">Owner</span>
           </a>
         </div>

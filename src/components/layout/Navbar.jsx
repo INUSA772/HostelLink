@@ -46,7 +46,7 @@ const Navbar = () => {
           color: 'var(--primary-color)',
           textDecoration: 'none'
         }}>
-          HostelLink
+          PezaHostel
         </Link>
 
         {/* Desktop Menu */}
