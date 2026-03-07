@@ -540,37 +540,6 @@ function FeaturesSection() {
   );
 }
 
-function Footer() {
-  return (
-    <footer>
-      <div className="footer-grid">
-        <div className="footer-brand">
-          <strong>🏠 HOSTELLINK</strong>
-          <p>The smartest way for MUBAS students to find off-campus accommodation and for owners to connect with verified tenants.</p>
-        </div>
-        <div className="footer-col">
-          <h5>Quick Links</h5>
-          <a href="/register">Find a Hostel</a>
-          <a href="/register">List Your Hostel</a>
-          <a href="/login">Login</a>
-          <a href="/register">Sign Up</a>
-        </div>
-        <div className="footer-col">
-          <h5>Areas</h5>
-          <a href="/register">Chitawira</a>
-          <a href="/register">Chichiri</a>
-          <a href="/register">Mandala</a>
-          <a href="/register">Queens</a>
-          <a href="/register">Nkolokosa</a>
-        </div>
-      </div>
-      <div className="footer-bottom">
-        © {new Date().getFullYear()} HostelLink · Built for MUBAS Students
-      </div>
-    </footer>
-  );
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated, user, loading } = useAuth();
