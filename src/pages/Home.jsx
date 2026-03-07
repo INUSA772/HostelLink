@@ -20,7 +20,7 @@ const styles = `
     --card-radius: 14px;
   }
 
-  body { font-family: 'Manrope', sans-serif; color: var(--text-dark); background: #fff; }
+  body { font-family: 'Manrope', sans-serif; color: var(--text-dark); background: #fff; overflow: auto !important;}
   a { text-decoration: none; color: inherit; }
 
   /* ── NAVBAR ── */
