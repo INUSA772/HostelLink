@@ -209,7 +209,7 @@ const Footer = () => {
           <div className="footer-content">
             {/* About Section */}
             <div className="footer-section">
-       <div className="logo-icon"><img src="/PezaHostelLogo.png" style={{ fontSize: '0.8rem' }}alt="PezaHostel" /><h3>PezaHostel</h3> 
+       <div><h3>PezaHostel</h3> 
        </div>
               <p>
                 Making it easy for MUBAS students to find quality accommodation near campus. 
