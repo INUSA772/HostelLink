@@ -22,7 +22,7 @@ const Footer = () => {
 
     footer {
       font-family: 'Manrope', sans-serif;
-      background: linear-gradient(135deg, #070f24 0%, var(--navy) 100%);
+      background: linear-gradient(135deg, #313336 0%, var( --gray-dark) 100%);
       color: var(--white);
       margin-top: auto;
       padding: 4rem 2rem 2rem;
@@ -209,7 +209,7 @@ const Footer = () => {
           <div className="footer-content">
             {/* About Section */}
             <div className="footer-section">
-       <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /><h3>PezaHostel</h3> 
+       <div className="logo-icon"><img src="/PezaHostelLogo.png" style={{ fontSize: '0.8rem' }}alt="PezaHostel" /><h3>PezaHostel</h3> 
        </div>
               <p>
                 Making it easy for MUBAS students to find quality accommodation near campus. 

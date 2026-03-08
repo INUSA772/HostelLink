@@ -258,10 +258,12 @@ const RegisterForm = () => {
       
       toast.success('Registration successful! Redirecting to your dashboard...');
       
-      // ✅ NEW: Redirect to role-specific dashboard
-      setTimeout(() => {
-        navigate(response.dashboardUrl || '/dashboard');
-      }, 500);
+      // ✅ NEW: Redirect to role-specific login
+          toast.success('Registration successful! Please login to continue.');
+
+    setTimeout(() => {
+      navigate('/login');
+    }, 500);
     } catch (error) {
       toast.error(handleApiError(error));
     } finally {
