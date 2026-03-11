@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 import { handleApiError } from '../../utils/helpers';
 
-const FACEAPI_CDN = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
-const MODEL_URL   = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const MAX_RETRIES = 3;
-const MATCH_THRESHOLD = 0.5;
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -23,7 +21,6 @@ const styles = `
   .rp-bar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
   .rp-bar-logo-img{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;}
   .rp-bar-logo-img img{width:100%;height:100%;object-fit:cover;}
-  .rp-bar-brand strong{display:block;color:#fff;font-size:0.9rem;font-weight:800;letter-spacing:1px;}
   .rp-bar-brand span{color:rgba(255,255,255,0.42);font-size:0.56rem;}
   .rp-bar-actions{display:flex;align-items:center;gap:0.6rem;}
   .rp-bar-login{color:rgba(255,255,255,0.78);font-size:0.82rem;font-weight:600;background:transparent;border:1.5px solid rgba(255,255,255,0.2);padding:0.36rem 0.95rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.18s;display:flex;align-items:center;gap:5px;}
@@ -104,8 +101,7 @@ const styles = `
   .fv-camera-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000;margin-bottom:0.75rem;aspect-ratio:4/3;width:100%;}
   .fv-video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1);}
   .fv-face-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-  .fv-face-oval{width:130px;height:170px;border:3px solid rgba(255,255,255,0.6);border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);transition:border-color 0.3s;}
-  .fv-face-oval.detected{border-color:#4ade80;box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 20px rgba(74,222,128,0.5);}
+  .fv-face-oval{width:130px;height:170px;border:3px solid rgba(255,255,255,0.7);border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);}
   .fv-camera-hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:0.65rem;color:rgba(255,255,255,0.85);font-weight:600;background:rgba(0,0,0,0.4);padding:4px 8px;}
   .fv-canvas{display:none;}
 
@@ -145,17 +141,9 @@ const styles = `
   .fv-blocked-msg{font-size:0.75rem;color:var(--text-mid);line-height:1.6;}
 
   .fv-info{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.75rem;margin-bottom:0.75rem;font-size:0.72rem;color:#1d4ed8;line-height:1.6;display:flex;gap:0.5rem;align-items:flex-start;}
-  .fv-info i{flex-shrink:0;margin-top:1px;}
 
   .fv-score-bar{height:6px;border-radius:3px;background:#e5e7eb;margin:4px 0 8px;overflow:hidden;}
   .fv-score-fill{height:100%;border-radius:3px;transition:width 0.5s ease;}
-
-  .fv-model-status{display:flex;align-items:center;gap:6px;font-size:0.65rem;font-weight:700;margin-bottom:0.6rem;padding:0.4rem 0.6rem;border-radius:6px;}
-  .fv-model-status.loading{background:#fffbeb;color:#92400e;border:1px solid #fcd34d;}
-  .fv-model-status.ready{background:#f0fdf4;color:var(--green);border:1px solid #86efac;}
-  .fv-model-status.error{background:#fef2f2;color:var(--red);border:1px solid #fca5a5;}
-  .fv-dot-pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse-dot 1.2s ease-in-out infinite;flex-shrink:0;}
-  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.3}}
 
   @media(max-width:768px){
     .rp-bar{padding:0 1rem;}
@@ -166,64 +154,41 @@ const styles = `
   }
 `;
 
-// Singleton loader — models load ONCE and are cached globally
-let _modelLoadPromise = null;
-let _modelsReady = false;
-
-const ensureModelsLoaded = () => {
-  if (_modelsReady) return Promise.resolve();
-  if (_modelLoadPromise) return _modelLoadPromise;
-
-  _modelLoadPromise = (async () => {
-    if (!window.faceapi) {
-      await new Promise((resolve, reject) => {
-        const existing = document.querySelector(`script[src="${FACEAPI_CDN}"]`);
-        if (existing) { resolve(); return; }
-        const s = document.createElement('script');
-        s.src = FACEAPI_CDN;
-        s.onload = resolve;
-        s.onerror = () => reject(new Error('Failed to load face-api.js'));
-        document.head.appendChild(s);
-      });
-    }
-    await Promise.all([
-      window.faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-      window.faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      window.faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-    ]);
-    _modelsReady = true;
-  })();
-
-  return _modelLoadPromise;
+// ── API helpers ───────────────────────────────────────────────────────────
+const verifyIdWithBackend = async (base64Image) => {
+  const res = await fetch(`${API_URL}/auth/verify-id`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idImage: base64Image })
+  });
+  return res.json();
 };
 
-// ─── FACE VERIFICATION COMPONENT ─────────────────────────────────────────
+const verifyFaceWithBackend = async (idImage, selfieImage) => {
+  const res = await fetch(`${API_URL}/auth/verify-face`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idImage, selfieImage })
+  });
+  return res.json();
+};
+
+// ── FACE VERIFICATION COMPONENT ───────────────────────────────────────────
 const FaceVerification = ({ onVerified }) => {
   const [step, setStep] = useState('upload');
   const [idImage, setIdImage] = useState(null);
   const [result, setResult] = useState(null);
   const [retriesUsed, setRetriesUsed] = useState(0);
-  const [faceDetected, setFaceDetected] = useState(false);
-  const [modelStatus, setModelStatus] = useState('loading');
   const [compareProgress, setCompareProgress] = useState(0);
   const [cameraError, setCameraError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
-  const detectionLoopRef = useRef(null);
-  const idDescriptorRef = useRef(null);
-
-  useEffect(() => {
-    setModelStatus('loading');
-    ensureModelsLoaded()
-      .then(() => setModelStatus('ready'))
-      .catch(() => setModelStatus('error'));
-  }, []);
 
   const startCamera = useCallback(async () => {
     setCameraError(null);
-    setFaceDetected(false);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }
@@ -233,60 +198,47 @@ const FaceVerification = ({ onVerified }) => {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
-      detectionLoopRef.current = setInterval(async () => {
-        if (!videoRef.current || !window.faceapi || !_modelsReady) return;
-        try {
-          const det = await window.faceapi.detectSingleFace(
-            videoRef.current,
-            new window.faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })
-          );
-          setFaceDetected(!!det);
-        } catch { }
-      }, 300);
     } catch {
       setCameraError('Camera access denied. Please allow camera permission and try again.');
     }
   }, []);
 
   const stopCamera = useCallback(() => {
-    if (detectionLoopRef.current) clearInterval(detectionLoopRef.current);
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(t => t.stop());
       streamRef.current = null;
     }
   }, []);
 
-  useEffect(() => () => stopCamera(), [stopCamera]);
-
   const handleIdUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) { toast.error('Please upload an image file.'); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error('Image must be under 10MB.'); return; }
+
+    setUploading(true);
     const reader = new FileReader();
     reader.onload = async (ev) => {
-      setIdImage(ev.target.result);
-      if (_modelsReady) {
-        try {
-          const img = await window.faceapi.fetchImage(ev.target.result);
-          const det = await window.faceapi
-            .detectSingleFace(img, new window.faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-            .withFaceLandmarks()
-            .withFaceDescriptor();
-          idDescriptorRef.current = det || null;
-          if (!det) toast.warning('No face found in ID photo. Please upload a clearer image.');
-        } catch { idDescriptorRef.current = null; }
+      try {
+        const check = await verifyIdWithBackend(ev.target.result);
+        if (!check.success) {
+          toast.error(check.message);
+        } else {
+          setIdImage(ev.target.result);
+          toast.success('ID detected! Now take a selfie.');
+        }
+      } catch {
+        toast.error('Could not check ID. Check your connection.');
+      } finally {
+        setUploading(false);
       }
     };
     reader.readAsDataURL(file);
   };
 
   const captureSelfie = async () => {
-    if (!faceDetected) { toast.warning('No face detected. Position your face in the oval.'); return; }
-    if (!_modelsReady) { toast.error('Models still loading. Please wait a moment.'); return; }
-
     setStep('comparing');
-    setCompareProgress(10);
+    setCompareProgress(20);
     stopCamera();
 
     try {
@@ -298,43 +250,19 @@ const FaceVerification = ({ onVerified }) => {
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0);
-      setCompareProgress(30);
+      const selfieBase64 = canvas.toDataURL('image/jpeg', 0.8);
 
-      let idDet = idDescriptorRef.current;
-      if (!idDet) {
-        const idImg = await window.faceapi.fetchImage(idImage);
-        idDet = await window.faceapi
-          .detectSingleFace(idImg, new window.faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-          .withFaceLandmarks()
-          .withFaceDescriptor();
-      }
-      setCompareProgress(55);
+      setCompareProgress(50);
 
-      if (!idDet) {
-        setResult({ success: false, reason: 'no_face_in_id', score: 0 });
-        setStep('result'); return;
-      }
+      const result = await verifyFaceWithBackend(idImage, selfieBase64);
 
-      const selfieDet = await window.faceapi
-        .detectSingleFace(canvas, new window.faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-      setCompareProgress(85);
-
-      if (!selfieDet) {
-        setResult({ success: false, reason: 'no_face_in_selfie', score: 0 });
-        setStep('result'); return;
-      }
-
-      const distance = window.faceapi.euclideanDistance(idDet.descriptor, selfieDet.descriptor);
-      const score = Math.max(0, Math.min(1, 1 - distance));
-      const passed = distance < MATCH_THRESHOLD;
       setCompareProgress(100);
-      setResult({ success: passed, score, distance });
+      setResult(result);
       setStep('result');
+
     } catch (err) {
-      console.error('Face comparison error:', err);
-      toast.error('Comparison failed. Please try again.');
+      console.error(err);
+      toast.error('Verification failed. Check your connection.');
       setStep('camera');
       setTimeout(() => startCamera(), 300);
     }
@@ -345,7 +273,6 @@ const FaceVerification = ({ onVerified }) => {
     setRetriesUsed(next);
     if (next >= MAX_RETRIES) { setStep('blocked'); return; }
     setResult(null);
-    setFaceDetected(false);
     setCompareProgress(0);
     setStep('camera');
     setTimeout(() => startCamera(), 300);
@@ -363,19 +290,10 @@ const FaceVerification = ({ onVerified }) => {
         <div className="fv-step-label">Selfie</div>
       </div>
       <div className={`fv-step-line ${step==='result'||step==='comparing'?'done':''}`} />
-      <div className={`fv-step ${step==='result'&&result?.success?'done':step==='result'?'active':''}`}>
-        <div className="fv-step-circle">{step==='result'&&result?.success?'✓':'3'}</div>
+      <div className={`fv-step ${step==='result'&&result?.matched?'done':step==='result'?'active':''}`}>
+        <div className="fv-step-circle">{step==='result'&&result?.matched?'✓':'3'}</div>
         <div className="fv-step-label">Verify</div>
       </div>
-    </div>
-  );
-
-  const ModelBadge = () => (
-    <div className={`fv-model-status ${modelStatus}`}>
-      <div className="fv-dot-pulse" />
-      {modelStatus==='loading' && 'Loading face recognition models...'}
-      {modelStatus==='ready'   && '⚡ Face recognition ready'}
-      {modelStatus==='error'   && '⚠ Model load failed — check your connection'}
     </div>
   );
 
@@ -400,35 +318,30 @@ const FaceVerification = ({ onVerified }) => {
   if (step === 'upload') return (
     <div>
       <StepIndicator />
-      <ModelBadge />
       <div className="fv-info">
-        <i className="fa fa-info-circle" />
-        <span>Upload your National ID photo with your face clearly visible, then take a selfie to verify your identity.</span>
+        <i className="fa fa-info-circle" style={{marginTop:'1px'}} />
+        <span>Upload your National ID photo clearly showing your face. Then take a quick selfie to verify your identity.</span>
       </div>
-      <div className="rp-sec"><i className="fa fa-id-card" /> National ID Photo</div>
       {idImage ? (
         <>
           <img src={idImage} alt="National ID" className="fv-id-preview" />
           <div style={{fontSize:'0.7rem',color:'var(--green)',fontWeight:700,marginBottom:'0.75rem',display:'flex',alignItems:'center',gap:'5px'}}>
-            <i className="fa fa-check-circle" /> ID uploaded successfully
+            <i className="fa fa-check-circle" /> ID verified successfully
           </div>
           <button className="fv-btn fv-btn-orange"
-            disabled={modelStatus==='loading'}
             onClick={() => { setStep('camera'); setTimeout(() => startCamera(), 300); }}>
-            {modelStatus==='loading'
-              ? <><div className="rp-submit-spin" /> Preparing recognition...</>
-              : <><i className="fa fa-camera" /> Continue to Selfie</>}
+            <i className="fa fa-camera" /> Continue to Selfie
           </button>
           <button className="fv-btn fv-btn-ghost"
-            onClick={() => { setIdImage(null); idDescriptorRef.current = null; }}>
+            onClick={() => setIdImage(null)}>
             <i className="fa fa-redo" /> Use Different ID
           </button>
         </>
       ) : (
-        <div className="fv-upload-zone">
-          <input type="file" accept="image/*" onChange={handleIdUpload} />
-          <div className="fv-upload-icon">🪪</div>
-          <div className="fv-upload-txt">Click to upload your National ID</div>
+        <div className="fv-upload-zone" style={{opacity: uploading ? 0.6 : 1}}>
+          <input type="file" accept="image/*" onChange={handleIdUpload} disabled={uploading} />
+          <div className="fv-upload-icon">{uploading ? '⏳' : '🪪'}</div>
+          <div className="fv-upload-txt">{uploading ? 'Checking ID...' : 'Click to upload your National ID'}</div>
           <div className="fv-upload-sub">JPG, PNG or WEBP · Max 10MB</div>
         </div>
       )}
@@ -455,21 +368,17 @@ const FaceVerification = ({ onVerified }) => {
         <div className="fv-camera-wrap">
           <video ref={videoRef} className="fv-video" muted playsInline />
           <div className="fv-face-overlay">
-            <div className={`fv-face-oval ${faceDetected?'detected':''}`} />
+            <div className="fv-face-oval" />
           </div>
-          <div className="fv-camera-hint">
-            {faceDetected ? '✅ Face detected — ready to capture' : '👤 Position your face inside the oval'}
-          </div>
+          <div className="fv-camera-hint">👤 Position your face inside the oval then capture</div>
         </div>
       )}
       <canvas ref={canvasRef} className="fv-canvas" />
-      <button className="fv-btn fv-btn-orange" onClick={captureSelfie}
-        disabled={!faceDetected || !!cameraError || modelStatus!=='ready'}>
+      <button className="fv-btn fv-btn-orange" onClick={captureSelfie} disabled={!!cameraError}>
         <i className="fa fa-camera" /> Capture & Verify
       </button>
       {cameraError && (
-        <button className="fv-btn fv-btn-primary"
-          onClick={() => { setCameraError(null); startCamera(); }}>
+        <button className="fv-btn fv-btn-primary" onClick={() => { setCameraError(null); startCamera(); }}>
           <i className="fa fa-redo" /> Retry Camera
         </button>
       )}
@@ -481,8 +390,8 @@ const FaceVerification = ({ onVerified }) => {
       <StepIndicator />
       <div className="fv-loader">
         <div className="fv-loader-ring" />
-        <div className="fv-loader-txt">Comparing faces...</div>
-        <div className="fv-loader-sub">Using facial recognition to verify your identity</div>
+        <div className="fv-loader-txt">Verifying your identity...</div>
+        <div className="fv-loader-sub">Comparing your face with National ID</div>
         <div className="fv-progress">
           <div className="fv-progress-bar" style={{width:`${compareProgress}%`}} />
         </div>
@@ -493,17 +402,11 @@ const FaceVerification = ({ onVerified }) => {
 
   if (step === 'result') {
     const score = result?.score || 0;
-    const pct = Math.round(score * 100);
-    const color = score > 0.65 ? '#16a34a' : score > 0.45 ? '#d97706' : '#dc2626';
-    const failMsg = () => {
-      if (result?.reason==='no_face_in_id') return 'No face detected in your National ID. Please upload a clearer photo.';
-      if (result?.reason==='no_face_in_selfie') return 'No face detected in your selfie. Ensure good lighting and your face is fully visible.';
-      return `Face similarity too low (${pct}%). Try better lighting or a clearer ID photo.`;
-    };
+    const color = score > 65 ? '#16a34a' : score > 45 ? '#d97706' : '#dc2626';
     return (
       <div>
         <StepIndicator />
-        {result?.success ? (
+        {result?.matched ? (
           <>
             <div className="fv-result success">
               <div className="fv-result-icon">✅</div>
@@ -514,11 +417,9 @@ const FaceVerification = ({ onVerified }) => {
             </div>
             <div style={{marginBottom:'0.75rem'}}>
               <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.68rem',color:'var(--text-mid)',fontWeight:600,marginBottom:'3px'}}>
-                <span>Match Confidence</span><span style={{color}}>{pct}%</span>
+                <span>Match Confidence</span><span style={{color}}>{score}%</span>
               </div>
-              <div className="fv-score-bar">
-                <div className="fv-score-fill" style={{width:`${pct}%`,background:color}} />
-              </div>
+              <div className="fv-score-bar"><div className="fv-score-fill" style={{width:`${score}%`,background:color}} /></div>
             </div>
             <button className="fv-btn fv-btn-orange" onClick={onVerified}>
               <i className="fa fa-check" /> Continue Registration
@@ -530,19 +431,9 @@ const FaceVerification = ({ onVerified }) => {
               <div className="fv-result-icon">❌</div>
               <div>
                 <div className="fv-result-title">Verification Failed</div>
-                <div className="fv-result-msg">{failMsg()}</div>
+                <div className="fv-result-msg">{result?.message || 'Face does not match the ID.'}</div>
               </div>
             </div>
-            {score > 0 && (
-              <div style={{marginBottom:'0.75rem'}}>
-                <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.68rem',color:'var(--text-mid)',fontWeight:600,marginBottom:'3px'}}>
-                  <span>Match Confidence</span><span style={{color}}>{pct}%</span>
-                </div>
-                <div className="fv-score-bar">
-                  <div className="fv-score-fill" style={{width:`${pct}%`,background:color}} />
-                </div>
-              </div>
-            )}
             <div className="fv-retries">
               <span>Attempts used:</span>
               {Array.from({length:MAX_RETRIES}).map((_,i)=>(
@@ -564,7 +455,7 @@ const FaceVerification = ({ onVerified }) => {
   return null;
 };
 
-// ─── MAIN REGISTER FORM ───────────────────────────────────────────────────
+// ── MAIN REGISTER FORM ────────────────────────────────────────────────────
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName:'', lastName:'', email:'', phone:'',
@@ -584,8 +475,6 @@ const RegisterForm = () => {
     if (name === 'role') {
       setFaceVerified(false);
       setShowFaceVerification(false);
-      // Start loading models silently the moment owner is selected
-      if (value === 'owner') ensureModelsLoaded().catch(() => {});
     }
   };
 
@@ -635,7 +524,7 @@ const RegisterForm = () => {
         <div className="rp-card">
           <div className="rp-card-hdr">
             <h2>Identity Verification</h2>
-            <p>Required for hostel owners — one-time verification</p>
+            <p>Required for hostel owners — one-time only</p>
             <div className="rp-line"></div>
           </div>
           <FaceVerification
@@ -681,18 +570,12 @@ const RegisterForm = () => {
             <span className="rp-role-lbl">I am a</span>
             <div className="rp-role-row">
               <div className="rp-role-opt">
-                <input type="radio" id="rs" name="role" value="student"
-                  checked={formData.role==='student'} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor="rs">
-                  <i className="fa fa-user-graduate"></i> Student
-                </label>
+                <input type="radio" id="rs" name="role" value="student" checked={formData.role==='student'} onChange={handleChange} />
+                <label className="rp-role-btn" htmlFor="rs"><i className="fa fa-user-graduate"></i> Student</label>
               </div>
               <div className="rp-role-opt">
-                <input type="radio" id="ro" name="role" value="owner"
-                  checked={formData.role==='owner'} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor="ro">
-                  <i className="fa fa-building"></i> Hostel Owner
-                </label>
+                <input type="radio" id="ro" name="role" value="owner" checked={formData.role==='owner'} onChange={handleChange} />
+                <label className="rp-role-btn" htmlFor="ro"><i className="fa fa-building"></i> Hostel Owner</label>
               </div>
             </div>
 
@@ -723,38 +606,33 @@ const RegisterForm = () => {
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="fn">First Name</label>
                 <div className="rp-wrap"><i className="fa fa-user rp-ico"></i>
-                  <input id="fn" className="rp-input" type="text" name="firstName"
-                    value={formData.firstName} onChange={handleChange} placeholder="First name" required />
+                  <input id="fn" className="rp-input" type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First name" required />
                 </div>
               </div>
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="ln">Last Name</label>
                 <div className="rp-wrap"><i className="fa fa-user rp-ico"></i>
-                  <input id="ln" className="rp-input" type="text" name="lastName"
-                    value={formData.lastName} onChange={handleChange} placeholder="Last name" required />
+                  <input id="ln" className="rp-input" type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last name" required />
                 </div>
               </div>
             </div>
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="em">Email Address</label>
               <div className="rp-wrap"><i className="fa fa-envelope rp-ico"></i>
-                <input id="em" className="rp-input" type="email" name="email"
-                  value={formData.email} onChange={handleChange} placeholder="Enter your email" required />
+                <input id="em" className="rp-input" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" required />
               </div>
             </div>
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="ph">Phone Number</label>
               <div className="rp-wrap"><i className="fa fa-phone rp-ico"></i>
-                <input id="ph" className="rp-input" type="tel" name="phone"
-                  value={formData.phone} onChange={handleChange} placeholder="Enter phone number" required />
+                <input id="ph" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Enter phone number" required />
               </div>
             </div>
             {formData.role === 'student' && (
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="sid">Student ID</label>
                 <div className="rp-wrap"><i className="fa fa-id-card rp-ico"></i>
-                  <input id="sid" className="rp-input" type="text" name="studentId"
-                    value={formData.studentId} onChange={handleChange} placeholder="Enter student ID" required />
+                  <input id="sid" className="rp-input" type="text" name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Enter student ID" required />
                 </div>
               </div>
             )}
@@ -764,15 +642,13 @@ const RegisterForm = () => {
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="pw">Password</label>
                 <div className="rp-wrap"><i className="fa fa-lock rp-ico"></i>
-                  <input id="pw" className="rp-input" type="password" name="password"
-                    value={formData.password} onChange={handleChange} placeholder="Create password" required />
+                  <input id="pw" className="rp-input" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Create password" required />
                 </div>
               </div>
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="cpw">Confirm</label>
                 <div className="rp-wrap"><i className="fa fa-lock rp-ico"></i>
-                  <input id="cpw" className="rp-input" type="password" name="confirmPassword"
-                    value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm" required />
+                  <input id="cpw" className="rp-input" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm" required />
                 </div>
               </div>
             </div>
