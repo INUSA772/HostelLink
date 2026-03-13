@@ -327,20 +327,20 @@ function Navbar({ isAuthenticated, user }) {
       <button onClick={() => navigate('/')} className="logo">
         <div className="logo-icon"><img src="/logo2.png" alt="HostelLink" /></div>
         <div className="logo-text">
-          <strong>HOSTELLINK</strong>
+          <strong>PEZAHOSTEL</strong>
           <span>OFF-CAMPUS ACCOMMODATION</span>
         </div>
       </button>
       <div className="nav-actions">
         {isAuthenticated ? (
           <>
-            <a href="/profile" className="nav-login">
+            <a href="/Login" className="nav-login">
               <i className="fa fa-user" />
-              <span className="nav-login-text">{user?.firstName}</span>
+              <span className="nav-login-text">Login</span>
             </a>
-            <a href="/dashboard" className="nav-signup">
+            <a href="/Register" className="nav-signup">
               <i className="fa fa-th-large" />
-              <span className="nav-signup-text"> Dashboard</span>
+              <span className="nav-signup-text"> Signup</span>
             </a>
           </>
         ) : (
