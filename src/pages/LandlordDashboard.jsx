@@ -40,7 +40,6 @@ const styles = `
   html { font-size: 16px; -webkit-text-size-adjust: 100%; }
   body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; }
 
-  /* ── TOPBAR ── */
   .ld-topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     background: var(--navy); height: 62px;
@@ -76,7 +75,6 @@ const styles = `
   .ld-topbar-btn.danger:hover { background: rgba(220,38,38,0.2); }
   .ld-hamburger { display: none; background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 0.4rem; }
 
-  /* ── DRAWER ── */
   .ld-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; }
   .ld-overlay.open { display: block; }
   .ld-drawer {
@@ -118,10 +116,8 @@ const styles = `
   .ld-drawer-foot { padding: 1.1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); }
   .ld-drawer-logout { display: flex; align-items: center; gap: 0.75rem; color: #fca5a5; font-size: 0.9rem; font-weight: 600; cursor: pointer; background: none; border: none; font-family: 'Manrope', sans-serif; }
 
-  /* ── PAGE ── */
   .ld-page { padding-top: 62px; min-height: 100vh; }
 
-  /* ── BANNER ── */
   .ld-banner {
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 55%, #1c2e72 100%);
     padding: 2.75rem 2rem 3.25rem; position: relative; overflow: hidden;
@@ -144,6 +140,7 @@ const styles = `
   .ld-banner h1 { font-size: 2rem; font-weight: 900; color: white; line-height: 1.15; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
   .ld-banner p { font-size: 0.9rem; color: rgba(255,255,255,0.55); font-weight: 500; }
   .ld-banner-btns { display: flex; gap: 0.75rem; flex-shrink: 0; }
+
   .ld-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.75rem 1.5rem; border-radius: 9px;
@@ -157,12 +154,16 @@ const styles = `
   .ld-btn-ghost { background: rgba(255,255,255,0.08); color: white; border: 1.5px solid rgba(255,255,255,0.2); }
   .ld-btn-ghost:hover { background: rgba(255,255,255,0.15); }
   .ld-btn-danger { background: var(--danger); color: white; }
-  .ld-btn-danger:hover { opacity: 0.88; }
+  .ld-btn-danger:hover:not(:disabled) { opacity: 0.88; }
 
-  /* ── MAIN ── */
   .ld-main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
-  /* ── LOADING / ERROR ── */
+  .ld-auth-loading {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1rem; background: var(--gray-bg);
+  }
+  .ld-auth-loading p { color: var(--text-mid); font-weight: 600; font-family: 'Manrope', sans-serif; }
+
   .ld-loading {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; padding: 5rem 2rem; gap: 1rem;
@@ -179,7 +180,6 @@ const styles = `
   }
   .ld-error-box p { font-size: 0.9rem; font-weight: 600; flex: 1; }
 
-  /* ── STATS ── */
   .ld-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
   .ld-stat {
     background: white; border-radius: var(--card-radius);
@@ -202,7 +202,6 @@ const styles = `
   .ld-stat-num { font-size: 1.9rem; font-weight: 900; color: var(--navy); line-height: 1; margin-bottom: 0.3rem; }
   .ld-stat-lbl { font-size: 0.78rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* skeleton */
   .ld-skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%; border-radius: 6px;
@@ -210,12 +209,10 @@ const styles = `
   }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-  /* ── SECTION HEADER ── */
   .ld-sec-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
   .ld-sec-hd h2 { font-size: 1.2rem; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 0.5rem; }
   .ld-sec-hd h2 svg { color: var(--orange); }
 
-  /* ── QUICK ACTIONS ── */
   .ld-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
   .ld-quick-card {
     background: white; border: 1.5px solid var(--gray-light);
@@ -230,13 +227,8 @@ const styles = `
   .ld-quick-card:hover .ld-quick-ico { background: var(--orange); color: white; }
   .ld-quick-title { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); }
   .ld-quick-sub { font-size: 0.78rem; color: var(--text-mid); font-weight: 500; }
-  .ld-notif-dot {
-    position: absolute; top: 0.75rem; right: 0.75rem;
-    width: 9px; height: 9px; background: var(--orange);
-    border-radius: 50%; border: 2px solid white;
-  }
+  .ld-notif-dot { position: absolute; top: 0.75rem; right: 0.75rem; width: 9px; height: 9px; background: var(--orange); border-radius: 50%; border: 2px solid white; }
 
-  /* ── PANEL ── */
   .ld-panel { background: white; border-radius: var(--card-radius); border: 1px solid var(--gray-light); box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; margin-bottom: 2rem; }
   .ld-panel-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -250,7 +242,6 @@ const styles = `
   .ld-search-box input { border: none; outline: none; font-family: 'Manrope', sans-serif; font-size: 0.875rem; color: var(--text-dark); width: 100%; background: transparent; }
   .ld-search-box svg { color: var(--text-light); flex-shrink: 0; }
 
-  /* TABLE */
   .ld-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .ld-table { width: 100%; border-collapse: collapse; min-width: 720px; }
   .ld-table th { background: var(--gray-bg); padding: 0.9rem 1.2rem; text-align: left; font-size: 0.75rem; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 2px solid var(--gray-light); white-space: nowrap; }
@@ -269,7 +260,6 @@ const styles = `
   .ld-icon-btn.del:hover { background: var(--danger); color: white; border-color: var(--danger); }
   .ld-icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* MOBILE CARDS */
   .ld-m-cards { display: none; flex-direction: column; gap: 0; }
   .ld-m-card { border-bottom: 1px solid var(--gray-light); padding: 1rem 1.25rem; }
   .ld-m-card:last-child { border-bottom: none; }
@@ -282,20 +272,18 @@ const styles = `
   .ld-m-stat-lbl { font-size: 0.65rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; }
   .ld-m-card-foot { display: flex; justify-content: flex-end; gap: 0.5rem; }
 
-  /* EMPTY */
   .ld-empty { text-align: center; padding: 4rem 2rem; }
   .ld-empty-ico { width: 76px; height: 76px; background: var(--orange-pale); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--orange); margin: 0 auto 1.25rem; }
   .ld-empty h3 { font-size: 1.3rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
   .ld-empty p { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 1.5rem; }
 
-  /* DELETE MODAL */
   .ld-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .ld-modal { background: white; border-radius: var(--card-radius); padding: 2rem; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .ld-modal h3 { font-size: 1.2rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
-  .ld-modal p { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; }
-  .ld-modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+  .ld-modal-icon { width: 56px; height: 56px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--danger); font-size: 1.4rem; }
+  .ld-modal h3 { font-size: 1.2rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; text-align: center; }
+  .ld-modal p { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; text-align: center; }
+  .ld-modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
 
-  /* REFRESH BTN */
   .ld-refresh-btn {
     display: flex; align-items: center; gap: 0.4rem;
     background: none; border: 1px solid var(--gray-light);
@@ -303,10 +291,10 @@ const styles = `
     font-size: 0.8rem; font-weight: 600; color: var(--text-mid);
     cursor: pointer; transition: var(--transition); font-family: 'Manrope', sans-serif;
   }
-  .ld-refresh-btn:hover { border-color: var(--orange); color: var(--orange); }
-  .ld-refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+  .ld-refresh-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+  .ld-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ld-refresh-btn .spin { animation: spin 0.8s linear infinite; }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 1024px) {
     .ld-stats { grid-template-columns: repeat(2, 1fr); }
     .ld-quick { grid-template-columns: repeat(2, 1fr); }
@@ -339,22 +327,31 @@ const styles = `
   }
 `;
 
-// ── DELETE CONFIRM MODAL ──────────────────────────
+// ── DELETE MODAL ──────────────────────────────────
 function DeleteModal({ hostel, onConfirm, onCancel, loading }) {
   return (
-    <div className="ld-modal-backdrop">
+    <div className="ld-modal-backdrop" onClick={e => { if (e.target === e.currentTarget && !loading) onCancel(); }}>
       <div className="ld-modal">
+        <div className="ld-modal-icon"><FaTrash /></div>
         <h3>Delete Hostel?</h3>
         <p>
-          Are you sure you want to delete <strong>{hostel?.name}</strong>?
-          This action cannot be undone and all related data will be permanently removed.
+          Are you sure you want to delete <strong>"{hostel?.name}"</strong>?
+          This cannot be undone and all related data will be removed.
         </p>
         <div className="ld-modal-actions">
-          <button className="ld-btn ld-btn-ghost" style={{ color: 'var(--text-dark)', border: '1.5px solid var(--gray-light)' }} onClick={onCancel} disabled={loading}>
+          <button
+            className="ld-btn"
+            style={{ background: 'var(--gray-light)', color: 'var(--text-dark)' }}
+            onClick={onCancel}
+            disabled={loading}
+          >
             Cancel
           </button>
           <button className="ld-btn ld-btn-danger" onClick={onConfirm} disabled={loading}>
-            {loading ? <><FaSpinner className="ld-spinner" style={{ fontSize: '0.9rem' }} /> Deleting...</> : <><FaTrash /> Delete</>}
+            {loading
+              ? <><FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> Deleting...</>
+              : <><FaTrash /> Yes, Delete</>
+            }
           </button>
         </div>
       </div>
@@ -366,8 +363,8 @@ function DeleteModal({ hostel, onConfirm, onCancel, loading }) {
 function StatSkeleton() {
   return (
     <div className="ld-stat" style={{ pointerEvents: 'none' }}>
-      <div className="ld-stat-ico ld-skeleton" style={{ width: 50, height: 50 }} />
-      <div>
+      <div className="ld-stat-ico ld-skeleton" style={{ width: 50, height: 50, borderRadius: 12 }} />
+      <div style={{ flex: 1 }}>
         <div className="ld-skeleton" style={{ width: 60, height: 28, marginBottom: 8 }} />
         <div className="ld-skeleton" style={{ width: 90, height: 12 }} />
       </div>
@@ -378,22 +375,23 @@ function StatSkeleton() {
 // ── MAIN COMPONENT ────────────────────────────────
 const LandlordDashboard = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated, token } = useAuth();
+
+  // ✅ FIX: also pull `loading` (auth loading state) from context
+  const { user, logout, isAuthenticated, token, loading: authLoading } = useAuth();
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
   const [hostels, setHostels] = useState([]);
   const [loadingHostels, setLoadingHostels] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
-
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   // ── FETCH HOSTELS ──
   const fetchHostels = useCallback(async (silent = false) => {
+    if (!token) return;
     if (!silent) setLoadingHostels(true);
     else setRefreshing(true);
     setError(null);
@@ -401,20 +399,24 @@ const LandlordDashboard = () => {
       const res = await fetch(`${API_URL}/hostels/my-hostels`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Failed to fetch hostels (${res.status})`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || `Error ${res.status}`);
+      }
       const data = await res.json();
       setHostels(data.hostels || data || []);
     } catch (err) {
       setError(err.message);
-      if (silent) toast.error('Failed to refresh hostels');
+      if (silent) toast.error('Failed to refresh: ' + err.message);
     } finally {
       setLoadingHostels(false);
       setRefreshing(false);
     }
   }, [token]);
 
-  // ── FETCH UNREAD MESSAGES COUNT ──
+  // ── FETCH UNREAD ──
   const fetchUnread = useCallback(async () => {
+    if (!token) return;
     try {
       const res = await fetch(`${API_URL}/messages/unread-count`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -426,14 +428,21 @@ const LandlordDashboard = () => {
     } catch (_) {}
   }, [token]);
 
+  // ✅ FIX: Wait for authLoading to finish before checking role
+  // This prevents the "not authorized" flash when user loads slowly
   useEffect(() => {
+    if (authLoading) return; // ← wait for auth to settle
     if (!isAuthenticated) { navigate('/login'); return; }
-    if (user?.role !== 'owner') { navigate('/'); return; }
+    if (user?.role !== 'owner') {
+      toast.error('Access denied. Owner account required.');
+      navigate('/');
+      return;
+    }
     fetchHostels();
     fetchUnread();
-  }, [isAuthenticated, user]);
+  }, [authLoading, isAuthenticated, user?.role]);
 
-  // ── DELETE HOSTEL ──
+  // ── DELETE ──
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
@@ -442,12 +451,16 @@ const LandlordDashboard = () => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Delete failed');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Delete failed');
+      }
+      // ✅ FIX: Remove from state immediately — no need to refetch
       setHostels(prev => prev.filter(h => h._id !== deleteTarget._id));
       toast.success(`"${deleteTarget.name}" deleted successfully`);
       setDeleteTarget(null);
     } catch (err) {
-      toast.error('Failed to delete hostel. Please try again.');
+      toast.error('Delete failed: ' + err.message);
     } finally {
       setDeleting(false);
     }
@@ -459,44 +472,50 @@ const LandlordDashboard = () => {
   );
 
   const stats = [
-    {
-      label: 'Active Listings',
-      value: hostels.length,
-      icon: <FaBuilding />,
-      color: 'ico-orange',
-    },
-    {
-      label: 'Total Bookings',
-      value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),
-      icon: <FaCalendarCheck />,
-      color: 'ico-navy',
-    },
-    {
-      label: 'Total Views',
-      value: hostels.reduce((a, h) => a + (h.totalViews || 0), 0),
-      icon: <FaEye />,
-      color: 'ico-green',
-    },
+    { label: 'Active Listings',  value: hostels.length, icon: <FaBuilding />, color: 'ico-orange' },
+    { label: 'Total Bookings',   value: hostels.reduce((a, h) => a + (h.bookings || 0), 0), icon: <FaCalendarCheck />, color: 'ico-navy' },
+    { label: 'Total Views',      value: hostels.reduce((a, h) => a + (h.totalViews || 0), 0), icon: <FaEye />, color: 'ico-green' },
     {
       label: 'Avg Rating',
-      value: hostels.length
-        ? (hostels.reduce((a, h) => a + (h.rating || 0), 0) / hostels.length).toFixed(1)
-        : '0.0',
-      icon: <FaStar />,
-      color: 'ico-amber',
+      value: hostels.length ? (hostels.reduce((a, h) => a + (h.rating || 0), 0) / hostels.length).toFixed(1) : '0.0',
+      icon: <FaStar />, color: 'ico-amber'
     },
   ];
 
   const quickActions = [
-    { icon: <FaPlus />,        title: 'List Hostel',    sub: 'Add property',        action: () => navigate('/hostels/create') },
-    { icon: <FaEnvelope />,    title: 'Messages',       sub: 'Chat with students',  action: () => navigate('/messages'),       badge: unreadMessages > 0 },
-    { icon: <FaChartLine />,   title: 'Analytics',      sub: 'Track performance',   action: () => navigate('/analytics') },
-    { icon: <FaUser />,        title: 'My Profile',     sub: 'Account settings',    action: () => navigate('/profile') },
+    { icon: <FaPlus />,      title: 'List Hostel',  sub: 'Add property',       action: () => navigate('/hostels/create') },
+    { icon: <FaEnvelope />,  title: 'Messages',     sub: 'Chat with students', action: () => navigate('/messages'), badge: unreadMessages > 0 },
+    { icon: <FaChartLine />, title: 'Analytics',    sub: 'Track performance',  action: () => navigate('/analytics') },
+    { icon: <FaUser />,      title: 'My Profile',   sub: 'Account settings',   action: () => navigate('/profile') },
   ];
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
+  // ✅ FIX: Show a proper loading screen while auth is resolving
+  if (authLoading) {
+    return (
+      <>
+        <style>{styles}</style>
+        <div className="ld-auth-loading">
+          <FaSpinner style={{ fontSize: '2rem', color: '#e8501a', animation: 'spin 0.8s linear infinite' }} />
+          <p>Loading your dashboard...</p>
+        </div>
+      </>
+    );
+  }
+
   if (!isAuthenticated) return null;
+
+  const navLinks = [
+    { icon: <FaHome />,          label: 'Dashboard',     path: '/dashboard' },
+    { icon: <FaBuilding />,      label: 'My Hostels',    path: '/my-hostels' },
+    { icon: <FaCalendarCheck />, label: 'Bookings',      path: '/bookings' },
+    { icon: <FaEnvelope />,      label: 'Messages',      path: '/messages' },
+    { icon: <FaBell />,          label: 'Notifications', path: '/notifications' },
+    { icon: <FaChartLine />,     label: 'Analytics',     path: '/analytics' },
+    { icon: <FaUser />,          label: 'Profile',       path: '/profile' },
+    { icon: <FaCog />,           label: 'Settings',      path: '/settings' },
+  ];
 
   return (
     <>
@@ -507,12 +526,12 @@ const LandlordDashboard = () => {
         <DeleteModal
           hostel={deleteTarget}
           onConfirm={handleDelete}
-          onCancel={() => setDeleteTarget(null)}
+          onCancel={() => !deleting && setDeleteTarget(null)}
           loading={deleting}
         />
       )}
 
-      {/* DRAWER OVERLAY */}
+      {/* OVERLAY */}
       <div className={`ld-overlay${drawerOpen ? ' open' : ''}`} onClick={() => setDrawerOpen(false)} />
 
       {/* DRAWER */}
@@ -524,29 +543,15 @@ const LandlordDashboard = () => {
           </a>
           <button className="ld-drawer-close" onClick={() => setDrawerOpen(false)}><FaTimes /></button>
         </div>
-
-        {/* User info in drawer */}
         <div className="ld-drawer-user">
-          <div className="ld-drawer-avatar">
-            {user?.firstName?.[0]?.toUpperCase() || 'U'}
-          </div>
+          <div className="ld-drawer-avatar">{user?.firstName?.[0]?.toUpperCase() || 'U'}</div>
           <div>
             <div className="ld-drawer-uname">{user?.firstName} {user?.lastName}</div>
             <div className="ld-drawer-uemail">{user?.email}</div>
           </div>
         </div>
-
         <nav className="ld-drawer-nav">
-          {[
-            { icon: <FaHome />,          label: 'Dashboard',      path: '/dashboard' },
-            { icon: <FaBuilding />,      label: 'My Hostels',     path: '/my-hostels' },
-            { icon: <FaCalendarCheck />, label: 'Bookings',       path: '/bookings' },
-            { icon: <FaEnvelope />,      label: 'Messages',       path: '/messages' },
-            { icon: <FaBell />,          label: 'Notifications',  path: '/notifications' },
-            { icon: <FaChartLine />,     label: 'Analytics',      path: '/analytics' },
-            { icon: <FaUser />,          label: 'Profile',        path: '/profile' },
-            { icon: <FaCog />,           label: 'Settings',       path: '/settings' },
-          ].map((item, i) => (
+          {navLinks.map((item, i) => (
             <button
               key={i}
               className={`ld-drawer-link${window.location.pathname === item.path ? ' active' : ''}`}
@@ -583,7 +588,7 @@ const LandlordDashboard = () => {
           <div className="ld-banner-inner">
             <div>
               <div className="ld-banner-eyebrow">Owner Portal</div>
-              <h1>Welcome back, {user?.firstName || 'Landlord'} 🏢</h1>
+              <h1>Welcome back, {user?.firstName} 🏢</h1>
               <p>Manage your properties and track your performance</p>
             </div>
             <div className="ld-banner-btns">
@@ -644,12 +649,14 @@ const LandlordDashboard = () => {
           <div className="ld-sec-hd">
             <h2><FaHome /> My Hostels</h2>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              {/* ✅ FIX: Refresh button now works properly */}
               <button
-                className={`ld-refresh-btn${refreshing ? ' spinning' : ''}`}
+                className="ld-refresh-btn"
                 onClick={() => fetchHostels(true)}
-                disabled={refreshing}
+                disabled={refreshing || loadingHostels}
               >
-                <FaSync /> Refresh
+                <FaSync className={refreshing ? 'spin' : ''} />
+                {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
               <button
                 className="ld-btn ld-btn-orange"
@@ -757,6 +764,7 @@ const LandlordDashboard = () => {
                                 <button className="ld-icon-btn" title="Edit" onClick={() => navigate(`/hostels/edit/${hostel._id}`)}>
                                   <FaEdit />
                                 </button>
+                                {/* ✅ FIX: Delete now opens modal correctly */}
                                 <button className="ld-icon-btn del" title="Delete" onClick={() => setDeleteTarget(hostel)}>
                                   <FaTrash />
                                 </button>
