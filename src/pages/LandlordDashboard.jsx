@@ -7,7 +7,6 @@ import {
   FaStar, FaMapMarkerAlt, FaDoorOpen, FaCheckCircle,
   FaBell, FaUser, FaSearch, FaBars, FaTimes, FaBuilding,
   FaSpinner, FaExclamationTriangle, FaSync, FaChartLine,
-  FaWifi, FaCar, FaUtensils, FaShieldAlt
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
@@ -41,7 +40,6 @@ const styles = `
   html { font-size: 16px; -webkit-text-size-adjust: 100%; }
   body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; }
 
-  /* ── TOPBAR ── */
   .ld-topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     background: var(--navy); height: 64px;
@@ -78,7 +76,6 @@ const styles = `
   .ld-hamburger { display: none; background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 0.4rem; border-radius: 6px; transition: var(--transition); }
   .ld-hamburger:hover { background: rgba(255,255,255,0.1); }
 
-  /* ── DRAWER ── */
   .ld-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1100; backdrop-filter: blur(2px); }
   .ld-overlay.open { display: block; }
   .ld-drawer {
@@ -135,10 +132,8 @@ const styles = `
   }
   .ld-drawer-logout:hover { background: rgba(220,38,38,0.2); }
 
-  /* ── PAGE ── */
   .ld-page { padding-top: 64px; min-height: 100vh; }
 
-  /* ── BANNER ── */
   .ld-banner {
     background: linear-gradient(135deg, #0a1628 0%, var(--navy2) 50%, #1a3575 100%);
     padding: 2.5rem 2rem 3rem; position: relative; overflow: hidden;
@@ -185,23 +180,19 @@ const styles = `
   .ld-btn-outline { background: white; color: var(--navy); border: 1.5px solid var(--gray-light); }
   .ld-btn-outline:hover:not(:disabled) { border-color: var(--navy); }
 
-  /* ── MAIN ── */
   .ld-main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
-  /* ── AUTH LOADING ── */
   .ld-auth-loading {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
     flex-direction: column; gap: 1rem; background: var(--gray-bg);
   }
   .ld-auth-loading p { color: var(--text-mid); font-weight: 600; font-family: 'Manrope', sans-serif; }
 
-  /* ── LOADING ── */
   .ld-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; }
   .ld-spinner { animation: spin 0.8s linear infinite; font-size: 2rem; color: var(--orange); }
   @keyframes spin { to { transform: rotate(360deg); } }
   .ld-loading p { color: var(--text-mid); font-weight: 600; }
 
-  /* ── ERROR BOX ── */
   .ld-error-box {
     background: #fef2f2; border: 1px solid #fecaca;
     border-radius: var(--card-radius); padding: 1.25rem 1.5rem;
@@ -210,7 +201,6 @@ const styles = `
   }
   .ld-error-box p { font-size: 0.88rem; font-weight: 600; flex: 1; }
 
-  /* ── STATS ── */
   .ld-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
   .ld-stat {
     background: white; border-radius: var(--card-radius);
@@ -218,11 +208,11 @@ const styles = `
     box-shadow: 0 1px 6px rgba(0,0,0,0.05);
     display: flex; align-items: center; gap: 1rem;
     transition: var(--transition); position: relative; overflow: hidden;
-    cursor: default;
   }
   .ld-stat::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-    background: var(--orange); transform: scaleY(0); transition: var(--transition); transform-origin: bottom; border-radius: 0 2px 2px 0;
+    background: var(--orange); transform: scaleY(0); transition: var(--transition);
+    transform-origin: bottom; border-radius: 0 2px 2px 0;
   }
   .ld-stat:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
   .ld-stat:hover::before { transform: scaleY(1); }
@@ -234,19 +224,16 @@ const styles = `
   .ld-stat-num { font-size: 1.85rem; font-weight: 900; color: var(--navy); line-height: 1; margin-bottom: 0.3rem; }
   .ld-stat-lbl { font-size: 0.75rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* skeleton */
   .ld-skeleton {
     background: linear-gradient(90deg, #f0f2f5 25%, #e4e6eb 50%, #f0f2f5 75%);
     background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite;
   }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-  /* ── SECTION HEADER ── */
   .ld-sec-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
   .ld-sec-hd h2 { font-size: 1.15rem; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 0.5rem; }
   .ld-sec-hd h2 svg { color: var(--orange); }
 
-  /* ── QUICK ACTIONS ── */
   .ld-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
   .ld-quick-card {
     background: white; border: 1.5px solid var(--gray-light);
@@ -262,9 +249,8 @@ const styles = `
   .ld-quick-title { font-size: 0.88rem; font-weight: 800; color: var(--text-dark); }
   .ld-quick-sub { font-size: 0.75rem; color: var(--text-mid); font-weight: 500; }
   .ld-notif-dot { position: absolute; top: 0.7rem; right: 0.7rem; width: 9px; height: 9px; background: var(--orange); border-radius: 50%; border: 2px solid white; animation: pulse-dot 2s infinite; }
-  @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.3); } }
+  @keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.6; transform:scale(1.3); } }
 
-  /* ── PANEL ── */
   .ld-panel { background: white; border-radius: var(--card-radius); border: 1px solid var(--gray-light); box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 2rem; }
   .ld-panel-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -279,50 +265,28 @@ const styles = `
   .ld-search-box input { border: none; outline: none; font-family: 'Manrope', sans-serif; font-size: 0.875rem; color: var(--text-dark); width: 100%; background: transparent; }
   .ld-search-box svg { color: var(--text-light); flex-shrink: 0; }
 
-  /* ── HOSTEL CARDS GRID ── */
-  .ld-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; padding: 1.5rem; }
+  /* CARDS GRID */
+  .ld-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; padding: 1.5rem; }
 
-  .ld-hcard {
-    border: 1.5px solid var(--gray-light); border-radius: 14px;
-    overflow: hidden; transition: var(--transition); background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
+  .ld-hcard { border: 1.5px solid var(--gray-light); border-radius: 14px; overflow: hidden; transition: var(--transition); background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   .ld-hcard:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: rgba(232,80,26,0.3); }
 
-  .ld-hcard-img {
-    position: relative; height: 180px; overflow: hidden;
-    background: linear-gradient(135deg, #e4e6eb, #f0f2f5);
-  }
+  .ld-hcard-img { position: relative; height: 180px; overflow: hidden; background: linear-gradient(135deg, #e4e6eb, #f0f2f5); }
   .ld-hcard-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
   .ld-hcard:hover .ld-hcard-img img { transform: scale(1.05); }
   .ld-hcard-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 2.5rem; }
 
-  .ld-hcard-status {
-    position: absolute; top: 0.75rem; left: 0.75rem;
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.3rem 0.75rem; border-radius: 20px;
-    font-size: 0.72rem; font-weight: 700;
-    backdrop-filter: blur(8px);
-  }
+  .ld-hcard-status { position: absolute; top: 0.75rem; left: 0.75rem; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; backdrop-filter: blur(8px); }
   .ld-hcard-status.verified { background: rgba(5,150,105,0.9); color: white; }
-  .ld-hcard-status.pending { background: rgba(217,119,6,0.9); color: white; }
+  .ld-hcard-status.pending  { background: rgba(217,119,6,0.9); color: white; }
 
-  .ld-hcard-actions-overlay {
-    position: absolute; top: 0.75rem; right: 0.75rem;
-    display: flex; gap: 0.4rem; opacity: 0; transition: var(--transition);
-  }
+  .ld-hcard-actions-overlay { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; opacity: 0; transition: var(--transition); }
   .ld-hcard:hover .ld-hcard-actions-overlay { opacity: 1; }
-  .ld-hcard-act-btn {
-    width: 34px; height: 34px; border-radius: 8px;
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem; transition: var(--transition);
-    backdrop-filter: blur(8px);
-  }
+  .ld-hcard-act-btn { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: var(--transition); backdrop-filter: blur(8px); }
   .ld-hcard-act-btn.view { background: rgba(255,255,255,0.9); color: var(--navy); }
   .ld-hcard-act-btn.edit { background: rgba(26,63,164,0.9); color: white; }
   .ld-hcard-act-btn.del  { background: rgba(220,38,38,0.9); color: white; }
-  .ld-hcard-act-btn:hover { transform: scale(1.1); }
+  .ld-hcard-act-btn:hover { transform: scale(1.12); }
 
   .ld-hcard-body { padding: 1.1rem 1.25rem; }
   .ld-hcard-name { font-size: 1rem; font-weight: 800; color: var(--navy); margin-bottom: 0.35rem; }
@@ -334,26 +298,16 @@ const styles = `
   .ld-hcard-stat-val { font-size: 0.95rem; font-weight: 800; color: var(--navy); line-height: 1; }
   .ld-hcard-stat-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 0.2rem; }
 
-  .ld-hcard-foot {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.85rem 1.25rem; border-top: 1px solid var(--gray-light);
-    background: #fafafa;
-  }
+  .ld-hcard-foot { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.25rem; border-top: 1px solid var(--gray-light); background: #fafafa; }
   .ld-hcard-price { font-size: 1rem; font-weight: 800; color: var(--orange); }
   .ld-hcard-price span { font-size: 0.72rem; font-weight: 600; color: var(--text-light); }
   .ld-hcard-foot-actions { display: flex; gap: 0.4rem; }
-  .ld-foot-btn {
-    display: flex; align-items: center; gap: 0.35rem;
-    padding: 0.4rem 0.85rem; border-radius: 7px;
-    font-size: 0.78rem; font-weight: 700; cursor: pointer;
-    transition: var(--transition); font-family: 'Manrope', sans-serif;
-    border: 1.5px solid var(--gray-light); background: white; color: var(--text-dark);
-  }
+  .ld-foot-btn { display: flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.85rem; border-radius: 7px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: 'Manrope', sans-serif; border: 1.5px solid var(--gray-light); background: white; color: var(--text-dark); }
   .ld-foot-btn:hover { border-color: var(--navy); background: var(--navy); color: white; }
   .ld-foot-btn.danger { border-color: #fecaca; color: var(--danger); }
   .ld-foot-btn.danger:hover { border-color: var(--danger); background: var(--danger); color: white; }
 
-  /* TABLE (fallback for wide screens if preferred) */
+  /* TABLE */
   .ld-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .ld-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   .ld-table th { background: var(--gray-bg); padding: 0.85rem 1.1rem; text-align: left; font-size: 0.72rem; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 2px solid var(--gray-light); white-space: nowrap; }
@@ -378,7 +332,7 @@ const styles = `
   /* DELETE MODAL */
   .ld-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px); }
   .ld-modal { background: white; border-radius: 18px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.25); animation: modal-in 0.2s ease; }
-  @keyframes modal-in { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  @keyframes modal-in { from { opacity:0; transform:scale(0.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
   .ld-modal-icon { width: 60px; height: 60px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--danger); font-size: 1.5rem; }
   .ld-modal h3 { font-size: 1.15rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; text-align: center; }
   .ld-modal p { color: var(--text-mid); font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6; text-align: center; }
@@ -386,13 +340,7 @@ const styles = `
   .ld-modal-actions .ld-btn { flex: 1; justify-content: center; }
 
   /* REFRESH BTN */
-  .ld-refresh-btn {
-    display: flex; align-items: center; gap: 0.4rem;
-    background: white; border: 1.5px solid var(--gray-light);
-    border-radius: 8px; padding: 0.45rem 0.9rem;
-    font-size: 0.8rem; font-weight: 600; color: var(--text-mid);
-    cursor: pointer; transition: var(--transition); font-family: 'Manrope', sans-serif;
-  }
+  .ld-refresh-btn { display: flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--gray-light); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.8rem; font-weight: 600; color: var(--text-mid); cursor: pointer; transition: var(--transition); font-family: 'Manrope', sans-serif; }
   .ld-refresh-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
   .ld-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .spin { animation: spin 0.8s linear infinite; }
@@ -402,7 +350,6 @@ const styles = `
   .ld-view-btn { padding: 0.35rem 0.75rem; border-radius: 6px; border: none; background: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-mid); transition: var(--transition); font-family: 'Manrope', sans-serif; }
   .ld-view-btn.active { background: white; color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 1024px) {
     .ld-stats { grid-template-columns: repeat(2, 1fr); }
     .ld-quick { grid-template-columns: repeat(2, 1fr); }
@@ -484,16 +431,15 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
           {hostel.verified ? <><FaCheckCircle /> Verified</> : '⏳ Pending'}
         </span>
         <div className="ld-hcard-actions-overlay">
-          <button className="ld-hcard-act-btn view" title="View" onClick={onView}><FaEye /></button>
-          <button className="ld-hcard-act-btn edit" title="Edit" onClick={onEdit}><FaEdit /></button>
+          <button className="ld-hcard-act-btn view" title="View"   onClick={onView}><FaEye /></button>
+          <button className="ld-hcard-act-btn edit" title="Edit"   onClick={onEdit}><FaEdit /></button>
           <button className="ld-hcard-act-btn del"  title="Delete" onClick={onDelete}><FaTrash /></button>
         </div>
       </div>
       <div className="ld-hcard-body">
         <div className="ld-hcard-name">{hostel.name}</div>
         <div className="ld-hcard-addr">
-          <FaMapMarkerAlt />
-          {hostel.address}
+          <FaMapMarkerAlt /> {hostel.address}
         </div>
         <div className="ld-hcard-stats">
           <div className="ld-hcard-stat">
@@ -501,24 +447,23 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
             <div className="ld-hcard-stat-lbl">Rooms</div>
           </div>
           <div className="ld-hcard-stat">
-            <div className="ld-hcard-stat-val">{hostel.totalViews ?? 0}</div>
+            <div className="ld-hcard-stat-val">{hostel.totalViews ?? hostel.viewCount ?? 0}</div>
             <div className="ld-hcard-stat-lbl">Views</div>
           </div>
           <div className="ld-hcard-stat">
-            <div className="ld-hcard-stat-val" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-              <FaStar style={{ color: '#f59e0b', fontSize: '0.75rem' }} />
-              {hostel.rating ? hostel.rating.toFixed(1) : 'N/A'}
+            <div className="ld-hcard-stat-val" style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:3 }}>
+              <FaStar style={{ color:'#f59e0b', fontSize:'0.75rem' }} />
+              {hostel.rating ?? hostel.averageRating
+                ? (hostel.rating || hostel.averageRating).toFixed(1)
+                : 'N/A'}
             </div>
             <div className="ld-hcard-stat-lbl">Rating</div>
           </div>
         </div>
       </div>
       <div className="ld-hcard-foot">
-        <div>
-          <div className="ld-hcard-price">
-            MK {hostel.price?.toLocaleString() ?? '—'}
-            <span> /mo</span>
-          </div>
+        <div className="ld-hcard-price">
+          MK {hostel.price?.toLocaleString() ?? '—'}<span> /mo</span>
         </div>
         <div className="ld-hcard-foot-actions">
           <button className="ld-foot-btn" onClick={onEdit}><FaEdit /> Edit</button>
@@ -534,15 +479,15 @@ const LandlordDashboard = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, token, loading: authLoading } = useAuth();
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState('cards'); // 'cards' | 'table'
-  const [hostels, setHostels] = useState([]);
+  const [drawerOpen,     setDrawerOpen]     = useState(false);
+  const [searchQuery,    setSearchQuery]    = useState('');
+  const [viewMode,       setViewMode]       = useState('cards');
+  const [hostels,        setHostels]        = useState([]);
   const [loadingHostels, setLoadingHostels] = useState(true);
-  const [error, setError] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleting, setDeleting] = useState(false);
+  const [error,          setError]          = useState(null);
+  const [refreshing,     setRefreshing]     = useState(false);
+  const [deleteTarget,   setDeleteTarget]   = useState(null);
+  const [deleting,       setDeleting]       = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   // ── FETCH HOSTELS ──────────────────────────────
@@ -563,7 +508,6 @@ const LandlordDashboard = () => {
         throw new Error(errData.message || `Server error (${res.status})`);
       }
       const data = await res.json();
-      // ✅ handle all response shapes
       const list = data.hostels || data.data || data || [];
       setHostels(Array.isArray(list) ? list : []);
     } catch (err) {
@@ -590,7 +534,7 @@ const LandlordDashboard = () => {
     } catch (_) {}
   }, [token]);
 
-  // ✅ FIXED: wait for authLoading before role check
+  // ✅ Wait for auth to load before role check
   useEffect(() => {
     if (authLoading) return;
     if (!isAuthenticated) { navigate('/login'); return; }
@@ -616,6 +560,8 @@ const LandlordDashboard = () => {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.message || 'Delete failed');
       }
+      // ✅ Remove immediately from UI — no refresh needed
+      // Also won't come back on refresh because backend filters isActive: true
       setHostels(prev => prev.filter(h => h._id !== deleteTarget._id));
       toast.success(`"${deleteTarget.name}" deleted successfully`);
       setDeleteTarget(null);
@@ -632,9 +578,9 @@ const LandlordDashboard = () => {
   );
 
   const stats = [
-    { label: 'Active Listings',  value: hostels.length,                                                         icon: <FaBuilding />,      color: 'ico-orange' },
-    { label: 'Total Bookings',   value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                     icon: <FaCalendarCheck />, color: 'ico-navy'   },
-    { label: 'Total Views',      value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0),    icon: <FaEye />,           color: 'ico-green'  },
+    { label: 'Active Listings', value: hostels.length,                                                             icon: <FaBuilding />,      color: 'ico-orange' },
+    { label: 'Total Bookings',  value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                         icon: <FaCalendarCheck />, color: 'ico-navy'   },
+    { label: 'Total Views',     value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0),         icon: <FaEye />,           color: 'ico-green'  },
     {
       label: 'Avg Rating',
       value: hostels.length
@@ -645,13 +591,11 @@ const LandlordDashboard = () => {
   ];
 
   const quickActions = [
-    { icon: <FaPlus />,      title: 'List Hostel',  sub: 'Add new property',    action: () => navigate('/hostels/create') },
-    { icon: <FaEnvelope />,  title: 'Messages',     sub: 'Chat with students',  action: () => navigate('/messages'),  badge: unreadMessages > 0 },
-    { icon: <FaChartLine />, title: 'Analytics',    sub: 'Track performance',   action: () => navigate('/analytics') },
-    { icon: <FaUser />,      title: 'My Profile',   sub: 'Account settings',    action: () => navigate('/profile') },
+    { icon: <FaPlus />,      title: 'List Hostel', sub: 'Add new property',   action: () => navigate('/hostels/create') },
+    { icon: <FaEnvelope />,  title: 'Messages',    sub: 'Chat with students', action: () => navigate('/messages'),  badge: unreadMessages > 0 },
+    { icon: <FaChartLine />, title: 'Analytics',   sub: 'Track performance',  action: () => navigate('/analytics') },
+    { icon: <FaUser />,      title: 'My Profile',  sub: 'Account settings',   action: () => navigate('/profile') },
   ];
-
-  const handleLogout = () => { logout(); navigate('/login'); };
 
   const navLinks = [
     { icon: <FaHome />,          label: 'Dashboard',     path: '/dashboard' },
@@ -664,7 +608,9 @@ const LandlordDashboard = () => {
     { icon: <FaCog />,           label: 'Settings',      path: '/settings' },
   ];
 
-  // ── LOADING SCREEN ─────────────────────────────
+  const handleLogout = () => { logout(); navigate('/login'); };
+
+  // ── AUTH LOADING SCREEN ────────────────────────
   if (authLoading) {
     return (
       <>
@@ -812,9 +758,10 @@ const LandlordDashboard = () => {
             ))}
           </div>
 
-          {/* MY HOSTELS */}
+          {/* MY HOSTELS HEADER */}
           <div className="ld-sec-hd">
-            <h2><FaHome /> My Hostels
+            <h2>
+              <FaHome /> My Hostels
               {!loadingHostels && hostels.length > 0 && (
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)', marginLeft: 4 }}>
                   ({hostels.length})
@@ -855,7 +802,6 @@ const LandlordDashboard = () => {
             </div>
           ) : (
             <div className="ld-panel">
-              {/* PANEL HEAD */}
               <div className="ld-panel-head">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span className="ld-panel-label"><FaBuilding /> Properties</span>
@@ -874,10 +820,11 @@ const LandlordDashboard = () => {
 
               {filtered.length === 0 ? (
                 <div className="ld-empty" style={{ padding: '2.5rem' }}>
-                  <p style={{ color: 'var(--text-mid)', marginBottom: 0 }}>No hostels match "<strong>{searchQuery}</strong>"</p>
+                  <p style={{ color: 'var(--text-mid)', marginBottom: 0 }}>
+                    No hostels match "<strong>{searchQuery}</strong>"
+                  </p>
                 </div>
               ) : viewMode === 'cards' ? (
-                /* CARDS VIEW */
                 <div className="ld-cards-grid">
                   {filtered.map(hostel => (
                     <HostelCard
@@ -890,7 +837,6 @@ const LandlordDashboard = () => {
                   ))}
                 </div>
               ) : (
-                /* TABLE VIEW */
                 <div className="ld-table-wrap">
                   <table className="ld-table">
                     <thead>
@@ -910,25 +856,27 @@ const LandlordDashboard = () => {
                         <tr key={hostel._id}>
                           <td><span className="ld-cell-name">{hostel.name}</span></td>
                           <td>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-mid)', fontSize: '0.83rem' }}>
-                              <FaMapMarkerAlt style={{ color: 'var(--orange)', flexShrink: 0 }} />
+                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem', color:'var(--text-mid)', fontSize:'0.83rem' }}>
+                              <FaMapMarkerAlt style={{ color:'var(--orange)', flexShrink:0 }} />
                               {hostel.address}
                             </span>
                           </td>
                           <td>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                              <FaDoorOpen style={{ color: 'var(--text-light)' }} />
+                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem' }}>
+                              <FaDoorOpen style={{ color:'var(--text-light)' }} />
                               <strong>{hostel.availableRooms ?? '—'}</strong>/{hostel.totalRooms ?? '—'}
                             </span>
                           </td>
-                          <td style={{ fontWeight: 800, color: 'var(--orange)' }}>
+                          <td style={{ fontWeight:800, color:'var(--orange)' }}>
                             MK {hostel.price?.toLocaleString() ?? '—'}
                           </td>
                           <td>{hostel.totalViews ?? hostel.viewCount ?? 0}</td>
                           <td>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                              <FaStar style={{ color: '#f59e0b' }} />
-                              {hostel.rating ?? hostel.averageRating ? (hostel.rating || hostel.averageRating).toFixed(1) : 'N/A'}
+                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem' }}>
+                              <FaStar style={{ color:'#f59e0b' }} />
+                              {(hostel.rating || hostel.averageRating)
+                                ? (hostel.rating || hostel.averageRating).toFixed(1)
+                                : 'N/A'}
                             </span>
                           </td>
                           <td>
@@ -938,8 +886,8 @@ const LandlordDashboard = () => {
                           </td>
                           <td>
                             <div className="ld-row-actions">
-                              <button className="ld-icon-btn" title="View" onClick={() => navigate(`/hostels/${hostel._id}`)}><FaEye /></button>
-                              <button className="ld-icon-btn" title="Edit" onClick={() => navigate(`/hostels/edit/${hostel._id}`)}><FaEdit /></button>
+                              <button className="ld-icon-btn" title="View"   onClick={() => navigate(`/hostels/${hostel._id}`)}><FaEye /></button>
+                              <button className="ld-icon-btn" title="Edit"   onClick={() => navigate(`/hostels/edit/${hostel._id}`)}><FaEdit /></button>
                               <button className="ld-icon-btn del" title="Delete" onClick={() => setDeleteTarget(hostel)}><FaTrash /></button>
                             </div>
                           </td>

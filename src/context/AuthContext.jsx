@@ -5,20 +5,19 @@ import { storage } from '../utils/helpers';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); // ✅ ADD token state
-  const [loading, setLoading] = useState(true);
+  const [user, setUser]                   = useState(null);
+  const [token, setToken]                 = useState(null); // ✅ token state added
+  const [loading, setLoading]             = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in on mount
     const checkAuth = () => {
-      const savedToken = storage.get('token'); // ✅ read token from storage
-      const savedUser = storage.get('user');
+      const savedToken = storage.get('token');
+      const savedUser  = storage.get('user');
 
       if (savedToken && savedUser) {
         setUser(savedUser);
-        setToken(savedToken); // ✅ set token in state
+        setToken(savedToken); // ✅ restore token on page refresh
         setIsAuthenticated(true);
       }
       setLoading(false);
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   // Get dashboard URL based on role
   const getDashboardUrl = (userRole) => {
     if (userRole === 'student') return '/dashboard';
-    if (userRole === 'owner') return '/landlord-dashboard';
+    if (userRole === 'owner')   return '/landlord-dashboard';
     return '/';
   };
 
@@ -39,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.login(credentials);
       setUser(data.user);
-      setToken(data.token); // ✅ save token on login
+      setToken(data.token);       // ✅ set token on login
       setIsAuthenticated(true);
       return {
         ...data,
@@ -55,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.register(userData);
       setUser(data.user);
-      setToken(data.token); // ✅ save token on register
+      setToken(data.token);       // ✅ set token on register
       setIsAuthenticated(true);
       return {
         ...data,
@@ -70,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authService.logout();
     setUser(null);
-    setToken(null); // ✅ clear token on logout
+    setToken(null);               // ✅ clear token on logout
     setIsAuthenticated(false);
   };
 
@@ -82,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    token,            // ✅ NOW exported — this is what the dashboard needs
+    token,            // ✅ exported so dashboard can use it
     loading,
     isAuthenticated,
     login,
@@ -92,7 +91,11 @@ export const AuthProvider = ({ children }) => {
     getDashboardUrl,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
