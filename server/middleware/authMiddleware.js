@@ -10,13 +10,10 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(' ')[1];
 
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from token
       req.user = await User.findById(decoded.id).select('-password');
 
       if (!req.user) {
@@ -28,7 +25,7 @@ exports.protect = async (req, res, next) => {
 
       next();
     } catch (error) {
-      console.error(error);
+      console.error('Token error:', error.message);
       return res.status(401).json({
         success: false,
         message: 'Not authorized, token failed'
@@ -44,15 +41,27 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-// Check user role
+// ✅ FIXED: handles both authorize('owner') and authorize(['owner', 'landlord'])
 exports.authorize = (...roles) => {
+  const allowedRoles = roles.flat();
+
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
+    if (!req.user) {
+      return res.status(401).json({
         success: false,
-        message: `User role '${req.user.role}' is not authorized to access this route`
+        message: 'Not authorized, please login'
       });
     }
+
+    console.log(`🔐 Role check → user role: "${req.user.role}" | allowed: [${allowedRoles}]`);
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Access forbidden: your role "${req.user.role}" is not allowed to perform this action`
+      });
+    }
+
     next();
   };
 };
