@@ -58,7 +58,6 @@ const styles = `
   }
   .nav-signup:hover { opacity: 0.88; }
 
-  /* Hide text labels on very small screens, show only icons */
   @media (max-width: 400px) {
     nav { padding: 0 0.8rem; }
     .logo-text { display: none; }
@@ -103,7 +102,6 @@ const styles = `
     margin-bottom: 2.5rem; line-height: 1.7;
   }
 
-  /* CTA buttons in hero */
   .hero-btns {
     display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
   }
@@ -123,7 +121,6 @@ const styles = `
   }
   .hero-btn-ghost:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
 
-  /* Hero stats */
   .hero-stats {
     display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
     margin-top: 3rem; padding-top: 2rem;
@@ -364,7 +361,6 @@ function Navbar({ isAuthenticated, user }) {
 }
 
 function Hero({ isAuthenticated }) {
-  const navigate = useNavigate();
   return (
     <section className="hero">
       <div className="hero-bg" />
@@ -380,18 +376,9 @@ function Hero({ isAuthenticated }) {
           </a>
         </div>
         <div className="hero-stats">
-          <div className="hero-stat">
-            <strong>200+</strong>
-            <span>Students Housed</span>
-          </div>
-          <div className="hero-stat">
-            <strong>50+</strong>
-            <span>Listed Hostels</span>
-          </div>
-          <div className="hero-stat">
-            <strong>9</strong>
-            <span>Areas Covered</span>
-          </div>
+          <div className="hero-stat"><strong>200+</strong><span>Students Housed</span></div>
+          <div className="hero-stat"><strong>50+</strong><span>Listed Hostels</span></div>
+          <div className="hero-stat"><strong>9</strong><span>Areas Covered</span></div>
         </div>
       </div>
     </section>
@@ -571,15 +558,9 @@ function Footer() {
   );
 }
 
+// ✅ FIXED: Removed auto-redirect useEffect — users now only navigate when they click something
 export default function Home() {
-  const navigate = useNavigate();
-  const { isAuthenticated, user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate, loading]);
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <>
