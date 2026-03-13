@@ -1,22 +1,24 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import authService from '../services/authService'; // Real service, not mock!
+import authService from '../services/authService';
 import { storage } from '../utils/helpers';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null); // ✅ ADD token state
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in on mount
     const checkAuth = () => {
-      const token = storage.get('token');
+      const savedToken = storage.get('token'); // ✅ read token from storage
       const savedUser = storage.get('user');
-      
-      if (token && savedUser) {
+
+      if (savedToken && savedUser) {
         setUser(savedUser);
+        setToken(savedToken); // ✅ set token in state
         setIsAuthenticated(true);
       }
       setLoading(false);
@@ -25,13 +27,10 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // ✅ NEW: Get dashboard URL based on role
+  // Get dashboard URL based on role
   const getDashboardUrl = (userRole) => {
-    if (userRole === 'student') {
-      return '/dashboard';
-    } else if (userRole === 'owner') {
-      return '/landlord-dashboard';
-    }
+    if (userRole === 'student') return '/dashboard';
+    if (userRole === 'owner') return '/landlord-dashboard';
     return '/';
   };
 
@@ -40,12 +39,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.login(credentials);
       setUser(data.user);
+      setToken(data.token); // ✅ save token on login
       setIsAuthenticated(true);
-      
-      // ✅ NEW: Return dashboard URL along with data
       return {
         ...data,
-        dashboardUrl: getDashboardUrl(data.user.role)
+        dashboardUrl: getDashboardUrl(data.user.role),
       };
     } catch (error) {
       throw error;
@@ -57,12 +55,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.register(userData);
       setUser(data.user);
+      setToken(data.token); // ✅ save token on register
       setIsAuthenticated(true);
-      
-      // ✅ NEW: Return dashboard URL along with data
       return {
         ...data,
-        dashboardUrl: getDashboardUrl(data.user.role)
+        dashboardUrl: getDashboardUrl(data.user.role),
       };
     } catch (error) {
       throw error;
@@ -73,6 +70,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authService.logout();
     setUser(null);
+    setToken(null); // ✅ clear token on logout
     setIsAuthenticated(false);
   };
 
@@ -84,13 +82,14 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    token,            // ✅ NOW exported — this is what the dashboard needs
     loading,
     isAuthenticated,
     login,
     register,
     logout,
     updateUser,
-    getDashboardUrl  // ✅ NEW: Export function for use in components
+    getDashboardUrl,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
