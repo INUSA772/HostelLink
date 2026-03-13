@@ -487,8 +487,8 @@ const CreateHostel = () => {
       };
 
       await createHostel(hostelData);
-      toast.success('🎉 Hostel created successfully!');
-      navigate('/my-hostels');
+      toast.success('Hostel created successfully!');
+      navigate('/landlord-dashboard');
     } catch (error) {
       console.error(error);
     }
@@ -668,7 +668,7 @@ const CreateHostel = () => {
                       value={formData.price}
                       onChange={handleChange}
                       placeholder="e.g., 45000"
-                      icon={<FaDollarSign />}
+                      icon={<MK/>}
                       required
                     />
                   </div>
@@ -680,7 +680,7 @@ const CreateHostel = () => {
                       name="contactPhone"
                       value={formData.contactPhone}
                       onChange={handleChange}
-                      placeholder="e.g., 0888123456"
+                      placeholder="e.g., 0986584136"
                       required
                     />
                   </div>
