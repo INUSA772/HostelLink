@@ -488,7 +488,7 @@ const CreateHostel = () => {
 
       await createHostel(hostelData);
       toast.success('Hostel created successfully!');
-      navigate('/landlord-dashboard');
+      navigate('/my-hostels');
     } catch (error) {
       console.error(error);
     }
