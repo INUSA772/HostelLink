@@ -385,13 +385,25 @@ const Messages = () => {
   useEffect(() => { loadConversations(); }, []);
 
   // Open conversation from URL
-  useEffect(() => {
-    const convId = searchParams.get('conversation');
-    if (convId && conversations.length > 0) {
-      const conv = conversations.find((c) => c._id === convId);
-      if (conv) openConversation(conv);
+useEffect(() => {
+  const convId = searchParams.get('conversation');
+  if (!convId || loadingConvs) return;
+
+  if (conversations.length > 0) {
+    const conv = conversations.find((c) => c._id === convId);
+    if (conv) {
+      openConversation(conv);
+    } else {
+      // ✅ Conversation not in list yet — fetch it directly
+      messageService.getConversations().then((data) => {
+        const allConvs = data.data || [];
+        setConversations(allConvs);
+        const found = allConvs.find((c) => c._id === convId);
+        if (found) openConversation(found);
+      });
     }
-  }, [searchParams, conversations]);
+  }
+}, [searchParams, conversations, loadingConvs]);
 
   // Socket listeners
   useEffect(() => {
