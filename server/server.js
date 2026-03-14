@@ -1,59 +1,124 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 const connectDB = require('./config/database');
 
-// Connect to database
 connectDB();
 
-// Initialize express
 const app = express();
+const server = http.createServer(app);
 
-// Middleware
+const io = new Server(server, {
+  cors: {
+    origin: [
+      'http://localhost:5173',
+      'https://hostel-link.vercel.app',
+      'https://pezahostel.vercel.app',
+    ],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
+// Make io accessible in controllers
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://hostel-link.vercel.app'],
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'https://hostel-link.vercel.app',
+    'https://pezahostel.vercel.app',
+  ],
+  credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Health check routes
 app.get('/', (req, res) => {
-  res.json({ success: true, message: 'Hostel Finder API is running!' });
+  res.json({ success: true, message: 'PezaHostel API is running!' });
 });
-
 app.get('/api/test', (req, res) => {
-  res.json({ success: true, message: 'API is working correctly!' });
+  res.json({ success: true, message: 'API is working!' });
 });
 
-// Route imports
-const authRoutes = require('./routes/authRoutes');
-const hostelRoutes = require('./routes/hostelRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes     = require('./routes/authRoutes');
+const hostelRoutes   = require('./routes/hostelRoutes');
+const bookingRoutes  = require('./routes/bookingRoutes');
+const paymentRoutes  = require('./routes/paymentRoutes');
+const reviewRoutes   = require('./routes/reviewRoutes');
+const userRoutes     = require('./routes/userRoutes');
+const messageRoutes  = require('./routes/messageRoutes');
 
-// Register routes
-app.use('/api/auth', authRoutes);
-app.use('/api/hostels', hostelRoutes);
+app.use('/api/auth',     authRoutes);
+app.use('/api/hostels',  hostelRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/reviews',  reviewRoutes);
+app.use('/api/users',    userRoutes);
+app.use('/api/messages', messageRoutes);
 
-// Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     success: false,
     message: err.message || 'Server Error',
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 });
 
-// Start server
+// Socket.io
+const onlineUsers = new Map();
+
+io.on('connection', (socket) => {
+  console.log(`🔌 Socket connected: ${socket.id}`);
+
+  socket.on('user:join', (userId) => {
+    onlineUsers.set(userId, socket.id);
+    io.emit('users:online', Array.from(onlineUsers.keys()));
+  });
+
+  socket.on('conversation:join', (conversationId) => {
+    socket.join(conversationId);
+  });
+
+  socket.on('conversation:leave', (conversationId) => {
+    socket.leave(conversationId);
+  });
+
+  socket.on('message:send', (data) => {
+    socket.to(data.conversationId).emit('message:receive', data.message);
+  });
+
+  socket.on('typing:start', (data) => {
+    socket.to(data.conversationId).emit('typing:start', {
+      userId: data.userId,
+      name: data.name,
+    });
+  });
+
+  socket.on('typing:stop', (data) => {
+    socket.to(data.conversationId).emit('typing:stop', {
+      userId: data.userId,
+    });
+  });
+
+  socket.on('disconnect', () => {
+    for (const [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        break;
+      }
+    }
+    io.emit('users:online', Array.from(onlineUsers.keys()));
+  });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`✅ Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
