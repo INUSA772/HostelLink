@@ -1,93 +1,166 @@
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
-const cloudinary = require('../config/cloudinary');
+const { v2: cloudinary } = require('cloudinary');
 const streamifier = require('streamifier');
 
-// @desc  Get user profile
+// ── CLOUDINARY CONFIG ─────────────────────────────
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// ── HELPER: stream buffer to cloudinary ──────────
+const streamUpload = (buffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'pezahostel/avatars',
+        transformation: [
+          { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+          { quality: 'auto', fetch_format: 'auto' },
+        ],
+      },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+
+// ── GET PROFILE ───────────────────────────────────
 // @route GET /api/users/profile
+// @access Private
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    res.json({ success: true, data: user });
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.json({ success: true, user });
   } catch (error) {
+    console.error('getProfile error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-// @desc  Update user profile
+// ── UPDATE PROFILE ────────────────────────────────
 // @route PUT /api/users/profile
+// @access Private
 exports.updateProfile = async (req, res) => {
   try {
-    const allowedFields = ['firstName', 'lastName', 'phone', 'profilePicture', 'studentId', 'bio'];
+    const allowedFields = ['firstName', 'lastName', 'phone', 'studentId', 'bio'];
     const updates = {};
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
     });
 
-    const user = await User.findByIdAndUpdate(req.user._id, updates, {
-      new: true,
-      runValidators: true,
-    });
+    // Never allow these to be changed via this route
+    delete updates.email;
+    delete updates.role;
+    delete updates.password;
 
-    res.json({ success: true, data: user });
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, user, message: 'Profile updated successfully' });
   } catch (error) {
+    console.error('updateProfile error:', error);
     res.status(500).json({ success: false, message: 'Server error updating profile' });
   }
 };
 
-// @desc  Upload profile picture
+// ── UPLOAD AVATAR ─────────────────────────────────
 // @route PUT /api/users/profile/avatar
-exports.uploadAvatar = async (req, res) => {
+// @access Private
+exports.updateAvatar = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file provided' });
     }
 
-    const streamUpload = () =>
-      new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'avatars',
-            transformation: [{ width: 400, height: 400, crop: 'fill' }],
-          },
-          (error, result) => {
-            if (result) resolve(result);
-            else reject(error);
-          }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
+    // Delete old avatar from cloudinary if exists
+    const existingUser = await User.findById(req.user._id);
+    if (existingUser?.profilePictureId) {
+      try {
+        await cloudinary.uploader.destroy(existingUser.profilePictureId);
+      } catch (err) {
+        console.warn('Could not delete old avatar:', err.message);
+      }
+    }
 
-    const result = await streamUpload();
+    // Upload new image to cloudinary
+    const result = await streamUpload(req.file.buffer);
 
+    // Save to user
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { profilePicture: result.secure_url },
+      {
+        $set: {
+          profilePicture:   result.secure_url,
+          profilePictureId: result.public_id,
+        },
+      },
       { new: true }
-    );
+    ).select('-password');
 
-    res.json({ success: true, user });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      user,
+      profilePicture: result.secure_url,
+      message: 'Profile picture updated successfully',
+    });
   } catch (error) {
-    console.error('Avatar upload error:', error);
+    console.error('updateAvatar error:', error);
     res.status(500).json({ success: false, message: 'Failed to upload image' });
   }
 };
 
-// @desc  Change password
+// ── CHANGE PASSWORD ───────────────────────────────
 // @route PUT /api/users/change-password
+// @access Private
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ success: false, message: 'Please provide current and new password' });
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide current and new password',
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 8 characters',
+      });
     }
 
     const user = await User.findById(req.user._id).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
     const isMatch = await user.matchPassword(currentPassword);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect',
+      });
     }
 
     user.password = newPassword;
@@ -95,12 +168,14 @@ exports.changePassword = async (req, res) => {
 
     res.json({ success: true, message: 'Password changed successfully' });
   } catch (error) {
+    console.error('changePassword error:', error);
     res.status(500).json({ success: false, message: 'Server error changing password' });
   }
 };
 
-// @desc  Get student dashboard stats
+// ── STUDENT DASHBOARD ─────────────────────────────
 // @route GET /api/users/dashboard/student
+// @access Private (student)
 exports.getStudentDashboard = async (req, res) => {
   try {
     const bookings = await Booking.find({ student: req.user._id })
@@ -108,21 +183,23 @@ exports.getStudentDashboard = async (req, res) => {
       .sort({ createdAt: -1 });
 
     const stats = {
-      totalBookings: bookings.length,
-      activeBookings: bookings.filter((b) => ['confirmed', 'active'].includes(b.status)).length,
-      pendingBookings: bookings.filter((b) => b.status === 'payment_pending').length,
+      totalBookings:     bookings.length,
+      activeBookings:    bookings.filter((b) => ['confirmed', 'active'].includes(b.status)).length,
+      pendingBookings:   bookings.filter((b) => b.status === 'payment_pending').length,
       completedBookings: bookings.filter((b) => b.status === 'completed').length,
       cancelledBookings: bookings.filter((b) => b.status === 'cancelled').length,
     };
 
     res.json({ success: true, stats, recentBookings: bookings.slice(0, 5) });
   } catch (error) {
+    console.error('getStudentDashboard error:', error);
     res.status(500).json({ success: false, message: 'Server error fetching dashboard' });
   }
 };
 
-// @desc  Get landlord dashboard stats
+// ── LANDLORD DASHBOARD ────────────────────────────
 // @route GET /api/users/dashboard/landlord
+// @access Private (owner/landlord)
 exports.getLandlordDashboard = async (req, res) => {
   try {
     const hostels = await Hostel.find({ owner: req.user._id });
@@ -133,47 +210,71 @@ exports.getLandlordDashboard = async (req, res) => {
       .populate('student', 'firstName lastName email phone')
       .sort({ createdAt: -1 });
 
-    const totalRooms = hostels.reduce((sum, h) => sum + (h.totalRooms || 0), 0);
+    const totalRooms     = hostels.reduce((sum, h) => sum + (h.totalRooms     || 0), 0);
     const availableRooms = hostels.reduce((sum, h) => sum + (h.availableRooms || 0), 0);
 
     const stats = {
-      totalHostels: hostels.length,
+      totalHostels:      hostels.length,
       totalRooms,
       availableRooms,
-      occupiedRooms: totalRooms - availableRooms,
-      totalBookings: bookings.length,
+      occupiedRooms:     totalRooms - availableRooms,
+      totalBookings:     bookings.length,
       confirmedBookings: bookings.filter((b) => ['confirmed', 'active'].includes(b.status)).length,
-      pendingBookings: bookings.filter((b) => b.status === 'payment_pending').length,
+      pendingBookings:   bookings.filter((b) => b.status === 'payment_pending').length,
     };
 
     res.json({ success: true, stats, hostels, recentBookings: bookings.slice(0, 10) });
   } catch (error) {
+    console.error('getLandlordDashboard error:', error);
     res.status(500).json({ success: false, message: 'Server error fetching landlord dashboard' });
   }
 };
 
-// @desc  Get all users (admin only)
+// ── GET ALL USERS (Admin) ─────────────────────────
 // @route GET /api/users
+// @access Private (admin)
 exports.getAllUsers = async (req, res) => {
   try {
     const { role, page = 1, limit = 20 } = req.query;
     const query = role ? { role } : {};
     const skip = (Number(page) - 1) * Number(limit);
     const total = await User.countDocuments(query);
-    const users = await User.find(query).skip(skip).limit(Number(limit)).sort({ createdAt: -1 });
+    const users = await User.find(query)
+      .select('-password')
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 });
+
     res.json({ success: true, total, count: users.length, data: users });
   } catch (error) {
+    console.error('getAllUsers error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-// @desc  Delete user account
+// ── DELETE ACCOUNT ────────────────────────────────
 // @route DELETE /api/users/account
+// @access Private
 exports.deleteAccount = async (req, res) => {
   try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Delete avatar from cloudinary
+    if (user.profilePictureId) {
+      try {
+        await cloudinary.uploader.destroy(user.profilePictureId);
+      } catch (err) {
+        console.warn('Could not delete avatar:', err.message);
+      }
+    }
+
     await User.findByIdAndUpdate(req.user._id, { isActive: false });
     res.json({ success: true, message: 'Account deactivated successfully' });
   } catch (error) {
+    console.error('deleteAccount error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
