@@ -680,7 +680,7 @@ const CreateHostel = () => {
                       name="contactPhone"
                       value={formData.contactPhone}
                       onChange={handleChange}
-                      placeholder="e.g., 0888123456"
+                      placeholder="e.g., 0986584136"
                       required
                     />
                   </div>

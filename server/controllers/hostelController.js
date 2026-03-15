@@ -33,14 +33,13 @@ exports.getHostels = async (req, res) => {
     }
 
     const sortOptions = {
-      latest: { createdAt: -1 },
-      oldest: { createdAt: 1 },
-      price_asc: { price: 1 },
+      latest:     { createdAt: -1 },
+      oldest:     { createdAt: 1 },
+      price_asc:  { price: 1 },
       price_desc: { price: -1 },
-      // backwards compat with old frontend queries
-      price_low: { price: 1 },
+      price_low:  { price: 1 },
       price_high: { price: -1 },
-      rating: { averageRating: -1 },
+      rating:     { averageRating: -1 },
     };
 
     const skip = (Number(page) - 1) * Number(limit);
@@ -90,7 +89,7 @@ exports.getHostel = async (req, res) => {
 
 // @desc  Create hostel
 // @route POST /api/hostels
-// @access Private (landlord/admin)
+// @access Private (owner/admin)
 exports.createHostel = async (req, res) => {
   try {
     req.body.owner = req.user._id;
@@ -126,7 +125,10 @@ exports.updateHostel = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Hostel not found' });
     }
 
-    if (hostel.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (
+      hostel.owner.toString() !== req.user._id.toString() &&
+      req.user.role !== 'admin'
+    ) {
       return res.status(403).json({ success: false, message: 'Not authorized to update this hostel' });
     }
 
@@ -161,11 +163,14 @@ exports.deleteHostel = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Hostel not found' });
     }
 
-    if (hostel.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (
+      hostel.owner.toString() !== req.user._id.toString() &&
+      req.user.role !== 'admin'
+    ) {
       return res.status(403).json({ success: false, message: 'Not authorized to delete this hostel' });
     }
 
-    // Soft delete — keeps records intact for existing bookings
+    // ✅ Soft delete — keeps records for existing bookings
     hostel.isActive = false;
     await hostel.save();
 
@@ -178,10 +183,15 @@ exports.deleteHostel = async (req, res) => {
 
 // @desc  Get hostels owned by the logged-in landlord
 // @route GET /api/hostels/my-hostels
-// @access Private (landlord/admin)
+// @access Private (owner/admin)
 exports.getMyHostels = async (req, res) => {
   try {
-    const hostels = await Hostel.find({ owner: req.user._id }).sort({ createdAt: -1 });
+    // ✅ FIXED: only return active hostels so deleted ones never reappear
+    const hostels = await Hostel.find({
+      owner: req.user._id,
+      isActive: true,
+    }).sort({ createdAt: -1 });
+
     res.json({ success: true, count: hostels.length, data: hostels, hostels });
   } catch (error) {
     console.error('getMyHostels error:', error);
@@ -194,7 +204,8 @@ exports.getMyHostels = async (req, res) => {
 // @access Public
 exports.getHostelAvailability = async (req, res) => {
   try {
-    const hostel = await Hostel.findById(req.params.id).select('totalRooms availableRooms name');
+    const hostel = await Hostel.findById(req.params.id)
+      .select('totalRooms availableRooms name');
 
     if (!hostel) {
       return res.status(404).json({ success: false, message: 'Hostel not found' });
@@ -240,7 +251,7 @@ exports.getNearbyHostels = async (req, res) => {
             type: 'Point',
             coordinates: [Number(lng), Number(lat)],
           },
-          $maxDistance: Number(radius) * 1000, // km → metres
+          $maxDistance: Number(radius) * 1000,
         },
       },
     })

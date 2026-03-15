@@ -1,6 +1,10 @@
 // server/routes/hostelRoutes.js
 const express = require('express');
 const router = express.Router();
+<<<<<<< HEAD
+=======
+const { protect, authorize } = require('../middleware/authMiddleware');
+>>>>>>> b58c1592af02064fbd8848ccc82e179f0aa458a4
 const hostelController = require('../controllers/hostelController');
 const { authenticate, authorize } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
@@ -13,6 +17,7 @@ router.get('/', hostelController.getAllHostels);
 // Get hostel by ID
 router.get('/:id', hostelController.getHostelById);
 
+<<<<<<< HEAD
 // Search hostels
 router.get('/search/query', hostelController.searchHostels);
 
@@ -78,5 +83,49 @@ router.delete(
   authorize(['owner']),
   hostelController.removeAmenity
 );
+=======
+// ✅ FIXED: /my-hostels MUST be before /:id
+// otherwise Express reads "my-hostels" as an :id param
+router.get(
+  '/my-hostels',
+  protect,
+  authorize('owner', 'landlord', 'admin'),
+  hostelController.getMyHostels
+);
+
+// Get hostel availability — also before /:id
+router.get('/:id/availability', hostelController.getHostelAvailability);
+
+// Get single hostel by ID — keep this LAST among GET routes
+router.get('/:id', hostelController.getHostel);
+
+// ═══════════════════════════════════════════════════════════════
+// PROTECTED ROUTES (AUTH REQUIRED)
+// ═══════════════════════════════════════════════════════════════
+
+// Create new hostel
+router.post(
+  '/',
+  protect,
+  authorize('owner', 'landlord', 'admin'),
+  hostelController.createHostel
+);
+
+// Update hostel
+router.put(
+  '/:id',
+  protect,
+  authorize('owner', 'landlord', 'admin'),
+  hostelController.updateHostel
+);
+
+// Delete hostel
+router.delete(
+  '/:id',
+  protect,
+  authorize('owner', 'landlord', 'admin'),
+  hostelController.deleteHostel
+);
+>>>>>>> b58c1592af02064fbd8848ccc82e179f0aa458a4
 
 module.exports = router;
