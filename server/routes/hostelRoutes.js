@@ -6,10 +6,9 @@ const hostelController = require('../controllers/hostelController');
 // ── PUBLIC ROUTES ─────────────────────────────────
 
 // Get all hostels
-router.get('/', hostelController.getAllHostels);
+router.get('/', hostelController.getHostels);
 
-// ✅ IMPORTANT: /my-hostels MUST be before /:id
-// otherwise Express reads "my-hostels" as an :id param
+// ✅ MUST be before /:id — otherwise Express reads "my-hostels" as an :id param
 router.get(
   '/my-hostels',
   protect,
@@ -17,11 +16,14 @@ router.get(
   hostelController.getMyHostels
 );
 
-// Get hostel availability
+// Nearby hostels — also before /:id
+router.get('/nearby', hostelController.getNearbyHostels);
+
+// Get hostel availability — before /:id
 router.get('/:id/availability', hostelController.getHostelAvailability);
 
-// Get single hostel by ID — keep LAST among GET routes
-router.get('/:id', hostelController.getHostelById);
+// Get single hostel by ID — LAST among GET routes
+router.get('/:id', hostelController.getHostel);
 
 // ── PROTECTED ROUTES ──────────────────────────────
 
