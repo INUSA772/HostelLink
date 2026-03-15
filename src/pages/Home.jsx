@@ -143,7 +143,10 @@ const styles = `
   }
   .nav-signup:hover { opacity: 0.88; }
 
-  /* Hide text labels on very small screens, show only icons */
+  @media (max-width: 1024px) {
+    .nav-center { display: none; }
+  }
+
   @media (max-width: 400px) {
     nav { padding: 0 0.8rem; }
     .logo-text { display: none; }
@@ -336,28 +339,63 @@ const styles = `
     z-index: 2;
   }
 
-  /* ── WAVES ── */
-  .wave {
+  .hero h2 {
+    color: #fff;
+    font-size: 3rem;
+    text-shadow: 0px 0px 10px cyan,
+                 0px 0px 20px cyan,
+                 0px 0px 40px cyan,
+                 0px 0px 80px cyan;
+    font-family: 'Poppins', sans-serif;
+    z-index: 2;
+  }
+
+  .hero .wave {
     position: absolute;
     bottom: -.5rem;
     left: 0;
     height: 11rem;
     width: 100%;
-    background: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1400&auto=format&fit=crop');
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAIklEQVR42mNkYGBoYmBgeM8ABYxgLMQCiRABYiABYiABFgAESQALfH1w0gAAAABJRU5ErkJggg==');
     background-size: 100rem 11rem;
     animation: waves 8s linear infinite;
     background-repeat: repeat-x;
-    opacity: 0.3;
+    z-index: 1;
   }
-  .wave1 { animation-duration: 8s; opacity: 0.4; }
-  .wave2 { animation-direction: reverse; animation-duration: 6s; opacity: 0.3; bottom: -0.3rem; }
-  .wave3 { animation-duration: 4s; opacity: 0.5; bottom: 0rem; }
+
+  .hero .wave2 {
+    animation-direction: reverse;
+    animation-duration: 6s;
+    opacity: .3;
+  }
+
+  .hero .wave3 {
+    animation-duration: 4s;
+    opacity: .5;
+  }
+
   @keyframes waves {
     0% { background-position-x: 0; }
     100% { background-position-x: 100rem; }
   }
 
-  /* CTA buttons in hero */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    z-index: 2;
+    position: relative;
+  }
+  .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: #facc15; }
+  .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+
   .hero-btns {
     display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
     z-index: 2;
@@ -378,15 +416,6 @@ const styles = `
     text-decoration: none;
   }
   .hero-btn-ghost:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
-
-  /* Hero stats */
-  .hero-stats {
-    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
-    margin-top: 3rem; padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.15);
-  }
-  .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: #facc15; }
-  .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
 
   /* ── SECTIONS ── */
   .section-label { font-size: 0.8rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; text-align: center; }
@@ -514,251 +543,201 @@ const styles = `
   }
   .btn-primary:hover { opacity: 0.9; }
 
-  /* ── FAQ SECTION WITH FREQUENCY WAVES ── */
-  .faq-section {
+  /* ══════════════════════════════════════════════
+     FAQ SECTION — EXACTLY LIKE FORJITECH SCREENSHOT
+     Dark background, question mark bg image,
+     cyan heading with corner brackets,
+     cyan accordion rows with + icon
+  ══════════════════════════════════════════════ */
+  .faq {
     position: relative;
-    min-height: 70vh;
-    width: 100%;
+    padding: 5rem 1.5rem 6rem;
+    background: #1a1a2e;
+    background-image:
+      radial-gradient(ellipse at 80% 50%, rgba(0,191,255,0.05) 0%, transparent 60%),
+      url('https://images.unsplash.com/photo-1518976024611-28bf4b48222e?w=1400&auto=format&fit=crop&q=40');
+    background-blend-mode: overlay, normal;
+    background-size: cover;
+    background-position: center;
     text-align: center;
-    padding: 4rem 2rem 2rem;
-    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&auto=format&fit=crop') center/cover no-repeat;
-    background-attachment: fixed;
     overflow: hidden;
   }
 
-  .faq-section::before {
+  /* Dark overlay so text stays readable */
+  .faq::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    background: rgba(15, 15, 35, 0.82);
+    z-index: 0;
   }
 
-  .faq-content {
+  /* Large translucent question mark on right side — like screenshot */
+  .faq-qmark {
+    position: absolute;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    pointer-events: none;
+    z-index: 1;
+    line-height: 1;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Inner content sits above overlays */
+  .faq-inner {
     position: relative;
     z-index: 2;
-    max-width: 900px;
-    margin: 0 auto;
   }
 
-  .faq-heading {
-    margin: 2rem;
-    padding-top: 2rem;
+  /* ── FAQ HEADING with corner brackets ── */
+  .faq .heading {
     display: inline-block;
     font-size: 3.5rem;
     color: #00bfff;
     position: relative;
     letter-spacing: .2rem;
-    font-weight: 800;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin-bottom: 3rem;
+    padding: 0 1.5rem;
   }
 
-  .faq-heading::before, .faq-heading::after {
+  /* Top-left bracket corner */
+  .faq .heading::before {
     content: '';
     position: absolute;
-    height: 2.5rem;
-    width: 2.5rem;
-    border-top: .4rem solid #00bfff;
-    border-left: .4rem solid #00bfff;
+    top: 0;
+    left: 0;
+    width: 2rem;
+    height: 2rem;
+    border-top: .35rem solid #00bfff;
+    border-left: .35rem solid #00bfff;
   }
 
-  .faq-heading::before {
-    top: 1.8rem;
-    left: -2rem;
+  /* Bottom-right bracket corner */
+  .faq .heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 2rem;
+    height: 2rem;
+    border-bottom: .35rem solid #00bfff;
+    border-right: .35rem solid #00bfff;
   }
 
-  .faq-heading::after {
-    bottom: -.5rem;
-    right: -2rem;
-    transform: rotate(180deg);
+  .faq .row {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
   }
 
-  .faq-row {
+  .faq .accordion-container {
+    width: 100%;
+  }
+
+  /* ── Each accordion row — cyan background like screenshot ── */
+  .faq .accordion {
+    width: 100%;
+    cursor: pointer;
+    margin: 0.6rem 0;
+    border-radius: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .faq .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: transparent;
+    transition: background 0.3s ease;
+  }
+
+  /* The cyan + button on the left */
+  .faq .accordion-plus {
+    width: 52px;
+    height: 56px;
+    background: #1a1a2e;
+    border: 2px solid #00bfff;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 2rem;
-    flex-wrap: wrap;
+    flex-shrink: 0;
+    transition: all 0.3s;
   }
 
-  .accordion-container {
-    width: 100%;
-    max-width: 700px;
+  .faq .accordion-plus span {
+    font-size: 1.8rem;
+    color: #00bfff;
+    font-weight: 300;
+    line-height: 1;
+    transition: transform 0.3s ease, color 0.3s;
+    display: block;
+    margin-top: -2px;
+  }
+
+  /* The cyan label bar */
+  .faq .accordion-label {
+    flex: 1;
+    background: #00bfff;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.8rem;
+    transition: background 0.3s;
+  }
+
+  .faq .accordion-label h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  .faq .accordion:hover .accordion-label { background: #00aadd; }
+  .faq .accordion:hover .accordion-plus { background: #00bfff; }
+  .faq .accordion:hover .accordion-plus span { color: #fff; }
+
+  /* Active state */
+  .faq .accordion.active .accordion-plus span {
+    transform: rotate(45deg);
+    color: #fff;
+  }
+  .faq .accordion.active .accordion-plus {
+    background: #00bfff;
+  }
+
+  /* Answer body */
+  .faq .accordion-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background: rgba(0,191,255,0.08);
+    border-left: 3px solid #00bfff;
     text-align: left;
   }
 
-  .accordion {
-    margin-bottom: 0.5rem;
+  .faq .accordion.active .accordion-body {
+    max-height: 400px;
+    padding: 1.2rem 1.8rem 1.2rem 2rem;
   }
 
-  .accordion-header {
-    background: linear-gradient(135deg, rgba(0, 191, 255, 0.9) 0%, rgba(0, 153, 204, 0.9) 100%);
-    margin: 1rem 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
-  }
-
-  .accordion-header:hover {
-    background: linear-gradient(135deg, #00bfff 0%, #0099cc 100%);
-    transform: translateX(5px);
-    box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
-  }
-
-  .accordion-header span {
-    display: inline-flex;
-    text-align: center;
-    height: 2.5rem;
-    width: 2.5rem;
-    line-height: 2.5rem;
-    font-size: 1.8rem;
-    background: rgba(51, 51, 51, 0.9);
-    color: #00bfff;
-    border-radius: 4px;
-    flex-shrink: 0;
-    justify-content: center;
-    transition: transform 0.3s;
-  }
-
-  .accordion-header.active span {
-    transform: rotate(45deg);
-    background: rgba(0, 191, 255, 0.3);
-    color: #fff;
-  }
-
-  .accordion-header h3 {
-    color: #fff;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin: 0;
-    flex: 1;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .accordion-body {
-    padding: 1.5rem;
-    color: #222;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    background-color: rgba(255, 255, 255, 0.95);
-    font-size: 1rem;
-    display: none;
-    margin-bottom: 0.5rem;
-    border-radius: 0 0 8px 8px;
-    line-height: 1.7;
-    backdrop-filter: blur(5px);
-  }
-
-  .accordion-body.active {
-    display: block;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* ── FREQUENCY WAVE ANIMATION ── */
-  .frequency-waves {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    z-index: 2;
-  }
-
-  .frequency-wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .frequency-wave svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .wave-path {
-    fill: none;
-    stroke: #00bfff;
-    stroke-width: 2;
-    opacity: 0.7;
-    filter: drop-shadow(0 2px 3px rgba(0, 191, 255, 0.5));
-  }
-
-  .wave-path:nth-child(1) {
-    animation: waveFrequency1 4s ease-in-out infinite;
-    stroke-opacity: 0.7;
-  }
-
-  .wave-path:nth-child(2) {
-    animation: waveFrequency2 5s ease-in-out infinite;
-    stroke-opacity: 0.5;
-  }
-
-  .wave-path:nth-child(3) {
-    animation: waveFrequency3 6s ease-in-out infinite;
-    stroke-opacity: 0.3;
-  }
-
-  @keyframes waveFrequency1 {
-    0%, 100% {
-      d: path('M 0,60 Q 150,30 300,60 T 600,60 T 900,60 T 1200,60');
-    }
-    25% {
-      d: path('M 0,40 Q 150,20 300,40 T 600,40 T 900,40 T 1200,40');
-    }
-    50% {
-      d: path('M 0,80 Q 150,40 300,80 T 600,80 T 900,80 T 1200,80');
-    }
-    75% {
-      d: path('M 0,50 Q 150,15 300,50 T 600,50 T 900,50 T 1200,50');
-    }
-  }
-
-  @keyframes waveFrequency2 {
-    0%, 100% {
-      d: path('M 0,50 Q 150,40 300,50 T 600,50 T 900,50 T 1200,50');
-    }
-    25% {
-      d: path('M 0,30 Q 150,10 300,30 T 600,30 T 900,30 T 1200,30');
-    }
-    50% {
-      d: path('M 0,70 Q 150,50 300,70 T 600,70 T 900,70 T 1200,70');
-    }
-    75% {
-      d: path('M 0,45 Q 150,20 300,45 T 600,45 T 900,45 T 1200,45');
-    }
-  }
-
-  @keyframes waveFrequency3 {
-    0%, 100% {
-      d: path('M 0,65 Q 150,55 300,65 T 600,65 T 900,65 T 1200,65');
-    }
-    25% {
-      d: path('M 0,35 Q 150,25 300,35 T 600,35 T 900,35 T 1200,35');
-    }
-    50% {
-      d: path('M 0,85 Q 150,65 300,85 T 600,85 T 900,85 T 1200,85');
-    }
-    75% {
-      d: path('M 0,55 Q 150,25 300,55 T 600,55 T 900,55 T 1200,55');
-    }
+  .faq .accordion-body p {
+    font-size: 0.97rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.75);
+    font-family: 'Poppins', sans-serif;
   }
 
   /* ── FOOTER ── */
@@ -804,8 +783,8 @@ const styles = `
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .footer-brand { grid-column: 1 / -1; }
     .footer-brand p { max-width: 100%; }
-    .faq-row { padding: 0 1rem; }
-    .accordion-container { width: 100%; }
+    .faq .accordion-label h3 { font-size: 0.92rem; }
+    .hero-right-mask { display: none; }
   }
 
   @media (max-width: 520px) {
@@ -823,10 +802,11 @@ const styles = `
     .dual-section { padding: 3rem 1rem; }
     .features-section { padding: 3rem 1rem; }
     .cta-section { padding: 3rem 1rem; }
-    .faq-section { padding: 2rem 1rem; }
-    .faq-heading { font-size: 2rem; margin: 1rem; }
-    .accordion-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-    .accordion-header h3 { font-size: 0.95rem; }
+    .faq { padding: 3rem 1rem 4rem; }
+    .faq .heading { font-size: 2.5rem; }
+    .faq .accordion-plus { width: 44px; height: 50px; }
+    .faq .accordion-label { height: 50px; padding: 0 1rem; }
+    .faq .accordion-label h3 { font-size: 0.85rem; }
   }
 `;
 
@@ -842,28 +822,53 @@ const AREA_DEFINITIONS = [
   { icon: "fa fa-map",            label: "Chinyonga"  },
 ];
 
-// ✅ FAQ DATA FOR PEZAHOSTEL
-const FAQ_DATA = [
+const FAQ_ITEMS = [
   {
-    question: "How do I find a hostel on PezaHostel?",
-    answer: "Simply browse our listings by location, filter by price and amenities, view photos, and contact owners directly. You can also search by specific areas near MUBAS."
+    question: "What Inspired The Co-Founders To Start HostelLink?",
+    answer: "The Co-Founders Of HostelLink Were Inspired By The Challenges Faced By MUBAS Students In Finding Safe And Affordable Off-Campus Accommodation. Seeing The Need For A Reliable Platform That Connects Students With Verified Hostel Owners, They Decided To Create A Solution That Simplifies The Search Process And Ensures Secure Transactions For Both Parties."
   },
   {
-    question: "How do I book a hostel?",
-    answer: "Select your desired hostel, choose your check-in date and duration, and proceed to payment. Our secure payment system accepts Airtel Money,TNM Mpamba and banks."
+    question: "How Do I Get Started With HostelLink?",
+    answer: "Getting Started Is Easy! Simply Create A Free Account As Either A Student Or Hostel Owner. Students Can Browse Verified Hostels, Compare Prices, And Contact Owners Directly. Hostel Owners Can List Their Properties, Manage Bookings, And Receive Payments Securely Through Our Platform."
   },
   {
-    question: "Is PezaHostel safe and secure?",
-    answer: "Yes! We verify all hostel owners to ensure trust and safety. All payments are processed securely, and we have a direct communication system between students and owners."
+    question: "When Should I Contact HostelLink For Support?",
+    answer: "You Can Contact HostelLink Anytime You Need Assistance With Your Account, Have Questions About A Booking, Encounter Technical Issues, Or Need Help With The Payment Process. Our Support Team Is Ready To Assist You Through Email Or Phone During Business Hours."
   },
   {
-    question: "Can I list my hostel on PezaHostel?",
-    answer: "Absolutely! Register as a hostel owner, provide your property details, upload photos, and start receiving booking requests from verified students."
+    question: "How Does HostelLink Ensure Safety And Security?",
+    answer: "HostelLink Verifies All Hostel Owners Through Document Verification And Property Inspections. We Also Implement Secure Payment Processing Through Paychangu, Protect User Data With Encryption, And Have A Review System That Helps Students Make Informed Decisions Based On Previous Tenants' Experiences."
   },
   {
-    question: "What payment methods do you accept?",
-    answer: "We accept secure payments via Airtel Money and TNM Mpamba. All transactions are encrypted and protected for your safety."
+    question: "Can HostelLink Help Me Find Accommodation Near MUBAS?",
+    answer: "Yes! HostelLink Specializes In Off-Campus Accommodation Near MUBAS. Our Platform Covers All Major Student Areas Including Chitawira, Nkolokosa, Chichiri, Mandala, Queens, And More. You Can Filter By Location, Price, Amenities, And Availability To Find The Perfect Place That Suits Your Needs And Budget."
   }
+];
+
+// ── HERO ANIMATED CARDS DATA ──
+// Column 1 goes UP, Column 2 goes DOWN
+const CARDS_COL1 = [
+  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
+  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
+  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
+  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+  // Duplicated for seamless loop
+  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
+  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
+  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
+  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+];
+
+const CARDS_COL2 = [
+  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
+  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
+  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
+  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
+  // Duplicated for seamless loop
+  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
+  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
+  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
+  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
 ];
 
 function Navbar({ isAuthenticated, user }) {
@@ -886,7 +891,7 @@ function Navbar({ isAuthenticated, user }) {
         <div className="nav-center-dot" />
         <div className="nav-center-item">Owners</div>
         <div className="nav-center-dot" />
-        {/* <div className="nav-center-item">MUBAS</div>  Fancy Center Text — logo-style */}
+       
       </div>
 
       <div className="nav-actions">
@@ -921,34 +926,60 @@ function Navbar({ isAuthenticated, user }) {
 function Hero({ isAuthenticated }) {
   return (
     <section className="hero">
-      <div className="hero-bg" />
-      <div className="hero-content">
-        <h1>Find Safe & Affordable <span>Hostels Near MUBAS.</span></h1>
-        <p>The smartest way for students to find accommodation and for hostel owners to connect with verified tenants.</p>
-        <div className="hero-btns">
-          <a href="/register" className="hero-btn-primary">
-            <i className="fa fa-search" /> Find a Hostel
-          </a>
-          <a href="/register" className="hero-btn-ghost">
-            <i className="fa fa-building" /> List Your Hostel
-          </a>
+      <div className="hero-wrapper">
+        {/* Left Content — unchanged */}
+        <div className="hero-left">
+          <div className="hero-content">
+            <h1>Find Safe & Affordable Hostels Near MUBAS</h1>
+            <div className="hero-btns">
+              <a href="/register" className="hero-btn-primary">
+                <i className="fa fa-search" /> Find a Hostel
+              </a>
+              <a href="/register" className="hero-btn-ghost">
+                <i className="fa fa-building" /> List Your Hostel
+              </a>
+            </div>
+            <div className="hero-stats">
+              <div className="hero-stat"><strong>200+</strong><span>Students Housed</span></div>
+              <div className="hero-stat"><strong>50+</strong><span>Listed Hostels</span></div>
+              <div className="hero-stat"><strong>9</strong><span>Areas Covered</span></div>
+            </div>
+          </div>
         </div>
-        <div className="hero-stats">
-          <div className="hero-stat">
-            <strong>200+</strong>
-            <span>Students Housed</span>
-          </div>
-          <div className="hero-stat">
-            <strong>50+</strong>
-            <span>Listed Hostels</span>
-          </div>
-          <div className="hero-stat">
-            <strong>9</strong>
-            <span>Areas Covered</span>
+
+        {/* Right — Animated Cards (PayChangu style: two columns, up & down) */}
+        <div className="hero-right">
+          <div className="hero-right-mask">
+            {/* Column 1: scrolls UP */}
+            <div className="cards-col cards-col-up">
+              {CARDS_COL1.map((card, idx) => (
+                <div key={idx} className={`anim-card ${card.theme}`}>
+                  <div className="anim-card-icon">
+                    <i className={card.icon}></i>
+                  </div>
+                  <div className="anim-card-title">{card.title}</div>
+                  <div className="anim-card-sub">{card.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Column 2: scrolls DOWN */}
+            <div className="cards-col cards-col-down">
+              {CARDS_COL2.map((card, idx) => (
+                <div key={idx} className={`anim-card ${card.theme}`}>
+                  <div className="anim-card-icon">
+                    <i className={card.icon}></i>
+                  </div>
+                  <div className="anim-card-title">{card.title}</div>
+                  <div className="anim-card-sub">{card.sub}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      {/* ✅ WAVES ADDED HERE */}
+
+      {/* Waves — unchanged */}
       <div className="wave wave1"></div>
       <div className="wave wave2"></div>
       <div className="wave wave3"></div>
@@ -1097,7 +1128,6 @@ function FeaturesSection() {
   );
 }
 
-// ✅ FAQ COMPONENT WITH ACCORDION & FREQUENCY WAVES
 function FAQSection() {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -1106,21 +1136,32 @@ function FAQSection() {
   };
 
   return (
-    <section className="faq-section">
-      <div className="faq-content">
-        <h1 className="faq-heading" id="faq">FAQ</h1>
-        <div className="faq-row">
+    <section className="faq" id="faq">
+      {/* Giant translucent question mark background — like screenshot */}
+      <div className="faq-qmark" aria-hidden="true">?</div>
+
+      <div className="faq-inner">
+        <h1 className="heading">FAQ</h1>
+
+        <div className="row">
           <div className="accordion-container">
-            {FAQ_DATA.map((item, index) => (
-              <div key={index} className="accordion">
-                <div
-                  className={`accordion-header ${activeIndex === index ? 'active' : ''}`}
-                  onClick={() => toggleAccordion(index)}
-                >
-                  <span>+</span>
-                  <h3>{item.question}</h3>
+            {FAQ_ITEMS.map((item, index) => (
+              <div
+                key={index}
+                className={`accordion ${activeIndex === index ? 'active' : ''}`}
+                onClick={() => toggleAccordion(index)}
+              >
+                <div className="accordion-header">
+                  {/* Cyan box with + icon */}
+                  <div className="accordion-plus">
+                    <span>+</span>
+                  </div>
+                  {/* Cyan label bar */}
+                  <div className="accordion-label">
+                    <h3>{item.question}</h3>
+                  </div>
                 </div>
-                <div className={`accordion-body ${activeIndex === index ? 'active' : ''}`}>
+                <div className="accordion-body">
                   <p>{item.answer}</p>
                 </div>
               </div>
@@ -1128,39 +1169,10 @@ function FAQSection() {
           </div>
         </div>
       </div>
-
-      {/* ✅ FREQUENCY WAVES AT BOTTOM */}
-      <div className="frequency-waves">
-        <div className="frequency-wave">
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,60 Q 150,30 300,60 T 600,60 T 900,60 T 1200,60"
-            />
-          </svg>
-        </div>
-        <div className="frequency-wave" style={{ bottom: '20px' }}>
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,50 Q 150,40 300,50 T 600,50 T 900,50 T 1200,50"
-            />
-          </svg>
-        </div>
-        <div className="frequency-wave" style={{ bottom: '40px' }}>
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,65 Q 150,55 300,65 T 600,65 T 900,65 T 1200,65"
-            />
-          </svg>
-        </div>
-      </div>
     </section>
   );
 }
 
-// ✅ FIXED: Removed auto-redirect useEffect — users now only navigate when they click something
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
 
@@ -1180,9 +1192,6 @@ export default function Home() {
         <p>Join the growing MUBAS accommodation network today.</p>
         <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
-
-      {/* ✅ FAQ SECTION WITH FREQUENCY WAVES & BACKGROUND PHOTO */}
-      <FAQSection />
     </>
   );
 }
