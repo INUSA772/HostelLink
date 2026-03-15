@@ -1,996 +1,742 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useHostel } from '../context/HostelContext';
-import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import api from '../services/api';
+import paymentService from '../services/paymentService';
+import { useAuth } from '../context/AuthContext';
+import messageService from '../services/messageService';
 import PaymentModal from '../components/payment/PaymentModal';
-import bookingService from '../services/bookingService';
+import {
+  FaMapMarkerAlt, FaBed, FaCheckCircle, FaStar,
+  FaWhatsapp, FaEnvelope, FaPhone, FaArrowLeft,
+  FaHeart, FaRegHeart, FaShare, FaShieldAlt,
+  FaWifi, FaCar, FaUtensils, FaSpinner,
+  FaComments, FaUser, FaHome, FaDoorOpen,
+} from 'react-icons/fa';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy: #0d1b3e; --blue: #1a3fa4; --orange: #e8501a;
-    --white: #fff; --gray-bg: #f0f2f5; --gray-light: #e4e6eb;
-    --text-dark: #050505; --text-mid: #65676b; --success: #10b981;
-    --radius: 12px;
+    --navy: #0d1b3e;
+    --navy2: #112255;
+    --blue: #1a3fa4;
+    --orange: #e8501a;
+    --orange-light: #ff6b3d;
+    --orange-pale: #fff3ef;
+    --white: #ffffff;
+    --gray-bg: #f4f6fa;
+    --gray-light: #e4e6eb;
+    --text-dark: #111827;
+    --text-mid: #4b5563;
+    --text-light: #9ca3af;
+    --success: #059669;
+    --success-pale: #ecfdf5;
+    --danger: #dc2626;
+    --card-radius: 16px;
+    --transition: all 0.22s ease;
   }
 
-  body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
+  .hdp-page { font-family: 'Manrope', sans-serif; background: var(--gray-bg); min-height: 100vh; color: var(--text-dark); }
 
-  /* TOPBAR */
-  .hd-bar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-    background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    height: 56px; display: flex; align-items: center;
-    justify-content: space-between; padding: 0 1.5rem;
+  /* ── LOADING ── */
+  .hdp-loading {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1rem;
+    background: var(--gray-bg);
   }
-  .hd-bar-back {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: none; border: none; cursor: pointer;
-    color: var(--navy); font-weight: 700; font-size: 0.95rem;
-    font-family: 'Manrope', sans-serif; padding: 0.4rem 0.8rem;
-    border-radius: 6px; transition: background 0.2s;
-  }
-  .hd-bar-back:hover { background: var(--gray-light); }
-  .hd-bar-logo { font-size: 1.1rem; font-weight: 800; color: var(--orange); text-decoration: none; }
-  .hd-bar-right { display: flex; gap: 0.75rem; }
-  .hd-bar-btn {
-    padding: 0.4rem 1rem; border-radius: 6px; border: none;
-    cursor: pointer; font-weight: 600; font-size: 0.85rem;
-    font-family: 'Manrope', sans-serif; transition: all 0.2s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 0.4rem;
-  }
-  .hd-bar-btn-solid { background: var(--orange); color: var(--white); }
-  .hd-bar-btn-solid:hover { opacity: 0.9; }
-  .hd-bar-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
-  .hd-bar-btn-ghost:hover { background: #dddfe1; }
-
-  /* PAGE BODY */
-  .hd-page { padding-top: 72px; max-width: 1180px; margin: 0 auto; padding-bottom: 4rem; display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; padding-left: 1rem; padding-right: 1rem; }
-
-  /* CAROUSEL */
-  .carousel-wrap { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-  .carousel-stage { position: relative; width: 100%; background: #111; aspect-ratio: 16/10; overflow: hidden; }
-  .carousel-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity 0.3s; }
-  .carousel-no-image { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e5e7eb; color: var(--text-mid); font-size: 1rem; flex-direction: column; gap: 0.5rem; }
-  .carousel-no-image i { font-size: 3rem; opacity: 0.4; }
-  .car-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    background: rgba(0,0,0,0.55); color: var(--white); border: none;
-    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; transition: background 0.2s; z-index: 10;
-  }
-  .car-btn:hover { background: rgba(0,0,0,0.85); }
-  .car-prev { left: 12px; }
-  .car-next { right: 12px; }
-  .car-counter {
-    position: absolute; bottom: 12px; right: 14px;
-    background: rgba(0,0,0,0.65); color: var(--white);
-    padding: 4px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
-  }
-  .car-actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 0.6rem; }
-  .car-action-btn {
-    background: rgba(255,255,255,0.92); border: none; width: 38px; height: 38px;
-    border-radius: 50%; cursor: pointer; display: flex; align-items: center;
-    justify-content: center; font-size: 1rem; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
-  .car-action-btn:hover { transform: scale(1.1); background: var(--white); }
-  .car-action-btn.liked { color: #ef4444; }
-
-  /* THUMBNAILS */
-  .thumb-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; padding: 10px; background: #fafafa; border-top: 1px solid var(--gray-light); }
-  .thumb {
-    aspect-ratio: 1; border-radius: 6px; overflow: hidden; cursor: pointer;
-    border: 2.5px solid transparent; transition: all 0.2s;
-  }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .thumb:hover { border-color: var(--text-mid); }
-  .thumb.active { border-color: var(--orange); }
-
-  /* DETAIL CARD */
-  .detail-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
-  .detail-price { font-size: 2.2rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 0.75rem; }
-  .detail-price span { font-size: 1rem; font-weight: 500; color: var(--text-mid); }
-  .detail-name { font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.5rem; }
-  .detail-location { display: flex; align-items: center; gap: 0.5rem; color: var(--text-mid); font-size: 0.9rem; margin-bottom: 0.75rem; }
-  .detail-location i { color: var(--orange); }
-  .detail-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; }
-  .stars-gold { color: #f59e0b; letter-spacing: 2px; }
-  .rating-count { color: var(--text-mid); font-size: 0.85rem; }
-
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; border-top: 1px solid var(--gray-light); border-bottom: 1px solid var(--gray-light); padding: 1.25rem 0; margin-bottom: 1.25rem; }
-  .dg-item { display: flex; align-items: center; gap: 0.65rem; }
-  .dg-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(232,80,26,0.1); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--orange); flex-shrink: 0; }
-  .dg-text small { display: block; font-size: 0.72rem; color: var(--text-mid); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-  .dg-text strong { display: block; font-size: 0.92rem; font-weight: 700; color: var(--text-dark); text-transform: capitalize; }
-
-  .section-heading { font-size: 1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.75rem; }
-  .detail-desc { color: var(--text-mid); line-height: 1.7; font-size: 0.92rem; margin-bottom: 1.25rem; }
-
-  /* AMENITIES */
-  .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.5rem; }
-  .amenity-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: var(--gray-bg); border-radius: 8px; font-size: 0.85rem; color: var(--text-dark); font-weight: 500; }
-  .amenity-chip i { color: var(--orange); width: 16px; text-align: center; }
-
-  /* SIDEBAR */
-  .sidebar { position: sticky; top: 72px; height: fit-content; display: flex; flex-direction: column; gap: 1rem; }
-
-  /* OWNER CARD */
-  .owner-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-  .owner-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
-  .owner-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--white); flex-shrink: 0; }
-  .owner-info-name { font-size: 1rem; font-weight: 800; color: var(--text-dark); }
-  .owner-info-role { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 0.2rem; }
-  .owner-online { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--success); font-weight: 600; }
-  .owner-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
-  .owner-btns { display: flex; flex-direction: column; gap: 0.7rem; }
-  .owner-btn {
-    width: 100%; padding: 0.75rem; border: none; border-radius: 8px;
-    font-size: 0.9rem; font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-    transition: all 0.2s; font-family: 'Manrope', sans-serif;
-  }
-  .owner-btn-blue { background: var(--blue); color: var(--white); }
-  .owner-btn-blue:hover { background: var(--navy); }
-  .owner-btn-green { background: #10b981; color: var(--white); }
-  .owner-btn-green:hover { background: #059669; }
-  .owner-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
-  .owner-btn-ghost:hover { background: #dddfe1; }
-
-  /* BOOK CARD */
-  .book-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-  .book-price-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .book-price-big { font-size: 1.5rem; font-weight: 800; color: var(--orange); }
-  .book-rooms-badge { background: rgba(16,185,129,0.12); color: var(--success); font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 20px; }
-  .book-btn { width: 100%; padding: 0.85rem; background: var(--orange); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; font-family: 'Manrope', sans-serif; }
-  .book-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .book-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .book-divider { border: none; border-top: 1px solid var(--gray-light); margin: 1rem 0; }
-  .book-info-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem; }
-  .book-info-row span { color: var(--text-mid); }
-  .book-info-row strong { color: var(--text-dark); text-transform: capitalize; }
-
-  /* MAP */
-  .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
-  .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; }
-  .map-box {
-    width: 100%; height: 320px; border-radius: 10px; overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .map-box-loading {
-    width: 100%; height: 320px; border-radius: 10px;
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-    display: flex; align-items: center; justify-content: center;
-    color: #6b7280; font-size: 0.9rem; gap: 0.5rem;
-  }
-  .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
-  .map-address i { color: var(--orange); margin-top: 2px; }
-
-  /* REVIEWS */
-  .reviews-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
-  .reviews-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.3rem; }
-  .reviews-overall { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
-  .reviews-score { font-size: 3rem; font-weight: 800; color: var(--orange); }
-  .reviews-out-of { font-size: 0.8rem; color: var(--text-mid); }
-  .review-item { padding: 1rem 0; border-bottom: 1px solid var(--gray-light); }
-  .review-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .review-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
-  .review-name { font-weight: 700; font-size: 0.9rem; }
-  .review-date { color: var(--text-mid); font-size: 0.8rem; }
-  .review-stars { color: #f59e0b; font-size: 0.85rem; margin-bottom: 0.35rem; }
-  .review-text { color: var(--text-mid); font-size: 0.87rem; line-height: 1.6; }
-
-  /* LOADING & ERROR */
-  .hd-center { max-width: 1180px; margin: 0 auto; padding: 6rem 1rem 2rem; text-align: center; }
-  .hd-spinner { width: 48px; height: 48px; border: 4px solid var(--gray-light); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem; }
+  .hdp-spinner { animation: spin 0.8s linear infinite; font-size: 2rem; color: var(--orange); }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .hd-error { font-size: 1.1rem; color: var(--text-mid); margin-bottom: 1rem; }
+  .hdp-loading p { color: var(--text-mid); font-weight: 600; font-family: 'Manrope', sans-serif; }
 
-  /* BOOKING FORM */
-  .booking-form-container {
-    background: var(--white); border-radius: var(--radius); padding: 1.5rem;
-    margin-top: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); display: none;
+  /* ── TOP NAV ── */
+  .hdp-topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: white; border-bottom: 1px solid var(--gray-light);
+    padding: 0.85rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
   }
-  .booking-form-container.open {
-    display: block; animation: slideIn 0.3s ease-out;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .booking-form-container h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
-  .form-group { margin-bottom: 1rem; }
-  .form-group label {
-    display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark);
-    margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .form-group input, .form-group select {
-    width: 100%; padding: 0.75rem; border: 1.5px solid var(--gray-light);
-    border-radius: 8px; font-size: 0.95rem; font-family: 'Manrope', sans-serif;
-    background: #fafafa; transition: all 0.2s;
-  }
-  .form-group input:focus, .form-group select:focus {
-    outline: none; border-color: var(--orange); background: var(--white);
-    box-shadow: 0 0 0 3px rgba(232,80,26,0.1);
-  }
-  .price-breakdown { background: var(--gray-bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; }
-  .price-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
-  .price-row span { color: var(--text-mid); }
-  .price-row strong { color: var(--text-dark); font-weight: 600; }
-  .price-row.total { border-top: 1px solid var(--gray-light); padding-top: 0.75rem; margin-top: 0.75rem; font-weight: 800; font-size: 1rem; }
-  .price-row.total strong { color: var(--orange); }
-
-  /* SUCCESS MESSAGE */
-  .success-message {
-    background: rgba(16,185,129,0.1); border: 1px solid #10b981; border-radius: 8px;
-    padding: 1rem; margin-bottom: 1rem; color: #059669; font-size: 0.9rem;
+  .hdp-back-btn {
     display: flex; align-items: center; gap: 0.5rem;
+    background: var(--gray-bg); border: 1px solid var(--gray-light);
+    border-radius: 10px; padding: 0.5rem 1rem;
+    font-size: 0.85rem; font-weight: 700; color: var(--navy);
+    cursor: pointer; transition: var(--transition);
+    font-family: 'Manrope', sans-serif;
   }
-  .success-message i { font-size: 1.2rem; }
+  .hdp-back-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
+  .hdp-topnav-actions { display: flex; gap: 0.5rem; }
+  .hdp-icon-btn {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--gray-bg); border: 1px solid var(--gray-light);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-mid); font-size: 0.9rem; transition: var(--transition);
+  }
+  .hdp-icon-btn:hover { background: var(--orange-pale); color: var(--orange); border-color: var(--orange); }
+  .hdp-icon-btn.fav { color: var(--danger); }
 
-  @media (max-width: 960px) {
-    .hd-page { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
+  /* ── HERO IMAGES ── */
+  .hdp-images { position: relative; background: #1a1a2e; }
+  .hdp-main-img {
+    width: 100%; height: 480px; object-fit: cover;
+    display: block; opacity: 0.92;
+  }
+  .hdp-img-placeholder {
+    width: 100%; height: 480px; background: linear-gradient(135deg, var(--navy), #1a3fa4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem; color: rgba(255,255,255,0.3);
+  }
+  .hdp-thumbnails {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;
+    margin-top: 3px;
+  }
+  .hdp-thumb { width: 100%; height: 100px; object-fit: cover; cursor: pointer; transition: opacity 0.2s; }
+  .hdp-thumb:hover { opacity: 0.8; }
+  .hdp-img-count {
+    position: absolute; bottom: 1rem; right: 1rem;
+    background: rgba(0,0,0,0.65); color: white;
+    border-radius: 8px; padding: 5px 12px;
+    font-size: 0.8rem; font-weight: 700; backdrop-filter: blur(4px);
+  }
+  .hdp-verified-stamp {
+    position: absolute; top: 1rem; left: 1rem;
+    background: rgba(5,150,105,0.9); color: white;
+    border-radius: 8px; padding: 5px 12px;
+    font-size: 0.78rem; font-weight: 700;
+    display: flex; align-items: center; gap: 0.35rem;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── LAYOUT ── */
+  .hdp-body {
+    max-width: 1100px; margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: grid; grid-template-columns: 1fr 380px; gap: 2rem;
+    align-items: start;
+  }
+
+  .hdp-left {}
+
+  .hdp-title-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;
+  }
+  .hdp-title { font-size: 1.8rem; font-weight: 900; color: var(--navy); line-height: 1.2; }
+  .hdp-price-tag { font-size: 1.5rem; font-weight: 900; color: var(--orange); white-space: nowrap; }
+  .hdp-price-tag span { font-size: 0.82rem; font-weight: 600; color: var(--text-light); }
+
+  .hdp-badges { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .hdp-badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.3rem 0.85rem; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700;
+  }
+  .hdp-badge-type   { background: #eef1fb; color: var(--blue); }
+  .hdp-badge-gender { background: var(--orange-pale); color: var(--orange); }
+  .hdp-badge-verified { background: var(--success-pale); color: #065f46; }
+  .hdp-badge-unverified { background: #fffbeb; color: #92400e; }
+
+  .hdp-address {
+    display: flex; align-items: center; gap: 0.5rem;
+    color: var(--text-mid); font-size: 0.9rem; margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+  .hdp-address svg { color: var(--orange); flex-shrink: 0; }
+
+  .hdp-section { margin-bottom: 2rem; }
+  .hdp-section-title {
+    font-size: 1rem; font-weight: 800; color: var(--navy);
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+    padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray-light);
+  }
+  .hdp-section-title svg { color: var(--orange); }
+
+  .hdp-description { color: var(--text-mid); font-size: 0.9rem; line-height: 1.8; }
+
+  .hdp-amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+  .hdp-amenity {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--gray-bg); border: 1px solid var(--gray-light);
+    border-radius: 9px; padding: 0.6rem 0.85rem;
+    font-size: 0.82rem; font-weight: 600; color: var(--text-dark);
+    transition: var(--transition);
+  }
+  .hdp-amenity:hover { background: var(--orange-pale); border-color: var(--orange); color: var(--orange); }
+  .hdp-amenity svg { color: var(--success); font-size: 0.8rem; flex-shrink: 0; }
+
+  .hdp-avail { background: var(--gray-bg); border-radius: var(--card-radius); padding: 1.25rem; }
+  .hdp-avail-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .hdp-avail-label { font-size: 0.85rem; font-weight: 700; color: var(--text-mid); }
+  .hdp-avail-val { font-size: 1rem; font-weight: 800; color: var(--navy); }
+  .hdp-avail-bar { height: 8px; background: var(--gray-light); border-radius: 4px; overflow: hidden; }
+  .hdp-avail-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange-light)); border-radius: 4px; transition: width 0.6s ease; }
+
+  .hdp-owner-card {
+    background: var(--gray-bg); border-radius: var(--card-radius);
+    padding: 1.25rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .hdp-owner-avatar {
+    width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--navy), #1a3fa4);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800; overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  }
+  .hdp-owner-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .hdp-owner-name { font-size: 0.95rem; font-weight: 800; color: var(--navy); }
+  .hdp-owner-role { font-size: 0.75rem; color: var(--text-mid); font-weight: 600; margin-top: 2px; }
+  .hdp-owner-verified { font-size: 0.72rem; color: var(--success); font-weight: 700; display: flex; align-items: center; gap: 0.25rem; margin-top: 3px; }
+
+  /* ── RIGHT COLUMN ── */
+  .hdp-booking-card {
+    background: white; border-radius: var(--card-radius);
+    border: 1px solid var(--gray-light);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    overflow: hidden; position: sticky; top: 80px;
+  }
+  .hdp-card-head {
+    background: linear-gradient(135deg, var(--navy), var(--navy2));
+    padding: 1.25rem 1.5rem;
+  }
+  .hdp-card-price { font-size: 1.6rem; font-weight: 900; color: white; }
+  .hdp-card-price span { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.6); }
+  .hdp-card-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+
+  .hdp-card-body { padding: 1.5rem; }
+
+  .hdp-contact-btn {
+    width: 100%; padding: 0.9rem 1.5rem;
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: white; border: none; border-radius: 12px;
+    font-size: 0.95rem; font-weight: 700; font-family: 'Manrope', sans-serif;
+    cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    box-shadow: 0 4px 16px rgba(232,80,26,0.35);
+    margin-bottom: 0.75rem;
+  }
+  .hdp-contact-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,80,26,0.45); }
+  .hdp-contact-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .hdp-divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin: 1rem 0; color: var(--text-light); font-size: 0.78rem; font-weight: 600;
+  }
+  .hdp-divider::before, .hdp-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-light); }
+
+  .hdp-form-group { margin-bottom: 1rem; }
+  .hdp-label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+  .hdp-input {
+    width: 100%; padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--gray-light); border-radius: 10px;
+    font-family: 'Manrope', sans-serif; font-size: 0.875rem;
+    color: var(--text-dark); background: white; outline: none;
+    transition: var(--transition);
+  }
+  .hdp-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,80,26,0.08); }
+
+  .hdp-price-breakdown { background: var(--gray-bg); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+  .hdp-price-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-mid); }
+  .hdp-price-row.total { border-top: 1px solid var(--gray-light); padding-top: 0.5rem; margin-top: 0.25rem; font-weight: 800; color: var(--navy); font-size: 0.95rem; }
+  .hdp-fee-note { font-size: 0.72rem; color: var(--text-light); line-height: 1.5; margin-top: 0.5rem; }
+
+  .hdp-book-btn {
+    width: 100%; padding: 0.9rem;
+    background: var(--navy); color: white; border: none; border-radius: 12px;
+    font-size: 0.95rem; font-weight: 700; font-family: 'Manrope', sans-serif;
+    cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  }
+  .hdp-book-btn:hover:not(:disabled) { background: #1a3fa4; transform: translateY(-1px); }
+  .hdp-book-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .hdp-trust-badges {
+    display: flex; justify-content: center; gap: 1.5rem;
+    margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light);
+  }
+  .hdp-trust-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--text-mid); font-weight: 600; }
+  .hdp-trust-item svg { color: var(--success); }
+
+  .hdp-login-prompt {
+    background: var(--orange-pale); border: 1.5px solid rgba(232,80,26,0.2);
+    border-radius: 12px; padding: 1.25rem; text-align: center;
+  }
+  .hdp-login-prompt p { font-size: 0.88rem; color: var(--text-mid); margin-bottom: 0.75rem; line-height: 1.6; }
+  .hdp-login-prompt a { color: var(--orange); font-weight: 700; text-decoration: none; }
+  .hdp-login-prompt a:hover { text-decoration: underline; }
+
+  .hdp-notice { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 1rem; font-size: 0.85rem; color: #92400e; font-weight: 600; text-align: center; }
+
+  @media (max-width: 900px) {
+    .hdp-body { grid-template-columns: 1fr; }
+    .hdp-booking-card { position: static; }
+    .hdp-main-img { height: 300px; }
   }
   @media (max-width: 600px) {
-    .hd-page { padding-left: 0.5rem; padding-right: 0.5rem; gap: 1rem; }
-    .detail-price { font-size: 1.7rem; }
-    .detail-name { font-size: 1.2rem; }
-    .detail-grid { grid-template-columns: 1fr; }
-    .amenities-grid { grid-template-columns: 1fr; }
-    .thumb-row { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
-    .map-box { height: 250px; }
+    .hdp-body { padding: 1rem 0.85rem 3rem; gap: 1.25rem; }
+    .hdp-title { font-size: 1.4rem; }
+    .hdp-main-img { height: 240px; }
+    .hdp-thumbnails { grid-template-columns: repeat(3, 1fr); }
   }
 `;
 
-const AMENITY_ICONS = {
-  'WiFi': 'fa-wifi',
-  'Water 24/7': 'fa-tint',
-  'Electricity Backup': 'fa-bolt',
-  'Security Guard': 'fa-shield-alt',
-  'CCTV': 'fa-video',
-  'Parking': 'fa-car',
-  'Kitchen': 'fa-utensils',
-  'Laundry': 'fa-tshirt',
-  'Study Room': 'fa-book',
-  'Common Area': 'fa-users',
-  'Furniture Included': 'fa-couch',
-  'Air Conditioning': 'fa-wind',
-  'Hot Shower': 'fa-shower',
-};
-
-const MOCK_REVIEWS = [
-  { name: 'Chisomo Banda', date: '2 weeks ago', stars: 5, text: 'Amazing hostel! Very clean, owner is super responsive. I have been here for 3 months and love it.' },
-  { name: 'Takondwa Phiri', date: '1 month ago', stars: 4, text: 'Good accommodation, reliable water and electricity. Would recommend to other MUBAS students.' },
-  { name: 'Mercy Tembo', date: '2 months ago', stars: 5, text: 'Best hostel I have stayed in near campus. Security is excellent and the rooms are spacious.' },
-];
-
-// ✅ FIXED: Google Maps Component — initMap uses function declaration (hoisted correctly)
-const GoogleMap = ({ address, coordinates, hostelName }) => {
-  const mapContainerRef = useRef(null);
-  const [mapError, setMapError] = useState(false);
-
-  useEffect(() => {
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-    if (!apiKey) {
-      console.error('Google Maps API key (VITE_GOOGLE_MAPS_API_KEY) is missing.');
-      setMapError(true);
-      return;
-    }
-
-    // ✅ FIX: Define initMap as a function declaration so it is hoisted
-    // and available when script.onload fires
-    function initMap() {
-      if (!mapContainerRef.current || !window.google) return;
-
-      const defaultLat = -13.9626;
-      const defaultLng = 34.3015;
-
-      const location =
-        coordinates && coordinates.length === 2
-          ? { lat: coordinates[1], lng: coordinates[0] }
-          : { lat: defaultLat, lng: defaultLng };
-
-      const map = new window.google.maps.Map(mapContainerRef.current, {
-        zoom: 15,
-        center: location,
-        mapTypeControl: true,
-        fullscreenControl: true,
-        streetViewControl: true,
-      });
-
-      // ✅ FIX: Only ONE marker (removed the duplicate marker)
-      const marker = new window.google.maps.Marker({
-        position: location,
-        map,
-        title: hostelName,
-        animation: window.google.maps.Animation.DROP,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
-      });
-
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: `<div style="color:#000; padding:8px; font-weight:600; font-size:0.85rem;">
-          <strong>${hostelName}</strong><br>
-          <span style="color:#e8501a;">📍</span> ${address}
-        </div>`,
-      });
-
-      marker.addListener('click', () => {
-        infoWindow.open(map, marker);
-      });
-    }
-
-    // ✅ If Google Maps is already loaded in the page, reuse it
-    if (window.google && window.google.maps) {
-      initMap();
-      return;
-    }
-
-    // ✅ Avoid adding duplicate scripts
-    const existingScript = document.querySelector(
-      'script[src*="maps.googleapis.com/maps/api/js"]'
-    );
-    if (existingScript) {
-      existingScript.addEventListener('load', initMap);
-      return () => existingScript.removeEventListener('load', initMap);
-    }
-
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
-    script.async = true;
-    script.defer = true;
-    script.onload = initMap; // ✅ Now safe — initMap is hoisted above
-    script.onerror = () => {
-      console.error('Failed to load Google Maps script.');
-      setMapError(true);
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    };
-  }, [address, coordinates, hostelName]);
-
-  if (mapError) {
-    return (
-      <div className="map-box-loading">
-        <i className="fa fa-map" style={{ color: '#e8501a' }} />
-        <span>Map unavailable — check your API key</span>
-      </div>
-    );
-  }
-
-  return <div ref={mapContainerRef} className="map-box" />;
-};
-
-export default function HostelDetailsPage() {
+const HostelDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentHostel, loading, fetchHostelById } = useHostel();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
-  const [imgIndex, setImgIndex] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [hostel,           setHostel]           = useState(null);
+  const [booking,          setBooking]          = useState(null);
+  const [loading,          setLoading]          = useState(true);
+  const [bookingLoading,   setBookingLoading]   = useState(false);
+  const [contactingOwner,  setContactingOwner]  = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [booking, setBooking] = useState(null);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [bookingData, setBookingData] = useState({
-    checkInDate: '',
-    duration: 1,
-  });
-  const [bookingLoading, setBookingLoading] = useState(false);
+  const [checkInDate,      setCheckInDate]      = useState('');
+  const [duration,         setDuration]         = useState(1);
+  const [isFav,            setIsFav]            = useState(false);
+  const [activeImg,        setActiveImg]        = useState(0);
 
-  // ✅ FIX: Stable ref for fetchHostelById to avoid stale closure / missing dep warning
-  const fetchHostelByIdRef = useRef(fetchHostelById);
+  // Load hostel
   useEffect(() => {
-    fetchHostelByIdRef.current = fetchHostelById;
-  }, [fetchHostelById]);
+    const fetchHostel = async () => {
+      try {
+        const response = await api.get(`/hostels/${id}`);
+        setHostel(response.data.hostel || response.data.data);
+      } catch (error) {
+        toast.error('Failed to load hostel details');
+        navigate('/hostels');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchHostel();
+  }, [id, navigate]);
 
-  useEffect(() => {
-    fetchHostelByIdRef.current(id);
-    window.scrollTo(0, 0);
-  }, [id]);
-
-  // ✅ Loading state
-  if (loading) {
-    return (
-      <>
-        <style>{styles}</style>
-        <nav className="hd-bar">
-          <button className="hd-bar-back" onClick={() => navigate(-1)}>
-            <i className="fa fa-arrow-left" /> Back
-          </button>
-          <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
-          <div />
-        </nav>
-        <div className="hd-center">
-          <div className="hd-spinner" />
-          <p style={{ color: '#65676b' }}>Loading hostel details...</p>
-        </div>
-      </>
-    );
-  }
-
-  // ✅ Not found state
-  if (!currentHostel) {
-    return (
-      <>
-        <style>{styles}</style>
-        <nav className="hd-bar">
-          <button className="hd-bar-back" onClick={() => navigate(-1)}>
-            <i className="fa fa-arrow-left" /> Back
-          </button>
-          <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
-          <div />
-        </nav>
-        <div className="hd-center">
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏠</div>
-          <p className="hd-error">Hostel not found.</p>
-          <button
-            className="hd-bar-btn hd-bar-btn-solid"
-            style={{ margin: '0 auto', display: 'inline-flex' }}
-            onClick={() => navigate('/hostels')}
-          >
-            Browse All Hostels
-          </button>
-        </div>
-      </>
-    );
-  }
-
-  const images =
-    currentHostel.images && currentHostel.images.length > 0
-      ? currentHostel.images
-      : [];
-
-  const prevImg = () => setImgIndex(p => (p - 1 + images.length) % images.length);
-  const nextImg = () => setImgIndex(p => (p + 1) % images.length);
-
-  const rating = currentHostel.averageRating || 4.5;
-  const reviewCount = currentHostel.reviewCount || MOCK_REVIEWS.length;
-  const starsStr = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
-
-  const handleMessage = () => {
-    if (!isAuthenticated) {
-      toast.error('Please login to message the owner');
+  // ✅ FIXED: Contact Owner — creates conversation and redirects correctly
+  const handleContactOwner = async () => {
+    if (!user) {
+      toast.error('Please login to contact the owner');
       navigate('/login');
       return;
     }
-    navigate(`/messages?to=${currentHostel.owner?._id}`);
-  };
+    if (user.role === 'owner') {
+      toast.error("You can't contact yourself as an owner");
+      return;
+    }
+    if (!hostel?.owner?._id) {
+      toast.error('Owner information not available');
+      return;
+    }
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: currentHostel.name,
-        text: currentHostel.description,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success('Link copied to clipboard!');
+    setContactingOwner(true);
+    try {
+      const data = await messageService.getOrCreateConversation(
+        hostel._id,
+        hostel.owner._id
+      );
+      toast.success(`Chat with ${hostel.owner.firstName} started!`);
+      // ✅ FIXED: correct param name is ?conversation= not ?to=
+      navigate(`/messages?conversation=${data.data._id}`);
+    } catch (err) {
+      toast.error('Failed to start conversation. Please try again.');
+    } finally {
+      setContactingOwner(false);
     }
   };
 
-  // ✅ Handle booking creation
+  // Create booking
   const handleCreateBooking = async (e) => {
     e.preventDefault();
-
-    if (!isAuthenticated) {
-      toast.error('Please login to book');
-      navigate('/login');
-      return;
-    }
-
-    if (!bookingData.checkInDate) {
-      toast.error('Please select a check-in date');
-      return;
-    }
-
-    if (bookingData.duration < 1) {
-      toast.error('Duration must be at least 1 month');
-      return;
-    }
+    if (!user) { toast.error('Please login to book'); navigate('/login'); return; }
+    if (user.role !== 'student') { toast.error('Only students can book hostels'); return; }
+    if (!checkInDate) { toast.error('Please select a check-in date'); return; }
+    if (duration < 1) { toast.error('Duration must be at least 1 month'); return; }
 
     setBookingLoading(true);
-
     try {
-      const response = await bookingService.createBooking({
+      const bookingResponse = await api.post('/bookings', {
         hostelId: id,
-        checkInDate: new Date(bookingData.checkInDate),
-        duration: parseInt(bookingData.duration),
+        checkInDate: new Date(checkInDate),
+        duration: parseInt(duration),
       });
-
-      if (response && response.booking) {
-        setBooking(response.booking);
-        setBookingSuccess(true);
-        toast.success('✅ Booking created successfully! Proceeding to payment...');
-
-        setTimeout(() => {
-          setBookingSuccess(false);
-          setShowPaymentModal(true);
-        }, 2000);
-      } else {
-        throw new Error('Invalid response from server');
-      }
+      setBooking(bookingResponse.data.booking);
+      toast.success('Booking created! Proceed to payment');
+      setShowPaymentModal(true);
     } catch (error) {
-      console.error('Booking error:', error);
-      toast.error(
-        error.response?.data?.message || error.message || 'Failed to create booking'
-      );
-      setBookingSuccess(false);
+      toast.error(error.response?.data?.message || 'Failed to create booking');
     } finally {
       setBookingLoading(false);
     }
   };
 
-  // ✅ Price calculation
-  const calculatePrice = () => {
-    const basePrice = currentHostel.price * bookingData.duration;
-    const platformFee = 2000;
-    return {
-      basePrice,
-      platformFee,
-      totalAmount: basePrice + platformFee,
-    };
-  };
-
-  const priceBreakdown = bookingData.duration > 0 ? calculatePrice() : null;
-
-  // ✅ Handle payment success
   const handlePaymentSuccess = () => {
     setShowPaymentModal(false);
-    setShowBookingForm(false);
-    setBookingData({ checkInDate: '', duration: 1 });
-    setBooking(null);
-    toast.success('🎉 Payment successful! Your booking is confirmed.');
+    toast.success('Payment successful! Booking confirmed.');
     setTimeout(() => navigate('/bookings'), 1500);
   };
 
-  // ✅ Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-MW', {
-      style: 'currency',
-      currency: 'MWK',
-    }).format(amount);
-  };
+  if (loading) {
+    return (
+      <>
+        <style>{styles}</style>
+        <div className="hdp-loading">
+          <FaSpinner className="hdp-spinner" />
+          <p>Loading hostel details...</p>
+        </div>
+      </>
+    );
+  }
+
+  if (!hostel) {
+    return (
+      <>
+        <style>{styles}</style>
+        <div className="hdp-loading">
+          <p>Hostel not found.</p>
+          <button
+            onClick={() => navigate('/hostels')}
+            style={{ marginTop: 12, padding: '0.5rem 1.5rem', background: 'var(--orange)', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontFamily: 'Manrope', fontWeight: 700 }}
+          >
+            Back to Hostels
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  const images = hostel.images || [];
+  const mainImg = images[activeImg]?.url || images[activeImg] || null;
+  const paymentDetails = duration > 0
+    ? paymentService.calculateTotal(hostel.price * duration)
+    : { roomRent: 0, platformFee: 2000, totalAmount: 2000 };
+
+  const availPct = hostel.totalRooms > 0
+    ? Math.round((hostel.availableRooms / hostel.totalRooms) * 100)
+    : 0;
 
   return (
     <>
       <style>{styles}</style>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      />
 
-      {/* TOP NAV BAR */}
-      <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}>
-          <i className="fa fa-arrow-left" /> Back
-        </button>
-        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
-        <div className="hd-bar-right">
-          {isAuthenticated ? (
-            <a href="/dashboard" className="hd-bar-btn hd-bar-btn-ghost">
-              <i className="fa fa-th-large" /> Dashboard
-            </a>
-          ) : (
-            <>
-              <a href="/login" className="hd-bar-btn hd-bar-btn-ghost">Login</a>
-              <a href="/register" className="hd-bar-btn hd-bar-btn-solid">Sign Up</a>
-            </>
+      <div className="hdp-page">
+
+        {/* TOP NAV */}
+        <div className="hdp-topnav">
+          <button className="hdp-back-btn" onClick={() => navigate(-1)}>
+            <FaArrowLeft /> Back
+          </button>
+          <div className="hdp-topnav-actions">
+            <button
+              className={`hdp-icon-btn${isFav ? ' fav' : ''}`}
+              onClick={() => setIsFav(!isFav)}
+              title="Save"
+            >
+              {isFav ? <FaHeart /> : <FaRegHeart />}
+            </button>
+            <button
+              className="hdp-icon-btn"
+              title="Share"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                toast.success('Link copied!');
+              }}
+            >
+              <FaShare />
+            </button>
+          </div>
+        </div>
+
+        {/* IMAGES */}
+        <div className="hdp-images">
+          {mainImg
+            ? <img src={mainImg} alt={hostel.name} className="hdp-main-img" />
+            : <div className="hdp-img-placeholder"><FaHome /></div>
+          }
+          {images.length > 1 && (
+            <div className="hdp-thumbnails">
+              {images.slice(0, 4).map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img?.url || img}
+                  alt={`${hostel.name} ${idx + 1}`}
+                  className="hdp-thumb"
+                  onClick={() => setActiveImg(idx)}
+                  style={{
+                    opacity: activeImg === idx ? 1 : 0.65,
+                    outline: activeImg === idx ? '2px solid #e8501a' : 'none'
+                  }}
+                />
+              ))}
+            </div>
+          )}
+          {images.length > 4 && (
+            <div className="hdp-img-count">+{images.length - 4} more photos</div>
+          )}
+          {hostel.verified && (
+            <div className="hdp-verified-stamp">
+              <FaCheckCircle /> Verified Hostel
+            </div>
           )}
         </div>
-      </nav>
 
-      {/* MAIN CONTENT */}
-      <div className="hd-page">
+        {/* BODY */}
+        <div className="hdp-body">
 
-        {/* ===== LEFT COLUMN ===== */}
-        <div>
+          {/* ── LEFT COLUMN ── */}
+          <div className="hdp-left">
 
-          {/* IMAGE CAROUSEL */}
-          <div className="carousel-wrap">
-            <div className="carousel-stage">
-              {images.length > 0 ? (
-                <img
-                  className="carousel-img"
-                  src={images[imgIndex]}
-                  alt={`${currentHostel.name} photo ${imgIndex + 1}`}
-                />
-              ) : (
-                <div className="carousel-no-image">
-                  <i className="fa fa-image" />
-                  <span>No photos uploaded yet</span>
-                </div>
-              )}
-
-              {images.length > 1 && (
-                <>
-                  <button className="car-btn car-prev" onClick={prevImg}>
-                    <i className="fa fa-chevron-left" />
-                  </button>
-                  <button className="car-btn car-next" onClick={nextImg}>
-                    <i className="fa fa-chevron-right" />
-                  </button>
-                  <div className="car-counter">
-                    {imgIndex + 1} / {images.length}
-                  </div>
-                </>
-              )}
-
-              <div className="car-actions">
-                <button
-                  className={`car-action-btn${liked ? ' liked' : ''}`}
-                  onClick={() => setLiked(l => !l)}
-                  title="Save"
-                >
-                  <i className={liked ? 'fa fa-heart' : 'far fa-heart'} />
-                </button>
-                <button className="car-action-btn" onClick={handleShare} title="Share">
-                  <i className="fa fa-share-alt" />
-                </button>
+            {/* Title & Price */}
+            <div className="hdp-title-row">
+              <h1 className="hdp-title">{hostel.name}</h1>
+              <div className="hdp-price-tag">
+                MK {hostel.price?.toLocaleString()}
+                <span> /mo</span>
               </div>
             </div>
 
-            {/* THUMBNAIL ROW */}
-            {images.length > 1 && (
-              <div className="thumb-row">
-                {images.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className={`thumb${idx === imgIndex ? ' active' : ''}`}
-                    onClick={() => setImgIndex(idx)}
-                  >
-                    <img src={img} alt={`Thumb ${idx + 1}`} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* HOSTEL INFO */}
-          <div className="detail-card">
-            <div className="detail-price">
-              MK {currentHostel.price.toLocaleString()} <span>/ month</span>
-            </div>
-            <div className="detail-name">{currentHostel.name}</div>
-            <div className="detail-location">
-              <i className="fa fa-map-marker-alt" /> {currentHostel.address}
-            </div>
-            <div className="detail-rating">
-              <span className="stars-gold">{starsStr}</span>
-              <span className="rating-count">
-                {rating.toFixed(1)} · {reviewCount} reviews
+            {/* Badges */}
+            <div className="hdp-badges">
+              <span className="hdp-badge hdp-badge-type">{hostel.type}</span>
+              <span className="hdp-badge hdp-badge-gender">{hostel.gender}</span>
+              <span className={`hdp-badge ${hostel.verified ? 'hdp-badge-verified' : 'hdp-badge-unverified'}`}>
+                {hostel.verified
+                  ? <><FaCheckCircle /> Verified</>
+                  : '⏳ Pending Verification'
+                }
               </span>
-              {currentHostel.verified && (
-                <span
-                  style={{
-                    marginLeft: '0.5rem',
-                    background: 'rgba(16,185,129,0.12)',
-                    color: '#10b981',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    padding: '2px 8px',
-                    borderRadius: '20px',
-                  }}
-                >
-                  <i className="fa fa-check-circle" /> Verified
-                </span>
-              )}
             </div>
 
-            {/* KEY DETAILS GRID */}
-            <div className="detail-grid">
-              <div className="dg-item">
-                <div className="dg-icon"><i className="fa fa-door-open" /></div>
-                <div className="dg-text">
-                  <small>Total Rooms</small>
-                  <strong>{currentHostel.totalRooms}</strong>
-                </div>
-              </div>
-              <div className="dg-item">
-                <div className="dg-icon" style={{ background: 'rgba(16,185,129,0.1)' }}>
-                  <i className="fa fa-check-circle" style={{ color: '#10b981' }} />
-                </div>
-                <div className="dg-text">
-                  <small>Available Now</small>
-                  <strong style={{ color: '#10b981' }}>{currentHostel.availableRooms} rooms</strong>
-                </div>
-              </div>
-              <div className="dg-item">
-                <div className="dg-icon"><i className="fa fa-home" /></div>
-                <div className="dg-text">
-                  <small>Room Type</small>
-                  <strong>{currentHostel.type}</strong>
-                </div>
-              </div>
-              <div className="dg-item">
-                <div className="dg-icon"><i className="fa fa-venus-mars" /></div>
-                <div className="dg-text">
-                  <small>Gender</small>
-                  <strong>{currentHostel.gender}</strong>
-                </div>
-              </div>
-              <div className="dg-item">
-                <div className="dg-icon"><i className="fa fa-phone" /></div>
-                <div className="dg-text">
-                  <small>Contact Phone</small>
-                  <strong>{currentHostel.contactPhone}</strong>
-                </div>
-              </div>
-              <div className="dg-item">
-                <div className="dg-icon"><i className="fa fa-eye" /></div>
-                <div className="dg-text">
-                  <small>Total Views</small>
-                  <strong>{currentHostel.viewCount || 0}</strong>
-                </div>
-              </div>
+            {/* Address */}
+            <div className="hdp-address">
+              <FaMapMarkerAlt />
+              {hostel.address}
             </div>
 
-            {/* DESCRIPTION */}
-            <p className="section-heading">About this Hostel</p>
-            <p className="detail-desc">{currentHostel.description}</p>
+            {/* Description */}
+            <div className="hdp-section">
+              <div className="hdp-section-title"><FaHome /> About This Hostel</div>
+              <p className="hdp-description">{hostel.description}</p>
+            </div>
 
-            {/* AMENITIES */}
-            {currentHostel.amenities && currentHostel.amenities.length > 0 && (
-              <>
-                <p className="section-heading">Amenities & Features</p>
-                <div className="amenities-grid">
-                  {currentHostel.amenities.map(a => (
-                    <div key={a} className="amenity-chip">
-                      <i className={`fa ${AMENITY_ICONS[a] || 'fa-check'}`} />
-                      {a}
+            {/* Amenities */}
+            {hostel.amenities?.length > 0 && (
+              <div className="hdp-section">
+                <div className="hdp-section-title"><FaCheckCircle /> Amenities</div>
+                <div className="hdp-amenities-grid">
+                  {hostel.amenities.map((a, i) => (
+                    <div key={i} className="hdp-amenity">
+                      <FaCheckCircle /> {a}
                     </div>
                   ))}
                 </div>
-              </>
-            )}
-          </div>
-
-          {/* ✅ FIXED GOOGLE MAP */}
-          <div className="map-card">
-            <h3>
-              <i className="fa fa-map" style={{ color: 'var(--orange)', marginRight: '0.4rem' }} />
-              Location
-            </h3>
-            <GoogleMap
-              address={currentHostel.address}
-              coordinates={currentHostel.location?.coordinates}
-              hostelName={currentHostel.name}
-            />
-            <div className="map-address">
-              <i className="fa fa-map-marker-alt" />
-              <span>{currentHostel.address}</span>
-            </div>
-          </div>
-
-          {/* REVIEWS */}
-          <div className="reviews-card">
-            <h3>
-              <i className="fa fa-star" style={{ color: '#f59e0b', marginRight: '0.4rem' }} />
-              Student Reviews
-            </h3>
-            <div className="reviews-overall">
-              <div className="reviews-score">{rating.toFixed(1)}</div>
-              <div>
-                <div className="stars-gold" style={{ fontSize: '1.1rem' }}>{starsStr}</div>
-                <div className="reviews-out-of">{reviewCount} reviews</div>
-              </div>
-            </div>
-            {MOCK_REVIEWS.map((r, i) => (
-              <div key={i} className="review-item">
-                <div className="review-header">
-                  <span className="review-name">{r.name}</span>
-                  <span className="review-date">{r.date}</span>
-                </div>
-                <div className="review-stars">{'★'.repeat(r.stars)}</div>
-                <div className="review-text">{r.text}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ===== RIGHT SIDEBAR ===== */}
-        <div className="sidebar">
-
-          {/* BOOK CARD */}
-          <div className="book-card">
-            <div className="book-price-display">
-              <div className="book-price-big">
-                MK {currentHostel.price.toLocaleString()}
-                <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#65676b' }}>/mo</span>
-              </div>
-              <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
-            </div>
-            <button
-              className="book-btn"
-              onClick={() => setShowBookingForm(!showBookingForm)}
-            >
-              <i className="fa fa-calendar-check" />{' '}
-              {showBookingForm ? 'Hide Form' : 'Book Now'}
-            </button>
-            <hr className="book-divider" />
-            <div className="book-info-row">
-              <span>Room Type</span><strong>{currentHostel.type}</strong>
-            </div>
-            <div className="book-info-row">
-              <span>Gender</span><strong>{currentHostel.gender}</strong>
-            </div>
-            <div className="book-info-row">
-              <span>Available</span>
-              <strong>{currentHostel.availableRooms} of {currentHostel.totalRooms}</strong>
-            </div>
-            <div className="book-info-row">
-              <span>Status</span>
-              <strong style={{ color: currentHostel.verified ? '#10b981' : '#6b7280' }}>
-                {currentHostel.verified ? '✓ Verified' : 'Unverified'}
-              </strong>
-            </div>
-          </div>
-
-          {/* BOOKING FORM */}
-          <form
-            className={`booking-form-container${showBookingForm ? ' open' : ''}`}
-            onSubmit={handleCreateBooking}
-          >
-            <h3>📅 Book This Hostel</h3>
-
-            {bookingSuccess && (
-              <div className="success-message">
-                <i className="fa fa-check-circle" />
-                <span>Booking created! Processing payment...</span>
               </div>
             )}
 
-            <div className="form-group">
-              <label>Check-in Date *</label>
-              <input
-                type="date"
-                value={bookingData.checkInDate}
-                onChange={(e) =>
-                  setBookingData({ ...bookingData, checkInDate: e.target.value })
-                }
-                min={new Date().toISOString().split('T')[0]}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Duration (months) *</label>
-              <input
-                type="number"
-                min="1"
-                value={bookingData.duration}
-                onChange={(e) =>
-                  setBookingData({
-                    ...bookingData,
-                    duration: parseInt(e.target.value) || 1,
-                  })
-                }
-                required
-              />
-            </div>
-
-            {priceBreakdown && (
-              <div className="price-breakdown">
-                <div className="price-row">
-                  <span>
-                    Room Rent ({bookingData.duration}m @ MK{' '}
-                    {currentHostel.price.toLocaleString()}):
+            {/* Availability */}
+            <div className="hdp-section">
+              <div className="hdp-section-title"><FaDoorOpen /> Room Availability</div>
+              <div className="hdp-avail">
+                <div className="hdp-avail-row">
+                  <span className="hdp-avail-label">Available Rooms</span>
+                  <span className="hdp-avail-val">
+                    {hostel.availableRooms} / {hostel.totalRooms}
                   </span>
-                  <strong>{formatCurrency(priceBreakdown.basePrice)}</strong>
                 </div>
-                <div className="price-row">
-                  <span>Platform Fee:</span>
-                  <strong>{formatCurrency(priceBreakdown.platformFee)}</strong>
+                <div className="hdp-avail-bar">
+                  <div className="hdp-avail-fill" style={{ width: `${availPct}%` }} />
                 </div>
-                <div className="price-row total">
-                  <span>Total to Pay:</span>
-                  <strong>{formatCurrency(priceBreakdown.totalAmount)}</strong>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-light)', marginTop: '0.5rem', fontWeight: 600 }}>
+                  {hostel.availableRooms === 0
+                    ? '❌ No rooms available'
+                    : `✅ ${availPct}% availability`}
+                </p>
+              </div>
+            </div>
+
+            {/* Owner Info */}
+            {hostel.owner && (
+              <div className="hdp-section">
+                <div className="hdp-section-title"><FaUser /> Hostel Owner</div>
+                <div className="hdp-owner-card">
+                  <div className="hdp-owner-avatar">
+                    {hostel.owner.profilePicture
+                      ? <img src={hostel.owner.profilePicture} alt={hostel.owner.firstName} />
+                      : (hostel.owner.firstName?.[0] || 'O').toUpperCase()
+                    }
+                  </div>
+                  <div>
+                    <div className="hdp-owner-name">
+                      {hostel.owner.firstName} {hostel.owner.lastName}
+                    </div>
+                    <div className="hdp-owner-role">Hostel Owner</div>
+                    {hostel.owner.verified && (
+                      <div className="hdp-owner-verified">
+                        <FaCheckCircle /> Verified Owner
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
-
-            <button
-              type="submit"
-              className="book-btn"
-              disabled={bookingLoading || bookingSuccess}
-              style={{ marginTop: '0.5rem' }}
-            >
-              {bookingLoading ? (
-                <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
-              ) : bookingSuccess ? (
-                <><i className="fa fa-check" /> Booking Created!</>
-              ) : (
-                <><i className="fa fa-arrow-right" /> Continue to Payment</>
-              )}
-            </button>
-          </form>
-
-          {/* PAYMENT MODAL */}
-          {booking && showPaymentModal && (
-            <PaymentModal
-              booking={booking}
-              hostel={currentHostel}
-              isOpen={showPaymentModal}
-              onClose={() => {
-                setShowPaymentModal(false);
-                setShowBookingForm(false);
-                setBookingData({ checkInDate: '', duration: 1 });
-                setBooking(null);
-              }}
-              onSuccess={handlePaymentSuccess}
-            />
-          )}
-
-          {/* OWNER CARD */}
-          <div className="owner-card">
-            <div className="owner-top">
-              <div className="owner-avatar">
-                {currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}
-              </div>
-              <div>
-                <div className="owner-info-role">Listed by</div>
-                <div className="owner-info-name">
-                  {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
-                </div>
-                <div className="owner-online">
-                  <div className="owner-dot" /> Active on HostelLink
-                </div>
-              </div>
-            </div>
-            <div className="owner-btns">
-              <button className="owner-btn owner-btn-blue" onClick={handleMessage}>
-                <i className="fa fa-comment-dots" /> Message Owner
-              </button>
-              <a
-                href={`tel:${currentHostel.contactPhone}`}
-                className="owner-btn owner-btn-green"
-                style={{ textDecoration: 'none', justifyContent: 'center', display: 'flex' }}
-              >
-                <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
-              </a>
-              {currentHostel.owner?.email && (
-                <a
-                  href={`mailto:${currentHostel.owner.email}`}
-                  className="owner-btn owner-btn-ghost"
-                  style={{ textDecoration: 'none', justifyContent: 'center', display: 'flex' }}
-                >
-                  <i className="fa fa-envelope" /> Email Owner
-                </a>
-              )}
-            </div>
           </div>
 
-          {/* REPORT */}
-          <button
-            onClick={() => toast.info('Thank you for helping keep HostelLink safe.')}
-            style={{
-              width: '100%',
-              padding: '0.65rem',
-              background: 'transparent',
-              border: '1px solid var(--gray-light)',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              color: 'var(--text-mid)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              transition: 'all 0.2s',
-              fontFamily: 'Manrope, sans-serif',
-            }}
-          >
-            <i className="fa fa-flag" /> Report this listing
-          </button>
+          {/* ── RIGHT COLUMN ── */}
+          <div className="hdp-right">
+            <div className="hdp-booking-card">
+              <div className="hdp-card-head">
+                <div className="hdp-card-price">
+                  MK {hostel.price?.toLocaleString()}<span> /month</span>
+                </div>
+                <div className="hdp-card-subtitle">
+                  {hostel.availableRooms > 0
+                    ? `${hostel.availableRooms} room${hostel.availableRooms !== 1 ? 's' : ''} available`
+                    : 'No rooms available'}
+                </div>
+              </div>
+
+              <div className="hdp-card-body">
+
+                {/* CONTACT OWNER BUTTON */}
+                {user && user.role !== 'owner' && hostel.owner && (
+                  <button
+                    className="hdp-contact-btn"
+                    onClick={handleContactOwner}
+                    disabled={contactingOwner}
+                  >
+                    {contactingOwner
+                      ? <><FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> Connecting...</>
+                      : <><FaComments /> Chat with Owner</>
+                    }
+                  </button>
+                )}
+
+                {/* Not logged in */}
+                {!user && (
+                  <button
+                    className="hdp-contact-btn"
+                    onClick={() => navigate('/login')}
+                  >
+                    <FaComments /> Login to Contact Owner
+                  </button>
+                )}
+
+                {/* Divider */}
+                {user?.role === 'student' && hostel.availableRooms > 0 && (
+                  <div className="hdp-divider">or book directly</div>
+                )}
+
+                {/* BOOKING FORM */}
+                {user?.role === 'student' && (
+                  <form onSubmit={handleCreateBooking}>
+                    <div className="hdp-form-group">
+                      <label className="hdp-label">Check-in Date *</label>
+                      <input
+                        type="date"
+                        className="hdp-input"
+                        value={checkInDate}
+                        onChange={(e) => setCheckInDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        required
+                        disabled={bookingLoading}
+                      />
+                    </div>
+                    <div className="hdp-form-group">
+                      <label className="hdp-label">Duration (months) *</label>
+                      <input
+                        type="number"
+                        className="hdp-input"
+                        min="1"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        required
+                        disabled={bookingLoading}
+                      />
+                    </div>
+
+                    {duration > 0 && (
+                      <div className="hdp-price-breakdown">
+                        <div className="hdp-price-row">
+                          <span>Room rent ({duration} month{duration > 1 ? 's' : ''})</span>
+                          <span>MK {(hostel.price * duration).toLocaleString()}</span>
+                        </div>
+                        <div className="hdp-price-row">
+                          <span>Platform fee</span>
+                          <span>MK 2,000</span>
+                        </div>
+                        <div className="hdp-price-row total">
+                          <span>Total</span>
+                          <span>MK {paymentDetails.totalAmount?.toLocaleString()}</span>
+                        </div>
+                        <p className="hdp-fee-note">
+                          💡 Platform fee protects both students and owners
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="hdp-book-btn"
+                      disabled={bookingLoading || hostel.availableRooms === 0}
+                    >
+                      {bookingLoading
+                        ? <><FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> Creating Booking...</>
+                        : hostel.availableRooms === 0
+                          ? '❌ No Rooms Available'
+                          : <><FaBed /> Book & Pay Now</>
+                      }
+                    </button>
+                  </form>
+                )}
+
+                {/* Owner notice */}
+                {user?.role === 'owner' && (
+                  <div className="hdp-notice">
+                    🏠 This is a hostel listing. Only students can book or contact owners.
+                  </div>
+                )}
+
+                {/* Not logged in booking prompt */}
+                {!user && (
+                  <>
+                    <div className="hdp-divider">want to book?</div>
+                    <div className="hdp-login-prompt">
+                      <p>
+                        Please <a href="/login">login as a student</a> to book this hostel
+                        or <a href="/register">create an account</a> for free.
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {/* Trust badges */}
+                <div className="hdp-trust-badges">
+                  <div className="hdp-trust-item"><FaShieldAlt /> Secure</div>
+                  <div className="hdp-trust-item"><FaCheckCircle /> Verified</div>
+                  <div className="hdp-trust-item"><FaStar style={{ color: '#f59e0b' }} /> Trusted</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* PAYMENT MODAL */}
+      {booking && hostel && (
+        <PaymentModal
+          booking={booking}
+          hostel={hostel}
+          isOpen={showPaymentModal}
+          onClose={() => {
+            setShowPaymentModal(false);
+            setCheckInDate('');
+            setDuration(1);
+          }}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
     </>
   );
-}
+};
+
+export default HostelDetailsPage;
