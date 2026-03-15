@@ -6,7 +6,7 @@ import api from '../services/api';
 import {
   FaCamera, FaEdit, FaEnvelope, FaPhone,
   FaCalendarAlt, FaUserGraduate, FaHome, FaBookmark,
-  FaHeart, FaBell, FaSignOutAlt, FaCog, FaSave,
+  FaHeart, FaBell, FaSignOutAlt, FaSave,
   FaTimes, FaLock, FaEye, FaEyeSlash, FaCheckCircle,
   FaSpinner, FaUser, FaShieldAlt, FaKey, FaBars,
   FaChartLine, FaBuilding,
@@ -39,10 +39,8 @@ const styles = `
   }
 
   body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
-
   .prof-page { min-height: 100vh; background: var(--gray-bg); }
 
-  /* ── COVER ── */
   .prof-cover-wrap {
     position: relative; height: 320px;
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 40%, var(--blue) 70%, #2655d4 100%);
@@ -68,11 +66,7 @@ const styles = `
   }
   .prof-cover-edit-btn:hover { background: white; }
 
-  /* ── HEADER ── */
-  .prof-header {
-    background: white; border-bottom: 1px solid var(--gray-light);
-    box-shadow: var(--shadow);
-  }
+  .prof-header { background: white; border-bottom: 1px solid var(--gray-light); box-shadow: var(--shadow); }
   .prof-header-inner { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
   .prof-avatar-row {
     display: flex; align-items: flex-end; gap: 1.5rem;
@@ -96,7 +90,7 @@ const styles = `
     cursor: pointer; color: var(--text-dark); font-size: 0.85rem;
     transition: var(--transition);
   }
-  .prof-avatar-edit:hover { background: var(--gray-bg); }
+  .prof-avatar-edit:hover { background: var(--orange-pale); color: var(--orange); }
   .prof-header-info { flex: 1; padding-bottom: 0.5rem; min-width: 0; }
   .prof-name { font-size: 1.8rem; font-weight: 900; color: var(--text-dark); line-height: 1.15; }
   .prof-role-badge {
@@ -110,8 +104,7 @@ const styles = `
   .prof-verified-badge {
     display: inline-flex; align-items: center; gap: 0.3rem;
     background: var(--success-pale); color: var(--success);
-    border-radius: 20px; padding: 3px 10px;
-    font-size: 0.72rem; font-weight: 700;
+    border-radius: 20px; padding: 3px 10px; font-size: 0.72rem; font-weight: 700;
   }
   .prof-header-actions {
     display: flex; gap: 0.5rem; align-items: flex-end;
@@ -131,7 +124,6 @@ const styles = `
   .prof-action-btn.danger { background: rgba(220,38,38,0.1); color: var(--danger); border: 1px solid rgba(220,38,38,0.2); }
   .prof-action-btn.danger:hover { background: rgba(220,38,38,0.15); }
 
-  /* Nav tabs */
   .prof-nav { display: flex; gap: 0; border-top: 1px solid var(--gray-light); overflow-x: auto; scrollbar-width: none; }
   .prof-nav::-webkit-scrollbar { display: none; }
   .prof-nav-tab {
@@ -144,13 +136,11 @@ const styles = `
   .prof-nav-tab:hover { background: var(--gray-bg); color: var(--text-dark); }
   .prof-nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
 
-  /* ── BODY ── */
   .prof-body {
     max-width: 1080px; margin: 0 auto; padding: 1.5rem;
     display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start;
   }
 
-  /* ── CARDS ── */
   .prof-card {
     background: white; border-radius: var(--card-radius);
     border: 1px solid var(--gray-light);
@@ -160,10 +150,7 @@ const styles = `
     display: flex; align-items: center; justify-content: space-between;
     padding: 1rem 1.25rem; border-bottom: 1px solid var(--gray-light); background: #fafafa;
   }
-  .prof-card-title {
-    font-size: 0.95rem; font-weight: 800; color: var(--navy);
-    display: flex; align-items: center; gap: 0.5rem;
-  }
+  .prof-card-title { font-size: 0.95rem; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 0.5rem; }
   .prof-card-title svg { color: var(--orange); }
   .prof-card-body { padding: 1.25rem; }
   .prof-edit-link {
@@ -173,31 +160,24 @@ const styles = `
   }
   .prof-edit-link:hover { color: var(--orange-light); }
 
-  /* Info rows */
   .prof-info-row {
     display: flex; align-items: center; gap: 0.85rem;
     padding: 0.6rem 0; border-bottom: 1px solid rgba(0,0,0,0.04);
   }
   .prof-info-row:last-child { border-bottom: none; }
-  .prof-info-icon {
-    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
-  }
+  .prof-info-icon { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
   .prof-info-label { font-size: 0.72rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; }
   .prof-info-value { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); }
 
-  /* Stats */
   .prof-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
   .prof-stat-box {
     background: var(--gray-bg); border-radius: 10px; padding: 0.9rem 0.75rem;
-    text-align: center; cursor: pointer; transition: var(--transition);
-    border: 1px solid var(--gray-light);
+    text-align: center; cursor: pointer; transition: var(--transition); border: 1px solid var(--gray-light);
   }
   .prof-stat-box:hover { background: var(--orange-pale); border-color: rgba(232,80,26,0.2); transform: translateY(-2px); }
   .prof-stat-val { font-size: 1.4rem; font-weight: 900; color: var(--navy); line-height: 1; }
   .prof-stat-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 0.25rem; }
 
-  /* ── FORM ── */
   .prof-form-section {
     background: white; border-radius: var(--card-radius);
     border: 1px solid var(--gray-light); box-shadow: var(--shadow);
@@ -219,11 +199,7 @@ const styles = `
   .prof-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .prof-form-group { margin-bottom: 1rem; }
   .prof-form-group.full { grid-column: 1 / -1; }
-  .prof-label {
-    display: block; font-size: 0.72rem; font-weight: 700;
-    color: var(--text-mid); text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 0.4rem;
-  }
+  .prof-label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
   .prof-input {
     width: 100%; padding: 0.7rem 0.9rem;
     border: 1.5px solid var(--gray-light); border-radius: 9px;
@@ -271,7 +247,6 @@ const styles = `
   }
   .prof-cancel-btn:hover { background: #d8dadf; }
 
-  /* Password strength */
   .prof-pwd-strength { margin-top: 0.5rem; }
   .prof-pwd-bars { display: flex; gap: 4px; margin-bottom: 0.3rem; }
   .prof-pwd-bar { flex: 1; height: 4px; border-radius: 2px; background: var(--gray-light); transition: var(--transition); }
@@ -283,7 +258,6 @@ const styles = `
   .pwd-fair   { color: #f59e0b; }
   .pwd-strong { color: var(--success); }
 
-  /* Alert */
   .prof-alert {
     display: flex; align-items: center; gap: 0.75rem;
     padding: 0.85rem 1.1rem; border-radius: 9px; margin-bottom: 1rem;
@@ -292,15 +266,18 @@ const styles = `
   .prof-alert.success { background: var(--success-pale); color: #065f46; border: 1px solid #a7f3d0; }
   .prof-alert.error   { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
 
-  /* Loading */
-  .prof-loading {
-    min-height: 60vh; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 1rem;
-  }
+  .prof-loading { min-height: 60vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; }
   .prof-spinner { animation: spin 0.8s linear infinite; font-size: 2rem; color: var(--orange); }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── RESPONSIVE ── */
+  /* Avatar upload loading overlay */
+  .prof-avatar-uploading {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.5rem;
+  }
+
   @media (max-width: 900px) {
     .prof-body { grid-template-columns: 1fr; }
     .prof-cover-wrap { height: 220px; }
@@ -322,7 +299,6 @@ const styles = `
   }
 `;
 
-// ── PASSWORD STRENGTH ─────────────────────────────
 const getPasswordStrength = (pwd) => {
   if (!pwd) return { score: 0, label: '', cls: '' };
   let score = 0;
@@ -335,27 +311,27 @@ const getPasswordStrength = (pwd) => {
   return               { score, label: 'Strong', cls: 'pwd-strong' };
 };
 
-// ── MAIN ─────────────────────────────────────────
 const ProfilePage = () => {
   const navigate  = useNavigate();
   const { user, logout, updateUser } = useAuth();
 
   const avatarInputRef = useRef(null);
 
-  const [activeTab,    setActiveTab]    = useState('about');
-  const [pageLoading,  setPageLoading]  = useState(true);
-  const [profileData,  setProfileData]  = useState(null);
+  const [activeTab,     setActiveTab]     = useState('about');
+  const [pageLoading,   setPageLoading]   = useState(true);
+  const [profileData,   setProfileData]   = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
-  const [saving,       setSaving]       = useState(false);
-  const [formData,     setFormData]     = useState({});
-  const [formAlert,    setFormAlert]    = useState(null);
+  const [saving,        setSaving]        = useState(false);
+  const [formData,      setFormData]      = useState({});
+  const [formAlert,     setFormAlert]     = useState(null);
 
-  const [pwdData,      setPwdData]      = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-  const [pwdSaving,    setPwdSaving]    = useState(false);
-  const [pwdAlert,     setPwdAlert]     = useState(null);
-  const [showPwd,      setShowPwd]      = useState({ current: false, new: false, confirm: false });
+  const [pwdData,       setPwdData]       = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [pwdSaving,     setPwdSaving]     = useState(false);
+  const [pwdAlert,      setPwdAlert]      = useState(null);
+  const [showPwd,       setShowPwd]       = useState({ current: false, new: false, confirm: false });
 
-  const [stats,        setStats]        = useState({ bookings: 0, messages: 0, hostels: 0, notifications: 0 });
+  const [stats,         setStats]         = useState({ bookings: 0, messages: 0, hostels: 0, notifications: 0 });
 
   const pwdStrength = getPasswordStrength(pwdData.newPassword);
 
@@ -365,7 +341,7 @@ const ProfilePage = () => {
       try {
         setPageLoading(true);
 
-        // Try to get full profile
+        // Load profile first
         let data = user;
         try {
           const res = await api.get('/users/profile');
@@ -376,35 +352,40 @@ const ProfilePage = () => {
 
         setProfileData(data);
         setFormData({
-          firstName: data?.firstName  || '',
-          lastName:  data?.lastName   || '',
-          email:     data?.email      || '',
-          phone:     data?.phone      || '',
-          studentId: data?.studentId  || '',
-          bio:       data?.bio        || '',
+          firstName: data?.firstName || '',
+          lastName:  data?.lastName  || '',
+          email:     data?.email     || '',
+          phone:     data?.phone     || '',
+          studentId: data?.studentId || '',
+          bio:       data?.bio       || '',
         });
 
-        // ✅ FIXED: fetch stats based on role to avoid 403
-        const isOwner = data?.role === 'owner';
-        const statsCalls = [
+        // ✅ Check role FIRST before any API calls to avoid 403
+        const isOwner = data?.role === 'owner' || data?.role === 'landlord';
+
+        // Fetch messages and notifications — safe for all roles
+        const [messagesRes, notifsRes] = await Promise.all([
           api.get('/messages/unread-count').catch(() => ({ data: { count: 0 } })),
           api.get('/notifications/unread-count').catch(() => ({ data: { count: 0 } })),
-        ];
+        ]);
 
-        // Only fetch bookings for students, hostels for owners
+        // ✅ Only fetch bookings for STUDENTS, hostels for OWNERS
+        let roleRes = { data: {} };
         if (isOwner) {
-          statsCalls.push(api.get('/hostels/my-hostels').catch(() => ({ data: { count: 0 } })));
+          roleRes = await api.get('/hostels/my-hostels')
+            .catch(() => ({ data: { hostels: [], data: [] } }));
         } else {
-          statsCalls.push(api.get('/bookings?limit=1').catch(() => ({ data: { total: 0 } })));
+          roleRes = await api.get('/bookings?limit=1')
+            .catch(() => ({ data: { total: 0 } }));
         }
-
-        const [messagesRes, notifsRes, roleRes] = await Promise.all(statsCalls);
 
         setStats({
           messages:      messagesRes.data?.count || 0,
           notifications: notifsRes.data?.count   || 0,
           bookings:      isOwner ? 0 : (roleRes.data?.total || roleRes.data?.count || 0),
-          hostels:       isOwner ? (roleRes.data?.count || roleRes.data?.hostels?.length || 0) : 0,
+          hostels:       isOwner
+            ? (roleRes.data?.hostels?.length || roleRes.data?.data?.length || roleRes.data?.count || 0)
+            : 0,
         });
 
       } catch (err) {
@@ -471,7 +452,7 @@ const ProfilePage = () => {
     setPwdSaving(true);
     setPwdAlert(null);
     try {
-      await api.post('/auth/change-password', {
+      await api.put('/users/change-password', {
         currentPassword: pwdData.currentPassword,
         newPassword:     pwdData.newPassword,
       });
@@ -492,9 +473,13 @@ const ProfilePage = () => {
   const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { toast.error('Image must be under 5MB'); return; }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB');
+      return;
+    }
     const fd = new FormData();
     fd.append('profilePicture', file);
+    setAvatarUploading(true);
     try {
       const res = await api.put('/users/profile/avatar', fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -503,14 +488,18 @@ const ProfilePage = () => {
       setProfileData(updated);
       updateUser(updated);
       toast.success('Profile picture updated!');
-    } catch {
-      toast.error('Failed to upload image');
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      toast.error(err.response?.data?.message || 'Failed to upload image');
+    } finally {
+      setAvatarUploading(false);
+      // Reset file input so same file can be re-uploaded
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
     }
   };
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  // ── LOADING ───────────────────────────────────
   if (pageLoading) {
     return (
       <>
@@ -527,37 +516,35 @@ const ProfilePage = () => {
 
   const displayUser = profileData || user;
   const initials    = ((displayUser?.firstName?.[0] || '') + (displayUser?.lastName?.[0] || '')).toUpperCase() || 'ME';
-  const isOwner     = displayUser?.role === 'owner';
+  const isOwner     = displayUser?.role === 'owner' || displayUser?.role === 'landlord';
   const joinDate    = displayUser?.createdAt
     ? new Date(displayUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : 'Recently';
 
-  // ── STAT BOXES — role-aware ───────────────────
   const statBoxes = isOwner
     ? [
-        { val: stats.hostels,       lbl: 'My Hostels',    link: '/landlord-dashboard', color: '#e8501a'  },
-        { val: stats.messages,      lbl: 'Messages',      link: '/messages',           color: '#1a3fa4'  },
-        { val: stats.notifications, lbl: 'Notifications', link: '/notifications',      color: '#f59e0b'  },
+        { val: stats.hostels,       lbl: 'My Hostels',    link: '/landlord-dashboard', color: '#e8501a' },
+        { val: stats.messages,      lbl: 'Messages',      link: '/messages',           color: '#1a3fa4' },
+        { val: stats.notifications, lbl: 'Notifications', link: '/notifications',      color: '#f59e0b' },
       ]
     : [
-        { val: stats.bookings,      lbl: 'Bookings',      link: '/bookings',           color: '#e8501a'  },
-        { val: stats.messages,      lbl: 'Messages',      link: '/messages',           color: '#1a3fa4'  },
-        { val: stats.notifications, lbl: 'Notifications', link: '/notifications',      color: '#f59e0b'  },
+        { val: stats.bookings,      lbl: 'Bookings',      link: '/bookings',           color: '#e8501a' },
+        { val: stats.messages,      lbl: 'Messages',      link: '/messages',           color: '#1a3fa4' },
+        { val: stats.notifications, lbl: 'Notifications', link: '/notifications',      color: '#f59e0b' },
       ];
 
-  // ── QUICK LINKS — role-aware ──────────────────
   const quickLinks = isOwner
     ? [
-        { icon: <FaBuilding />, label: 'My Dashboard',   link: '/landlord-dashboard', bg: 'rgba(232,80,26,0.1)',  color: '#e8501a' },
-        { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',            bg: 'rgba(26,63,164,0.1)', color: '#1a3fa4' },
-        { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',           bg: 'rgba(26,63,164,0.1)', color: '#1a3fa4' },
+        { icon: <FaBuilding />, label: 'My Dashboard',   link: '/landlord-dashboard', bg: 'rgba(232,80,26,0.1)',   color: '#e8501a' },
+        { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',            bg: 'rgba(26,63,164,0.1)',  color: '#1a3fa4' },
+        { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',           bg: 'rgba(26,63,164,0.1)',  color: '#1a3fa4' },
         { icon: <FaBell />,     label: 'Notifications',  link: '/notifications',      bg: 'rgba(245,158,11,0.1)', color: '#d97706' },
       ]
     : [
-        { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',            bg: 'rgba(232,80,26,0.1)',  color: '#e8501a' },
-        { icon: <FaBookmark />, label: 'My Bookings',    link: '/bookings',           bg: 'rgba(26,63,164,0.1)', color: '#1a3fa4' },
-        { icon: <FaHeart />,    label: 'Saved Hostels',  link: '/favorites',          bg: 'rgba(239,68,68,0.1)', color: '#ef4444' },
-        { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',           bg: 'rgba(26,63,164,0.1)', color: '#1a3fa4' },
+        { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',            bg: 'rgba(232,80,26,0.1)',   color: '#e8501a' },
+        { icon: <FaBookmark />, label: 'My Bookings',    link: '/bookings',           bg: 'rgba(26,63,164,0.1)',  color: '#1a3fa4' },
+        { icon: <FaHeart />,    label: 'Saved Hostels',  link: '/favorites',          bg: 'rgba(239,68,68,0.1)',  color: '#ef4444' },
+        { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',           bg: 'rgba(26,63,164,0.1)',  color: '#1a3fa4' },
         { icon: <FaBell />,     label: 'Notifications',  link: '/notifications',      bg: 'rgba(245,158,11,0.1)', color: '#d97706' },
       ];
 
@@ -567,14 +554,14 @@ const ProfilePage = () => {
 
       <div className="prof-page">
 
-        {/* ── COVER ── */}
+        {/* COVER */}
         <div className="prof-cover-wrap">
           <button className="prof-cover-edit-btn">
             <FaCamera /> Edit Cover Photo
           </button>
         </div>
 
-        {/* ── HEADER ── */}
+        {/* HEADER */}
         <div className="prof-header">
           <div className="prof-header-inner">
             <div className="prof-avatar-row">
@@ -586,13 +573,23 @@ const ProfilePage = () => {
                     ? <img src={displayUser.profilePicture} alt={displayUser.firstName} />
                     : initials
                   }
+                  {avatarUploading && (
+                    <div className="prof-avatar-uploading">
+                      <FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} />
+                    </div>
+                  )}
                 </div>
-                <div className="prof-avatar-edit" onClick={() => avatarInputRef.current?.click()}>
-                  <FaCamera />
+                <div
+                  className="prof-avatar-edit"
+                  onClick={() => !avatarUploading && avatarInputRef.current?.click()}
+                  title="Change profile picture"
+                >
+                  {avatarUploading ? <FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> : <FaCamera />}
                 </div>
                 <input
                   ref={avatarInputRef}
-                  type="file" accept="image/*"
+                  type="file"
+                  accept="image/*"
                   style={{ display: 'none' }}
                   onChange={handleAvatarUpload}
                 />
@@ -604,7 +601,7 @@ const ProfilePage = () => {
                   {displayUser?.firstName} {displayUser?.lastName}
                 </div>
                 <div className="prof-role-badge">
-                  {isOwner ? <FaHome /> : <FaUserGraduate />}
+                  {isOwner ? <FaBuilding /> : <FaUserGraduate />}
                   {isOwner ? 'Hostel Owner' : 'MUBAS Student'}
                 </div>
                 {displayUser?.verified && (
@@ -621,16 +618,10 @@ const ProfilePage = () => {
 
               {/* Actions */}
               <div className="prof-header-actions">
-                <button
-                  className="prof-action-btn primary"
-                  onClick={() => setActiveTab('edit')}
-                >
-                  <FaEdit /> Edit Profile
+                <button className="prof-action-btn primary" onClick={() => setActiveTab('edit')}>
+                  <FaUser /> Edit Profile
                 </button>
-                <button
-                  className="prof-action-btn secondary"
-                  onClick={() => setActiveTab('security')}
-                >
+                <button className="prof-action-btn secondary" onClick={() => setActiveTab('security')}>
                   <FaLock />
                 </button>
                 <button className="prof-action-btn danger" onClick={handleLogout}>
@@ -642,9 +633,9 @@ const ProfilePage = () => {
             {/* Nav tabs */}
             <div className="prof-nav">
               {[
-                { key: 'about',    label: 'About',        icon: <FaUser />      },
-                { key: 'edit',     label: 'Edit Profile', icon: <FaEdit />      },
-                { key: 'security', label: 'Security',     icon: <FaLock />      },
+                { key: 'about',    label: 'About',        icon: <FaUser />  },
+                { key: 'edit',     label: 'Edit Profile', icon: <FaUser />  },
+                { key: 'security', label: 'Security',     icon: <FaLock />  },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -658,18 +649,16 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* ── BODY ── */}
+        {/* BODY */}
         <div className="prof-body">
 
-          {/* ── LEFT ── */}
+          {/* LEFT COLUMN */}
           <div>
 
             {/* Stats */}
             <div className="prof-card">
               <div className="prof-card-head">
-                <div className="prof-card-title">
-                  <FaChartLine /> Activity
-                </div>
+                <div className="prof-card-title"><FaChartLine /> Activity</div>
               </div>
               <div className="prof-card-body">
                 <div className="prof-stats-grid">
@@ -691,16 +680,24 @@ const ProfilePage = () => {
               </div>
               <div className="prof-card-body">
                 {[
-                  { icon: <FaEnvelope />,    bg: 'rgba(26,63,164,0.1)',   color: '#1a3fa4', label: 'Email',        value: displayUser?.email || '—'                       },
-                  { icon: <FaPhone />,       bg: 'rgba(16,185,129,0.1)', color: '#059669', label: 'Phone',        value: displayUser?.phone || 'Not added'               },
+                  { icon: <FaEnvelope />,
+                    bg: 'rgba(26,63,164,0.1)',   color: '#1a3fa4',
+                    label: 'Email', value: displayUser?.email || '—' },
+                  { icon: <FaPhone />,
+                    bg: 'rgba(16,185,129,0.1)', color: '#059669',
+                    label: 'Phone', value: displayUser?.phone || 'Not added' },
                   { icon: isOwner ? <FaBuilding /> : <FaUserGraduate />,
-                                             bg: 'rgba(139,92,246,0.1)', color: '#7c3aed', label: isOwner ? 'Role' : 'Student ID',
-                                             value: isOwner ? 'Hostel Owner' : (displayUser?.studentId || '—')   },
-                  { icon: <FaCalendarAlt />, bg: 'rgba(232,80,26,0.1)',   color: '#e8501a', label: 'Member Since', value: joinDate                                        },
-                  { icon: <FaShieldAlt />,   bg: displayUser?.verified ? 'rgba(5,150,105,0.1)' : 'rgba(245,158,11,0.1)',
-                                             color: displayUser?.verified ? '#059669' : '#d97706',
-                                             label: 'Status',
-                                             value: displayUser?.verified ? 'Verified ✓' : 'Pending Verification' },
+                    bg: 'rgba(139,92,246,0.1)', color: '#7c3aed',
+                    label: isOwner ? 'Role' : 'Student ID',
+                    value: isOwner ? 'Hostel Owner' : (displayUser?.studentId || '—') },
+                  { icon: <FaCalendarAlt />,
+                    bg: 'rgba(232,80,26,0.1)',   color: '#e8501a',
+                    label: 'Member Since', value: joinDate },
+                  { icon: <FaShieldAlt />,
+                    bg: displayUser?.verified ? 'rgba(5,150,105,0.1)' : 'rgba(245,158,11,0.1)',
+                    color: displayUser?.verified ? '#059669' : '#d97706',
+                    label: 'Status',
+                    value: displayUser?.verified ? 'Verified ✓' : 'Pending Verification' },
                 ].map((item, i) => (
                   <div key={i} className="prof-info-row">
                     <div className="prof-info-icon" style={{ background: item.bg, color: item.color }}>
@@ -750,10 +747,10 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* ── RIGHT ── */}
+          {/* RIGHT COLUMN */}
           <div>
 
-            {/* ── ABOUT TAB ── */}
+            {/* ABOUT TAB */}
             {activeTab === 'about' && (
               <div className="prof-card">
                 <div className="prof-card-head">
@@ -839,7 +836,7 @@ const ProfilePage = () => {
 
                   <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-light)', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <button className="prof-action-btn primary" onClick={() => setActiveTab('edit')}>
-                      <FaEdit /> Edit Profile
+                      <FaUser /> Edit Profile
                     </button>
                     <button className="prof-action-btn secondary" onClick={() => setActiveTab('security')}>
                       <FaKey /> Change Password
@@ -849,11 +846,11 @@ const ProfilePage = () => {
               </div>
             )}
 
-            {/* ── EDIT TAB ── */}
+            {/* EDIT TAB */}
             {activeTab === 'edit' && (
               <div className="prof-form-section">
                 <div className="prof-form-head">
-                  <div className="prof-form-head-icon"><FaEdit /></div>
+                  <div className="prof-form-head-icon"><FaUser /></div>
                   <div>
                     <h3>Edit Profile</h3>
                     <p>Update your personal information</p>
@@ -909,7 +906,7 @@ const ProfilePage = () => {
               </div>
             )}
 
-            {/* ── SECURITY TAB ── */}
+            {/* SECURITY TAB */}
             {activeTab === 'security' && (
               <div className="prof-form-section">
                 <div className="prof-form-head">
@@ -992,8 +989,6 @@ const ProfilePage = () => {
                         <p style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: 4, fontWeight: 600 }}>✅ Passwords match</p>
                       )}
                     </div>
-
-                    {/* Tips */}
                     <div style={{ background: 'var(--gray-bg)', borderRadius: 9, padding: '0.85rem 1rem', marginBottom: '1rem', border: '1px solid var(--gray-light)' }}>
                       <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <FaShieldAlt style={{ color: 'var(--orange)' }} /> Password Tips
@@ -1004,7 +999,6 @@ const ProfilePage = () => {
                         </div>
                       ))}
                     </div>
-
                     <div className="prof-form-actions">
                       <button type="button" className="prof-cancel-btn" onClick={() => { setActiveTab('about'); setPwdAlert(null); }}>
                         <FaTimes /> Cancel
