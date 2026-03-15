@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
 // @desc  Get user profile
 // @route GET /api/users/profile
@@ -32,6 +34,44 @@ exports.updateProfile = async (req, res) => {
     res.json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error updating profile' });
+  }
+};
+
+// @desc  Upload profile picture
+// @route PUT /api/users/profile/avatar
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image file provided' });
+    }
+
+    const streamUpload = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'avatars',
+            transformation: [{ width: 400, height: 400, crop: 'fill' }],
+          },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+    const result = await streamUpload();
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { profilePicture: result.secure_url },
+      { new: true }
+    );
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error('Avatar upload error:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload image' });
   }
 };
 
@@ -106,12 +146,7 @@ exports.getLandlordDashboard = async (req, res) => {
       pendingBookings: bookings.filter((b) => b.status === 'payment_pending').length,
     };
 
-    res.json({
-      success: true,
-      stats,
-      hostels,
-      recentBookings: bookings.slice(0, 10),
-    });
+    res.json({ success: true, stats, hostels, recentBookings: bookings.slice(0, 10) });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error fetching landlord dashboard' });
   }
