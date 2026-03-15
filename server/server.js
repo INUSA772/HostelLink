@@ -22,9 +22,13 @@ const io = new Server(server, {
   },
 });
 
-// Make io accessible in controllers
+// ✅ Track online users globally
+const onlineUsers = new Map();
+
+// ✅ Make io and onlineUsers available in all controllers
 app.use((req, res, next) => {
   req.io = io;
+  req.onlineUsers = onlineUsers;
   next();
 });
 
@@ -39,6 +43,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// Health checks
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'PezaHostel API is running!' });
 });
@@ -46,22 +51,26 @@ app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'API is working!' });
 });
 
-const authRoutes     = require('./routes/authRoutes');
-const hostelRoutes   = require('./routes/hostelRoutes');
-const bookingRoutes  = require('./routes/bookingRoutes');
-const paymentRoutes  = require('./routes/paymentRoutes');
-const reviewRoutes   = require('./routes/reviewRoutes');
-const userRoutes     = require('./routes/userRoutes');
-const messageRoutes  = require('./routes/messageRoutes');
+// Routes
+const authRoutes         = require('./routes/authRoutes');
+const hostelRoutes       = require('./routes/hostelRoutes');
+const bookingRoutes      = require('./routes/bookingRoutes');
+const paymentRoutes      = require('./routes/paymentRoutes');
+const reviewRoutes       = require('./routes/reviewRoutes');
+const userRoutes         = require('./routes/userRoutes');
+const messageRoutes      = require('./routes/messageRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
-app.use('/api/auth',     authRoutes);
-app.use('/api/hostels',  hostelRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/reviews',  reviewRoutes);
-app.use('/api/users',    userRoutes);
-app.use('/api/messages', messageRoutes);
+app.use('/api/auth',          authRoutes);
+app.use('/api/hostels',       hostelRoutes);
+app.use('/api/bookings',      bookingRoutes);
+app.use('/api/payments',      paymentRoutes);
+app.use('/api/reviews',       reviewRoutes);
+app.use('/api/users',         userRoutes);
+app.use('/api/messages',      messageRoutes);
+app.use('/api/notifications', notificationRoutes);
 
+// Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
@@ -71,15 +80,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Socket.io
-const onlineUsers = new Map();
-
+// ── Socket.io ──────────────────────────────────────
 io.on('connection', (socket) => {
   console.log(`🔌 Socket connected: ${socket.id}`);
 
   socket.on('user:join', (userId) => {
     onlineUsers.set(userId, socket.id);
     io.emit('users:online', Array.from(onlineUsers.keys()));
+    console.log(`👤 User ${userId} is online`);
   });
 
   socket.on('conversation:join', (conversationId) => {
@@ -111,6 +119,7 @@ io.on('connection', (socket) => {
     for (const [userId, socketId] of onlineUsers.entries()) {
       if (socketId === socket.id) {
         onlineUsers.delete(userId);
+        console.log(`👤 User ${userId} went offline`);
         break;
       }
     }

@@ -1,6 +1,6 @@
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
-const User = require('../models/User');
+const { createNotification } = require('./notificationController');
 
 // @desc  Start or get existing conversation
 // @route POST /api/messages/conversation
@@ -135,7 +135,7 @@ exports.sendMessage = async (req, res) => {
     const conversation = await Conversation.findOne({
       _id: conversationId,
       participants: req.user._id,
-    });
+    }).populate('hostel', 'name');
 
     if (!conversation) {
       return res.status(404).json({
@@ -153,6 +153,7 @@ exports.sendMessage = async (req, res) => {
     const populatedMessage = await Message.findById(message._id)
       .populate('sender', 'firstName lastName profilePicture role');
 
+    // Find the other participant
     const otherParticipant = conversation.participants.find(
       (p) => p.toString() !== req.user._id.toString()
     );
@@ -161,6 +162,7 @@ exports.sendMessage = async (req, res) => {
       ? (conversation.unreadCount.get(otherParticipant.toString()) || 0)
       : 0;
 
+    // Update conversation last message and unread count
     await Conversation.findByIdAndUpdate(conversationId, {
       lastMessage: {
         text: text.trim(),
@@ -168,6 +170,21 @@ exports.sendMessage = async (req, res) => {
         createdAt: new Date(),
       },
       [`unreadCount.${otherParticipant}`]: currentUnread + 1,
+    });
+
+    // ✅ Create notification for recipient
+    await createNotification({
+      recipientId: otherParticipant,
+      senderId: req.user._id,
+      type: 'new_message',
+      title: `💬 New message from ${req.user.firstName}`,
+      body: text.trim().length > 80
+        ? text.trim().slice(0, 80) + '...'
+        : text.trim(),
+      link: `/messages?conversation=${conversationId}`,
+      data: { conversationId },
+      io: req.io,
+      onlineUsers: req.onlineUsers,
     });
 
     res.status(201).json({ success: true, data: populatedMessage });
