@@ -6,6 +6,10 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,100;1,300;1,400;1,500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+  
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -39,6 +43,87 @@ const styles = `
   .logo-text strong { display: block; font-size: 1rem; font-weight: 800; letter-spacing: 1px; color: white; }
   .logo-text span { font-size: 0.65rem; opacity: 0.7; letter-spacing: 0.5px; color: white; }
 
+  /* ── NAVBAR CENTER TEXT (FANCY LOGO STYLE) ── */
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+  }
+
+  .nav-center-item {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    position: relative;
+  }
+
+  .nav-center-item::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0%;
+    height: 1.5px;
+    background: var(--orange);
+    transition: width 0.3s ease;
+  }
+
+  .nav-center-item:hover::after { width: 100%; }
+  .nav-center-item:hover { color: white; }
+
+  /* Fancy primary nav item — logo-style */
+  .nav-center-item.fancy {
+    font-family: 'Righteous', cursive;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, #00e5ff 0%, #ffffff 40%, #e8501a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    background-size: 200% auto;
+    animation: logoShine 4s linear infinite;
+    position: relative;
+  }
+
+  .nav-center-item.fancy::before {
+    content: '⬡';
+    font-size: 0.6rem;
+    margin-right: 5px;
+    -webkit-text-fill-color: #00e5ff;
+    animation: spinHex 6s linear infinite;
+    display: inline-block;
+  }
+
+  .nav-center-item.fancy::after { display: none; }
+
+  @keyframes logoShine {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes spinHex {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Dot separator */
+  .nav-center-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+  }
+
   .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
 
   .nav-login {
@@ -58,7 +143,10 @@ const styles = `
   }
   .nav-signup:hover { opacity: 0.88; }
 
-  /* Hide text labels on very small screens, show only icons */
+  @media (max-width: 1024px) {
+    .nav-center { display: none; }
+  }
+
   @media (max-width: 400px) {
     nav { padding: 0 0.8rem; }
     .logo-text { display: none; }
@@ -74,59 +162,244 @@ const styles = `
 
   /* ── HERO ── */
   .hero {
-    position: relative; min-height: 100vh; overflow: hidden;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 6rem 1.5rem 4rem;
+    min-height: 100vh;
+    width: 100vw;
+    background-image: url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1400&auto=format&fit=crop');
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
     text-align: center;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, #0d1b3e 0%, #1a3fa4 60%, #0d2b6e 100%);
-  }
-  .hero-bg::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1400&auto=format&fit=crop') center/cover no-repeat;
-    opacity: 0.18;
-  }
-  .hero-content {
-    position: relative; z-index: 2;
-    max-width: 680px; width: 100%;
-  }
-  .hero-content h1 {
-    color: white; font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 800;
-    line-height: 1.15; margin-bottom: 1.2rem;
-  }
-  .hero-content h1 span { color: #facc15; }
-  .hero-content p {
-    color: rgba(255,255,255,0.82); font-size: clamp(0.95rem, 2vw, 1.1rem);
-    margin-bottom: 2.5rem; line-height: 1.7;
+    padding: 0 1rem;
+    position: relative;
+    overflow: hidden !important;
   }
 
-  /* ── WAVES ── */
-  .wave {
+  .hero-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── HERO RIGHT — ANIMATED CARDS COLUMN (PayChangu style) ── */
+  .hero-right {
+    flex: 1;
+    min-height: 480px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    overflow: visible;
+  }
+
+  /* Two columns of cards */
+  .cards-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  /* Column 1 scrolls UP continuously */
+  .cards-col-up {
+    animation: scrollUp 8s linear infinite;
+  }
+
+  /* Column 2 scrolls DOWN continuously */
+  .cards-col-down {
+    animation: scrollDown 10s linear infinite;
+    margin-top: 60px; /* offset so they look staggered */
+  }
+
+  @keyframes scrollUp {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  @keyframes scrollDown {
+    0%   { transform: translateY(-50%); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Fade mask top & bottom */
+  .hero-right-mask {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+
+  .hero-right-mask::before,
+  .hero-right-mask::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 80px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .hero-right-mask::before {
+    top: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
+  }
+
+  .hero-right-mask::after {
+    bottom: 0;
+    background: linear-gradient(to top, rgba(255,255,255,0.9), transparent);
+  }
+
+  /* Individual animated card */
+  .anim-card {
+    width: 170px;
+    border-radius: 16px;
+    padding: 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .anim-card:hover {
+    transform: scale(1.04);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.2);
+  }
+
+  .anim-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .anim-card-title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.2;
+  }
+
+  .anim-card-sub {
+    font-size: 0.72rem;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  /* Card color themes */
+  .anim-card.blue   { background: rgba(219,234,254,0.85); }
+  .anim-card.orange { background: rgba(255,237,213,0.85); }
+  .anim-card.green  { background: rgba(209,250,229,0.85); }
+  .anim-card.purple { background: rgba(237,233,254,0.85); }
+  .anim-card.red    { background: rgba(254,226,226,0.85); }
+  .anim-card.cyan   { background: rgba(207,250,254,0.85); }
+  .anim-card.yellow { background: rgba(254,249,195,0.85); }
+  .anim-card.pink   { background: rgba(252,231,243,0.85); }
+
+  .anim-card.blue   .anim-card-icon { background: #2563eb; }
+  .anim-card.orange .anim-card-icon { background: #e8501a; }
+  .anim-card.green  .anim-card-icon { background: #059669; }
+  .anim-card.purple .anim-card-icon { background: #7c3aed; }
+  .anim-card.red    .anim-card-icon { background: #dc2626; }
+  .anim-card.cyan   .anim-card-icon { background: #0891b2; }
+  .anim-card.yellow .anim-card-icon { background: #d97706; }
+  .anim-card.pink   .anim-card-icon { background: #db2777; }
+
+  .hero h1 {
+    color: #021048e6;
+    font-size: 3.5rem;
+    text-shadow: 0px 0px 10px cyan,
+                 0px 0px 20px cyan,
+                 0px 0px 40px cyan,
+                 0px 0px 80px cyan;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 1.2rem;
+    z-index: 2;
+  }
+
+  .hero h2 {
+    color: #fff;
+    font-size: 3rem;
+    text-shadow: 0px 0px 10px cyan,
+                 0px 0px 20px cyan,
+                 0px 0px 40px cyan,
+                 0px 0px 80px cyan;
+    font-family: 'Poppins', sans-serif;
+    z-index: 2;
+  }
+
+  .hero .wave {
     position: absolute;
     bottom: -.5rem;
     left: 0;
     height: 11rem;
     width: 100%;
-    background: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1400&auto=format&fit=crop');
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAIklEQVR42mNkYGBoYmBgeM8ABYxgLMQCiRABYiABYiABFgAESQALfH1w0gAAAABJRU5ErkJggg==');
     background-size: 100rem 11rem;
     animation: waves 8s linear infinite;
     background-repeat: repeat-x;
-    opacity: 0.3;
+    z-index: 1;
   }
-  .wave1 { animation-duration: 8s; opacity: 0.4; }
-  .wave2 { animation-direction: reverse; animation-duration: 6s; opacity: 0.3; bottom: -0.3rem; }
-  .wave3 { animation-duration: 4s; opacity: 0.5; bottom: 0rem; }
+
+  .hero .wave2 {
+    animation-direction: reverse;
+    animation-duration: 6s;
+    opacity: .3;
+  }
+
+  .hero .wave3 {
+    animation-duration: 4s;
+    opacity: .5;
+  }
+
   @keyframes waves {
     0% { background-position-x: 0; }
     100% { background-position-x: 100rem; }
   }
 
-  /* CTA buttons in hero */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    z-index: 2;
+    position: relative;
+  }
+  .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: #facc15; }
+  .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+
   .hero-btns {
     display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    z-index: 2;
+    position: relative;
   }
   .hero-btn-primary {
     background: var(--orange); color: white; border: none; cursor: pointer;
@@ -143,15 +416,6 @@ const styles = `
     text-decoration: none;
   }
   .hero-btn-ghost:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
-
-  /* Hero stats */
-  .hero-stats {
-    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
-    margin-top: 3rem; padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.15);
-  }
-  .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: #facc15; }
-  .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
 
   /* ── SECTIONS ── */
   .section-label { font-size: 0.8rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; text-align: center; }
@@ -279,251 +543,201 @@ const styles = `
   }
   .btn-primary:hover { opacity: 0.9; }
 
-  /* ── FAQ SECTION WITH FREQUENCY WAVES ── */
-  .faq-section {
+  /* ══════════════════════════════════════════════
+     FAQ SECTION — EXACTLY LIKE FORJITECH SCREENSHOT
+     Dark background, question mark bg image,
+     cyan heading with corner brackets,
+     cyan accordion rows with + icon
+  ══════════════════════════════════════════════ */
+  .faq {
     position: relative;
-    min-height: 70vh;
-    width: 100%;
+    padding: 5rem 1.5rem 6rem;
+    background: #1a1a2e;
+    background-image:
+      radial-gradient(ellipse at 80% 50%, rgba(0,191,255,0.05) 0%, transparent 60%),
+      url('https://images.unsplash.com/photo-1518976024611-28bf4b48222e?w=1400&auto=format&fit=crop&q=40');
+    background-blend-mode: overlay, normal;
+    background-size: cover;
+    background-position: center;
     text-align: center;
-    padding: 4rem 2rem 2rem;
-    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&auto=format&fit=crop') center/cover no-repeat;
-    background-attachment: fixed;
     overflow: hidden;
   }
 
-  .faq-section::before {
+  /* Dark overlay so text stays readable */
+  .faq::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    background: rgba(15, 15, 35, 0.82);
+    z-index: 0;
   }
 
-  .faq-content {
+  /* Large translucent question mark on right side — like screenshot */
+  .faq-qmark {
+    position: absolute;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    pointer-events: none;
+    z-index: 1;
+    line-height: 1;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Inner content sits above overlays */
+  .faq-inner {
     position: relative;
     z-index: 2;
-    max-width: 900px;
-    margin: 0 auto;
   }
 
-  .faq-heading {
-    margin: 2rem;
-    padding-top: 2rem;
+  /* ── FAQ HEADING with corner brackets ── */
+  .faq .heading {
     display: inline-block;
     font-size: 3.5rem;
     color: #00bfff;
     position: relative;
     letter-spacing: .2rem;
-    font-weight: 800;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin-bottom: 3rem;
+    padding: 0 1.5rem;
   }
 
-  .faq-heading::before, .faq-heading::after {
+  /* Top-left bracket corner */
+  .faq .heading::before {
     content: '';
     position: absolute;
-    height: 2.5rem;
-    width: 2.5rem;
-    border-top: .4rem solid #00bfff;
-    border-left: .4rem solid #00bfff;
+    top: 0;
+    left: 0;
+    width: 2rem;
+    height: 2rem;
+    border-top: .35rem solid #00bfff;
+    border-left: .35rem solid #00bfff;
   }
 
-  .faq-heading::before {
-    top: 1.8rem;
-    left: -2rem;
+  /* Bottom-right bracket corner */
+  .faq .heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 2rem;
+    height: 2rem;
+    border-bottom: .35rem solid #00bfff;
+    border-right: .35rem solid #00bfff;
   }
 
-  .faq-heading::after {
-    bottom: -.5rem;
-    right: -2rem;
-    transform: rotate(180deg);
+  .faq .row {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
   }
 
-  .faq-row {
+  .faq .accordion-container {
+    width: 100%;
+  }
+
+  /* ── Each accordion row — cyan background like screenshot ── */
+  .faq .accordion {
+    width: 100%;
+    cursor: pointer;
+    margin: 0.6rem 0;
+    border-radius: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .faq .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: transparent;
+    transition: background 0.3s ease;
+  }
+
+  /* The cyan + button on the left */
+  .faq .accordion-plus {
+    width: 52px;
+    height: 56px;
+    background: #1a1a2e;
+    border: 2px solid #00bfff;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 2rem;
-    flex-wrap: wrap;
+    flex-shrink: 0;
+    transition: all 0.3s;
   }
 
-  .accordion-container {
-    width: 100%;
-    max-width: 700px;
+  .faq .accordion-plus span {
+    font-size: 1.8rem;
+    color: #00bfff;
+    font-weight: 300;
+    line-height: 1;
+    transition: transform 0.3s ease, color 0.3s;
+    display: block;
+    margin-top: -2px;
+  }
+
+  /* The cyan label bar */
+  .faq .accordion-label {
+    flex: 1;
+    background: #00bfff;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.8rem;
+    transition: background 0.3s;
+  }
+
+  .faq .accordion-label h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  .faq .accordion:hover .accordion-label { background: #061437; }
+  .faq .accordion:hover .accordion-plus { background: #061437; }
+  .faq .accordion:hover .accordion-plus span { color: #fff; }
+
+  /* Active state */
+  .faq .accordion.active .accordion-plus span {
+    transform: rotate(45deg);
+    color: #fff;
+  }
+  .faq .accordion.active .accordion-plus {
+    background: #00bfff;
+  }
+
+  /* Answer body */
+  .faq .accordion-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background: rgba(0,191,255,0.08);
+    border-left: 3px solid #00bfff;
     text-align: left;
   }
 
-  .accordion {
-    margin-bottom: 0.5rem;
+  .faq .accordion.active .accordion-body {
+    max-height: 400px;
+    padding: 1.2rem 1.8rem 1.2rem 2rem;
   }
 
-  .accordion-header {
-    background: linear-gradient(135deg, rgba(0, 191, 255, 0.9) 0%, rgba(0, 153, 204, 0.9) 100%);
-    margin: 1rem 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
-  }
-
-  .accordion-header:hover {
-    background: linear-gradient(135deg, #00bfff 0%, #0099cc 100%);
-    transform: translateX(5px);
-    box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
-  }
-
-  .accordion-header span {
-    display: inline-flex;
-    text-align: center;
-    height: 2.5rem;
-    width: 2.5rem;
-    line-height: 2.5rem;
-    font-size: 1.8rem;
-    background: rgba(51, 51, 51, 0.9);
-    color: #00bfff;
-    border-radius: 4px;
-    flex-shrink: 0;
-    justify-content: center;
-    transition: transform 0.3s;
-  }
-
-  .accordion-header.active span {
-    transform: rotate(45deg);
-    background: rgba(0, 191, 255, 0.3);
-    color: #fff;
-  }
-
-  .accordion-header h3 {
-    color: #fff;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin: 0;
-    flex: 1;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .accordion-body {
-    padding: 1.5rem;
-    color: #222;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    background-color: rgba(255, 255, 255, 0.95);
-    font-size: 1rem;
-    display: none;
-    margin-bottom: 0.5rem;
-    border-radius: 0 0 8px 8px;
-    line-height: 1.7;
-    backdrop-filter: blur(5px);
-  }
-
-  .accordion-body.active {
-    display: block;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* ── FREQUENCY WAVE ANIMATION ── */
-  .frequency-waves {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    z-index: 2;
-  }
-
-  .frequency-wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .frequency-wave svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .wave-path {
-    fill: none;
-    stroke: #00bfff;
-    stroke-width: 2;
-    opacity: 0.7;
-    filter: drop-shadow(0 2px 3px rgba(0, 191, 255, 0.5));
-  }
-
-  .wave-path:nth-child(1) {
-    animation: waveFrequency1 4s ease-in-out infinite;
-    stroke-opacity: 0.7;
-  }
-
-  .wave-path:nth-child(2) {
-    animation: waveFrequency2 5s ease-in-out infinite;
-    stroke-opacity: 0.5;
-  }
-
-  .wave-path:nth-child(3) {
-    animation: waveFrequency3 6s ease-in-out infinite;
-    stroke-opacity: 0.3;
-  }
-
-  @keyframes waveFrequency1 {
-    0%, 100% {
-      d: path('M 0,60 Q 150,30 300,60 T 600,60 T 900,60 T 1200,60');
-    }
-    25% {
-      d: path('M 0,40 Q 150,20 300,40 T 600,40 T 900,40 T 1200,40');
-    }
-    50% {
-      d: path('M 0,80 Q 150,40 300,80 T 600,80 T 900,80 T 1200,80');
-    }
-    75% {
-      d: path('M 0,50 Q 150,15 300,50 T 600,50 T 900,50 T 1200,50');
-    }
-  }
-
-  @keyframes waveFrequency2 {
-    0%, 100% {
-      d: path('M 0,50 Q 150,40 300,50 T 600,50 T 900,50 T 1200,50');
-    }
-    25% {
-      d: path('M 0,30 Q 150,10 300,30 T 600,30 T 900,30 T 1200,30');
-    }
-    50% {
-      d: path('M 0,70 Q 150,50 300,70 T 600,70 T 900,70 T 1200,70');
-    }
-    75% {
-      d: path('M 0,45 Q 150,20 300,45 T 600,45 T 900,45 T 1200,45');
-    }
-  }
-
-  @keyframes waveFrequency3 {
-    0%, 100% {
-      d: path('M 0,65 Q 150,55 300,65 T 600,65 T 900,65 T 1200,65');
-    }
-    25% {
-      d: path('M 0,35 Q 150,25 300,35 T 600,35 T 900,35 T 1200,35');
-    }
-    50% {
-      d: path('M 0,85 Q 150,65 300,85 T 600,85 T 900,85 T 1200,85');
-    }
-    75% {
-      d: path('M 0,55 Q 150,25 300,55 T 600,55 T 900,55 T 1200,55');
-    }
+  .faq .accordion-body p {
+    font-size: 0.97rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.75);
+    font-family: 'Poppins', sans-serif;
   }
 
   /* ── FOOTER ── */
@@ -555,17 +769,27 @@ const styles = `
   }
 
   /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero-wrapper { flex-direction: column; gap: 2rem; }
+    .hero-right-mask { height: 300px; }
+    .anim-card { width: 150px; }
+  }
+
   @media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .hero h2 { font-size: 1.8rem; }
     .locations-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .loc-card.big { grid-row: auto; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .footer-brand { grid-column: 1 / -1; }
     .footer-brand p { max-width: 100%; }
-    .faq-row { padding: 0 1rem; }
-    .accordion-container { width: 100%; }
+    .faq .accordion-label h3 { font-size: 0.92rem; }
+    .hero-right-mask { display: none; }
   }
 
   @media (max-width: 520px) {
+    .hero h1 { font-size: 2rem; }
+    .hero h2 { font-size: 1.3rem; }
     .hero-btns { flex-direction: column; align-items: center; }
     .hero-btn-primary, .hero-btn-ghost { width: 100%; max-width: 300px; justify-content: center; }
     .hero-stats { gap: 1.5rem; }
@@ -578,10 +802,11 @@ const styles = `
     .dual-section { padding: 3rem 1rem; }
     .features-section { padding: 3rem 1rem; }
     .cta-section { padding: 3rem 1rem; }
-    .faq-section { padding: 2rem 1rem; }
-    .faq-heading { font-size: 2rem; margin: 1rem; }
-    .accordion-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-    .accordion-header h3 { font-size: 0.95rem; }
+    .faq { padding: 3rem 1rem 4rem; }
+    .faq .heading { font-size: 2.5rem; }
+    .faq .accordion-plus { width: 44px; height: 50px; }
+    .faq .accordion-label { height: 50px; padding: 0 1rem; }
+    .faq .accordion-label h3 { font-size: 0.85rem; }
   }
 `;
 
@@ -597,28 +822,53 @@ const AREA_DEFINITIONS = [
   { icon: "fa fa-map",            label: "Chinyonga"  },
 ];
 
-// ✅ FAQ DATA FOR PEZAHOSTEL
-const FAQ_DATA = [
+const FAQ_ITEMS = [
   {
-    question: "How do I find a hostel on PezaHostel?",
-    answer: "Simply browse our listings by location, filter by price and amenities, view photos, and contact owners directly. You can also search by specific areas near MUBAS."
+    question: "What Inspired The Co-Founders To Start PezaHostel?",
+    answer: "The Co-Founders Of HostelLink Were Inspired By The Challenges Faced By MUBAS Students In Finding Safe And Affordable Off-Campus Accommodation. Seeing The Need For A Reliable Platform That Connects Students With Verified Hostel Owners, They Decided To Create A Solution That Simplifies The Search Process And Ensures Secure Transactions For Both Parties."
   },
   {
-    question: "How do I book a hostel?",
-    answer: "Select your desired hostel, choose your check-in date and duration, and proceed to payment. Our secure payment system accepts Airtel Money,TNM Mpamba and banks."
+    question: "How Do I Get Started With PezaHostel?",
+    answer: "Getting Started Is Easy! Simply Create A Free Account As Either A Student Or Hostel Owner. Students Can Browse Verified Hostels, Compare Prices, And Contact Owners Directly. Hostel Owners Can List Their Properties, Manage Bookings, And Receive Payments Securely Through Our Platform."
   },
   {
-    question: "Is PezaHostel safe and secure?",
-    answer: "Yes! We verify all hostel owners to ensure trust and safety. All payments are processed securely, and we have a direct communication system between students and owners."
+    question: "When Should I Contact PezaHostel For Support?",
+    answer: "You Can Contact PezaHostel Anytime You Need Assistance With Your Account, Have Questions About A Booking, Encounter Technical Issues, Or Need Help With The Payment Process. Our Support Team Is Ready To Assist You Through Email Or Phone During Business Hours."
   },
   {
-    question: "Can I list my hostel on PezaHostel?",
-    answer: "Absolutely! Register as a hostel owner, provide your property details, upload photos, and start receiving booking requests from verified students."
+    question: "How Does PezaHostel Ensure Safety And Security?",
+    answer: "PezaHostl Verifies All Hostel Owners Through Document Verification And Property Inspections. We Also Implement Secure Payment Processing Through Paychangu, Protect User Data With Encryption, And Have A Review System That Helps Students Make Informed Decisions Based On Previous Tenants' Experiences."
   },
   {
-    question: "What payment methods do you accept?",
-    answer: "We accept secure payments via Airtel Money and TNM Mpamba. All transactions are encrypted and protected for your safety."
+    question: "Can PezaHostel Help Me Find Accommodation Near MUBAS?",
+    answer: "Yes! PezaHostel Specializes In Off-Campus Accommodation Near MUBAS. Our Platform Covers All Major Student Areas Including Chitawira, Nkolokosa, Chichiri, Mandala, Queens, And More. You Can Filter By Location, Price, Amenities, And Availability To Find The Perfect Place That Suits Your Needs And Budget."
   }
+];
+
+// ── HERO ANIMATED CARDS DATA ──
+// Column 1 goes UP, Column 2 goes DOWN
+const CARDS_COL1 = [
+  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
+  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
+  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
+  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+  // Duplicated for seamless loop
+  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
+  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
+  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
+  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+];
+
+const CARDS_COL2 = [
+  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
+  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
+  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
+  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
+  // Duplicated for seamless loop
+  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
+  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
+  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
+  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
 ];
 
 function Navbar({ isAuthenticated, user }) {
@@ -626,22 +876,34 @@ function Navbar({ isAuthenticated, user }) {
   return (
     <nav>
       <button onClick={() => navigate('/')} className="logo">
-        <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+        <div className="logo-icon"><img src="/logo2.png" alt="HostelLink" /></div>
         <div className="logo-text">
-      
+         
           <span>OFF-CAMPUS ACCOMMODATION</span>
         </div>
       </button>
+
+      {/* Fancy Center Text — logo-style */}
+      <div className="nav-center">
+        <div className="nav-center-item fancy">PezaHostel</div>
+        <div className="nav-center-dot" />
+        <div className="nav-center-item">Students</div>
+        <div className="nav-center-dot" />
+        <div className="nav-center-item">Owners</div>
+        <div className="nav-center-dot" />
+        {/* <div className="nav-center-item">MUBAS</div>  Fancy Center Text — logo-style */}
+      </div>
+
       <div className="nav-actions">
         {isAuthenticated ? (
           <>
-            <a href="/profile" className="nav-login">
+            <a href="/Login" className="nav-login">
               <i className="fa fa-user" />
-              <span className="nav-login-text">{user?.firstName}</span>
+              <span className="nav-login-text">Login</span>
             </a>
-            <a href="/dashboard" className="nav-signup">
+            <a href="/Register" className="nav-signup">
               <i className="fa fa-th-large" />
-              <span className="nav-signup-text"> Dashboard</span>
+              <span className="nav-signup-text"> Signup</span>
             </a>
           </>
         ) : (
@@ -662,37 +924,62 @@ function Navbar({ isAuthenticated, user }) {
 }
 
 function Hero({ isAuthenticated }) {
-  const navigate = useNavigate();
   return (
     <section className="hero">
-      <div className="hero-bg" />
-      <div className="hero-content">
-        <h1>Find Safe & Affordable <span>Hostels Near MUBAS.</span></h1>
-        <p>The smartest way for students to find accommodation and for hostel owners to connect with verified tenants.</p>
-        <div className="hero-btns">
-          <a href="/register" className="hero-btn-primary">
-            <i className="fa fa-search" /> Find a Hostel
-          </a>
-          <a href="/register" className="hero-btn-ghost">
-            <i className="fa fa-building" /> List Your Hostel
-          </a>
+      <div className="hero-wrapper">
+        {/* Left Content — unchanged */}
+        <div className="hero-left">
+          <div className="hero-content">
+            <h1>Find Safe & Affordable Hostels Near MUBAS</h1>
+            <div className="hero-btns">
+              <a href="/register" className="hero-btn-primary">
+                <i className="fa fa-search" /> Find a Hostel
+              </a>
+              <a href="/register" className="hero-btn-ghost">
+                <i className="fa fa-building" /> List Your Hostel
+              </a>
+            </div>
+            <div className="hero-stats">
+              <div className="hero-stat"><strong>200+</strong><span>Students Housed</span></div>
+              <div className="hero-stat"><strong>50+</strong><span>Listed Hostels</span></div>
+              <div className="hero-stat"><strong>9</strong><span>Areas Covered</span></div>
+            </div>
+          </div>
         </div>
-        <div className="hero-stats">
-          <div className="hero-stat">
-            <strong>200+</strong>
-            <span>Students Housed</span>
-          </div>
-          <div className="hero-stat">
-            <strong>50+</strong>
-            <span>Listed Hostels</span>
-          </div>
-          <div className="hero-stat">
-            <strong>9</strong>
-            <span>Areas Covered</span>
+
+        {/* Right — Animated Cards (PayChangu style: two columns, up & down) */}
+        <div className="hero-right">
+          <div className="hero-right-mask">
+            {/* Column 1: scrolls UP */}
+            <div className="cards-col cards-col-up">
+              {CARDS_COL1.map((card, idx) => (
+                <div key={idx} className={`anim-card ${card.theme}`}>
+                  <div className="anim-card-icon">
+                    <i className={card.icon}></i>
+                  </div>
+                  <div className="anim-card-title">{card.title}</div>
+                  <div className="anim-card-sub">{card.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Column 2: scrolls DOWN */}
+            <div className="cards-col cards-col-down">
+              {CARDS_COL2.map((card, idx) => (
+                <div key={idx} className={`anim-card ${card.theme}`}>
+                  <div className="anim-card-icon">
+                    <i className={card.icon}></i>
+                  </div>
+                  <div className="anim-card-title">{card.title}</div>
+                  <div className="anim-card-sub">{card.sub}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      {/* ✅ WAVES ADDED HERE */}
+
+      {/* Waves — unchanged */}
       <div className="wave wave1"></div>
       <div className="wave wave2"></div>
       <div className="wave wave3"></div>
@@ -827,7 +1114,6 @@ function FeaturesSection() {
   ];
   return (
     <section className="features-section">
-      <p className="section-label">Why Us</p>
       <h2 className="section-title">Why Choose <em>Our Platform?</em></h2>
       <div className="features-grid">
         {features.map(f => (
@@ -842,7 +1128,6 @@ function FeaturesSection() {
   );
 }
 
-// ✅ FAQ COMPONENT WITH ACCORDION & FREQUENCY WAVES
 function FAQSection() {
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -851,21 +1136,32 @@ function FAQSection() {
   };
 
   return (
-    <section className="faq-section">
-      <div className="faq-content">
-        <h1 className="faq-heading" id="faq">FAQ</h1>
-        <div className="faq-row">
+    <section className="faq" id="faq">
+      {/* Giant translucent question mark background — like screenshot */}
+      <div className="faq-qmark" aria-hidden="true">?</div>
+
+      <div className="faq-inner">
+        <h1 className="heading">FAQ</h1>
+
+        <div className="row">
           <div className="accordion-container">
-            {FAQ_DATA.map((item, index) => (
-              <div key={index} className="accordion">
-                <div
-                  className={`accordion-header ${activeIndex === index ? 'active' : ''}`}
-                  onClick={() => toggleAccordion(index)}
-                >
-                  <span>+</span>
-                  <h3>{item.question}</h3>
+            {FAQ_ITEMS.map((item, index) => (
+              <div
+                key={index}
+                className={`accordion ${activeIndex === index ? 'active' : ''}`}
+                onClick={() => toggleAccordion(index)}
+              >
+                <div className="accordion-header">
+                  {/* Cyan box with + icon */}
+                  <div className="accordion-plus">
+                    <span>+</span>
+                  </div>
+                  {/* Cyan label bar */}
+                  <div className="accordion-label">
+                    <h3>{item.question}</h3>
+                  </div>
                 </div>
-                <div className={`accordion-body ${activeIndex === index ? 'active' : ''}`}>
+                <div className="accordion-body">
                   <p>{item.answer}</p>
                 </div>
               </div>
@@ -873,47 +1169,12 @@ function FAQSection() {
           </div>
         </div>
       </div>
-
-      {/* ✅ FREQUENCY WAVES AT BOTTOM */}
-      <div className="frequency-waves">
-        <div className="frequency-wave">
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,60 Q 150,30 300,60 T 600,60 T 900,60 T 1200,60"
-            />
-          </svg>
-        </div>
-        <div className="frequency-wave" style={{ bottom: '20px' }}>
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,50 Q 150,40 300,50 T 600,50 T 900,50 T 1200,50"
-            />
-          </svg>
-        </div>
-        <div className="frequency-wave" style={{ bottom: '40px' }}>
-          <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
-            <path
-              className="wave-path"
-              d="M 0,65 Q 150,55 300,65 T 600,65 T 900,65 T 1200,65"
-            />
-          </svg>
-        </div>
-      </div>
     </section>
   );
 }
 
 export default function Home() {
-  const navigate = useNavigate();
-  const { isAuthenticated, user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate, loading]);
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <>
@@ -925,14 +1186,12 @@ export default function Home() {
       <LocationsSection isAuthenticated={isAuthenticated} />
       <DualSection />
       <FeaturesSection />
+      <FAQSection />
       <section className="cta-section">
         <h2>Ready to Get Started?</h2>
         <p>Join the growing MUBAS accommodation network today.</p>
         <a href="/register" className="btn-primary"><i className="fa fa-user-plus" /> Create Free Account</a>
       </section>
-
-      {/* ✅ FAQ SECTION WITH FREQUENCY WAVES & BACKGROUND PHOTO */}
-      <FAQSection />
     </>
   );
 }

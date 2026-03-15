@@ -26,7 +26,7 @@ const Footer = () => {
       color: var(--white);
       margin-top: auto;
       padding: 4rem 2rem 2rem;
-      border-top: 3px solid var(--orange);
+   
     }
 
     .footer-container {
@@ -155,18 +155,18 @@ const Footer = () => {
 
     .footer-credit {
       color: var(--gray-light);
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.6rem;
+      font-weight: 300;
     }
 
     .footer-credit strong {
       color: var(--orange);
-      font-weight: 700;
+      font-weight: 300;
     }
 
     .footer-copyright {
       color: var(--gray-light);
-      font-size: 0.9rem;
+      font-size: 0.6rem;
       font-weight: 500;
       text-align: right;
     }
@@ -319,7 +319,7 @@ const Footer = () => {
           <div className="footer-divider">
             <div className="footer-bottom">
               <p className="footer-credit">
-                Powered by <strong>ForjiTech</strong> • Connecting Students to Quality Accommodation
+                Powered by <strong>ForjiTech</strong> <br></br>Connecting Students to Quality Accommodation
               </p>
               <p className="footer-copyright">
                 &copy; {currentYear} PezaHostel. All rights reserved.

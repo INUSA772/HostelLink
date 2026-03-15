@@ -1,40 +1,82 @@
+// server/routes/hostelRoutes.js
 const express = require('express');
 const router = express.Router();
-const { protect, authorize } = require('../middleware/authMiddleware');
-
-// ✅ Import controller - using the ACTUAL function names you have
 const hostelController = require('../controllers/hostelController');
+const { authenticate, authorize } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
-// ═══════════════════════════════════════════════════════════════
-// PUBLIC ROUTES (NO AUTH REQUIRED)
-// ═══════════════════════════════════════════════════════════════
+// ✅ PUBLIC ROUTES (NO AUTH REQUIRED)
 
-// Get all hostels
-router.get('/', hostelController.getHostels);
+// Get all hostels with filters
+router.get('/', hostelController.getAllHostels);
 
-// Get nearby hostels
-router.get('/nearby', hostelController.getNearbyHostels);
+// Get hostel by ID
+router.get('/:id', hostelController.getHostelById);
 
-// Get single hostel by ID
-router.get('/:id', hostelController.getHostel);
+// Search hostels
+router.get('/search/query', hostelController.searchHostels);
 
-// Get hostel availability
-router.get('/:id/availability', hostelController.getHostelAvailability);
+// Get hostels by location
+router.get('/location/:location', hostelController.getHostelsByLocation);
 
-// ═══════════════════════════════════════════════════════════════
-// PROTECTED ROUTES (AUTH REQUIRED - OWNER/LANDLORD ONLY)
-// ═══════════════════════════════════════════════════════════════
+// ✅ PROTECTED ROUTES (AUTH REQUIRED)
 
-// Create new hostel
-router.post('/', protect, authorize(['owner', 'landlord']), hostelController.createHostel);
+// Create new hostel (owner only)
+router.post(
+  '/',
+  authenticate,
+  authorize(['owner']),
+  upload.array('images', 10),
+  hostelController.createHostel
+);
 
-// Update hostel
-router.put('/:id', protect, authorize(['owner', 'landlord']), hostelController.updateHostel);
+// Update hostel (owner only)
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['owner']),
+  upload.array('images', 10),
+  hostelController.updateHostel
+);
 
-// Delete hostel
-router.delete('/:id', protect, authorize(['owner', 'landlord']), hostelController.deleteHostel);
+// Delete hostel (owner only)
+router.delete(
+  '/:id',
+  authenticate,
+  authorize(['owner']),
+  hostelController.deleteHostel
+);
 
-// Get user's hostels
-router.get('/my-hostels/all', protect, authorize(['owner', 'landlord']), hostelController.getMyHostels);
+// Get my hostels (owner only)
+router.get(
+  '/my-hostels/all',
+  authenticate,
+  authorize(['owner']),
+  hostelController.getMyHostels
+);
+
+// Get hostel statistics (owner only)
+router.get(
+  '/:id/stats',
+  authenticate,
+  authorize(['owner']),
+  hostelController.getHostelStats
+);
+
+// Add amenity to hostel
+router.post(
+  '/:id/amenities',
+  authenticate,
+  authorize(['owner']),
+  hostelController.addAmenity
+);S
+
+// Remove amenity from hostel
+router.delete(
+  '/:id/amenities/:amenity',
+  authenticate,
+  authorize(['owner']),
+  hostelController.removeAmenity
+);
 
 module.exports = router;

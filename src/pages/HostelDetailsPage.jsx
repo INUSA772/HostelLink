@@ -575,7 +575,7 @@ export default function HostelDetailsPage() {
         <button className="hd-bar-back" onClick={() => navigate(-1)}>
           <i className="fa fa-arrow-left" /> Back
         </button>
-        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+        <a href="/" className="hd-bar-logo">HostelLink</a>
         <div className="hd-bar-right">
           {isAuthenticated ? (
             <a href="/dashboard" className="hd-bar-btn hd-bar-btn-ghost">
