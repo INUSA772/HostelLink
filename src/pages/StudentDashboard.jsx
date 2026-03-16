@@ -11,7 +11,6 @@ import {
   FaUserFriends, FaChevronDown, FaChevronRight, FaBars, FaTimes
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import HostelFilters from '../components/hostel/HostelFilters';
 import Pagination from '../components/common/Pagination';
 
 const styles = `
@@ -229,52 +228,6 @@ const styles = `
   }
   .fb-story-add span { font-size: 0.75rem; font-weight: 800; color: var(--text-dark); text-align: center; line-height: 1.3; }
 
-  .fb-compose { background: var(--white); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 16px; }
-  .fb-compose-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .fb-compose-input {
-    flex: 1; background: var(--gray-bg); border: none; border-radius: 22px;
-    padding: 10px 16px; font-family: 'Manrope', sans-serif;
-    font-size: 0.92rem; color: var(--text-mid); cursor: pointer;
-    outline: none; transition: var(--transition); font-weight: 600;
-  }
-  .fb-compose-input:hover, .fb-compose-input:focus { background: #e4e6eb; }
-  .fb-compose-search-btn {
-    background: var(--orange); color: white; border: none; border-radius: 22px;
-    padding: 10px 18px; cursor: pointer; font-weight: 900; font-size: 0.85rem;
-    font-family: 'Manrope', sans-serif; transition: var(--transition); white-space: nowrap;
-  }
-  .fb-compose-search-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .fb-compose-divider { border: none; border-top: 1px solid var(--gray-light); margin: 2px 0 8px; }
-  .fb-compose-actions { display: flex; }
-  .fb-compose-action {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    gap: 6px; padding: 8px 4px; border-radius: 8px; cursor: pointer;
-    font-size: 0.83rem; font-weight: 800; color: var(--text-mid);
-    transition: var(--transition); border: none; background: transparent;
-    font-family: 'Manrope', sans-serif;
-  }
-  .fb-compose-action:hover { background: var(--gray-bg); }
-
-  .fb-filters-box { background: var(--white); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 16px; }
-  .fb-filters-hd { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
-  .fb-filters-hd h3 { font-size: 0.98rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-  .fb-filters-hd h3 svg { color: var(--orange); }
-  .fb-filter-toggle {
-    background: var(--gray-bg); border: none; border-radius: 6px; padding: 5px 12px;
-    cursor: pointer; font-weight: 800; font-size: 0.78rem; font-family: 'Manrope', sans-serif;
-    color: var(--text-dark); transition: var(--transition); display: flex; align-items: center; gap: 4px;
-  }
-  .fb-filter-toggle:hover { background: var(--gray-light); }
-
-  .fb-results-bar {
-    background: var(--white); border-radius: 10px; padding: 10px 14px;
-    margin-bottom: 14px; display: flex; justify-content: space-between;
-    align-items: center; box-shadow: var(--shadow);
-  }
-  .fb-results-count { font-weight: 800; font-size: 0.9rem; color: var(--navy); display: flex; align-items: center; gap: 6px; }
-  .fb-results-count svg { color: var(--orange); }
-  .fb-results-page { font-size: 0.8rem; color: var(--text-mid); font-weight: 700; }
-
   .fb-post { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; transition: var(--transition); }
   .fb-post:hover { box-shadow: var(--shadow-md); }
   .fb-post-hd { display: flex; align-items: center; gap: 10px; padding: 14px 14px 8px; }
@@ -443,10 +396,6 @@ const styles = `
     .fb-center { width: 100%; max-width: 100% !important; margin: 0 !important; padding: 12px 12px 90px !important; }
     .fb-bottom-nav { display: block; }
     .fb-post { width: 100%; border-radius: 10px; }
-    .fb-compose { border-radius: 10px; }
-    .fb-filters-box { border-radius: 10px; }
-    .fb-results-bar { border-radius: 10px; }
-    .fb-welcome { border-radius: 12px; }
   }
   @media (max-width: 480px) {
     html, body { overflow-x: hidden; width: 100%; font-size: 16px; }
@@ -479,11 +428,6 @@ const styles = `
     .fb-post-img-more img { height: 119px !important; }
     .fb-story { width: 96px; height: 162px; }
     .fb-story-label { font-size: 0.8rem !important; font-weight: 900 !important; }
-    .fb-compose-input { font-size: 0.95rem !important; }
-    .fb-compose-search-btn { font-size: 0.88rem !important; padding: 10px 14px; }
-    .fb-compose-action { font-size: 0.85rem !important; font-weight: 800 !important; }
-    .fb-filters-hd h3 { font-size: 1rem !important; }
-    .fb-results-count { font-size: 0.92rem !important; font-weight: 800 !important; }
     .fb-bottom-nav { left: 0 !important; right: 0 !important; width: 100% !important; padding: 8px 0 10px; }
     .fb-bottom-nav-inner { width: 100%; }
     .fb-bottom-tab { flex: 1; padding: 4px 8px; }
@@ -516,38 +460,26 @@ const StudentDashboard = () => {
   const { hostels, loading, filters, pagination, fetchHostels, updateFilters, resetFilters, changePage } = useHostel();
 
   const [searchInput,    setSearchInput]    = useState('');
-  const [showFilters,    setShowFilters]    = useState(false);
   const [activeTab,      setActiveTab]      = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // ✅ DYNAMIC STATS STATE
   const [statsData, setStatsData] = useState({
-    bookings:      0,
-    messages:      0,
-    saved:         0,
-    notifications: 0,
+    bookings: 0, messages: 0, saved: 0, notifications: 0,
   });
   const [statsLoading, setStatsLoading] = useState(true);
 
-  // Viewport meta
   useEffect(() => {
     let meta = document.querySelector('meta[name="viewport"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'viewport';
-      document.head.appendChild(meta);
-    }
+    if (!meta) { meta = document.createElement('meta'); meta.name = 'viewport'; document.head.appendChild(meta); }
     meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
   }, []);
 
-  // Auth check + fetch hostels
   useEffect(() => {
     if (!isAuthenticated) { navigate('/login'); return; }
     if (user?.role !== 'student') { navigate('/landlord-dashboard'); return; }
     fetchHostels();
   }, [isAuthenticated, user, filters]);
 
-  // ✅ FETCH REAL STATS FROM API
   const fetchStats = useCallback(async () => {
     if (!isAuthenticated || user?.role !== 'student') return;
     try {
@@ -557,18 +489,10 @@ const StudentDashboard = () => {
         api.get('/messages/unread-count'),
         api.get('/notifications/unread-count'),
       ]);
-
       setStatsData({
-        bookings: bookingsRes.status === 'fulfilled'
-          ? (bookingsRes.value.data?.total ||
-             bookingsRes.value.data?.count || 0)
-          : 0,
-        messages: messagesRes.status === 'fulfilled'
-          ? (messagesRes.value.data?.count || 0)
-          : 0,
-        notifications: notifsRes.status === 'fulfilled'
-          ? (notifsRes.value.data?.count || 0)
-          : 0,
+        bookings: bookingsRes.status === 'fulfilled' ? (bookingsRes.value.data?.total || bookingsRes.value.data?.count || 0) : 0,
+        messages: messagesRes.status === 'fulfilled' ? (messagesRes.value.data?.count || 0) : 0,
+        notifications: notifsRes.status === 'fulfilled' ? (notifsRes.value.data?.count || 0) : 0,
         saved: 0,
       });
     } catch (err) {
@@ -578,9 +502,7 @@ const StudentDashboard = () => {
     }
   }, [isAuthenticated, user]);
 
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -593,82 +515,28 @@ const StudentDashboard = () => {
 
   const initials = ((user?.firstName?.[0] || '') + (user?.lastName?.[0] || '')).toUpperCase() || 'HL';
 
-  // ✅ DYNAMIC STATS — pulled from real API
   const stats = [
-    {
-      label: 'Bookings',
-      value: statsLoading ? '...' : statsData.bookings,
-      icon: '📋',
-      color: '#e8501a',
-      bg: 'rgba(232,80,26,0.1)',
-      link: '/bookings',
-    },
-    {
-      label: 'Messages',
-      value: statsLoading ? '...' : statsData.messages,
-      icon: '💬',
-      color: '#1a3fa4',
-      bg: 'rgba(26,63,164,0.1)',
-      link: '/messages',
-    },
-    {
-      label: 'Saved',
-      value: statsLoading ? '...' : statsData.saved,
-      icon: '❤️',
-      color: '#ef4444',
-      bg: 'rgba(239,68,68,0.1)',
-      link: '/favorites',
-    },
-    {
-      label: 'Hostels',
-      value: pagination?.total || hostels.length,
-      icon: '🏠',
-      color: '#10b981',
-      bg: 'rgba(16,185,129,0.1)',
-    },
+    { label: 'Bookings',  value: statsLoading ? '...' : statsData.bookings,              icon: '📋', color: '#e8501a', bg: 'rgba(232,80,26,0.1)',   link: '/bookings'  },
+    { label: 'Messages',  value: statsLoading ? '...' : statsData.messages,              icon: '💬', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)',   link: '/messages'  },
+    { label: 'Saved',     value: statsLoading ? '...' : statsData.saved,                 icon: '❤️', color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   link: '/favorites' },
+    { label: 'Hostels',   value: pagination?.total || hostels.length,                    icon: '🏠', color: '#10b981', bg: 'rgba(16,185,129,0.1)'                     },
   ];
 
-  // ✅ DYNAMIC SIDEBAR BADGES
   const sidebarLinks = [
-    { icon: <FaHome />,     label: 'Browse Hostels',  link: '/hostels',       color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
-    { icon: <FaBookmark />, label: 'My Bookings',      link: '/bookings',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)' },
-    { icon: <FaHeart />,    label: 'Saved Hostels',    link: '/favorites',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
-    {
-      icon: <FaEnvelope />, label: 'Messages',
-      link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)',
-      badge: statsData.messages > 0 ? statsData.messages : null,
-    },
-    {
-      icon: <FaBell />, label: 'Notifications',
-      link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',
-      badge: statsData.notifications > 0 ? statsData.notifications : null,
-    },
-    { icon: <FaVideo />, label: 'Hostel Videos',  link: '/videos',   color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)'  },
-    { icon: <FaCog />,   label: 'Settings',        link: '/profile',  color: '#6b7280', bg: 'rgba(107,114,128,0.1)' },
+    { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',       color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
+    { icon: <FaBookmark />, label: 'My Bookings',    link: '/bookings',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
+    { icon: <FaHeart />,    label: 'Saved Hostels',  link: '/favorites',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
+    { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)', badge: statsData.messages > 0 ? statsData.messages : null },
+    { icon: <FaBell />,     label: 'Notifications',  link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', badge: statsData.notifications > 0 ? statsData.notifications : null },
+    { icon: <FaVideo />,    label: 'Hostel Videos',  link: '/videos',        color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+    { icon: <FaCog />,      label: 'Settings',       link: '/profile',       color: '#6b7280', bg: 'rgba(107,114,128,0.1)'},
   ];
 
-  // ✅ DYNAMIC QUICK LINKS
   const quickLinks = [
-    {
-      icon: <FaBookmark />, label: 'My Bookings',
-      sub: statsData.bookings > 0 ? `${statsData.bookings} booking${statsData.bookings !== 1 ? 's' : ''}` : 'View reservations',
-      link: '/bookings', color: '#e8501a', bg: 'rgba(232,80,26,0.1)',
-    },
-    {
-      icon: <FaHeart />, label: 'Saved Hostels',
-      sub: statsData.saved > 0 ? `${statsData.saved} saved` : 'No saved hostels',
-      link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)',
-    },
-    {
-      icon: <FaEnvelope />, label: 'Messages',
-      sub: statsData.messages > 0 ? `${statsData.messages} unread` : 'No new messages',
-      link: '/messages', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)',
-    },
-    {
-      icon: <FaVideo />, label: 'Hostel Videos',
-      sub: 'Watch tours',
-      link: '/videos', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)',
-    },
+    { icon: <FaBookmark />, label: 'My Bookings',   sub: statsData.bookings > 0 ? `${statsData.bookings} booking${statsData.bookings !== 1 ? 's' : ''}` : 'View reservations', link: '/bookings',  color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
+    { icon: <FaHeart />,    label: 'Saved Hostels', sub: statsData.saved > 0 ? `${statsData.saved} saved` : 'No saved hostels',                                                 link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
+    { icon: <FaEnvelope />, label: 'Messages',      sub: statsData.messages > 0 ? `${statsData.messages} unread` : 'No new messages',                                          link: '/messages',  color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
+    { icon: <FaVideo />,    label: 'Hostel Videos', sub: 'Watch tours',                                                                                                         link: '/videos',    color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
   ];
 
   const renderImages = (hostel) => {
@@ -680,30 +548,27 @@ const StudentDashboard = () => {
         {hostel.availableRooms > 0 && <span className="fb-badge fb-badge-rooms">{hostel.availableRooms} free</span>}
       </div>
     );
-
     if (images.length === 0) return (
-      <div className="fb-post-no-img" style={{ position: 'relative' }}>
-        <span style={{ fontSize: '2.5rem' }}>🏠</span>
+      <div className="fb-post-no-img" style={{position:'relative'}}>
+        <span style={{fontSize:'2.5rem'}}>🏠</span>
         <span>No photos uploaded yet</span>
         {badges}
       </div>
     );
     if (images.length === 1) return (
-      <div className="fb-post-img-single" style={{ position: 'relative' }}>
+      <div className="fb-post-img-single" style={{position:'relative'}}>
         <img src={images[0]} alt={hostel.name} />
         {badges}
       </div>
     );
     if (images.length === 2) return (
-      <div style={{ position: 'relative' }}>
-        <div className="fb-post-img-grid2">
-          {images.slice(0, 2).map((img, i) => <img key={i} src={img} alt={hostel.name} />)}
-        </div>
+      <div style={{position:'relative'}}>
+        <div className="fb-post-img-grid2">{images.slice(0,2).map((img,i) => <img key={i} src={img} alt={hostel.name} />)}</div>
         {badges}
       </div>
     );
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{position:'relative'}}>
         <div className="fb-post-img-grid3">
           <div className="img-main"><img src={images[0]} alt={hostel.name} /></div>
           <div className="img-sub"><img src={images[1]} alt={hostel.name} /></div>
@@ -727,76 +592,43 @@ const StudentDashboard = () => {
       : 'PezaHostel Owner';
     const ownerInitial = hostel.owner?.firstName?.[0]?.toUpperCase() || 'H';
     const rating = (hostel.averageRating || 4.5).toFixed(1);
-
     return (
       <div key={hostel._id} className="fb-post">
         <div className="fb-post-hd">
           <div className="fb-post-ava">{ownerInitial}</div>
           <div className="fb-post-meta">
             <div className="fb-post-owner">{ownerName}</div>
-            <div className="fb-post-loc">
-              <FaMapMarkerAlt /> {hostel.address} &nbsp;·&nbsp; 🌐 Public
-            </div>
+            <div className="fb-post-loc"><FaMapMarkerAlt /> {hostel.address} &nbsp;·&nbsp; 🌐 Public</div>
           </div>
           <button className="fb-post-more-btn"><FaEllipsisH /></button>
         </div>
-
         <div className="fb-post-caption">
           <strong>{hostel.name}</strong>
-          {hostel.description
-            ? hostel.description.length > 110
-              ? hostel.description.slice(0, 110) + '…'
-              : hostel.description
-            : 'Quality student accommodation near campus.'}
+          {hostel.description ? hostel.description.length > 110 ? hostel.description.slice(0, 110) + '…' : hostel.description : 'Quality student accommodation near campus.'}
         </div>
-
         <div className="fb-post-imgs">{renderImages(hostel)}</div>
-
         <button className="fb-view-details-bar" onClick={() => navigate(`/hostels/${hostel._id}`)}>
           View Details &nbsp;<FaArrowRight />
         </button>
-
         <div className="fb-post-chips">
           <span className="fb-chip"><FaHome className="chip-orange" /> {hostel.type}</span>
           <span className="fb-chip"><span>👥</span> {hostel.gender}</span>
-          <span className="fb-chip">
-            <FaCheckCircle className="chip-green" />
-            <span style={{ color: 'var(--success)', fontWeight: 900 }}>{hostel.availableRooms}</span>/{hostel.totalRooms}
-          </span>
+          <span className="fb-chip"><FaCheckCircle className="chip-green" /><span style={{color:'var(--success)',fontWeight:900}}>{hostel.availableRooms}</span>/{hostel.totalRooms}</span>
           <span className="fb-chip"><FaStar className="chip-gold" /> {rating}</span>
           {hostel.contactPhone && <span className="fb-chip"><FaPhone className="chip-orange" /> {hostel.contactPhone}</span>}
         </div>
-
         <div className="fb-post-reactions">
           <div className="fb-react-row">
-            <div className="fb-react-emojis">
-              <span>👍</span><span>❤️</span><span>😍</span>
-            </div>
-            <span style={{ marginLeft: 4 }}>{(hostel.viewCount || 0) + 15}</span>
+            <div className="fb-react-emojis"><span>👍</span><span>❤️</span><span>😍</span></div>
+            <span style={{marginLeft:4}}>{(hostel.viewCount || 0) + 15}</span>
           </div>
           <span>{hostel.viewCount || 0} views</span>
         </div>
-
         <div className="fb-post-actions">
           <button className="fb-act-btn"><FaThumbsUp /><span>Interested</span></button>
-          <button
-            className="fb-act-btn"
-            onClick={() => navigate(`/hostels/${hostel._id}`)}
-          >
-            <FaComment /><span>Message</span>
-          </button>
-          <button
-            className="fb-act-btn"
-            onClick={() => {
-              navigator.clipboard?.writeText(`${window.location.origin}/hostels/${hostel._id}`);
-              toast.success('Link copied!');
-            }}
-          >
-            <FaShare /><span>Share</span>
-          </button>
-          <button className="fb-act-btn cta" onClick={() => navigate(`/hostels/${hostel._id}`)}>
-            View Details <FaArrowRight />
-          </button>
+          <button className="fb-act-btn" onClick={() => navigate(`/hostels/${hostel._id}`)}><FaComment /><span>Message</span></button>
+          <button className="fb-act-btn" onClick={() => { navigator.clipboard?.writeText(`${window.location.origin}/hostels/${hostel._id}`); toast.success('Link copied!'); }}><FaShare /><span>Share</span></button>
+          <button className="fb-act-btn cta" onClick={() => navigate(`/hostels/${hostel._id}`)}>View Details <FaArrowRight /></button>
         </div>
       </div>
     );
@@ -814,7 +646,7 @@ const StudentDashboard = () => {
       <hr className="fb-sidebar-divider" />
       {sidebarLinks.map((item, i) => (
         <Link key={i} to={item.link} className="fb-sidebar-link" onClick={() => setMobileMenuOpen(false)}>
-          <div className="fb-sidebar-icon" style={{ background: item.bg, color: item.color }}>{item.icon}</div>
+          <div className="fb-sidebar-icon" style={{background:item.bg,color:item.color}}>{item.icon}</div>
           <span>{item.label}</span>
           {item.badge && <span className="fb-sidebar-badge">{item.badge}</span>}
         </Link>
@@ -822,19 +654,14 @@ const StudentDashboard = () => {
       <hr className="fb-sidebar-divider" />
       <div className="fb-sidebar-section">Your Stats</div>
       {stats.map((s, i) => (
-        <div key={i} className="fb-sidebar-link" style={{ cursor: 'default' }}>
-          <div className="fb-sidebar-icon" style={{ background: s.bg, fontSize: '1rem' }}>{s.icon}</div>
-          <span>{s.label}: <strong style={{ color: s.color }}>{s.value}</strong></span>
+        <div key={i} className="fb-sidebar-link" style={{cursor:'default'}}>
+          <div className="fb-sidebar-icon" style={{background:s.bg,fontSize:'1rem'}}>{s.icon}</div>
+          <span>{s.label}: <strong style={{color:s.color}}>{s.value}</strong></span>
         </div>
       ))}
       <hr className="fb-sidebar-divider" />
-      <button
-        onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-        className="fb-sidebar-link danger"
-      >
-        <div className="fb-sidebar-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>
-          <FaSignOutAlt />
-        </div>
+      <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="fb-sidebar-link danger">
+        <div className="fb-sidebar-icon" style={{background:'rgba(239,68,68,0.1)',color:'#ef4444'}}><FaSignOutAlt /></div>
         <span>Logout</span>
       </button>
     </>
@@ -857,64 +684,36 @@ const StudentDashboard = () => {
         </Link>
         <form onSubmit={handleSearch} className="fb-search-form">
           <FaSearch />
-          <input
-            type="text"
-            placeholder="Search hostels..."
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
-          />
+          <input type="text" placeholder="Search hostels..." value={searchInput} onChange={e => setSearchInput(e.target.value)} />
         </form>
         <div className="fb-topbar-center">
           {[
-            { icon: <FaHome />,        key: 'home' },
-            { icon: <FaVideo />,       key: 'videos',        link: '/videos' },
-            { icon: <FaBookmark />,    key: 'bookings',      link: '/bookings' },
-            { icon: <FaUserFriends />, key: 'messages',      link: '/messages',
-              badge: statsData.messages > 0 ? statsData.messages : null },
-            { icon: <FaBell />,        key: 'notifications', link: '/notifications',
-              badge: statsData.notifications > 0 ? statsData.notifications : null },
+            { icon: <FaHome />,        key: 'home'         },
+            { icon: <FaVideo />,       key: 'videos',        link: '/videos'        },
+            { icon: <FaBookmark />,    key: 'bookings',      link: '/bookings'      },
+            { icon: <FaUserFriends />, key: 'messages',      link: '/messages',      badge: statsData.messages > 0 ? statsData.messages : null },
+            { icon: <FaBell />,        key: 'notifications', link: '/notifications', badge: statsData.notifications > 0 ? statsData.notifications : null },
           ].map(tab => tab.link ? (
-            <Link
-              key={tab.key}
-              to={tab.link}
-              className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
+            <Link key={tab.key} to={tab.link} className={`fb-nav-tab${activeTab===tab.key?' active':''}`} onClick={() => setActiveTab(tab.key)}>
               {tab.icon}
               {tab.badge && <span className="fb-nav-badge">{tab.badge}</span>}
             </Link>
           ) : (
-            <button
-              key={tab.key}
-              className={`fb-nav-tab${activeTab === tab.key ? ' active' : ''}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
+            <button key={tab.key} className={`fb-nav-tab${activeTab===tab.key?' active':''}`} onClick={() => setActiveTab(tab.key)}>
               {tab.icon}
             </button>
           ))}
         </div>
         <div className="fb-topbar-right">
           <Link to="/profile" className="fb-icon-btn"><FaUser /></Link>
-          <Link to="/messages" className="fb-icon-btn">
-            <FaEnvelope />
-            {statsData.messages > 0 && <span className="dot" />}
-          </Link>
-          <Link to="/notifications" className="fb-icon-btn">
-            <FaBell />
-            {statsData.notifications > 0 && <span className="dot" />}
-          </Link>
-          <button className="fb-avatar-btn" onClick={handleLogout} title="Logout">
-            {initials}
-          </button>
+          <Link to="/messages" className="fb-icon-btn"><FaEnvelope />{statsData.messages > 0 && <span className="dot" />}</Link>
+          <Link to="/notifications" className="fb-icon-btn"><FaBell />{statsData.notifications > 0 && <span className="dot" />}</Link>
+          <button className="fb-avatar-btn" onClick={handleLogout} title="Logout">{initials}</button>
         </div>
       </nav>
 
-      {/* Mobile overlay */}
-      {mobileMenuOpen && (
-        <div className="fb-left-overlay" onClick={() => setMobileMenuOpen(false)} />
-      )}
+      {mobileMenuOpen && <div className="fb-left-overlay" onClick={() => setMobileMenuOpen(false)} />}
 
-      {/* PAGE */}
       <div className="fb-page">
 
         {/* LEFT SIDEBAR */}
@@ -933,18 +732,16 @@ const StudentDashboard = () => {
           {featuredHostels.length > 0 && (
             <div className="fb-stories">
               <div className="fb-story fb-story-add" onClick={() => navigate('/bookings')}>
-                <div style={{ flex: 1 }} />
+                <div style={{flex:1}} />
                 <div className="fb-story-add-ring">+</div>
                 <span>My Bookings</span>
-                <div style={{ height: 14 }} />
+                <div style={{height:14}} />
               </div>
               {featuredHostels.map(h => (
                 <div key={h._id} className="fb-story" onClick={() => navigate(`/hostels/${h._id}`)}>
                   {h.images?.[0] && <img src={h.images[0]} alt={h.name} />}
                   <div className="fb-story-grad" />
-                  <div className="fb-story-ava">
-                    {h.owner?.firstName?.[0]?.toUpperCase() || 'H'}
-                  </div>
+                  <div className="fb-story-ava">{h.owner?.firstName?.[0]?.toUpperCase() || 'H'}</div>
                   <div className="fb-story-label">
                     {h.name}
                     <div className="fb-story-price">MK {h.price?.toLocaleString()}/mo</div>
@@ -954,84 +751,7 @@ const StudentDashboard = () => {
             </div>
           )}
 
-          {/* Compose / Search */}
-          <div className="fb-compose">
-            <div className="fb-compose-row">
-              <div
-                className="fb-avatar-btn"
-                style={{ cursor: 'default', fontSize: '0.8rem', border: 'none' }}
-              >
-                {initials}
-              </div>
-              <form onSubmit={handleSearch} style={{ flex: 1, display: 'flex', gap: 8 }}>
-                <input
-                  className="fb-compose-input"
-                  placeholder="Search hostels by name or location..."
-                  value={searchInput}
-                  onChange={e => setSearchInput(e.target.value)}
-                />
-                <button type="submit" className="fb-compose-search-btn">Search</button>
-              </form>
-            </div>
-            <div className="fb-compose-divider" />
-            <div className="fb-compose-actions">
-              <button
-                className="fb-compose-action"
-                onClick={() => navigate('/videos')}
-                style={{ color: '#f02849' }}
-              >
-                <FaVideo style={{ color: '#f02849' }} /> <span>Videos</span>
-              </button>
-              <button
-                className="fb-compose-action"
-                onClick={() => setShowFilters(s => !s)}
-                style={{ color: '#45bd62' }}
-              >
-                <FaImages style={{ color: '#45bd62' }} /> <span>Filter</span>
-              </button>
-              <button
-                className="fb-compose-action"
-                onClick={() => navigate('/bookings')}
-                style={{ color: '#f7b928' }}
-              >
-                <FaBookmark style={{ color: '#f7b928' }} /> <span>Bookings</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="fb-filters-box">
-            <div className="fb-filters-hd" onClick={() => setShowFilters(s => !s)}>
-              <h3><FaFilter /> Filter Hostels</h3>
-              <button className="fb-filter-toggle">
-                {showFilters ? 'Hide' : 'Show'}{' '}
-                {showFilters ? <FaChevronDown /> : <FaChevronRight />}
-              </button>
-            </div>
-            {showFilters && (
-              <div style={{ marginTop: 12 }}>
-                <HostelFilters
-                  filters={filters}
-                  onFilterChange={updateFilters}
-                  onReset={resetFilters}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Results bar */}
-          {!loading && hostels.length > 0 && (
-            <div className="fb-results-bar">
-              <div className="fb-results-count">
-                <FaHome /> {hostels.length} of {pagination?.total || hostels.length} hostels
-              </div>
-              <span className="fb-results-page">
-                Page {pagination?.page || 1} of {pagination?.totalPages || 1}
-              </span>
-            </div>
-          )}
-
-          {/* Hostel feed */}
+          {/* HOSTEL FEED */}
           {loading ? (
             <div className="fb-loading">
               <div className="fb-spinner" />
@@ -1052,10 +772,7 @@ const StudentDashboard = () => {
                   <Pagination
                     currentPage={pagination.page}
                     totalPages={pagination.totalPages}
-                    onPageChange={page => {
-                      changePage(page);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
+                    onPageChange={page => { changePage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   />
                 </div>
               )}
@@ -1068,15 +785,9 @@ const StudentDashboard = () => {
           <div className="fb-right-title">Your Overview</div>
           <div className="fb-stats-grid">
             {stats.map((s, i) => (
-              <div
-                key={i}
-                className="fb-stat-card"
-                onClick={() => s.link && navigate(s.link)}
-              >
+              <div key={i} className="fb-stat-card" onClick={() => s.link && navigate(s.link)}>
                 <div className="fb-stat-card-icon">{s.icon}</div>
-                <div className="fb-stat-card-val" style={{ color: s.color }}>
-                  {s.value}
-                </div>
+                <div className="fb-stat-card-val" style={{color:s.color}}>{s.value}</div>
                 <div className="fb-stat-card-lbl">{s.label}</div>
               </div>
             ))}
@@ -1085,9 +796,7 @@ const StudentDashboard = () => {
           <div className="fb-right-title">Quick Access</div>
           {quickLinks.map((ql, i) => (
             <Link key={i} to={ql.link} className="fb-ql">
-              <div className="fb-ql-icon" style={{ background: ql.bg, color: ql.color }}>
-                {ql.icon}
-              </div>
+              <div className="fb-ql-icon" style={{background:ql.bg,color:ql.color}}>{ql.icon}</div>
               <div className="fb-ql-lbl">
                 <div>{ql.label}</div>
                 <div className="fb-ql-sub">{ql.sub}</div>
@@ -1095,25 +804,19 @@ const StudentDashboard = () => {
             </Link>
           ))}
           <hr className="fb-right-divider" />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-            <div className="fb-right-title" style={{ marginBottom: 0 }}>Active Listings</div>
-            <FaSearch style={{ color: 'var(--text-mid)', cursor: 'pointer', fontSize: '0.85rem' }} />
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+            <div className="fb-right-title" style={{marginBottom:0}}>Active Listings</div>
+            <FaSearch style={{color:'var(--text-mid)',cursor:'pointer',fontSize:'0.85rem'}} />
           </div>
           {hostels.slice(0, 7).map(h => (
-            <div
-              key={h._id}
-              className="fb-listing-item"
-              onClick={() => navigate(`/hostels/${h._id}`)}
-            >
+            <div key={h._id} className="fb-listing-item" onClick={() => navigate(`/hostels/${h._id}`)}>
               <div className="fb-listing-ava">
                 {h.owner?.firstName?.[0]?.toUpperCase() || 'H'}
                 {h.availableRooms > 0 && <div className="fb-online-dot" />}
               </div>
               <div>
                 <div className="fb-listing-name">{h.name}</div>
-                <div className="fb-listing-price">
-                  MK {h.price?.toLocaleString()}/mo · {h.availableRooms} free
-                </div>
+                <div className="fb-listing-price">MK {h.price?.toLocaleString()}/mo · {h.availableRooms} free</div>
               </div>
             </div>
           ))}
@@ -1129,21 +832,13 @@ const StudentDashboard = () => {
       <nav className="fb-bottom-nav">
         <div className="fb-bottom-nav-inner">
           {[
-            { icon: <FaHome />,     label: 'Home',     key: 'home',     action: () => setActiveTab('home') },
-            { icon: <FaVideo />,    label: 'Videos',   key: 'videos',   action: () => navigate('/videos') },
-            { icon: <FaBookmark />, label: 'Bookings', key: 'bookings', action: () => navigate('/bookings') },
-            {
-              icon: <FaEnvelope />, label: 'Messages', key: 'messages',
-              action: () => navigate('/messages'),
-              badge: statsData.messages > 0 ? statsData.messages : null,
-            },
-            { icon: <FaUser />,     label: 'Profile',  key: 'profile',  action: () => navigate('/profile') },
+            { icon: <FaHome />,     label: 'Home',     key: 'home',     action: () => setActiveTab('home')       },
+            { icon: <FaVideo />,    label: 'Videos',   key: 'videos',   action: () => navigate('/videos')        },
+            { icon: <FaBookmark />, label: 'Bookings', key: 'bookings', action: () => navigate('/bookings')      },
+            { icon: <FaEnvelope />, label: 'Messages', key: 'messages', action: () => navigate('/messages'),      badge: statsData.messages > 0 ? statsData.messages : null },
+            { icon: <FaUser />,     label: 'Profile',  key: 'profile',  action: () => navigate('/profile')       },
           ].map(tab => (
-            <button
-              key={tab.key}
-              className={`fb-bottom-tab${activeTab === tab.key ? ' active' : ''}`}
-              onClick={tab.action}
-            >
+            <button key={tab.key} className={`fb-bottom-tab${activeTab===tab.key?' active':''}`} onClick={tab.action}>
               {tab.icon}
               <span className="lbl">{tab.label}</span>
               {tab.badge && <span className="fb-bottom-badge">{tab.badge}</span>}
