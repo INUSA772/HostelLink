@@ -4,7 +4,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import '../../styles/global.css';
 
-// Pages where footer should NOT appear
 const NO_FOOTER_PAGES = [
   '/messages',
   '/dashboard',
@@ -17,11 +16,12 @@ const NO_FOOTER_PAGES = [
   '/hostels/create',
   '/analytics',
   '/settings',
+  '/hostels/',
 ];
 
-// Pages where navbar should NOT appear
 const NO_NAVBAR_PAGES = [
   '/messages',
+  '/hostels/',
 ];
 
 const MainLayout = ({ children }) => {
