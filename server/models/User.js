@@ -55,37 +55,46 @@ const userSchema = new mongoose.Schema(
       enum: ['unverified', 'pending', 'verified', 'rejected'],
       default: 'unverified'
     },
-    verificationDocuments: [
-      {
-        type: String
-      }
-    ],
+    verificationDocuments: [{ type: String }],
     isActive: {
       type: Boolean,
       default: true
     },
-    lastLogin: {
-      type: Date
-    },
+    lastLogin: { type: Date },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     emailVerificationToken: String,
-    emailVerificationExpire: Date
+    emailVerificationExpire: Date,
+
+    // ── OTP fields ─────────────────────────────────────────
+    otpCode: { type: String, select: false },
+    otpExpire: { type: Date },
+    otpAttempts: { type: Number, default: 0 },
+    otpBlockedUntil: { type: Date },
+    phoneVerified: { type: Boolean, default: false },
+
+    // ── Escrow wallet ──────────────────────────────────────
+    walletBalance: { type: Number, default: 0 },
+    walletTransactions: [
+      {
+        type: { type: String, enum: ['hold', 'release', 'refund', 'withdrawal'] },
+        amount: Number,
+        bookingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' },
+        description: String,
+        status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ]
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
-// 🔐 Encrypt password before saving
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
-
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// 🔑 Compare entered password with hashed password
 userSchema.methods.matchPassword = function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };
