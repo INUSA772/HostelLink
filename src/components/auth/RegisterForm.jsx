@@ -1,11 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const MAX_RETRIES = 3;
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -79,380 +78,186 @@ const styles = `
   .rp-login-link a{color:var(--orange);font-weight:700;text-decoration:none;}
   .rp-login-link a:hover{text-decoration:underline;}
 
-  .fv-steps{display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;}
-  .fv-step{display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .fv-step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;border:2px solid #e5e7eb;background:#f9fafb;color:#9ca3af;transition:all 0.3s;}
-  .fv-step.active .fv-step-circle{border-color:var(--orange);background:var(--orange);color:white;}
-  .fv-step.done .fv-step-circle{border-color:var(--green);background:var(--green);color:white;}
-  .fv-step-label{font-size:0.55rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap;}
-  .fv-step.active .fv-step-label{color:var(--orange);}
-  .fv-step.done .fv-step-label{color:var(--green);}
-  .fv-step-line{width:40px;height:2px;background:#e5e7eb;margin-bottom:14px;transition:background 0.3s;}
-  .fv-step-line.done{background:var(--green);}
-
-  .fv-upload-zone{border:2px dashed #d1d5db;border-radius:10px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;margin-bottom:0.75rem;position:relative;}
-  .fv-upload-zone:hover{border-color:var(--blue);background:#f0f4ff;}
-  .fv-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-  .fv-upload-icon{font-size:1.8rem;margin-bottom:0.4rem;}
-  .fv-upload-txt{font-size:0.75rem;font-weight:600;color:var(--text-mid);}
-  .fv-upload-sub{font-size:0.65rem;color:#9ca3af;margin-top:2px;}
-  .fv-id-preview{width:100%;max-height:130px;object-fit:cover;border-radius:8px;border:2px solid var(--green);margin-bottom:0.75rem;display:block;}
-
-  .fv-camera-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000;margin-bottom:0.75rem;aspect-ratio:4/3;width:100%;}
-  .fv-video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1);}
-  .fv-face-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-  .fv-face-oval{width:130px;height:170px;border:3px solid rgba(255,255,255,0.7);border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);}
-  .fv-camera-hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:0.65rem;color:rgba(255,255,255,0.85);font-weight:600;background:rgba(0,0,0,0.4);padding:4px 8px;}
-  .fv-canvas{display:none;}
-
-  .fv-result{border-radius:10px;padding:0.9rem 1rem;display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem;}
-  .fv-result.success{background:#f0fdf4;border:1.5px solid #86efac;}
-  .fv-result.fail{background:#fef2f2;border:1.5px solid #fca5a5;}
-  .fv-result-icon{font-size:1.4rem;flex-shrink:0;}
-  .fv-result-title{font-size:0.82rem;font-weight:800;margin-bottom:2px;}
-  .fv-result.success .fv-result-title{color:var(--green);}
-  .fv-result.fail .fv-result-title{color:var(--red);}
-  .fv-result-msg{font-size:0.72rem;color:var(--text-mid);line-height:1.5;}
-
-  .fv-retries{display:flex;align-items:center;gap:0.35rem;font-size:0.68rem;color:var(--text-mid);margin-bottom:0.75rem;font-weight:600;}
-  .fv-retry-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid #d1d5db;background:#f3f4f6;transition:all 0.2s;}
-  .fv-retry-dot.used{background:var(--red);border-color:var(--red);}
-
-  .fv-loader{display:flex;flex-direction:column;align-items:center;gap:0.6rem;padding:1.5rem;text-align:center;}
-  .fv-loader-ring{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:var(--orange);border-radius:50%;animation:rpspin 0.7s linear infinite;}
-  .fv-loader-txt{font-size:0.8rem;font-weight:700;color:var(--navy);}
-  .fv-loader-sub{font-size:0.68rem;color:var(--text-mid);}
-  .fv-progress{height:4px;background:#e5e7eb;border-radius:2px;width:100%;overflow:hidden;}
-  .fv-progress-bar{height:100%;background:var(--orange);border-radius:2px;transition:width 0.3s ease;}
-
-  .fv-btn{width:100%;padding:0.6rem 1rem;border-radius:7px;font-size:0.82rem;font-weight:700;font-family:'Manrope',sans-serif;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.18s;margin-bottom:0.5rem;}
-  .fv-btn-primary{background:var(--navy);color:white;}
-  .fv-btn-primary:hover:not(:disabled){background:var(--blue);}
-  .fv-btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
-  .fv-btn-orange{background:var(--orange);color:white;}
-  .fv-btn-orange:hover:not(:disabled){opacity:0.9;}
-  .fv-btn-orange:disabled{opacity:0.5;cursor:not-allowed;}
-  .fv-btn-ghost{background:transparent;color:var(--text-mid);border:1.5px solid #e5e7eb;}
-  .fv-btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
-
-  .fv-blocked{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:1.2rem;text-align:center;}
-  .fv-blocked-icon{font-size:2.5rem;margin-bottom:0.5rem;}
-  .fv-blocked-title{font-size:0.95rem;font-weight:800;color:var(--red);margin-bottom:0.4rem;}
-  .fv-blocked-msg{font-size:0.75rem;color:var(--text-mid);line-height:1.6;}
-
-  .fv-info{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.75rem;margin-bottom:0.75rem;font-size:0.72rem;color:#1d4ed8;line-height:1.6;display:flex;gap:0.5rem;align-items:flex-start;}
-
-  .fv-score-bar{height:6px;border-radius:3px;background:#e5e7eb;margin:4px 0 8px;overflow:hidden;}
-  .fv-score-fill{height:100%;border-radius:3px;transition:width 0.5s ease;}
+  /* OTP SCREEN */
+  .otp-wrap{text-align:center;padding:0.5rem 0;}
+  .otp-phone-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:1.2rem;}
+  .otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;}
+  .otp-input{width:46px;height:52px;border:2px solid #e5e7eb;border-radius:8px;text-align:center;font-size:1.3rem;font-weight:800;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;transition:all 0.18s;background:#fafafa;}
+  .otp-input:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,80,26,0.1);}
+  .otp-input.filled{border-color:var(--green);background:#f0fdf4;}
+  .otp-timer{font-size:0.75rem;color:var(--text-mid);font-weight:600;margin-bottom:0.75rem;}
+  .otp-timer span{color:var(--orange);font-weight:800;}
+  .otp-resend{background:transparent;border:none;color:var(--blue);font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;padding:0.3rem;}
+  .otp-resend:disabled{color:#9ca3af;cursor:not-allowed;}
+  .otp-resend:hover:not(:disabled){text-decoration:underline;}
+  .otp-error{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.78rem;color:var(--red);font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;}
+  .otp-success{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.78rem;color:var(--green);font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;}
+  .otp-info{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.75rem;color:#92400e;font-weight:600;margin-bottom:1rem;line-height:1.5;}
 
   @media(max-width:768px){
     .rp-bar{padding:0 1rem;}
     .rp-bar-brand{display:none;}
     .rp-row{grid-template-columns:1fr;}
     .rp-card{max-height:85vh;}
-    .fv-step-line{width:24px;}
+    .otp-input{width:40px;height:46px;font-size:1.1rem;}
   }
 `;
 
-// ── API helpers ───────────────────────────────────────────────────────────
-const verifyIdWithBackend = async (base64Image) => {
-  const res = await fetch(`${API_URL}/auth/verify-id`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ idImage: base64Image })
-  });
-  return res.json();
-};
+// ── OTP VERIFICATION SCREEN ───────────────────────────────────────────────
+const OtpScreen = ({ userId, phone, onSuccess }) => {
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const inputRefs = useRef([]);
 
-const verifyFaceWithBackend = async (idImage, selfieImage) => {
-  const res = await fetch(`${API_URL}/auth/verify-face`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ idImage, selfieImage })
-  });
-  return res.json();
-};
+  // Countdown timer
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
 
-// ── FACE VERIFICATION COMPONENT ───────────────────────────────────────────
-const FaceVerification = ({ onVerified }) => {
-  const [step, setStep] = useState('upload');
-  const [idImage, setIdImage] = useState(null);
-  const [result, setResult] = useState(null);
-  const [retriesUsed, setRetriesUsed] = useState(0);
-  const [compareProgress, setCompareProgress] = useState(0);
-  const [cameraError, setCameraError] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const streamRef = useRef(null);
+  const handleChange = (index, value) => {
+    if (!/^\d*$/.test(value)) return; // digits only
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+    setError('');
+    // Auto-focus next input
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+  };
 
-  const startCamera = useCallback(async () => {
-    setCameraError(null);
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) {
+      setOtp(pasted.split(''));
+      inputRefs.current[5]?.focus();
+    }
+  };
+
+  const handleVerify = async () => {
+    const otpString = otp.join('');
+    if (otpString.length !== 6) { setError('Please enter the complete 6-digit code.'); return; }
+
+    setLoading(true);
+    setError('');
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }
+      const res = await fetch(`${API_URL}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, otp: otpString })
       });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+      const data = await res.json();
+      if (data.success) {
+        setSuccess('Phone verified! Redirecting...');
+        setTimeout(() => onSuccess(data), 1000);
+      } else {
+        setError(data.message || 'Invalid OTP. Please try again.');
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
       }
     } catch {
-      setCameraError('Camera access denied. Please allow camera permission and try again.');
+      setError('Connection error. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    }
-  }, []);
-
-  const handleIdUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { toast.error('Please upload an image file.'); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error('Image must be under 10MB.'); return; }
-
-    setUploading(true);
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      try {
-        const check = await verifyIdWithBackend(ev.target.result);
-        if (!check.success) {
-          toast.error(check.message);
-        } else {
-          setIdImage(ev.target.result);
-          toast.success('ID detected! Now take a selfie.');
-        }
-      } catch {
-        toast.error('Could not check ID. Check your connection.');
-      } finally {
-        setUploading(false);
-      }
-    };
-    reader.readAsDataURL(file);
   };
 
-  const captureSelfie = async () => {
-    setStep('comparing');
-    setCompareProgress(20);
-    stopCamera();
-
+  const handleResend = async () => {
+    setResending(true);
+    setError('');
     try {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
-      const ctx = canvas.getContext('2d');
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0);
-      const selfieBase64 = canvas.toDataURL('image/jpeg', 0.8);
-
-      setCompareProgress(50);
-
-      const result = await verifyFaceWithBackend(idImage, selfieBase64);
-
-      setCompareProgress(100);
-      setResult(result);
-      setStep('result');
-
-    } catch (err) {
-      console.error(err);
-      toast.error('Verification failed. Check your connection.');
-      setStep('camera');
-      setTimeout(() => startCamera(), 300);
+      const res = await fetch(`${API_URL}/auth/resend-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTimeLeft(600);
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+        toast.success('New code sent!');
+      } else {
+        setError(data.message || 'Could not resend. Try again.');
+      }
+    } catch {
+      setError('Connection error. Please try again.');
+    } finally {
+      setResending(false);
     }
   };
 
-  const handleRetry = () => {
-    const next = retriesUsed + 1;
-    setRetriesUsed(next);
-    if (next >= MAX_RETRIES) { setStep('blocked'); return; }
-    setResult(null);
-    setCompareProgress(0);
-    setStep('camera');
-    setTimeout(() => startCamera(), 300);
-  };
+  return (
+    <div className="otp-wrap">
+      <div style={{fontSize:'2.5rem',marginBottom:'0.75rem'}}>📱</div>
+      <div className="rp-card-hdr">
+        <h2>Verify Your Phone</h2>
+        <p>We sent a 6-digit code to your phone</p>
+        <div className="rp-line"></div>
+      </div>
 
-  const StepIndicator = () => (
-    <div className="fv-steps">
-      <div className={`fv-step ${step==='upload'?'active':idImage?'done':''}`}>
-        <div className="fv-step-circle">{idImage?'✓':'1'}</div>
-        <div className="fv-step-label">Upload ID</div>
+      <div className="otp-phone-badge">
+        <i className="fa fa-phone" /> {phone}
       </div>
-      <div className={`fv-step-line ${idImage?'done':''}`} />
-      <div className={`fv-step ${step==='camera'?'active':step==='comparing'||step==='result'?'done':''}`}>
-        <div className="fv-step-circle">{step==='comparing'||step==='result'?'✓':'2'}</div>
-        <div className="fv-step-label">Selfie</div>
-      </div>
-      <div className={`fv-step-line ${step==='result'||step==='comparing'?'done':''}`} />
-      <div className={`fv-step ${step==='result'&&result?.matched?'done':step==='result'?'active':''}`}>
-        <div className="fv-step-circle">{step==='result'&&result?.matched?'✓':'3'}</div>
-        <div className="fv-step-label">Verify</div>
-      </div>
-    </div>
-  );
 
-  if (step === 'blocked') return (
-    <div>
-      <StepIndicator />
-      <div className="fv-blocked">
-        <div className="fv-blocked-icon">🚫</div>
-        <div className="fv-blocked-title">Verification Failed</div>
-        <div className="fv-blocked-msg">
-          You have used all {MAX_RETRIES} attempts. Registration has been blocked for security.<br /><br />
-          Contact support if you believe this is an error.
-        </div>
+      <div className="otp-info">
+        ⚠️ Using <strong>Sandbox mode</strong> — check your Africa's Talking simulator at <strong>account.africastalking.com</strong> → Launch Simulator to see the OTP code.
       </div>
-      <button className="fv-btn fv-btn-ghost" style={{marginTop:'0.75rem'}}
-        onClick={() => window.location.href='/contact'}>
-        <i className="fa fa-envelope" /> Contact Support
-      </button>
-    </div>
-  );
 
-  if (step === 'upload') return (
-    <div>
-      <StepIndicator />
-      <div className="fv-info">
-        <i className="fa fa-info-circle" style={{marginTop:'1px'}} />
-        <span>Upload your National ID photo clearly showing your face. Then take a quick selfie to verify your identity.</span>
-      </div>
-      {idImage ? (
-        <>
-          <img src={idImage} alt="National ID" className="fv-id-preview" />
-          <div style={{fontSize:'0.7rem',color:'var(--green)',fontWeight:700,marginBottom:'0.75rem',display:'flex',alignItems:'center',gap:'5px'}}>
-            <i className="fa fa-check-circle" /> ID verified successfully
-          </div>
-          <button className="fv-btn fv-btn-orange"
-            onClick={() => { setStep('camera'); setTimeout(() => startCamera(), 300); }}>
-            <i className="fa fa-camera" /> Continue to Selfie
-          </button>
-          <button className="fv-btn fv-btn-ghost"
-            onClick={() => setIdImage(null)}>
-            <i className="fa fa-redo" /> Use Different ID
-          </button>
-        </>
-      ) : (
-        <div className="fv-upload-zone" style={{opacity: uploading ? 0.6 : 1}}>
-          <input type="file" accept="image/*" onChange={handleIdUpload} disabled={uploading} />
-          <div className="fv-upload-icon">{uploading ? '⏳' : '🪪'}</div>
-          <div className="fv-upload-txt">{uploading ? 'Checking ID...' : 'Click to upload your National ID'}</div>
-          <div className="fv-upload-sub">JPG, PNG or WEBP · Max 10MB</div>
-        </div>
-      )}
-      <canvas ref={canvasRef} className="fv-canvas" />
-    </div>
-  );
+      {error && <div className="otp-error"><i className="fa fa-exclamation-circle" /> {error}</div>}
+      {success && <div className="otp-success"><i className="fa fa-check-circle" /> {success}</div>}
 
-  if (step === 'camera') return (
-    <div>
-      <StepIndicator />
-      <div className="fv-retries">
-        <span>Attempts:</span>
-        {Array.from({length:MAX_RETRIES}).map((_,i)=>(
-          <div key={i} className={`fv-retry-dot ${i<retriesUsed?'used':''}`} />
+      <div className="otp-inputs" onPaste={handlePaste}>
+        {otp.map((digit, i) => (
+          <input
+            key={i}
+            ref={el => inputRefs.current[i] = el}
+            className={`otp-input${digit ? ' filled' : ''}`}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={e => handleChange(i, e.target.value)}
+            onKeyDown={e => handleKeyDown(i, e)}
+            autoFocus={i === 0}
+          />
         ))}
-        <span style={{marginLeft:'4px'}}>{MAX_RETRIES-retriesUsed} left</span>
       </div>
-      {cameraError ? (
-        <div className="fv-result fail">
-          <div className="fv-result-icon">📷</div>
-          <div><div className="fv-result-title">Camera Error</div><div className="fv-result-msg">{cameraError}</div></div>
-        </div>
-      ) : (
-        <div className="fv-camera-wrap">
-          <video ref={videoRef} className="fv-video" muted playsInline />
-          <div className="fv-face-overlay">
-            <div className="fv-face-oval" />
-          </div>
-          <div className="fv-camera-hint">👤 Position your face inside the oval then capture</div>
-        </div>
-      )}
-      <canvas ref={canvasRef} className="fv-canvas" />
-      <button className="fv-btn fv-btn-orange" onClick={captureSelfie} disabled={!!cameraError}>
-        <i className="fa fa-camera" /> Capture & Verify
+
+      <div className="otp-timer">
+        {timeLeft > 0
+          ? <>Code expires in <span>{formatTime(timeLeft)}</span></>
+          : <span style={{color:'var(--red)'}}>Code expired — request a new one</span>
+        }
+      </div>
+
+      <button className="rp-submit" onClick={handleVerify} disabled={loading || otp.join('').length !== 6}>
+        {loading
+          ? <><div className="rp-submit-spin" /> Verifying...</>
+          : <><i className="fa fa-check" /> Verify & Complete Registration</>}
       </button>
-      {cameraError && (
-        <button className="fv-btn fv-btn-primary" onClick={() => { setCameraError(null); startCamera(); }}>
-          <i className="fa fa-redo" /> Retry Camera
+
+      <div style={{marginTop:'0.75rem',textAlign:'center'}}>
+        <span style={{fontSize:'0.75rem',color:'var(--text-mid)'}}>Didn't receive the code? </span>
+        <button className="otp-resend" onClick={handleResend} disabled={resending || timeLeft > 540}>
+          {resending ? 'Sending...' : 'Resend Code'}
         </button>
-      )}
+      </div>
     </div>
   );
-
-  if (step === 'comparing') return (
-    <div>
-      <StepIndicator />
-      <div className="fv-loader">
-        <div className="fv-loader-ring" />
-        <div className="fv-loader-txt">Verifying your identity...</div>
-        <div className="fv-loader-sub">Comparing your face with National ID</div>
-        <div className="fv-progress">
-          <div className="fv-progress-bar" style={{width:`${compareProgress}%`}} />
-        </div>
-      </div>
-      <canvas ref={canvasRef} className="fv-canvas" />
-    </div>
-  );
-
-  if (step === 'result') {
-    const score = result?.score || 0;
-    const color = score > 65 ? '#16a34a' : score > 45 ? '#d97706' : '#dc2626';
-    return (
-      <div>
-        <StepIndicator />
-        {result?.matched ? (
-          <>
-            <div className="fv-result success">
-              <div className="fv-result-icon">✅</div>
-              <div>
-                <div className="fv-result-title">Identity Verified!</div>
-                <div className="fv-result-msg">Your face matches the National ID. You can now complete registration.</div>
-              </div>
-            </div>
-            <div style={{marginBottom:'0.75rem'}}>
-              <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.68rem',color:'var(--text-mid)',fontWeight:600,marginBottom:'3px'}}>
-                <span>Match Confidence</span><span style={{color}}>{score}%</span>
-              </div>
-              <div className="fv-score-bar"><div className="fv-score-fill" style={{width:`${score}%`,background:color}} /></div>
-            </div>
-            <button className="fv-btn fv-btn-orange" onClick={onVerified}>
-              <i className="fa fa-check" /> Continue Registration
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="fv-result fail">
-              <div className="fv-result-icon">❌</div>
-              <div>
-                <div className="fv-result-title">Verification Failed</div>
-                <div className="fv-result-msg">{result?.message || 'Face does not match the ID.'}</div>
-              </div>
-            </div>
-            <div className="fv-retries">
-              <span>Attempts used:</span>
-              {Array.from({length:MAX_RETRIES}).map((_,i)=>(
-                <div key={i} className={`fv-retry-dot ${i<=retriesUsed?'used':''}`} />
-              ))}
-              <span style={{marginLeft:'4px',color:MAX_RETRIES-retriesUsed-1<=0?'var(--red)':'inherit'}}>
-                {MAX_RETRIES-retriesUsed-1} remaining
-              </span>
-            </div>
-            <button className="fv-btn fv-btn-primary" onClick={handleRetry}>
-              <i className="fa fa-redo" /> {retriesUsed+1<MAX_RETRIES ? 'Try Again' : 'Final Attempt'}
-            </button>
-          </>
-        )}
-      </div>
-    );
-  }
-
-  return null;
 };
 
 // ── MAIN REGISTER FORM ────────────────────────────────────────────────────
@@ -464,18 +269,14 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
-  const [faceVerified, setFaceVerified] = useState(false);
-  const [showFaceVerification, setShowFaceVerification] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otpUserId, setOtpUserId] = useState(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (name === 'role') {
-      setFaceVerified(false);
-      setShowFaceVerification(false);
-    }
   };
 
   const handleCaptcha = () => {
@@ -489,53 +290,75 @@ const RegisterForm = () => {
     if (!captchaChecked) { toast.error('Please verify you are not a robot!'); return; }
     if (formData.password !== formData.confirmPassword) { toast.error('Passwords do not match!'); return; }
     if (formData.role === 'student' && !formData.studentId) { toast.error('Student ID is required!'); return; }
-    if (formData.role === 'owner' && !faceVerified) {
-      toast.error('Face verification is required for hostel owners!');
-      setShowFaceVerification(true);
-      return;
-    }
+
     setLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = formData;
-      await register(dataToSend);
-      toast.success('Registration successful! Please login to continue.');
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend)
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        toast.error(data.message || 'Registration failed.');
+        return;
+      }
+
+      // Owner — show OTP screen
+      if (data.requiresOtp) {
+        setOtpUserId(data.userId);
+        setShowOtp(true);
+        toast.info('Verification code sent to your phone!');
+        return;
+      }
+
+      // Student — registered immediately
+      toast.success('Registration successful! Please login.');
       setTimeout(() => navigate('/login'), 500);
+
     } catch (error) {
-      toast.error(handleApiError(error));
+      toast.error('Connection error. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (showFaceVerification && formData.role === 'owner') return (
+  const handleOtpSuccess = (data) => {
+    toast.success('Phone verified! Registration complete.');
+    setTimeout(() => navigate('/login'), 500);
+  };
+
+  const Nav = () => (
+    <nav className="rp-bar">
+      <Link to="/" className="rp-bar-logo">
+        <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+        <div className="rp-bar-brand"><span>OFF-CAMPUS ACCOMMODATION</span></div>
+      </Link>
+      <div className="rp-bar-actions">
+        <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
+      </div>
+    </nav>
+  );
+
+  // ── OTP SCREEN ────────────────────────────────────────────────────────
+  if (showOtp) return (
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-      <nav className="rp-bar">
-        <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-          <div className="rp-bar-brand"><span>OFF-CAMPUS ACCOMMODATION</span></div>
-        </Link>
-        <div className="rp-bar-actions">
-          <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
-        </div>
-      </nav>
+      <Nav />
       <div className="rp-main">
         <div className="rp-card">
-          <div className="rp-card-hdr">
-            <h2>Identity Verification</h2>
-            <p>Required for hostel owners — one-time only</p>
-            <div className="rp-line"></div>
-          </div>
-          <FaceVerification
-            onVerified={() => {
-              setFaceVerified(true);
-              setShowFaceVerification(false);
-              toast.success('Identity verified! Complete your registration.');
-            }}
+          <OtpScreen
+            userId={otpUserId}
+            phone={formData.phone}
+            onSuccess={handleOtpSuccess}
           />
-          <button className="fv-btn fv-btn-ghost" style={{marginTop:'0.5rem'}}
-            onClick={() => setShowFaceVerification(false)}>
+          <button
+            onClick={() => setShowOtp(false)}
+            style={{width:'100%',padding:'0.55rem',background:'transparent',border:'1.5px solid #e5e7eb',borderRadius:'7px',cursor:'pointer',color:'var(--text-mid)',fontSize:'0.78rem',fontWeight:600,marginTop:'0.5rem',fontFamily:'Manrope,sans-serif'}}
+          >
             <i className="fa fa-arrow-left" /> Back to Form
           </button>
         </div>
@@ -543,21 +366,12 @@ const RegisterForm = () => {
     </>
   );
 
+  // ── REGISTRATION FORM ─────────────────────────────────────────────────
   return (
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-      <nav className="rp-bar">
-        <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-          <div className="rp-bar-brand"><span>OFF-CAMPUS ACCOMMODATION</span></div>
-        </Link>
-        <div className="rp-bar-actions">
-          <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
-          <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
-        </div>
-      </nav>
-
+      <Nav />
       <div className="rp-main">
         <div className="rp-card">
           <div className="rp-card-hdr">
@@ -580,24 +394,9 @@ const RegisterForm = () => {
             </div>
 
             {formData.role === 'owner' && (
-              <div onClick={() => setShowFaceVerification(true)} style={{
-                display:'flex', alignItems:'center', gap:'0.6rem',
-                padding:'0.6rem 0.75rem', borderRadius:'8px', cursor:'pointer',
-                marginBottom:'0.75rem', transition:'all 0.2s',
-                background: faceVerified ? '#f0fdf4' : '#fffbeb',
-                border:`1.5px solid ${faceVerified ? '#86efac' : '#fcd34d'}`,
-              }}>
-                <span style={{fontSize:'1.2rem'}}>{faceVerified ? '✅' : '🪪'}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:'0.75rem',fontWeight:800,color:faceVerified?'#16a34a':'#92400e'}}>
-                    {faceVerified ? 'Identity Verified' : 'Identity Verification Required'}
-                  </div>
-                  <div style={{fontSize:'0.65rem',color:'var(--text-mid)'}}>
-                    {faceVerified ? 'Your National ID has been verified.' : 'Click to verify with your National ID'}
-                  </div>
-                </div>
-                <i className={`fa ${faceVerified?'fa-check-circle':'fa-chevron-right'}`}
-                  style={{color:faceVerified?'#16a34a':'#d97706',fontSize:'0.8rem'}} />
+              <div style={{background:'#fffbeb',border:'1.5px solid #fcd34d',borderRadius:'8px',padding:'0.65rem 0.8rem',fontSize:'0.75rem',color:'#92400e',fontWeight:600,marginBottom:'0.75rem',lineHeight:1.5}}>
+                <i className="fa fa-shield-alt" style={{marginRight:'0.4rem'}} />
+                As a hostel owner, your phone number will be verified via SMS to protect students from fraud.
               </div>
             )}
 
@@ -625,7 +424,7 @@ const RegisterForm = () => {
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="ph">Phone Number</label>
               <div className="rp-wrap"><i className="fa fa-phone rp-ico"></i>
-                <input id="ph" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Enter phone number" required />
+                <input id="ph" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="e.g. 0881234567" required />
               </div>
             </div>
             {formData.role === 'student' && (
@@ -673,8 +472,8 @@ const RegisterForm = () => {
 
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
-                ? <><div className="rp-submit-spin"></div> Creating Account...</>
-                : <><i className="fa fa-user-plus"></i> Create Account</>}
+                ? <><div className="rp-submit-spin"></div> {formData.role==='owner' ? 'Sending OTP...' : 'Creating Account...'}</>
+                : <><i className="fa fa-user-plus"></i> {formData.role==='owner' ? 'Continue & Verify Phone' : 'Create Account'}</>}
             </button>
           </form>
 
