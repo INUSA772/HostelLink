@@ -5,22 +5,18 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import PaymentModal from '../components/payment/PaymentModal';
 import bookingService from '../services/bookingService';
-import paymentService from '../services/paymentService';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
     --navy: #0d1b3e; --blue: #1a3fa4; --orange: #e8501a;
     --white: #fff; --gray-bg: #f0f2f5; --gray-light: #e4e6eb;
     --text-dark: #050505; --text-mid: #65676b; --success: #10b981;
     --radius: 12px;
   }
+  html, body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
 
-  body { font-family: 'Manrope', sans-serif; background: var(--gray-bg); color: var(--text-dark); }
-
-  /* TOPBAR */
   .hd-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 999;
     background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -48,10 +44,13 @@ const styles = `
   .hd-bar-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
   .hd-bar-btn-ghost:hover { background: #dddfe1; }
 
-  /* PAGE BODY */
-  .hd-page { padding-top: 72px; max-width: 1180px; margin: 0 auto; padding-bottom: 4rem; display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; padding-left: 1rem; padding-right: 1rem; }
+  .hd-page {
+    padding-top: 72px; max-width: 1180px; margin: 0 auto;
+    padding-bottom: 4rem; display: grid;
+    grid-template-columns: 1fr 380px; gap: 1.5rem;
+    padding-left: 1rem; padding-right: 1rem;
+  }
 
-  /* CAROUSEL */
   .carousel-wrap { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .carousel-stage { position: relative; width: 100%; background: #111; aspect-ratio: 16/10; overflow: hidden; }
   .carousel-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity 0.3s; }
@@ -81,17 +80,12 @@ const styles = `
   .car-action-btn:hover { transform: scale(1.1); background: var(--white); }
   .car-action-btn.liked { color: #ef4444; }
 
-  /* THUMBNAILS */
   .thumb-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; padding: 10px; background: #fafafa; border-top: 1px solid var(--gray-light); }
-  .thumb {
-    aspect-ratio: 1; border-radius: 6px; overflow: hidden; cursor: pointer;
-    border: 2.5px solid transparent; transition: all 0.2s;
-  }
+  .thumb { aspect-ratio: 1; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2.5px solid transparent; transition: all 0.2s; }
   .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .thumb:hover { border-color: var(--text-mid); }
   .thumb.active { border-color: var(--orange); }
 
-  /* DETAIL CARD */
   .detail-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .detail-price { font-size: 2.2rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 0.75rem; }
   .detail-price span { font-size: 1rem; font-weight: 500; color: var(--text-mid); }
@@ -111,15 +105,18 @@ const styles = `
   .section-heading { font-size: 1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.75rem; }
   .detail-desc { color: var(--text-mid); line-height: 1.7; font-size: 0.92rem; margin-bottom: 1.25rem; }
 
-  /* AMENITIES */
   .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.5rem; }
   .amenity-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: var(--gray-bg); border-radius: 8px; font-size: 0.85rem; color: var(--text-dark); font-weight: 500; }
   .amenity-chip i { color: var(--orange); width: 16px; text-align: center; }
 
-  /* SIDEBAR */
+  .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
+  .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
+  .map-embed { width: 100%; height: 300px; border-radius: 10px; overflow: hidden; border: none; }
+  .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
+  .map-address i { color: var(--orange); margin-top: 2px; }
+
   .sidebar { position: sticky; top: 72px; height: fit-content; display: flex; flex-direction: column; gap: 1rem; }
 
-  /* OWNER CARD */
   .owner-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .owner-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
   .owner-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--white); flex-shrink: 0; }
@@ -141,152 +138,43 @@ const styles = `
   .owner-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
   .owner-btn-ghost:hover { background: #dddfe1; }
 
-  /* BOOK CARD */
   .book-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .book-price-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .book-price-big { font-size: 1.5rem; font-weight: 800; color: var(--orange); }
   .book-rooms-badge { background: rgba(16,185,129,0.12); color: var(--success); font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 20px; }
   .book-btn { width: 100%; padding: 0.85rem; background: var(--orange); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; font-family: 'Manrope', sans-serif; }
   .book-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .book-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .book-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   .book-divider { border: none; border-top: 1px solid var(--gray-light); margin: 1rem 0; }
   .book-info-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem; }
   .book-info-row span { color: var(--text-mid); }
   .book-info-row strong { color: var(--text-dark); text-transform: capitalize; }
 
-  /* ✅ GOOGLE MAP CARD */
-  .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
-  .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
-  
-  /* ✅ GOOGLE MAP CONTAINER */
-  .google-map-container {
-    width: 100%;
-    height: 300px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
+  .booking-form-container {
+    background: var(--white); border-radius: var(--radius); padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: none; animation: slideDown 0.3s ease-out;
   }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .booking-form-container.open { display: block; }
+  .booking-form-container h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px; }
+  .form-group input { width: 100%; padding: 0.75rem; border: 1.5px solid var(--gray-light); border-radius: 8px; font-size: 0.95rem; font-family: 'Manrope', sans-serif; transition: border-color 0.2s; }
+  .form-group input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,80,26,0.1); }
+  .price-breakdown { background: var(--gray-bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--orange); }
+  .price-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
+  .price-row span { color: var(--text-mid); }
+  .price-row strong { color: var(--text-dark); }
+  .price-row.total { border-top: 1px solid var(--gray-light); padding-top: 0.75rem; margin-top: 0.75rem; font-weight: 800; font-size: 1rem; }
+  .price-row.total strong { color: var(--orange); }
+  .form-error { background: #fee2e2; color: #991b1b; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; border-left: 3px solid #dc2626; }
+  .form-success { background: #dcfce7; color: #15803d; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; border-left: 3px solid #16a34a; }
 
-  .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
-  .map-address i { color: var(--orange); margin-top: 2px; }
-
-  /* REVIEWS */
-  .reviews-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
-  .reviews-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.3rem; }
-  .reviews-overall { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
-  .reviews-score { font-size: 3rem; font-weight: 800; color: var(--orange); }
-  .reviews-out-of { font-size: 0.8rem; color: var(--text-mid); }
-  .review-item { padding: 1rem 0; border-bottom: 1px solid var(--gray-light); }
-  .review-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .review-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
-  .review-name { font-weight: 700; font-size: 0.9rem; }
-  .review-date { color: var(--text-mid); font-size: 0.8rem; }
-  .review-stars { color: #f59e0b; font-size: 0.85rem; margin-bottom: 0.35rem; }
-  .review-text { color: var(--text-mid); font-size: 0.87rem; line-height: 1.6; }
-
-  /* LOADING & ERROR */
   .hd-center { max-width: 1180px; margin: 0 auto; padding: 6rem 1rem 2rem; text-align: center; }
   .hd-spinner { width: 48px; height: 48px; border: 4px solid var(--gray-light); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hd-error { font-size: 1.1rem; color: var(--text-mid); margin-bottom: 1rem; }
-
-  /* ✅ BOOKING FORM MODAL */
-  .booking-form-container {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    display: none;
-    animation: slideDown 0.3s ease-out;
-  }
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .booking-form-container.open {
-    display: block;
-  }
-  .booking-form-container h3 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    color: var(--text-dark);
-  }
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  .form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 0.4rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  .form-group input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1.5px solid var(--gray-light);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-family: 'Manrope', sans-serif;
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus {
-    outline: none;
-    border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(232,80,26,0.1);
-  }
-  .price-breakdown {
-    background: var(--gray-bg);
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    border-left: 4px solid var(--orange);
-  }
-  .price-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-  }
-  .price-row span {
-    color: var(--text-mid);
-  }
-  .price-row strong {
-    color: var(--text-dark);
-  }
-  .price-row.total {
-    border-top: 1px solid var(--gray-light);
-    padding-top: 0.75rem;
-    margin-top: 0.75rem;
-    font-weight: 800;
-    font-size: 1rem;
-  }
-  .price-row.total strong {
-    color: var(--orange);
-  }
-  .form-error {
-    background: #fee2e2;
-    color: #991b1b;
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    border-left: 3px solid #dc2626;
-  }
-  .form-success {
-    background: #dcfce7;
-    color: #15803d;
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    border-left: 3px solid #16a34a;
-  }
 
   @media (max-width: 960px) {
     .hd-page { grid-template-columns: 1fr; }
@@ -299,7 +187,7 @@ const styles = `
     .detail-grid { grid-template-columns: 1fr; }
     .amenities-grid { grid-template-columns: 1fr; }
     .thumb-row { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
-    .google-map-container { height: 250px; }
+    .map-embed { height: 220px; }
   }
 `;
 
@@ -319,28 +207,18 @@ const AMENITY_ICONS = {
   'Hot Shower': 'fa-shower',
 };
 
-const MOCK_REVIEWS = [
-  { name: 'Chisomo Banda', date: '2 weeks ago', stars: 5, text: 'Amazing hostel! Very clean, owner is super responsive. I have been here for 3 months and love it.' },
-  { name: 'Takondwa Phiri', date: '1 month ago', stars: 4, text: 'Good accommodation, reliable water and electricity. Would recommend to other MUBAS students.' },
-  { name: 'Mercy Tembo', date: '2 months ago', stars: 5, text: 'Best hostel I have stayed in near campus. Security is excellent and the rooms are spacious.' },
-];
-
 export default function HostelDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentHostel, loading, fetchHostelById } = useHostel();
   const { user, isAuthenticated } = useAuth();
-  const mapRef = useRef(null);
 
   const [imgIndex, setImgIndex] = useState(0);
   const [liked, setLiked] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [booking, setBooking] = useState(null);
-  const [bookingData, setBookingData] = useState({
-    checkInDate: '',
-    duration: 1,
-  });
+  const [bookingData, setBookingData] = useState({ checkInDate: '', duration: 1 });
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState('');
@@ -350,106 +228,74 @@ export default function HostelDetailsPage() {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // ✅ INITIALIZE GOOGLE MAP
-  useEffect(() => {
-    if (currentHostel && mapRef.current && window.google) {
-      const lat = currentHostel.location?.coordinates?.[1] || -15.3875;
-      const lng = currentHostel.location?.coordinates?.[0] || 28.3228;
+  if (loading) return (
+    <>
+      <style>{styles}</style>
+      <nav className="hd-bar">
+        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+        <div />
+      </nav>
+      <div className="hd-center">
+        <div className="hd-spinner" />
+        <p style={{color:'#65676b'}}>Loading hostel details...</p>
+      </div>
+    </>
+  );
 
-      const map = new window.google.maps.Map(mapRef.current, {
-        zoom: 16,
-        center: { lat, lng },
-        mapTypeControl: true,
-        fullscreenControl: true,
-        streetViewControl: true,
-      });
+  if (!currentHostel) return (
+    <>
+      <style>{styles}</style>
+      <nav className="hd-bar">
+        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+        <div />
+      </nav>
+      <div className="hd-center">
+        <div style={{fontSize:'3rem', marginBottom:'1rem'}}>🏠</div>
+        <p className="hd-error">Hostel not found.</p>
+        <button className="hd-bar-btn hd-bar-btn-solid" style={{margin:'0 auto', display:'inline-flex'}} onClick={() => navigate('/hostels')}>
+          Browse All Hostels
+        </button>
+      </div>
+    </>
+  );
 
-      // ✅ ADD MARKER
-      new window.google.maps.Marker({
-        position: { lat, lng },
-        map,
-        title: currentHostel.name,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
-      });
-
-      // ✅ ADD INFO WINDOW
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: `
-          <div style="font-family: Manrope, sans-serif; padding: 10px;">
-            <strong style="color: #0d1b3e; font-size: 14px;">${currentHostel.name}</strong>
-            <p style="color: #65676b; font-size: 12px; margin-top: 5px;">${currentHostel.address}</p>
-            <p style="color: #e8501a; font-weight: 700; font-size: 13px;">MK ${currentHostel.price.toLocaleString()}/month</p>
-          </div>
-        `,
-      });
-      infoWindow.open(map, new window.google.maps.Marker({ position: { lat, lng } }));
-    }
-  }, [currentHostel]);
-
-  if (loading) {
-    return (
-      <>
-        <style>{styles}</style>
-        <nav className="hd-bar">
-          <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-          <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
-          <div />
-        </nav>
-        <div className="hd-center">
-          <div className="hd-spinner" />
-          <p style={{color:'#65676b'}}>Loading hostel details...</p>
-        </div>
-      </>
-    );
-  }
-
-  if (!currentHostel) {
-    return (
-      <>
-        <style>{styles}</style>
-        <nav className="hd-bar">
-          <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-          <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
-          <div />
-        </nav>
-        <div className="hd-center">
-          <div style={{fontSize:'3rem', marginBottom:'1rem'}}>🏠</div>
-          <p className="hd-error">Hostel not found.</p>
-          <button className="hd-bar-btn hd-bar-btn-solid" style={{margin:'0 auto', display:'inline-flex'}} onClick={() => navigate('/hostels')}>
-            Browse All Hostels
-          </button>
-        </div>
-      </>
-    );
-  }
-
-  const images = currentHostel.images && currentHostel.images.length > 0 ? currentHostel.images : [];
+  const images = currentHostel.images?.length > 0 ? currentHostel.images : [];
   const prevImg = () => setImgIndex(p => (p - 1 + images.length) % images.length);
   const nextImg = () => setImgIndex(p => (p + 1) % images.length);
-
   const rating = currentHostel.averageRating || 4.5;
-  const reviewCount = currentHostel.reviewCount || MOCK_REVIEWS.length;
   const starsStr = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
 
+  // Google Maps embed URL using address
+  const mapQuery = encodeURIComponent(currentHostel.address || currentHostel.name);
+  const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+
   const handleMessage = () => {
-    if (!isAuthenticated) {
-      toast.error('Please login to message the owner');
-      navigate('/login');
-      return;
-    }
+    if (!isAuthenticated) { toast.error('Please login to message the owner'); navigate('/login'); return; }
     navigate(`/messages?to=${currentHostel.owner?._id}`);
   };
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({ title: currentHostel.name, text: currentHostel.description, url: window.location.href });
+      navigator.share({ title: currentHostel.name, url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast.success('Link copied to clipboard!');
     }
   };
 
-  // ✅ FIXED: Handle booking creation with proper error handling
+  const calculatePrice = () => {
+    if (bookingData.duration > 0) {
+      const roomCost = currentHostel.price * bookingData.duration;
+      const platformFee = 2000;
+      return { roomCost, platformFee, totalAmount: roomCost + platformFee };
+    }
+    return null;
+  };
+
+  const priceBreakdown = calculatePrice();
+
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     setBookingError('');
@@ -460,76 +306,35 @@ export default function HostelDetailsPage() {
       setTimeout(() => navigate('/login'), 500);
       return;
     }
+    if (!bookingData.checkInDate) { setBookingError('Please select a check-in date'); return; }
+    if (bookingData.duration < 1) { setBookingError('Duration must be at least 1 month'); return; }
 
-    if (!bookingData.checkInDate) {
-      setBookingError('Please select a check-in date');
-      return;
-    }
-
-    if (bookingData.duration < 1) {
-      setBookingError('Duration must be at least 1 month');
-      return;
-    }
-
-    // Validate check-in date is not in the past
     const selectedDate = new Date(bookingData.checkInDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    if (selectedDate < today) {
-      setBookingError('Check-in date cannot be in the past');
-      return;
-    }
+    if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
 
     setBookingLoading(true);
-
     try {
-      // ✅ FIXED: Create booking with correct data format
-      const bookingPayload = {
+      const response = await bookingService.createBooking({
         hostelId: id,
         checkInDate: bookingData.checkInDate,
         duration: parseInt(bookingData.duration),
         studentId: user._id,
-      };
-
-      const response = await bookingService.createBooking(bookingPayload);
-
-      if (response && response.booking) {
+      });
+      if (response?.booking) {
         setBooking(response.booking);
         setBookingSuccess('✓ Booking created! Proceeding to payment...');
         setShowBookingForm(false);
-        
-        // Wait for success message then show payment
-        setTimeout(() => {
-          setShowPaymentModal(true);
-        }, 800);
+        setTimeout(() => setShowPaymentModal(true), 800);
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || error.message || 'Failed to create booking. Please try again.';
-      setBookingError(errorMsg);
-      console.error('Booking error:', error);
+      setBookingError(error.response?.data?.message || 'Failed to create booking. Please try again.');
     } finally {
       setBookingLoading(false);
     }
   };
 
-  // ✅ FIXED: Calculate total price
-  const calculatePrice = () => {
-    if (bookingData.duration > 0) {
-      const roomCost = currentHostel.price * bookingData.duration;
-      const platformFee = 2000;
-      return {
-        roomCost,
-        platformFee,
-        totalAmount: roomCost + platformFee,
-      };
-    }
-    return null;
-  };
-
-  const priceBreakdown = calculatePrice();
-
-  // ✅ FIXED: Handle payment success
   const handlePaymentSuccess = () => {
     setShowPaymentModal(false);
     setShowBookingForm(false);
@@ -543,11 +348,8 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-      
-      {/* ✅ LOAD GOOGLE MAPS */}
-      <script async src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 
-      {/* TOP NAV BAR */}
+      {/* TOP NAV */}
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}>
           <i className="fa fa-arrow-left" /> Back
@@ -564,13 +366,12 @@ export default function HostelDetailsPage() {
         </div>
       </nav>
 
-      {/* MAIN CONTENT */}
       <div className="hd-page">
 
-        {/* ===== LEFT COLUMN ===== */}
+        {/* ── LEFT COLUMN ── */}
         <div>
 
-          {/* IMAGE CAROUSEL */}
+          {/* CAROUSEL */}
           <div className="carousel-wrap">
             <div className="carousel-stage">
               {images.length > 0 ? (
@@ -581,7 +382,6 @@ export default function HostelDetailsPage() {
                   <span>No photos uploaded yet</span>
                 </div>
               )}
-
               {images.length > 1 && (
                 <>
                   <button className="car-btn car-prev" onClick={prevImg}><i className="fa fa-chevron-left" /></button>
@@ -589,18 +389,15 @@ export default function HostelDetailsPage() {
                   <div className="car-counter">{imgIndex + 1} / {images.length}</div>
                 </>
               )}
-
               <div className="car-actions">
-                <button className={`car-action-btn${liked ? ' liked' : ''}`} onClick={() => setLiked(l => !l)} title="Save">
+                <button className={`car-action-btn${liked ? ' liked' : ''}`} onClick={() => setLiked(l => !l)}>
                   <i className={liked ? 'fa fa-heart' : 'far fa-heart'} />
                 </button>
-                <button className="car-action-btn" onClick={handleShare} title="Share">
+                <button className="car-action-btn" onClick={handleShare}>
                   <i className="fa fa-share-alt" />
                 </button>
               </div>
             </div>
-
-            {/* THUMBNAIL ROW */}
             {images.length > 1 && (
               <div className="thumb-row">
                 {images.map((img, idx) => (
@@ -614,82 +411,56 @@ export default function HostelDetailsPage() {
 
           {/* HOSTEL INFO */}
           <div className="detail-card">
-            <div className="detail-price">
-              MK {currentHostel.price.toLocaleString()} <span>/ month</span>
-            </div>
+            <div className="detail-price">MK {currentHostel.price.toLocaleString()} <span>/ month</span></div>
             <div className="detail-name">{currentHostel.name}</div>
-            <div className="detail-location">
-              <i className="fa fa-map-marker-alt" /> {currentHostel.address}
-            </div>
+            <div className="detail-location"><i className="fa fa-map-marker-alt" /> {currentHostel.address}</div>
             <div className="detail-rating">
               <span className="stars-gold">{starsStr}</span>
-              <span className="rating-count">{rating.toFixed(1)} · {reviewCount} reviews</span>
+              <span className="rating-count">{rating.toFixed(1)} · {currentHostel.reviewCount || 0} reviews</span>
               {currentHostel.verified && (
-                <span style={{marginLeft:'0.5rem', background:'rgba(16,185,129,0.12)', color:'#10b981', fontSize:'0.78rem', fontWeight:700, padding:'2px 8px', borderRadius:'20px'}}>
+                <span style={{marginLeft:'0.5rem',background:'rgba(16,185,129,0.12)',color:'#10b981',fontSize:'0.78rem',fontWeight:700,padding:'2px 8px',borderRadius:'20px'}}>
                   <i className="fa fa-check-circle" /> Verified
                 </span>
               )}
             </div>
 
-            {/* KEY DETAILS GRID */}
             <div className="detail-grid">
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-door-open" /></div>
-                <div className="dg-text">
-                  <small>Total Rooms</small>
-                  <strong>{currentHostel.totalRooms}</strong>
-                </div>
+                <div className="dg-text"><small>Total Rooms</small><strong>{currentHostel.totalRooms}</strong></div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon" style={{background:'rgba(16,185,129,0.1)'}}><i className="fa fa-check-circle" style={{color:'#10b981'}} /></div>
-                <div className="dg-text">
-                  <small>Available Now</small>
-                  <strong style={{color:'#10b981'}}>{currentHostel.availableRooms} rooms</strong>
-                </div>
+                <div className="dg-text"><small>Available Now</small><strong style={{color:'#10b981'}}>{currentHostel.availableRooms} rooms</strong></div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-home" /></div>
-                <div className="dg-text">
-                  <small>Room Type</small>
-                  <strong>{currentHostel.type}</strong>
-                </div>
+                <div className="dg-text"><small>Room Type</small><strong>{currentHostel.type}</strong></div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-venus-mars" /></div>
-                <div className="dg-text">
-                  <small>Gender</small>
-                  <strong>{currentHostel.gender}</strong>
-                </div>
+                <div className="dg-text"><small>Gender</small><strong>{currentHostel.gender}</strong></div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-phone" /></div>
-                <div className="dg-text">
-                  <small>Contact Phone</small>
-                  <strong>{currentHostel.contactPhone}</strong>
-                </div>
+                <div className="dg-text"><small>Contact Phone</small><strong>{currentHostel.contactPhone}</strong></div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-eye" /></div>
-                <div className="dg-text">
-                  <small>Total Views</small>
-                  <strong>{currentHostel.viewCount || 0}</strong>
-                </div>
+                <div className="dg-text"><small>Total Views</small><strong>{currentHostel.viewCount || 0}</strong></div>
               </div>
             </div>
 
-            {/* DESCRIPTION */}
             <p className="section-heading">About this Hostel</p>
             <p className="detail-desc">{currentHostel.description}</p>
 
-            {/* AMENITIES */}
-            {currentHostel.amenities && currentHostel.amenities.length > 0 && (
+            {currentHostel.amenities?.length > 0 && (
               <>
                 <p className="section-heading">Amenities & Features</p>
                 <div className="amenities-grid">
                   {currentHostel.amenities.map(a => (
                     <div key={a} className="amenity-chip">
-                      <i className={`fa ${AMENITY_ICONS[a] || 'fa-check'}`} />
-                      {a}
+                      <i className={`fa ${AMENITY_ICONS[a] || 'fa-check'}`} /> {a}
                     </div>
                   ))}
                 </div>
@@ -697,46 +468,25 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
-          {/* ✅ GOOGLE MAPS INTEGRATION */}
+          {/* MAP — using free Google Maps embed, no API key needed */}
           <div className="map-card">
-            <h3><i className="fa fa-map-marked-alt" style={{color:'var(--orange)', marginRight:'0.4rem'}} /> Location on Map</h3>
-            <div ref={mapRef} className="google-map-container"></div>
+            <h3><i className="fa fa-map-marked-alt" style={{color:'var(--orange)',marginRight:'0.4rem'}} /> Location on Map</h3>
+            <iframe
+              className="map-embed"
+              title="Hostel Location"
+              src={mapEmbedUrl}
+              allowFullScreen
+              loading="lazy"
+            />
             <div className="map-address">
               <i className="fa fa-map-marker-alt" />
               <span>{currentHostel.address}</span>
             </div>
-            {currentHostel.location?.coordinates && (
-              <div className="map-address" style={{marginTop: '0.5rem', fontSize: '0.8rem', color: '#999'}}>
-                <i className="fa fa-compass" />
-                <span>Coordinates: {currentHostel.location.coordinates[1].toFixed(4)}, {currentHostel.location.coordinates[0].toFixed(4)}</span>
-              </div>
-            )}
           </div>
 
-          {/* REVIEWS */}
-          <div className="reviews-card">
-            <h3><i className="fa fa-star" style={{color:'#f59e0b', marginRight:'0.4rem'}} /> Student Reviews</h3>
-            <div className="reviews-overall">
-              <div className="reviews-score">{rating.toFixed(1)}</div>
-              <div>
-                <div className="stars-gold" style={{fontSize:'1.1rem'}}>{starsStr}</div>
-                <div className="reviews-out-of">{reviewCount} reviews</div>
-              </div>
-            </div>
-            {MOCK_REVIEWS.map((r, i) => (
-              <div key={i} className="review-item">
-                <div className="review-header">
-                  <span className="review-name">{r.name}</span>
-                  <span className="review-date">{r.date}</span>
-                </div>
-                <div className="review-stars">{'★'.repeat(r.stars)}</div>
-                <div className="review-text">{r.text}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* ===== RIGHT SIDEBAR ===== */}
+        {/* ── RIGHT SIDEBAR ── */}
         <div className="sidebar">
 
           {/* BOOK CARD */}
@@ -745,11 +495,7 @@ export default function HostelDetailsPage() {
               <div className="book-price-big">MK {currentHostel.price.toLocaleString()}<span style={{fontSize:'0.85rem',fontWeight:500,color:'#65676b'}}>/mo</span></div>
               <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
             </div>
-            <button className="book-btn" onClick={() => {
-              setShowBookingForm(!showBookingForm);
-              setBookingError('');
-              setBookingSuccess('');
-            }}>
+            <button className="book-btn" onClick={() => { setShowBookingForm(!showBookingForm); setBookingError(''); setBookingSuccess(''); }}>
               <i className="fa fa-calendar-check" /> {showBookingForm ? 'Hide Form' : 'Book Now'}
             </button>
             <hr className="book-divider" />
@@ -759,86 +505,44 @@ export default function HostelDetailsPage() {
             <div className="book-info-row"><span>Status</span><strong style={{color: currentHostel.verified ? '#10b981' : '#6b7280'}}>{currentHostel.verified ? '✓ Verified' : 'Unverified'}</strong></div>
           </div>
 
-          {/* ✅ FIXED: BOOKING FORM */}
+          {/* BOOKING FORM */}
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
             <h3>📅 Book This Hostel</h3>
-            
             {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
             {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
-
             <div className="form-group">
-              <label htmlFor="checkin">Check-in Date *</label>
-              <input
-                id="checkin"
-                type="date"
-                value={bookingData.checkInDate}
-                onChange={(e) => {
-                  setBookingData({...bookingData, checkInDate: e.target.value});
-                  setBookingError('');
-                }}
-                min={new Date().toISOString().split('T')[0]}
-                required
-              />
+              <label>Check-in Date *</label>
+              <input type="date" value={bookingData.checkInDate}
+                onChange={e => { setBookingData({...bookingData, checkInDate: e.target.value}); setBookingError(''); }}
+                min={new Date().toISOString().split('T')[0]} required />
             </div>
-
             <div className="form-group">
-              <label htmlFor="duration">Duration (months) *</label>
-              <input
-                id="duration"
-                type="number"
-                min="1"
-                max="12"
-                value={bookingData.duration}
-                onChange={(e) => {
-                  setBookingData({...bookingData, duration: parseInt(e.target.value) || 1});
-                  setBookingError('');
-                }}
-                required
-              />
+              <label>Duration (months) *</label>
+              <input type="number" min="1" max="12" value={bookingData.duration}
+                onChange={e => { setBookingData({...bookingData, duration: parseInt(e.target.value) || 1}); setBookingError(''); }}
+                required />
             </div>
-
-            {/* ✅ FIXED: PRICE BREAKDOWN */}
             {priceBreakdown && (
               <div className="price-breakdown">
-                <div className="price-row">
-                  <span>Room Rent ({bookingData.duration}m):</span>
-                  <strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong>
-                </div>
-                <div className="price-row">
-                  <span>Platform Fee:</span>
-                  <strong>MK {priceBreakdown.platformFee.toLocaleString()}</strong>
-                </div>
-                <div className="price-row total">
-                  <span>Total to Pay:</span>
-                  <strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong>
-                </div>
+                <div className="price-row"><span>Room Rent ({bookingData.duration}m):</span><strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong></div>
+                <div className="price-row"><span>Platform Fee:</span><strong>MK {priceBreakdown.platformFee.toLocaleString()}</strong></div>
+                <div className="price-row total"><span>Total to Pay:</span><strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong></div>
               </div>
             )}
-
-            <button type="submit" className="book-btn" disabled={bookingLoading} style={{marginTop: '0.5rem'}}>
-              {bookingLoading ? (
-                <>
-                  <i className="fa fa-spinner fa-spin" /> Creating Booking...
-                </>
-              ) : (
-                <>
-                  <i className="fa fa-arrow-right" /> Continue to Payment
-                </>
-              )}
+            <button type="submit" className="book-btn" disabled={bookingLoading} style={{marginTop:'0.5rem'}}>
+              {bookingLoading
+                ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
+                : <><i className="fa fa-arrow-right" /> Continue to Payment</>}
             </button>
           </form>
 
-          {/* ✅ FIXED: PAYMENT MODAL */}
+          {/* PAYMENT MODAL */}
           {booking && (
             <PaymentModal
               booking={booking}
               hostel={currentHostel}
               isOpen={showPaymentModal}
-              onClose={() => {
-                setShowPaymentModal(false);
-                setShowBookingForm(false);
-                setBookingData({ checkInDate: '', duration: 1 });
-              }}
+              onClose={() => { setShowPaymentModal(false); setShowBookingForm(false); setBookingData({ checkInDate: '', duration: 1 }); }}
               onSuccess={handlePaymentSuccess}
             />
           )}
@@ -851,23 +555,19 @@ export default function HostelDetailsPage() {
               </div>
               <div>
                 <div className="owner-info-role">Listed by</div>
-                <div className="owner-info-name">
-                  {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
-                </div>
-                <div className="owner-online">
-                  <div className="owner-dot" /> Active on HostelLink
-                </div>
+                <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
+                <div className="owner-online"><div className="owner-dot" /> Active on HostelLink</div>
               </div>
             </div>
             <div className="owner-btns">
               <button className="owner-btn owner-btn-blue" onClick={handleMessage}>
                 <i className="fa fa-comment-dots" /> Message Owner
               </button>
-              <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{textDecoration:'none', justifyContent:'center', display:'flex'}}>
+              <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{textDecoration:'none'}}>
                 <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
               </a>
               {currentHostel.owner?.email && (
-                <a href={`mailto:${currentHostel.owner.email}`} className="owner-btn owner-btn-ghost" style={{textDecoration:'none', justifyContent:'center', display:'flex'}}>
+                <a href={`mailto:${currentHostel.owner.email}`} className="owner-btn owner-btn-ghost" style={{textDecoration:'none'}}>
                   <i className="fa fa-envelope" /> Email Owner
                 </a>
               )}
@@ -877,14 +577,11 @@ export default function HostelDetailsPage() {
           {/* REPORT */}
           <button
             onClick={() => toast.info('Thank you for helping keep HostelLink safe.')}
-            style={{
-              width:'100%', padding:'0.65rem', background:'transparent', border:'1px solid var(--gray-light)',
-              borderRadius:'8px', cursor:'pointer', color:'var(--text-mid)', fontSize:'0.85rem',
-              fontWeight:600, transition:'all 0.2s', fontFamily:'Manrope, sans-serif'
-            }}
+            style={{width:'100%',padding:'0.65rem',background:'transparent',border:'1px solid var(--gray-light)',borderRadius:'8px',cursor:'pointer',color:'var(--text-mid)',fontSize:'0.85rem',fontWeight:600,transition:'all 0.2s',fontFamily:'Manrope, sans-serif'}}
           >
             <i className="fa fa-flag" /> Report this listing
           </button>
+
         </div>
       </div>
     </>
