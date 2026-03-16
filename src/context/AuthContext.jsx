@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser]                   = useState(null);
-  const [token, setToken]                 = useState(null); // ✅ token state added
+  const [token, setToken]                 = useState(null);
   const [loading, setLoading]             = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
       if (savedToken && savedUser) {
         setUser(savedUser);
-        setToken(savedToken); // ✅ restore token on page refresh
+        setToken(savedToken);
         setIsAuthenticated(true);
       }
       setLoading(false);
@@ -26,19 +26,17 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Get dashboard URL based on role
   const getDashboardUrl = (userRole) => {
     if (userRole === 'student') return '/dashboard';
     if (userRole === 'owner')   return '/landlord-dashboard';
     return '/';
   };
 
-  // Login
   const login = async (credentials) => {
     try {
       const data = await authService.login(credentials);
       setUser(data.user);
-      setToken(data.token);       // ✅ set token on login
+      setToken(data.token);
       setIsAuthenticated(true);
       return {
         ...data,
@@ -49,12 +47,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register
   const register = async (userData) => {
     try {
       const data = await authService.register(userData);
+
+      // Owner needs OTP — do NOT log them in yet
+      if (data.requiresOtp) {
+        return data;
+      }
+
+      // Student — log in immediately
       setUser(data.user);
-      setToken(data.token);       // ✅ set token on register
+      setToken(data.token);
       setIsAuthenticated(true);
       return {
         ...data,
@@ -65,15 +69,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout
   const logout = () => {
     authService.logout();
     setUser(null);
-    setToken(null);               // ✅ clear token on logout
+    setToken(null);
     setIsAuthenticated(false);
   };
 
-  // Update user
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     storage.set('user', updatedUser);
@@ -81,7 +83,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    token,            // ✅ exported so dashboard can use it
+    token,
     loading,
     isAuthenticated,
     login,

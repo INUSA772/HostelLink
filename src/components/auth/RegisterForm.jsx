@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
@@ -78,7 +78,6 @@ const styles = `
   .rp-login-link a{color:var(--orange);font-weight:700;text-decoration:none;}
   .rp-login-link a:hover{text-decoration:underline;}
 
-  /* OTP SCREEN */
   .otp-wrap{text-align:center;padding:0.5rem 0;}
   .otp-phone-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:1.2rem;}
   .otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;}
@@ -103,17 +102,16 @@ const styles = `
   }
 `;
 
-// ── OTP VERIFICATION SCREEN ───────────────────────────────────────────────
+// ── OTP SCREEN ────────────────────────────────────────────────────────────
 const OtpScreen = ({ userId, phone, onSuccess }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [timeLeft, setTimeLeft] = useState(600);
   const inputRefs = useRef([]);
 
-  // Countdown timer
   useEffect(() => {
     if (timeLeft <= 0) return;
     const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
@@ -123,12 +121,11 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   const handleChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return; // digits only
+    if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
     setError('');
-    // Auto-focus next input
     if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
@@ -150,7 +147,6 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   const handleVerify = async () => {
     const otpString = otp.join('');
     if (otpString.length !== 6) { setError('Please enter the complete 6-digit code.'); return; }
-
     setLoading(true);
     setError('');
     try {
@@ -208,18 +204,14 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
         <p>We sent a 6-digit code to your phone</p>
         <div className="rp-line"></div>
       </div>
-
       <div className="otp-phone-badge">
         <i className="fa fa-phone" /> {phone}
       </div>
-
       <div className="otp-info">
-        ⚠️ Using <strong>Sandbox mode</strong> — check your Africa's Talking simulator at <strong>account.africastalking.com</strong> → Launch Simulator to see the OTP code.
+        ⚠️ Using <strong>Sandbox mode</strong> — go to Africa's Talking dashboard → click <strong>Launch Simulator</strong> to see your OTP code.
       </div>
-
       {error && <div className="otp-error"><i className="fa fa-exclamation-circle" /> {error}</div>}
       {success && <div className="otp-success"><i className="fa fa-check-circle" /> {success}</div>}
-
       <div className="otp-inputs" onPaste={handlePaste}>
         {otp.map((digit, i) => (
           <input
@@ -236,20 +228,17 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
           />
         ))}
       </div>
-
       <div className="otp-timer">
         {timeLeft > 0
           ? <>Code expires in <span>{formatTime(timeLeft)}</span></>
           : <span style={{color:'var(--red)'}}>Code expired — request a new one</span>
         }
       </div>
-
       <button className="rp-submit" onClick={handleVerify} disabled={loading || otp.join('').length !== 6}>
         {loading
           ? <><div className="rp-submit-spin" /> Verifying...</>
           : <><i className="fa fa-check" /> Verify & Complete Registration</>}
       </button>
-
       <div style={{marginTop:'0.75rem',textAlign:'center'}}>
         <span style={{fontSize:'0.75rem',color:'var(--text-mid)'}}>Didn't receive the code? </span>
         <button className="otp-resend" onClick={handleResend} disabled={resending || timeLeft > 540}>
@@ -294,17 +283,7 @@ const RegisterForm = () => {
     setLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = formData;
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend)
-      });
-      const data = await response.json();
-
-      if (!data.success) {
-        toast.error(data.message || 'Registration failed.');
-        return;
-      }
+      const data = await register(dataToSend);
 
       // Owner — show OTP screen
       if (data.requiresOtp) {
@@ -319,13 +298,13 @@ const RegisterForm = () => {
       setTimeout(() => navigate('/login'), 500);
 
     } catch (error) {
-      toast.error('Connection error. Please try again.');
+      toast.error(handleApiError(error));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOtpSuccess = (data) => {
+  const handleOtpSuccess = () => {
     toast.success('Phone verified! Registration complete.');
     setTimeout(() => navigate('/login'), 500);
   };
@@ -338,11 +317,12 @@ const RegisterForm = () => {
       </Link>
       <div className="rp-bar-actions">
         <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
+        <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
       </div>
     </nav>
   );
 
-  // ── OTP SCREEN ────────────────────────────────────────────────────────
+  // OTP SCREEN
   if (showOtp) return (
     <>
       <style>{styles}</style>
@@ -366,7 +346,7 @@ const RegisterForm = () => {
     </>
   );
 
-  // ── REGISTRATION FORM ─────────────────────────────────────────────────
+  // REGISTRATION FORM
   return (
     <>
       <style>{styles}</style>
