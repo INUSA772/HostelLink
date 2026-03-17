@@ -24,7 +24,8 @@ import Favorites          from '../pages/Favorites';
 import MyHostels          from '../pages/MyHostels';
 import CreateHostel       from '../pages/CreateHostel';
 import EditHostel         from '../pages/EditHostel';
-import PaymentReturn      from '../pages/PaymentReturn'; // ✅ payment return page
+import PaymentReturn      from '../pages/PaymentReturn';
+import AdminDashboard     from '../pages/AdminDashboard'; // ← NEW
 
 const AppRoutes = () => {
   return (
@@ -40,13 +41,22 @@ const AppRoutes = () => {
       <Route path="/about"           element={<About />} />
       <Route path="/contact"         element={<Contact />} />
 
-      {/* ── PAYMENT RETURN — Paychangu redirects here after payment ── */}
-      {/* ✅ Must be accessible even without being fully logged in */}
+      {/* ── PAYMENT RETURN ── */}
       <Route
         path="/payment/confirm/:transactionRef"
         element={
           <ProtectedRoute allowedRoles={['student']}>
             <PaymentReturn />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ── ADMIN DASHBOARD ── */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
           </ProtectedRoute>
         }
       />
