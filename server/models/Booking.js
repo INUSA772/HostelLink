@@ -21,7 +21,7 @@ const bookingSchema = new mongoose.Schema(
     },
     duration: {
       type: Number,
-      default: 1, // months
+      default: 1,
       min: 1,
     },
     roomType: {
@@ -62,13 +62,12 @@ const bookingSchema = new mongoose.Schema(
 );
 
 // Auto-calculate checkout date based on duration in months
-bookingSchema.pre('save', function (next) {
+bookingSchema.pre('save', function () {
   if (this.checkIn && this.duration) {
     const checkout = new Date(this.checkIn);
     checkout.setMonth(checkout.getMonth() + this.duration);
     this.checkOut = checkout;
   }
-  next();
 });
 
 bookingSchema.index({ student: 1, status: 1 });
