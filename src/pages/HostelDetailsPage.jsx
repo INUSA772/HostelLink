@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
@@ -160,8 +160,13 @@ const styles = `
   .booking-form-container h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
   .form-group { margin-bottom: 1rem; }
   .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px; }
-  .form-group input { width: 100%; padding: 0.75rem; border: 1.5px solid var(--gray-light); border-radius: 8px; font-size: 0.95rem; font-family: 'Manrope', sans-serif; transition: border-color 0.2s; }
+  .form-group input {
+    width: 100%; padding: 0.75rem; border: 1.5px solid var(--gray-light);
+    border-radius: 8px; font-size: 0.95rem; font-family: 'Manrope', sans-serif;
+    transition: border-color 0.2s; background: white; color: var(--text-dark);
+  }
   .form-group input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,80,26,0.1); }
+  .form-group input.input-error { border-color: #dc2626; }
   .price-breakdown { background: var(--gray-bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--orange); }
   .price-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
   .price-row span { color: var(--text-mid); }
@@ -207,20 +212,36 @@ const AMENITY_ICONS = {
   'Hot Shower': 'fa-shower',
 };
 
+// ✅ Get today's date in YYYY-MM-DD format for the min attribute
+const getTodayStr = () => new Date().toISOString().split('T')[0];
+
+// ✅ Get tomorrow's date as default check-in
+const getTomorrowStr = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split('T')[0];
+};
+
 export default function HostelDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentHostel, loading, fetchHostelById } = useHostel();
   const { user, isAuthenticated } = useAuth();
 
-  const [imgIndex, setImgIndex] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [imgIndex,         setImgIndex]         = useState(0);
+  const [liked,            setLiked]            = useState(false);
+  const [showBookingForm,  setShowBookingForm]  = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [booking, setBooking] = useState(null);
-  const [bookingData, setBookingData] = useState({ checkInDate: '', duration: 1 });
+  const [booking,          setBooking]          = useState(null);
+
+  // ✅ FIXED: default checkInDate to tomorrow so it's never empty
+  const [bookingData, setBookingData] = useState({
+    checkInDate: getTomorrowStr(),
+    duration: 1,
+  });
+
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [bookingError, setBookingError] = useState('');
+  const [bookingError,   setBookingError]   = useState('');
   const [bookingSuccess, setBookingSuccess] = useState('');
 
   useEffect(() => {
@@ -232,13 +253,15 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <button className="hd-bar-back" onClick={() => navigate(-1)}>
+          <i className="fa fa-arrow-left" /> Back
+        </button>
         <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
         <div />
       </nav>
       <div className="hd-center">
         <div className="hd-spinner" />
-        <p style={{color:'#65676b'}}>Loading hostel details...</p>
+        <p style={{ color: '#65676b' }}>Loading hostel details...</p>
       </div>
     </>
   );
@@ -247,32 +270,40 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <button className="hd-bar-back" onClick={() => navigate(-1)}>
+          <i className="fa fa-arrow-left" /> Back
+        </button>
         <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
         <div />
       </nav>
       <div className="hd-center">
-        <div style={{fontSize:'3rem', marginBottom:'1rem'}}>🏠</div>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏠</div>
         <p className="hd-error">Hostel not found.</p>
-        <button className="hd-bar-btn hd-bar-btn-solid" style={{margin:'0 auto', display:'inline-flex'}} onClick={() => navigate('/hostels')}>
+        <button
+          className="hd-bar-btn hd-bar-btn-solid"
+          style={{ margin: '0 auto', display: 'inline-flex' }}
+          onClick={() => navigate('/hostels')}
+        >
           Browse All Hostels
         </button>
       </div>
     </>
   );
 
-  const images = currentHostel.images?.length > 0 ? currentHostel.images : [];
-  const prevImg = () => setImgIndex(p => (p - 1 + images.length) % images.length);
-  const nextImg = () => setImgIndex(p => (p + 1) % images.length);
-  const rating = currentHostel.averageRating || 4.5;
-  const starsStr = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
-
-  // Google Maps embed URL using address
-  const mapQuery = encodeURIComponent(currentHostel.address || currentHostel.name);
+  const images    = currentHostel.images?.length > 0 ? currentHostel.images : [];
+  const prevImg   = () => setImgIndex(p => (p - 1 + images.length) % images.length);
+  const nextImg   = () => setImgIndex(p => (p + 1) % images.length);
+  const rating    = currentHostel.averageRating || 4.5;
+  const starsStr  = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
+  const mapQuery  = encodeURIComponent(currentHostel.address || currentHostel.name);
   const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 
   const handleMessage = () => {
-    if (!isAuthenticated) { toast.error('Please login to message the owner'); navigate('/login'); return; }
+    if (!isAuthenticated) {
+      toast.error('Please login to message the owner');
+      navigate('/login');
+      return;
+    }
     navigate(`/messages?to=${currentHostel.owner?._id}`);
   };
 
@@ -286,8 +317,9 @@ export default function HostelDetailsPage() {
   };
 
   const calculatePrice = () => {
-    if (bookingData.duration > 0) {
-      const roomCost = currentHostel.price * bookingData.duration;
+    const dur = parseInt(bookingData.duration) || 1;
+    if (dur > 0) {
+      const roomCost   = currentHostel.price * dur;
       const platformFee = 2000;
       return { roomCost, platformFee, totalAmount: roomCost + platformFee };
     }
@@ -296,6 +328,7 @@ export default function HostelDetailsPage() {
 
   const priceBreakdown = calculatePrice();
 
+  // ✅ FIXED: proper date validation
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     setBookingError('');
@@ -306,30 +339,60 @@ export default function HostelDetailsPage() {
       setTimeout(() => navigate('/login'), 500);
       return;
     }
-    if (!bookingData.checkInDate) { setBookingError('Please select a check-in date'); return; }
-    if (bookingData.duration < 1) { setBookingError('Duration must be at least 1 month'); return; }
 
-    const selectedDate = new Date(bookingData.checkInDate);
+    // ✅ Validate date properly
+    const dateValue = bookingData.checkInDate?.trim();
+    if (!dateValue) {
+      setBookingError('Please select a check-in date');
+      return;
+    }
+
+    const selectedDate = new Date(dateValue);
+    if (isNaN(selectedDate.getTime())) {
+      setBookingError('Please enter a valid check-in date');
+      return;
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
+    if (selectedDate < today) {
+      setBookingError('Check-in date cannot be in the past');
+      return;
+    }
+
+    const dur = parseInt(bookingData.duration);
+    if (!dur || dur < 1) {
+      setBookingError('Duration must be at least 1 month');
+      return;
+    }
+
+    if (!isAuthenticated || user?.role !== 'student') {
+      setBookingError('Only students can make bookings');
+      return;
+    }
 
     setBookingLoading(true);
     try {
       const response = await bookingService.createBooking({
-        hostelId: id,
-        checkInDate: bookingData.checkInDate,
-        duration: parseInt(bookingData.duration),
-        studentId: user._id,
+        hostelId:    id,
+        checkInDate: dateValue,
+        duration:    dur,
+        studentId:   user._id,
       });
+
       if (response?.booking) {
         setBooking(response.booking);
         setBookingSuccess('✓ Booking created! Proceeding to payment...');
         setShowBookingForm(false);
         setTimeout(() => setShowPaymentModal(true), 800);
+      } else {
+        setBookingError('Failed to create booking. Please try again.');
       }
     } catch (error) {
-      setBookingError(error.response?.data?.message || 'Failed to create booking. Please try again.');
+      console.error('Booking error:', error);
+      setBookingError(
+        error.response?.data?.message || 'Failed to create booking. Please try again.'
+      );
     } finally {
       setBookingLoading(false);
     }
@@ -338,7 +401,7 @@ export default function HostelDetailsPage() {
   const handlePaymentSuccess = () => {
     setShowPaymentModal(false);
     setShowBookingForm(false);
-    setBookingData({ checkInDate: '', duration: 1 });
+    setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
     setBooking(null);
     toast.success('🎉 Payment successful! Booking confirmed.');
     setTimeout(() => navigate('/bookings'), 1500);
@@ -347,7 +410,10 @@ export default function HostelDetailsPage() {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      />
 
       {/* TOP NAV */}
       <nav className="hd-bar">
@@ -357,9 +423,11 @@ export default function HostelDetailsPage() {
         <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
         <div className="hd-bar-right">
           {isAuthenticated
-            ? <a href="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-th-large" /> Dashboard</a>
+            ? <a href="/dashboard" className="hd-bar-btn hd-bar-btn-ghost">
+                <i className="fa fa-th-large" /> Dashboard
+              </a>
             : <>
-                <a href="/login" className="hd-bar-btn hd-bar-btn-ghost">Login</a>
+                <a href="/login"    className="hd-bar-btn hd-bar-btn-ghost">Login</a>
                 <a href="/register" className="hd-bar-btn hd-bar-btn-solid">Sign Up</a>
               </>
           }
@@ -375,7 +443,11 @@ export default function HostelDetailsPage() {
           <div className="carousel-wrap">
             <div className="carousel-stage">
               {images.length > 0 ? (
-                <img className="carousel-img" src={images[imgIndex]} alt={`${currentHostel.name} photo ${imgIndex + 1}`} />
+                <img
+                  className="carousel-img"
+                  src={images[imgIndex]}
+                  alt={`${currentHostel.name} photo ${imgIndex + 1}`}
+                />
               ) : (
                 <div className="carousel-no-image">
                   <i className="fa fa-image" />
@@ -384,13 +456,20 @@ export default function HostelDetailsPage() {
               )}
               {images.length > 1 && (
                 <>
-                  <button className="car-btn car-prev" onClick={prevImg}><i className="fa fa-chevron-left" /></button>
-                  <button className="car-btn car-next" onClick={nextImg}><i className="fa fa-chevron-right" /></button>
+                  <button className="car-btn car-prev" onClick={prevImg}>
+                    <i className="fa fa-chevron-left" />
+                  </button>
+                  <button className="car-btn car-next" onClick={nextImg}>
+                    <i className="fa fa-chevron-right" />
+                  </button>
                   <div className="car-counter">{imgIndex + 1} / {images.length}</div>
                 </>
               )}
               <div className="car-actions">
-                <button className={`car-action-btn${liked ? ' liked' : ''}`} onClick={() => setLiked(l => !l)}>
+                <button
+                  className={`car-action-btn${liked ? ' liked' : ''}`}
+                  onClick={() => setLiked(l => !l)}
+                >
                   <i className={liked ? 'fa fa-heart' : 'far fa-heart'} />
                 </button>
                 <button className="car-action-btn" onClick={handleShare}>
@@ -401,7 +480,11 @@ export default function HostelDetailsPage() {
             {images.length > 1 && (
               <div className="thumb-row">
                 {images.map((img, idx) => (
-                  <div key={idx} className={`thumb${idx === imgIndex ? ' active' : ''}`} onClick={() => setImgIndex(idx)}>
+                  <div
+                    key={idx}
+                    className={`thumb${idx === imgIndex ? ' active' : ''}`}
+                    onClick={() => setImgIndex(idx)}
+                  >
                     <img src={img} alt={`Thumb ${idx + 1}`} />
                   </div>
                 ))}
@@ -411,14 +494,24 @@ export default function HostelDetailsPage() {
 
           {/* HOSTEL INFO */}
           <div className="detail-card">
-            <div className="detail-price">MK {currentHostel.price.toLocaleString()} <span>/ month</span></div>
+            <div className="detail-price">
+              MK {currentHostel.price.toLocaleString()} <span>/ month</span>
+            </div>
             <div className="detail-name">{currentHostel.name}</div>
-            <div className="detail-location"><i className="fa fa-map-marker-alt" /> {currentHostel.address}</div>
+            <div className="detail-location">
+              <i className="fa fa-map-marker-alt" /> {currentHostel.address}
+            </div>
             <div className="detail-rating">
               <span className="stars-gold">{starsStr}</span>
-              <span className="rating-count">{rating.toFixed(1)} · {currentHostel.reviewCount || 0} reviews</span>
+              <span className="rating-count">
+                {rating.toFixed(1)} · {currentHostel.reviewCount || 0} reviews
+              </span>
               {currentHostel.verified && (
-                <span style={{marginLeft:'0.5rem',background:'rgba(16,185,129,0.12)',color:'#10b981',fontSize:'0.78rem',fontWeight:700,padding:'2px 8px',borderRadius:'20px'}}>
+                <span style={{
+                  marginLeft: '0.5rem', background: 'rgba(16,185,129,0.12)',
+                  color: '#10b981', fontSize: '0.78rem', fontWeight: 700,
+                  padding: '2px 8px', borderRadius: '20px',
+                }}>
                   <i className="fa fa-check-circle" /> Verified
                 </span>
               )}
@@ -427,27 +520,47 @@ export default function HostelDetailsPage() {
             <div className="detail-grid">
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-door-open" /></div>
-                <div className="dg-text"><small>Total Rooms</small><strong>{currentHostel.totalRooms}</strong></div>
+                <div className="dg-text">
+                  <small>Total Rooms</small>
+                  <strong>{currentHostel.totalRooms}</strong>
+                </div>
               </div>
               <div className="dg-item">
-                <div className="dg-icon" style={{background:'rgba(16,185,129,0.1)'}}><i className="fa fa-check-circle" style={{color:'#10b981'}} /></div>
-                <div className="dg-text"><small>Available Now</small><strong style={{color:'#10b981'}}>{currentHostel.availableRooms} rooms</strong></div>
+                <div className="dg-icon" style={{ background: 'rgba(16,185,129,0.1)' }}>
+                  <i className="fa fa-check-circle" style={{ color: '#10b981' }} />
+                </div>
+                <div className="dg-text">
+                  <small>Available Now</small>
+                  <strong style={{ color: '#10b981' }}>{currentHostel.availableRooms} rooms</strong>
+                </div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-home" /></div>
-                <div className="dg-text"><small>Room Type</small><strong>{currentHostel.type}</strong></div>
+                <div className="dg-text">
+                  <small>Room Type</small>
+                  <strong>{currentHostel.type}</strong>
+                </div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-venus-mars" /></div>
-                <div className="dg-text"><small>Gender</small><strong>{currentHostel.gender}</strong></div>
+                <div className="dg-text">
+                  <small>Gender</small>
+                  <strong>{currentHostel.gender}</strong>
+                </div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-phone" /></div>
-                <div className="dg-text"><small>Contact Phone</small><strong>{currentHostel.contactPhone}</strong></div>
+                <div className="dg-text">
+                  <small>Contact Phone</small>
+                  <strong>{currentHostel.contactPhone}</strong>
+                </div>
               </div>
               <div className="dg-item">
                 <div className="dg-icon"><i className="fa fa-eye" /></div>
-                <div className="dg-text"><small>Total Views</small><strong>{currentHostel.viewCount || 0}</strong></div>
+                <div className="dg-text">
+                  <small>Total Views</small>
+                  <strong>{currentHostel.viewCount || 0}</strong>
+                </div>
               </div>
             </div>
 
@@ -468,9 +581,12 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
-          {/* MAP — using free Google Maps embed, no API key needed */}
+          {/* MAP */}
           <div className="map-card">
-            <h3><i className="fa fa-map-marked-alt" style={{color:'var(--orange)',marginRight:'0.4rem'}} /> Location on Map</h3>
+            <h3>
+              <i className="fa fa-map-marked-alt" style={{ color: 'var(--orange)', marginRight: '0.4rem' }} />
+              Location on Map
+            </h3>
             <iframe
               className="map-embed"
               title="Hostel Location"
@@ -492,47 +608,136 @@ export default function HostelDetailsPage() {
           {/* BOOK CARD */}
           <div className="book-card">
             <div className="book-price-display">
-              <div className="book-price-big">MK {currentHostel.price.toLocaleString()}<span style={{fontSize:'0.85rem',fontWeight:500,color:'#65676b'}}>/mo</span></div>
-              <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
+              <div className="book-price-big">
+                MK {currentHostel.price.toLocaleString()}
+                <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#65676b' }}>/mo</span>
+              </div>
+              <div className="book-rooms-badge">
+                {currentHostel.availableRooms} rooms free
+              </div>
             </div>
-            <button className="book-btn" onClick={() => { setShowBookingForm(!showBookingForm); setBookingError(''); setBookingSuccess(''); }}>
-              <i className="fa fa-calendar-check" /> {showBookingForm ? 'Hide Form' : 'Book Now'}
-            </button>
+
+            {/* ✅ Only show Book Now for students */}
+            {!isAuthenticated && (
+              <button className="book-btn" onClick={() => navigate('/login')}>
+                <i className="fa fa-sign-in-alt" /> Login to Book
+              </button>
+            )}
+            {isAuthenticated && user?.role === 'owner' && (
+              <div style={{
+                background: '#f4f6fa', borderRadius: 8, padding: '0.75rem',
+                textAlign: 'center', fontSize: '0.85rem', color: '#65676b', fontWeight: 600,
+              }}>
+                Only students can book hostels
+              </div>
+            )}
+            {isAuthenticated && user?.role === 'student' && (
+              <button
+                className="book-btn"
+                onClick={() => {
+                  setShowBookingForm(!showBookingForm);
+                  setBookingError('');
+                  setBookingSuccess('');
+                }}
+                disabled={currentHostel.availableRooms === 0}
+              >
+                <i className="fa fa-calendar-check" />
+                {currentHostel.availableRooms === 0
+                  ? ' No Rooms Available'
+                  : showBookingForm ? ' Hide Form' : ' Book Now'
+                }
+              </button>
+            )}
+
             <hr className="book-divider" />
             <div className="book-info-row"><span>Room Type</span><strong>{currentHostel.type}</strong></div>
             <div className="book-info-row"><span>Gender</span><strong>{currentHostel.gender}</strong></div>
-            <div className="book-info-row"><span>Available</span><strong>{currentHostel.availableRooms} of {currentHostel.totalRooms}</strong></div>
-            <div className="book-info-row"><span>Status</span><strong style={{color: currentHostel.verified ? '#10b981' : '#6b7280'}}>{currentHostel.verified ? '✓ Verified' : 'Unverified'}</strong></div>
+            <div className="book-info-row">
+              <span>Available</span>
+              <strong>{currentHostel.availableRooms} of {currentHostel.totalRooms}</strong>
+            </div>
+            <div className="book-info-row">
+              <span>Status</span>
+              <strong style={{ color: currentHostel.verified ? '#10b981' : '#6b7280' }}>
+                {currentHostel.verified ? '✓ Verified' : 'Unverified'}
+              </strong>
+            </div>
           </div>
 
           {/* BOOKING FORM */}
-          <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
+          <form
+            className={`booking-form-container${showBookingForm ? ' open' : ''}`}
+            onSubmit={handleCreateBooking}
+          >
             <h3>📅 Book This Hostel</h3>
-            {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
-            {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
-            <div className="form-group">
-              <label>Check-in Date *</label>
-              <input type="date" value={bookingData.checkInDate}
-                onChange={e => { setBookingData({...bookingData, checkInDate: e.target.value}); setBookingError(''); }}
-                min={new Date().toISOString().split('T')[0]} required />
-            </div>
-            <div className="form-group">
-              <label>Duration (months) *</label>
-              <input type="number" min="1" max="12" value={bookingData.duration}
-                onChange={e => { setBookingData({...bookingData, duration: parseInt(e.target.value) || 1}); setBookingError(''); }}
-                required />
-            </div>
-            {priceBreakdown && (
-              <div className="price-breakdown">
-                <div className="price-row"><span>Room Rent ({bookingData.duration}m):</span><strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong></div>
-                <div className="price-row"><span>Platform Fee:</span><strong>MK {priceBreakdown.platformFee.toLocaleString()}</strong></div>
-                <div className="price-row total"><span>Total to Pay:</span><strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong></div>
+
+            {bookingError && (
+              <div className="form-error">
+                <i className="fa fa-exclamation-circle" /> {bookingError}
               </div>
             )}
-            <button type="submit" className="book-btn" disabled={bookingLoading} style={{marginTop:'0.5rem'}}>
+            {bookingSuccess && (
+              <div className="form-success">
+                <i className="fa fa-check-circle" /> {bookingSuccess}
+              </div>
+            )}
+
+            <div className="form-group">
+              <label>Check-in Date *</label>
+              {/* ✅ FIXED: value defaults to tomorrow, never empty */}
+              <input
+                type="date"
+                value={bookingData.checkInDate}
+                onChange={e => {
+                  setBookingData({ ...bookingData, checkInDate: e.target.value });
+                  setBookingError('');
+                }}
+                min={getTodayStr()}
+                className={bookingError && !bookingData.checkInDate ? 'input-error' : ''}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Duration (months) *</label>
+              <input
+                type="number"
+                min="1"
+                max="12"
+                value={bookingData.duration}
+                onChange={e => {
+                  setBookingData({ ...bookingData, duration: parseInt(e.target.value) || 1 });
+                  setBookingError('');
+                }}
+              />
+            </div>
+
+            {priceBreakdown && (
+              <div className="price-breakdown">
+                <div className="price-row">
+                  <span>Room Rent ({bookingData.duration}m):</span>
+                  <strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong>
+                </div>
+                <div className="price-row">
+                  <span>Platform Fee:</span>
+                  <strong>MK {priceBreakdown.platformFee.toLocaleString()}</strong>
+                </div>
+                <div className="price-row total">
+                  <span>Total to Pay:</span>
+                  <strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="book-btn"
+              disabled={bookingLoading}
+              style={{ marginTop: '0.5rem' }}
+            >
               {bookingLoading
                 ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
-                : <><i className="fa fa-arrow-right" /> Continue to Payment</>}
+                : <><i className="fa fa-arrow-right" /> Continue to Payment</>
+              }
             </button>
           </form>
 
@@ -542,7 +747,11 @@ export default function HostelDetailsPage() {
               booking={booking}
               hostel={currentHostel}
               isOpen={showPaymentModal}
-              onClose={() => { setShowPaymentModal(false); setShowBookingForm(false); setBookingData({ checkInDate: '', duration: 1 }); }}
+              onClose={() => {
+                setShowPaymentModal(false);
+                setShowBookingForm(false);
+                setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
+              }}
               onSuccess={handlePaymentSuccess}
             />
           )}
@@ -555,19 +764,31 @@ export default function HostelDetailsPage() {
               </div>
               <div>
                 <div className="owner-info-role">Listed by</div>
-                <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
-                <div className="owner-online"><div className="owner-dot" /> Active on HostelLink</div>
+                <div className="owner-info-name">
+                  {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
+                </div>
+                <div className="owner-online">
+                  <div className="owner-dot" /> Active on HostelLink
+                </div>
               </div>
             </div>
             <div className="owner-btns">
               <button className="owner-btn owner-btn-blue" onClick={handleMessage}>
                 <i className="fa fa-comment-dots" /> Message Owner
               </button>
-              <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{textDecoration:'none'}}>
+              
+                href={`tel:${currentHostel.contactPhone}`}
+                className="owner-btn owner-btn-green"
+                style={{ textDecoration: 'none' }}
+              >
                 <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
               </a>
               {currentHostel.owner?.email && (
-                <a href={`mailto:${currentHostel.owner.email}`} className="owner-btn owner-btn-ghost" style={{textDecoration:'none'}}>
+                
+                  href={`mailto:${currentHostel.owner.email}`}
+                  className="owner-btn owner-btn-ghost"
+                  style={{ textDecoration: 'none' }}
+                >
                   <i className="fa fa-envelope" /> Email Owner
                 </a>
               )}
@@ -577,7 +798,13 @@ export default function HostelDetailsPage() {
           {/* REPORT */}
           <button
             onClick={() => toast.info('Thank you for helping keep HostelLink safe.')}
-            style={{width:'100%',padding:'0.65rem',background:'transparent',border:'1px solid var(--gray-light)',borderRadius:'8px',cursor:'pointer',color:'var(--text-mid)',fontSize:'0.85rem',fontWeight:600,transition:'all 0.2s',fontFamily:'Manrope, sans-serif'}}
+            style={{
+              width: '100%', padding: '0.65rem',
+              background: 'transparent', border: '1px solid var(--gray-light)',
+              borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)',
+              fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s',
+              fontFamily: 'Manrope, sans-serif',
+            }}
           >
             <i className="fa fa-flag" /> Report this listing
           </button>
