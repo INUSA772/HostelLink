@@ -6,14 +6,18 @@ const Transaction = require('../models/Transaction');
 // @route POST /api/bookings
 exports.createBooking = async (req, res) => {
   try {
-    const { hostelId, checkIn, duration, roomType, specialRequests } = req.body;
+    const { hostelId, checkIn: checkInRaw, checkInDate, duration, roomType, specialRequests } = req.body;
+    const checkIn = checkInRaw || checkInDate; // ← accept both field names
+
+    if (!checkIn) {
+      return res.status(400).json({ success: false, message: 'Check-in date is required' });
+    }
 
     const hostel = await Hostel.findById(hostelId);
     if (!hostel) return res.status(404).json({ success: false, message: 'Hostel not found' });
     if (!hostel.isActive) return res.status(400).json({ success: false, message: 'Hostel is not available' });
     if (hostel.availableRooms < 1) return res.status(400).json({ success: false, message: 'No rooms available in this hostel' });
 
-    // Prevent duplicate active booking
     const existing = await Booking.findOne({
       student: req.user._id,
       hostel: hostelId,
@@ -37,7 +41,7 @@ exports.createBooking = async (req, res) => {
     await booking.populate('hostel', 'name address price owner');
     await booking.populate('student', 'firstName lastName email phone');
 
-    res.status(201).json({ success: true, data: booking });
+    res.status(201).json({ success: true, booking });
   } catch (error) {
     console.error('createBooking error:', error);
     if (error.name === 'ValidationError') {
@@ -91,7 +95,6 @@ exports.getBooking = async (req, res) => {
 
     if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
 
-    // Only the student or the hostel owner can view
     const isStudent = booking.student._id.toString() === req.user._id.toString();
     const hostelOwner = await Hostel.findById(booking.hostel._id).select('owner');
     const isOwner = hostelOwner && hostelOwner.owner.toString() === req.user._id.toString();
@@ -106,7 +109,7 @@ exports.getBooking = async (req, res) => {
   }
 };
 
-// @desc  Confirm booking after successful payment (auto decrement beds)
+// @desc  Confirm booking after successful payment
 // @route PUT /api/bookings/:id/confirm
 exports.confirmBooking = async (req, res) => {
   try {
@@ -117,7 +120,6 @@ exports.confirmBooking = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Booking is already confirmed' });
     }
 
-    // AUTO DECREMENT: reduce available rooms
     const hostel = await Hostel.findById(booking.hostel);
     if (!hostel) return res.status(404).json({ success: false, message: 'Hostel not found' });
 
@@ -144,7 +146,7 @@ exports.confirmBooking = async (req, res) => {
   }
 };
 
-// @desc  Cancel booking (auto increment beds back)
+// @desc  Cancel booking
 // @route PUT /api/bookings/:id/cancel
 exports.cancelBooking = async (req, res) => {
   try {
@@ -163,7 +165,6 @@ exports.cancelBooking = async (req, res) => {
       return res.status(400).json({ success: false, message: `Booking is already ${booking.status}` });
     }
 
-    // AUTO INCREMENT: restore available room if booking was confirmed
     if (['confirmed', 'active'].includes(booking.status) && hostel) {
       hostel.availableRooms = Math.min(hostel.totalRooms, hostel.availableRooms + 1);
       await hostel.save();
