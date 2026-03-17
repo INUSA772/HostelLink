@@ -4,12 +4,14 @@ const Hostel = require('../models/Hostel');
 const { v2: cloudinary } = require('cloudinary');
 const streamifier = require('streamifier');
 
-// ── CLOUDINARY CONFIG ─────────────────────────────
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:    process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// ── CLOUDINARY CONFIG (lazy - only when needed) ──
+const configureCloudinary = () => {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:    process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+};
 
 // ── HELPER: stream buffer to cloudinary ──────────
 const streamUpload = (buffer) =>
@@ -31,14 +33,10 @@ const streamUpload = (buffer) =>
   });
 
 // ── GET PROFILE ───────────────────────────────────
-// @route GET /api/users/profile
-// @access Private
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     res.json({ success: true, user });
   } catch (error) {
     console.error('getProfile error:', error);
@@ -47,8 +45,6 @@ exports.getProfile = async (req, res) => {
 };
 
 // ── UPDATE PROFILE ────────────────────────────────
-// @route PUT /api/users/profile
-// @access Private
 exports.updateProfile = async (req, res) => {
   try {
     const allowedFields = ['firstName', 'lastName', 'phone', 'studentId', 'bio'];
@@ -57,7 +53,6 @@ exports.updateProfile = async (req, res) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
     });
 
-    // Never allow these to be changed via this route
     delete updates.email;
     delete updates.role;
     delete updates.password;
@@ -68,9 +63,7 @@ exports.updateProfile = async (req, res) => {
       { new: true, runValidators: true }
     ).select('-password');
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     res.json({ success: true, user, message: 'Profile updated successfully' });
   } catch (error) {
@@ -80,15 +73,13 @@ exports.updateProfile = async (req, res) => {
 };
 
 // ── UPLOAD AVATAR ─────────────────────────────────
-// @route PUT /api/users/profile/avatar
-// @access Private
 exports.updateAvatar = async (req, res) => {
+  configureCloudinary(); // ← configure only when this route is hit
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No image file provided' });
     }
 
-    // Delete old avatar from cloudinary if exists
     const existingUser = await User.findById(req.user._id);
     if (existingUser?.profilePictureId) {
       try {
@@ -98,10 +89,8 @@ exports.updateAvatar = async (req, res) => {
       }
     }
 
-    // Upload new image to cloudinary
     const result = await streamUpload(req.file.buffer);
 
-    // Save to user
     const user = await User.findByIdAndUpdate(
       req.user._id,
       {
@@ -113,9 +102,7 @@ exports.updateAvatar = async (req, res) => {
       { new: true }
     ).select('-password');
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     res.json({
       success: true,
@@ -130,37 +117,24 @@ exports.updateAvatar = async (req, res) => {
 };
 
 // ── CHANGE PASSWORD ───────────────────────────────
-// @route PUT /api/users/change-password
-// @access Private
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide current and new password',
-      });
+      return res.status(400).json({ success: false, message: 'Please provide current and new password' });
     }
 
     if (newPassword.length < 8) {
-      return res.status(400).json({
-        success: false,
-        message: 'New password must be at least 8 characters',
-      });
+      return res.status(400).json({ success: false, message: 'New password must be at least 8 characters' });
     }
 
     const user = await User.findById(req.user._id).select('+password');
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     const isMatch = await user.matchPassword(currentPassword);
     if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: 'Current password is incorrect',
-      });
+      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
     }
 
     user.password = newPassword;
@@ -174,8 +148,6 @@ exports.changePassword = async (req, res) => {
 };
 
 // ── STUDENT DASHBOARD ─────────────────────────────
-// @route GET /api/users/dashboard/student
-// @access Private (student)
 exports.getStudentDashboard = async (req, res) => {
   try {
     const bookings = await Booking.find({ student: req.user._id })
@@ -198,8 +170,6 @@ exports.getStudentDashboard = async (req, res) => {
 };
 
 // ── LANDLORD DASHBOARD ────────────────────────────
-// @route GET /api/users/dashboard/landlord
-// @access Private (owner/landlord)
 exports.getLandlordDashboard = async (req, res) => {
   try {
     const hostels = await Hostel.find({ owner: req.user._id });
@@ -231,8 +201,6 @@ exports.getLandlordDashboard = async (req, res) => {
 };
 
 // ── GET ALL USERS (Admin) ─────────────────────────
-// @route GET /api/users
-// @access Private (admin)
 exports.getAllUsers = async (req, res) => {
   try {
     const { role, page = 1, limit = 20 } = req.query;
@@ -253,16 +221,12 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // ── DELETE ACCOUNT ────────────────────────────────
-// @route DELETE /api/users/account
-// @access Private
 exports.deleteAccount = async (req, res) => {
+  configureCloudinary(); // ← configure only when this route is hit
   try {
     const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    // Delete avatar from cloudinary
     if (user.profilePictureId) {
       try {
         await cloudinary.uploader.destroy(user.profilePictureId);
