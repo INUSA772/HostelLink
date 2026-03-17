@@ -8,13 +8,17 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 30000 // 30 seconds
+  timeout: 30000
 });
 
 // Request interceptor - Add auth token to requests
 api.interceptors.request.use(
   (config) => {
-    const token = storage.get('token');
+    let token = storage.get('token');
+    // Strip surrounding quotes if double-serialized
+    if (token && typeof token === 'string') {
+      token = token.replace(/^"|"$/g, '');
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,11 +35,9 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle specific error cases
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // Unauthorized - clear token and redirect to login
           storage.remove('token');
           storage.remove('user');
           if (!window.location.pathname.includes('/login')) {
@@ -43,25 +45,21 @@ api.interceptors.response.use(
           }
           break;
         case 403:
-          // Forbidden
           console.error('Access forbidden');
           break;
         case 404:
-          // Not found
           console.error('Resource not found');
           break;
         case 500:
-          // Server error
           console.error('Server error');
           break;
         default:
           break;
       }
     } else if (error.request) {
-      // Network error
       console.error('Network error - please check your connection');
     }
-    
+
     return Promise.reject(error);
   }
 );
