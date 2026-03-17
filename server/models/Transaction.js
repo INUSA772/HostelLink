@@ -23,7 +23,6 @@ const transactionSchema = new mongoose.Schema(
       ref: 'Hostel',
       required: true
     },
-    // Amount breakdown
     roomRent: {
       type: Number,
       required: true,
@@ -31,32 +30,26 @@ const transactionSchema = new mongoose.Schema(
     },
     platformFee: {
       type: Number,
-      default: 2000, // Fixed 2000 MWK booking fee for platform
-      immutable: true
+      default: 2000
     },
     totalAmount: {
       type: Number,
       required: true,
       min: 0
     },
-    // Payment method
     paymentMethod: {
       type: String,
       enum: ['mobile_money', 'bank_transfer', 'card'],
       required: true
     },
-    // Payment status
     status: {
       type: String,
       enum: ['initiated', 'processing', 'pending', 'completed', 'failed', 'cancelled'],
       default: 'initiated'
     },
-    // Paychange details
     paychanguReference: String,
     paychanguStatus: String,
     paychanguTransactionId: String,
-    
-    // Payment details
     paymentDetails: {
       initiatedAt: Date,
       completedAt: Date,
@@ -65,12 +58,8 @@ const transactionSchema = new mongoose.Schema(
       lastFourDigits: String,
       bankName: String
     },
-    
-    // Error handling
     errorMessage: String,
     errorCode: String,
-    
-    // Security & Verification
     ipAddress: String,
     userAgent: String,
     verified: {
@@ -79,24 +68,17 @@ const transactionSchema = new mongoose.Schema(
     },
     verificationToken: String,
     verificationExpire: Date,
-    
-    // Refund tracking
     refund: {
       status: {
         type: String,
         enum: ['none', 'pending', 'processed', 'failed'],
         default: 'none'
       },
-      amount: {
-        type: Number,
-        default: 0
-      },
+      amount: { type: Number, default: 0 },
       reason: String,
       processedAt: Date,
       refundReference: String
     },
-    
-    // Metadata
     description: String,
     metadata: {
       clientIp: String,
@@ -112,32 +94,25 @@ const transactionSchema = new mongoose.Schema(
   }
 );
 
-// Virtual - Calculate net amount after platform fee
-transactionSchema.virtual('netAmount').get(function() {
-  return this.roomRent; // Owner gets room rent only
+// Virtual
+transactionSchema.virtual('netAmount').get(function () {
+  return this.roomRent;
 });
 
-// Index for quick lookups
-transactionSchema.index({ transactionId: 1 });
-transactionSchema.index({ booking: 1 });
-transactionSchema.index({ student: 1 });
-transactionSchema.index({ hostel: 1 });
-transactionSchema.index({ status: 1 });
-transactionSchema.index({ createdAt: -1 });
-transactionSchema.index({ 'paymentDetails.completedAt': -1 });
-
-// Middleware - Validate platform fee is always 2000
-transactionSchema.pre('save', function(next) {
+// Fix: removed next() — modern Mongoose handles async automatically
+transactionSchema.pre('save', function () {
   if (this.platformFee !== 2000) {
     this.platformFee = 2000;
   }
-  
-  // Calculate total if not set
   if (!this.totalAmount || this.totalAmount === 0) {
     this.totalAmount = this.roomRent + this.platformFee;
   }
-  
-  next();
 });
+
+transactionSchema.index({ transactionId: 1 });
+transactionSchema.index({ booking: 1 });
+transactionSchema.index({ student: 1 });
+transactionSchema.index({ status: 1 });
+transactionSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Transaction', transactionSchema);

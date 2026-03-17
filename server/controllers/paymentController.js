@@ -1,4 +1,3 @@
-// server/controllers/paymentController.js
 const axios = require('axios');
 const crypto = require('crypto');
 const Transaction = require('../models/Transaction');
@@ -6,67 +5,23 @@ const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
 
 const PAYCHANGU_API = process.env.PAYCHANGU_API_BASE || 'https://api.paychangu.com';
-const PLATFORM_FEE = 2000; // MWK
+const PLATFORM_FEE = 2000;
 
-// ✅ HELPER: Verify Paychangu webhook signature
-const verifyPaychanguSignature = (payload, signature) => {
-  try {
-    const secret = process.env.PAYCHANGU_SECRET_KEY;
-    if (!secret) {
-      console.error('[WEBHOOK] Missing PAYCHANGU_SECRET_KEY in environment');
-      return false;
-    }
+const formatCurrency = (amount) => `MK ${Number(amount).toLocaleString()}`;
 
-    const payloadString = typeof payload === 'string' ? payload : JSON.stringify(payload);
-    const hash = crypto
-      .createHmac('sha256', secret)
-      .update(payloadString)
-      .digest('hex');
-
-    const isValid = hash === signature;
-    console.log('[WEBHOOK VERIFICATION]', { isValid, expectedHash: hash, receivedSignature: signature });
-    return isValid;
-  } catch (error) {
-    console.error('[WEBHOOK VERIFICATION ERROR]', error.message);
-    return false;
-  }
-};
-
-// ✅ HELPER: Format currency
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-MW', {
-    style: 'currency',
-    currency: 'MWK',
-    minimumFractionDigits: 0,
-  }).format(amount);
-};
-
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payments/initiate
-// Start payment process - Create transaction and return checkout URL
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 exports.initiatePayment = async (req, res) => {
-  const startTime = new Date();
   try {
     const { bookingId, paymentMethod = 'mobile_money', mobileNumber } = req.body;
     const userId = req.user._id;
 
-    console.log('[INITIATE PAYMENT]', { bookingId, paymentMethod, userId });
-
-    // ✅ 1. Validate input
     if (!bookingId) {
       return res.status(400).json({ success: false, message: 'Booking ID is required' });
     }
 
-    if (!['mobile_money', 'bank_transfer', 'card'].includes(paymentMethod)) {
-      return res.status(400).json({ success: false, message: 'Invalid payment method' });
-    }
-
-    if (paymentMethod === 'mobile_money' && !mobileNumber) {
-      return res.status(400).json({ success: false, message: 'Mobile number is required for mobile money' });
-    }
-
-    // ✅ 2. Fetch booking
+    // Fetch booking
     const booking = await Booking.findById(bookingId)
       .populate('hostel', 'name price owner')
       .populate('student', 'firstName lastName email phone');
@@ -75,96 +30,72 @@ exports.initiatePayment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
-    // ✅ 3. Verify user is the student
     if (booking.student._id.toString() !== userId.toString()) {
-      return res.status(403).json({ success: false, message: 'Not authorized to pay for this booking' });
+      return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
-    // ✅ 4. Check if already paid
     if (booking.paymentStatus === 'paid' || booking.status === 'confirmed') {
       return res.status(400).json({ success: false, message: 'This booking is already paid' });
     }
 
-    // ✅ 5. Fetch hostel for price
     const hostel = await Hostel.findById(booking.hostel._id);
     if (!hostel) {
       return res.status(404).json({ success: false, message: 'Hostel not found' });
     }
 
-    // ✅ 6. Calculate amounts
-    const roomRent = hostel.price * booking.duration;
-    const platformFee = PLATFORM_FEE;
-    const totalAmount = roomRent + platformFee;
-
-    console.log('[PAYMENT CALCULATION]', { roomRent, platformFee, totalAmount, duration: booking.duration });
-
-    // ✅ 7. Check for existing unpaid transaction
-    const existingTransaction = await Transaction.findOne({
-      booking: bookingId,
-      status: { $in: ['initiated', 'processing', 'pending'] }
-    });
-
-    if (existingTransaction) {
-      console.log('[PAYMENT] Existing pending transaction found, updating...');
-      existingTransaction.totalAmount = totalAmount;
-      existingTransaction.roomRent = roomRent;
-      existingTransaction.status = 'initiated';
-      await existingTransaction.save();
-    }
-
-    // ✅ 8. Create Paychangu payload
+    // Calculate amounts
+    const roomRent = hostel.price * (booking.duration || 1);
+    const totalAmount = roomRent + PLATFORM_FEE;
     const transactionRef = `HL-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Build Paychangu payload
     const paychanguPayload = {
       amount: totalAmount,
       currency: 'MWK',
       email: booking.student.email,
       first_name: booking.student.firstName,
       last_name: booking.student.lastName,
-      phone_number: booking.student.phone,
+      phone_number: mobileNumber || booking.student.phone,
       callback_url: `${process.env.BACKEND_URL}/api/payments/webhook`,
       return_url: `${process.env.FRONTEND_URL}/payment/confirm/${transactionRef}`,
       tx_ref: transactionRef,
       customization: {
-        title: `HostelLink - ${hostel.name}`,
-        description: `Room booking for ${booking.duration} month(s) at ${hostel.name}`
-      },
-      ...(paymentMethod === 'mobile_money' && mobileNumber ? {
-        mobile_money: {
-          provider: 'AIRTEL', // or TNM
-          phone_number: mobileNumber
-        }
-      } : {})
+        title: `PezaHostel - ${hostel.name}`,
+        description: `Room booking for ${booking.duration || 1} month(s) at ${hostel.name}`
+      }
     };
 
-    console.log('[PAYCHANGU REQUEST]', { url: `${PAYCHANGU_API}/payment`, payload: paychanguPayload });
+    console.log('[PAYCHANGU REQUEST]', paychanguPayload);
 
-    // ✅ 9. Call Paychangu API
+    // Call Paychangu
     let paychanguResponse;
     try {
-      paychanguResponse = await axios.post(`${PAYCHANGU_API}/payment`, paychanguPayload, {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 10000 // 10 second timeout
-      });
+      paychanguResponse = await axios.post(
+        `${PAYCHANGU_API}/payment`,
+        paychanguPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 15000
+        }
+      );
     } catch (paychanguError) {
-      console.error('[PAYCHANGU API ERROR]', {
+      console.error('[PAYCHANGU ERROR]', {
         status: paychanguError.response?.status,
         data: paychanguError.response?.data,
         message: paychanguError.message
       });
-
       return res.status(500).json({
         success: false,
-        message: paychanguError.response?.data?.message || 'Failed to initialize payment with Paychangu',
-        error: process.env.NODE_ENV === 'development' ? paychanguError.response?.data : undefined
+        message: paychanguError.response?.data?.message || 'Payment gateway error. Please try again.',
       });
     }
 
     console.log('[PAYCHANGU RESPONSE]', paychanguResponse.data);
 
-    // ✅ 10. Create transaction in database
+    // Save transaction
     const transaction = await Transaction.create({
       transactionId: transactionRef,
       paychanguReference: paychanguResponse.data?.data?.tx_ref || transactionRef,
@@ -172,7 +103,7 @@ exports.initiatePayment = async (req, res) => {
       student: userId,
       hostel: booking.hostel._id,
       roomRent,
-      platformFee,
+      platformFee: PLATFORM_FEE,
       totalAmount,
       paymentMethod,
       status: 'initiated',
@@ -187,23 +118,21 @@ exports.initiatePayment = async (req, res) => {
       }
     });
 
-    console.log('[TRANSACTION CREATED]', transaction._id);
-
-    // ✅ 11. Return checkout URL
-    const checkoutUrl = paychanguResponse.data?.data?.checkout_url || paychanguResponse.data?.data?.link;
+    const checkoutUrl =
+      paychanguResponse.data?.data?.checkout_url ||
+      paychanguResponse.data?.data?.link ||
+      paychanguResponse.data?.checkout_url ||
+      paychanguResponse.data?.link;
 
     if (!checkoutUrl) {
-      console.error('[ERROR] No checkout URL in Paychangu response');
+      console.error('[ERROR] No checkout URL:', paychanguResponse.data);
       return res.status(500).json({
         success: false,
-        message: 'Failed to get checkout URL from payment gateway'
+        message: 'Could not get payment URL from gateway. Please try again.'
       });
     }
 
-    const duration = new Date() - startTime;
-    console.log(`[INITIATE PAYMENT] Completed in ${duration}ms`);
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Payment initialized successfully',
       data: {
@@ -211,10 +140,10 @@ exports.initiatePayment = async (req, res) => {
         paymentUrl: checkoutUrl,
         amount: totalAmount,
         roomRent,
-        platformFee,
+        platformFee: PLATFORM_FEE,
         breakdown: {
           roomRent: formatCurrency(roomRent),
-          platformFee: formatCurrency(platformFee),
+          platformFee: formatCurrency(PLATFORM_FEE),
           total: formatCurrency(totalAmount)
         }
       }
@@ -222,172 +151,84 @@ exports.initiatePayment = async (req, res) => {
 
   } catch (error) {
     console.error('[INITIATE PAYMENT ERROR]', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error initiating payment',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ success: false, message: 'Server error initiating payment' });
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payments/webhook
-// Paychangu calls this after payment completion
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 exports.handleWebhook = async (req, res) => {
-  const startTime = new Date();
   try {
-    console.log('[WEBHOOK RECEIVED]', {
-      timestamp: new Date().toISOString(),
-      body: req.body,
-      headers: req.headers
-    });
+    console.log('[WEBHOOK]', req.body);
 
-    // ✅ 1. Verify webhook signature
-    const signature = req.headers['x-paychangu-signature'] || req.headers['paychangu-signature'];
-    // Note: You may need to verify signature differently based on Paychangu docs
-    // For now, we'll trust the webhook but log it
-    if (!signature) {
-      console.warn('[WEBHOOK] No signature header found - consider adding signature verification');
+    const { tx_ref, status, amount } = req.body;
+
+    if (!tx_ref || !status) {
+      return res.status(400).json({ success: false, message: 'Missing tx_ref or status' });
     }
 
-    // ✅ 2. Extract webhook data
-    const { tx_ref, status, amount, currency } = req.body;
-
-    if (!tx_ref) {
-      console.error('[WEBHOOK] Missing tx_ref');
-      return res.status(400).json({ success: false, message: 'Missing tx_ref' });
-    }
-
-    if (!status) {
-      console.error('[WEBHOOK] Missing status');
-      return res.status(400).json({ success: false, message: 'Missing status' });
-    }
-
-    console.log('[WEBHOOK PROCESSING]', { tx_ref, status, amount, currency });
-
-    // ✅ 3. Find transaction
     const transaction = await Transaction.findOne({ transactionId: tx_ref });
-
     if (!transaction) {
-      console.error('[WEBHOOK] Transaction not found for tx_ref:', tx_ref);
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
 
-    console.log('[WEBHOOK] Transaction found:', transaction._id);
-
-    // ✅ 4. Verify amount matches
-    if (amount && amount !== transaction.totalAmount) {
-      console.error('[WEBHOOK] Amount mismatch', { expected: transaction.totalAmount, received: amount });
-      transaction.status = 'failed';
-      transaction.errorMessage = 'Amount mismatch';
-      await transaction.save();
-      return res.status(400).json({ success: false, message: 'Amount mismatch' });
-    }
-
-    // ✅ 5. Handle different payment statuses
-    if (status === 'successful' || status === 'success' || status === 'completed') {
-      console.log('[WEBHOOK] Payment successful, confirming booking...');
-
+    if (['successful', 'success', 'completed'].includes(status)) {
       transaction.status = 'completed';
       transaction.paychanguStatus = status;
       transaction.paymentDetails.completedAt = new Date();
       await transaction.save();
 
-      // ✅ 6. Confirm booking and decrement available rooms
       const booking = await Booking.findById(transaction.booking);
+      if (booking && booking.status === 'payment_pending') {
+        booking.status = 'confirmed';
+        booking.paymentStatus = 'paid';
+        await booking.save();
 
-      if (!booking) {
-        console.error('[WEBHOOK] Booking not found:', transaction.booking);
-        return res.status(404).json({ success: false, message: 'Booking not found' });
+        const hostel = await Hostel.findById(booking.hostel);
+        if (hostel && hostel.availableRooms > 0) {
+          hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
+          await hostel.save();
+        }
       }
-
-      if (booking.status !== 'payment_pending') {
-        console.warn('[WEBHOOK] Booking already processed:', booking.status);
-        return res.json({ status: 'ok', message: 'Booking already processed' });
-      }
-
-      // ✅ 7. Update booking
-      booking.status = 'confirmed';
-      booking.paymentStatus = 'paid';
-      booking.moveInConfirmed = false;
-      await booking.save();
-
-      console.log('[WEBHOOK] Booking confirmed:', booking._id);
-
-      // ✅ 8. Decrement available rooms
-      const hostel = await Hostel.findById(booking.hostel);
-      if (hostel && hostel.availableRooms > 0) {
-        hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
-        await hostel.save();
-        console.log('[WEBHOOK] Rooms decremented. Available rooms:', hostel.availableRooms);
-      }
-
-      const duration = new Date() - startTime;
-      console.log(`[WEBHOOK] Success processed in ${duration}ms`);
 
       return res.json({ status: 'ok', message: 'Payment successful' });
 
-    } else if (status === 'failed' || status === 'declined') {
-      console.log('[WEBHOOK] Payment failed:', status);
-
+    } else if (['failed', 'declined'].includes(status)) {
       transaction.status = 'failed';
       transaction.paychanguStatus = status;
-      transaction.errorMessage = `Payment ${status}`;
       await transaction.save();
 
-      // ✅ 9. Mark booking as payment failed
       const booking = await Booking.findById(transaction.booking);
-      if (booking && booking.status === 'payment_pending') {
+      if (booking) {
         booking.paymentStatus = 'failed';
         await booking.save();
-        console.log('[WEBHOOK] Booking payment marked as failed');
       }
 
       return res.json({ status: 'ok', message: 'Payment failed' });
 
-    } else if (status === 'cancelled' || status === 'abandoned') {
-      console.log('[WEBHOOK] Payment cancelled:', status);
-
-      transaction.status = 'cancelled';
-      transaction.paychanguStatus = status;
-      await transaction.save();
-
-      return res.json({ status: 'ok', message: 'Payment cancelled' });
-
     } else {
-      console.log('[WEBHOOK] Unknown status:', status);
       transaction.paychanguStatus = status;
-      transaction.status = 'pending';
       await transaction.save();
-
-      return res.json({ status: 'ok', message: 'Status received' });
+      return res.json({ status: 'ok' });
     }
 
   } catch (error) {
     console.error('[WEBHOOK ERROR]', error);
-    res.status(500).json({ message: 'Webhook processing error' });
+    res.status(500).json({ message: 'Webhook error' });
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/payments/verify/:transactionId
-// Verify payment status
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 exports.verifyPayment = async (req, res) => {
   try {
     const { transactionId } = req.params;
     const userId = req.user._id;
 
-    console.log('[VERIFY PAYMENT]', { transactionId, userId });
-
-    if (!transactionId) {
-      return res.status(400).json({ success: false, message: 'Transaction ID is required' });
-    }
-
-    // ✅ Find transaction
     const transaction = await Transaction.findById(transactionId)
-      .populate('booking', 'status paymentStatus')
+      .populate('booking', 'status paymentStatus checkIn duration')
       .populate('hostel', 'name address')
       .populate('student', 'firstName lastName email');
 
@@ -395,36 +236,28 @@ exports.verifyPayment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
 
-    // ✅ Verify user owns this transaction
     if (transaction.student._id.toString() !== userId.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Not authorized to view this transaction' });
+      return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
-    console.log('[VERIFY PAYMENT] Transaction:', { id: transaction._id, status: transaction.status });
-
-    // ✅ If still processing, try to verify with Paychangu
-    if (transaction.status === 'initiated' || transaction.status === 'processing') {
+    // Try to verify with Paychangu if still pending
+    if (['initiated', 'processing'].includes(transaction.status)) {
       try {
-        const paychanguRef = transaction.paychanguReference || transaction.transactionId;
-        const verifyResponse = await axios.get(`${PAYCHANGU_API}/verify/${paychanguRef}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
-          },
-          timeout: 10000
-        });
-
-        console.log('[PAYCHANGU VERIFY RESPONSE]', verifyResponse.data);
+        const verifyResponse = await axios.get(
+          `${PAYCHANGU_API}/verify/${transaction.paychanguReference || transaction.transactionId}`,
+          {
+            headers: { Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}` },
+            timeout: 10000
+          }
+        );
 
         const paychanguStatus = verifyResponse.data?.data?.status;
-
-        if (paychanguStatus === 'successful' || paychanguStatus === 'success') {
-          // ✅ Update transaction
+        if (['successful', 'success'].includes(paychanguStatus)) {
           transaction.status = 'completed';
           transaction.paychanguStatus = paychanguStatus;
           transaction.paymentDetails.completedAt = new Date();
           await transaction.save();
 
-          // ✅ Confirm booking if not already
           const booking = await Booking.findById(transaction.booking);
           if (booking && booking.status === 'payment_pending') {
             booking.status = 'confirmed';
@@ -436,14 +269,10 @@ exports.verifyPayment = async (req, res) => {
               hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
               await hostel.save();
             }
-
-            console.log('[VERIFY PAYMENT] Booking confirmed via verification');
           }
         }
-
       } catch (verifyError) {
-        console.warn('[PAYCHANGU VERIFY ERROR]', verifyError.message);
-        // Don't fail - just return current transaction status
+        console.warn('[VERIFY ERROR]', verifyError.message);
       }
     }
 
@@ -452,7 +281,6 @@ exports.verifyPayment = async (req, res) => {
       data: {
         transactionId: transaction._id,
         status: transaction.status,
-        paymentStatus: transaction.status === 'completed' ? 'paid' : 'pending',
         amount: transaction.totalAmount,
         breakdown: {
           roomRent: formatCurrency(transaction.roomRent),
@@ -464,29 +292,23 @@ exports.verifyPayment = async (req, res) => {
           status: transaction.booking.status,
           paymentStatus: transaction.booking.paymentStatus
         },
-        hostel: {
-          name: transaction.hostel.name,
-          address: transaction.hostel.address
-        },
-        completedAt: transaction.paymentDetails.completedAt
+        hostel: transaction.hostel,
+        completedAt: transaction.paymentDetails?.completedAt
       }
     });
 
   } catch (error) {
-    console.error('[VERIFY PAYMENT ERROR]', error);
+    console.error('[VERIFY ERROR]', error);
     res.status(500).json({ success: false, message: 'Server error verifying payment' });
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/payments/history
-// Get payment history for logged-in user
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 exports.getPaymentHistory = async (req, res) => {
   try {
-    const userId = req.user._id;
-
-    const transactions = await Transaction.find({ student: userId })
+    const transactions = await Transaction.find({ student: req.user._id })
       .populate('booking', 'status paymentStatus')
       .populate('hostel', 'name address images')
       .sort({ createdAt: -1 })
@@ -500,8 +322,8 @@ exports.getPaymentHistory = async (req, res) => {
         transactionId: t.transactionId,
         status: t.status,
         amount: t.totalAmount,
-        hostel: t.hostel.name,
-        bookingStatus: t.booking.status,
+        hostel: t.hostel?.name,
+        bookingStatus: t.booking?.status,
         date: t.createdAt,
         breakdown: {
           roomRent: formatCurrency(t.roomRent),
@@ -512,20 +334,17 @@ exports.getPaymentHistory = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[GET PAYMENT HISTORY ERROR]', error);
-    res.status(500).json({ success: false, message: 'Server error fetching payment history' });
+    console.error('[PAYMENT HISTORY ERROR]', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/payments/:id
-// Get single transaction details
-// ═══════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
 exports.getTransaction = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const transaction = await Transaction.findById(id)
+    const transaction = await Transaction.findById(req.params.id)
       .populate('booking')
       .populate('hostel', 'name address images')
       .populate('student', 'firstName lastName email');
@@ -534,7 +353,6 @@ exports.getTransaction = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
 
-    // ✅ Verify authorization
     if (transaction.student._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
@@ -558,8 +376,7 @@ exports.getTransaction = async (req, res) => {
         hostel: transaction.hostel,
         student: transaction.student,
         paymentDetails: transaction.paymentDetails,
-        createdAt: transaction.createdAt,
-        updatedAt: transaction.updatedAt
+        createdAt: transaction.createdAt
       }
     });
 
