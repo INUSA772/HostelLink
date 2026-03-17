@@ -4,14 +4,20 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const AfricasTalking = require('africastalking');
 
-// ── Africa's Talking SMS ──────────────────────────────────────────────────────
-const AT = AfricasTalking({
-  apiKey: process.env.AT_API_KEY,
-  username: process.env.AT_USERNAME,
-});
-const sms = AT.SMS;
+// ── Africa's Talking SMS (lazy - only when needed) ────
+let sms = null;
+const getSms = () => {
+  if (!sms) {
+    const AT = AfricasTalking({
+      apiKey:   process.env.AT_API_KEY,
+      username: process.env.AT_USERNAME,
+    });
+    sms = AT.SMS;
+  }
+  return sms;
+};
 
-// ── Email transporter ─────────────────────────────────────────────────────────
+// ── Email transporter ─────────────────────────────────
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT) || 587,
@@ -66,10 +72,10 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
   });
 };
 
-// ── Helper: generate 6-digit OTP ──────────────────────────────────────────────
+// ── Helper: generate 6-digit OTP ──────────────────────
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-// ── Helper: format phone for Africa's Talking (must be +265XXXXXXXXX) ─────────
+// ── Helper: format phone for Africa's Talking ──────────
 const formatPhone = (phone) => {
   let p = phone.replace(/\s+/g, '').replace(/-/g, '');
   if (p.startsWith('0')) p = '+265' + p.slice(1);
@@ -78,21 +84,17 @@ const formatPhone = (phone) => {
   return p;
 };
 
-// ── Helper: send OTP via SMS ───────────────────────────────────────────────────
+// ── Helper: send OTP via SMS ───────────────────────────
 const sendOTPSms = async (phone, otp, firstName) => {
   const formattedPhone = formatPhone(phone);
-  await sms.send({
+  await getSms().send({
     to: [formattedPhone],
     message: `Hi ${firstName}, your PezaHostel verification code is: ${otp}. This code expires in 10 minutes. Do not share it with anyone.`,
     from: process.env.AT_SENDER_ID || 'HOSTELLINK',
   });
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/register
-// For students: creates account immediately
-// For owners: sends OTP first, account created after verification
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/register ────────────────────────────
 exports.register = async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, role, studentId } = req.body;
@@ -107,7 +109,6 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Students register immediately — no OTP needed
     if (role === 'student') {
       const user = await User.create({
         firstName, lastName, email, phone, password,
@@ -126,11 +127,9 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Owners: generate OTP and send SMS
     const otp = generateOTP();
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    // Store temp data + OTP in a pending user record
     let pendingUser = await User.findOne({ email });
     if (!pendingUser) {
       pendingUser = await User.create({
@@ -138,9 +137,9 @@ exports.register = async (req, res) => {
         role, phoneVerified: false,
         verificationStatus: 'pending',
         otpCode: hashedOtp,
-        otpExpire: Date.now() + 10 * 60 * 1000, // 10 minutes
+        otpExpire: Date.now() + 10 * 60 * 1000,
         otpAttempts: 0,
-        isActive: false // account inactive until OTP verified
+        isActive: false
       });
     } else {
       pendingUser.otpCode = hashedOtp;
@@ -149,7 +148,6 @@ exports.register = async (req, res) => {
       await pendingUser.save({ validateBeforeSave: false });
     }
 
-    // Send OTP via SMS
     await sendOTPSms(phone, otp, firstName);
 
     return res.status(200).json({
@@ -165,10 +163,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/verify-otp
-// Verifies the OTP sent to landlord's phone
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/verify-otp ──────────────────────────
 exports.verifyOtp = async (req, res) => {
   try {
     const { userId, otp } = req.body;
@@ -178,12 +173,10 @@ exports.verifyOtp = async (req, res) => {
     }
 
     const user = await User.findById(userId).select('+otpCode +otpAttempts +otpBlockedUntil +otpExpire');
-
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Check if blocked
     if (user.otpBlockedUntil && user.otpBlockedUntil > Date.now()) {
       const minutesLeft = Math.ceil((user.otpBlockedUntil - Date.now()) / 60000);
       return res.status(429).json({
@@ -192,7 +185,6 @@ exports.verifyOtp = async (req, res) => {
       });
     }
 
-    // Check if expired
     if (!user.otpExpire || user.otpExpire < Date.now()) {
       return res.status(400).json({
         success: false,
@@ -200,12 +192,9 @@ exports.verifyOtp = async (req, res) => {
       });
     }
 
-    // Check OTP
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
     if (hashedOtp !== user.otpCode) {
       user.otpAttempts += 1;
-
-      // Block after 3 wrong attempts for 30 minutes
       if (user.otpAttempts >= 3) {
         user.otpBlockedUntil = Date.now() + 30 * 60 * 1000;
         await user.save({ validateBeforeSave: false });
@@ -214,7 +203,6 @@ exports.verifyOtp = async (req, res) => {
           message: 'Too many wrong attempts. Account blocked for 30 minutes.'
         });
       }
-
       await user.save({ validateBeforeSave: false });
       return res.status(400).json({
         success: false,
@@ -222,7 +210,6 @@ exports.verifyOtp = async (req, res) => {
       });
     }
 
-    // OTP correct — activate account
     user.phoneVerified = true;
     user.isActive = true;
     user.verificationStatus = 'verified';
@@ -250,16 +237,11 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/resend-otp
-// Resends OTP to landlord's phone
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/resend-otp ──────────────────────────
 exports.resendOtp = async (req, res) => {
   try {
     const { userId } = req.body;
-
     const user = await User.findById(userId).select('+otpBlockedUntil');
-
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
@@ -274,7 +256,6 @@ exports.resendOtp = async (req, res) => {
 
     const otp = generateOTP();
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
-
     user.otpCode = hashedOtp;
     user.otpExpire = Date.now() + 10 * 60 * 1000;
     user.otpAttempts = 0;
@@ -293,19 +274,15 @@ exports.resendOtp = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/login
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/login ───────────────────────────────
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    // Block inactive owners who haven't verified OTP
     if (!user.isActive && user.role === 'owner') {
       return res.status(403).json({
         success: false,
@@ -340,9 +317,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/auth/me
-// ─────────────────────────────────────────────────────────────────────────────
+// ── GET /api/auth/me ───────────────────────────────────
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -362,9 +337,7 @@ exports.getMe = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/forgot-password
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/forgot-password ────────────────────
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -377,13 +350,11 @@ exports.forgotPassword = async (req, res) => {
 
     const resetToken = crypto.randomBytes(32).toString('hex');
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpire = Date.now() + 60 * 60 * 1000;
     await user.save({ validateBeforeSave: false });
 
     await sendPasswordResetEmail(user.email, resetToken, user.firstName);
-
     res.status(200).json({ success: true, message: 'Password reset link sent to your email.' });
   } catch (error) {
     console.error('Forgot password error:', error);
@@ -399,9 +370,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/reset-password
-// ─────────────────────────────────────────────────────────────────────────────
+// ── POST /api/auth/reset-password ─────────────────────
 exports.resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
@@ -409,7 +378,10 @@ exports.resetPassword = async (req, res) => {
     if (password.length < 8) return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
 
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-    const user = await User.findOne({ resetPasswordToken: hashedToken, resetPasswordExpire: { $gt: Date.now() } });
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
 
     if (!user) return res.status(400).json({ success: false, message: 'Reset link is invalid or has expired.' });
 
