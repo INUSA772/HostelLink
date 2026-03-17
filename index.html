@@ -2,10 +2,98 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/PezaHostelLogo.png" sizes="700x700" />
+    <link rel="icon" type="image/png" href="/PezaHostelLogo.png" sizes="700x700" style="border-radius: 7px; display: block;" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
     <title>PezaHostel</title>
+
+    <style>
+      /* ── SMOOTH LOGO STYLING ── */
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f4f6fa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+          monospace;
+      }
+
+      /* ── ROOT STYLES ── */
+      #root {
+        min-height: 100vh;
+        width: 100%;
+      }
+
+      /* ── FAVICON STYLING (2px rounded corners) ── */
+      link[rel="icon"] {
+        border-radius: 2px;
+        display: block;
+      }
+
+      /* ── LOGO ICON STYLING (12px rounded corners) ── */
+      .logo-icon,
+      .app-logo,
+      [class*="logo"] {
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      /* For any logo images in the app */
+      img[alt*="logo"],
+      img[alt*="Logo"],
+      img[src*="logo"],
+      img[src*="Logo"] {
+        border-radius: 12px;
+        display: block;
+      }
+
+      /* ── SMOOTH TRANSITIONS ── */
+      * {
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      }
+
+      button,
+      a {
+        transition: all 0.2s ease;
+      }
+
+      /* ── SCROLLBAR STYLING ── */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      /* ── SELECTION STYLING ── */
+      ::selection {
+        background-color: #e8501a;
+        color: white;
+      }
+
+      ::-moz-selection {
+        background-color: #e8501a;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

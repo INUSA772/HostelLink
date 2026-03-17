@@ -262,7 +262,9 @@ const styles = `
     background: linear-gradient(to top, rgba(255,255,255,0.9), transparent);
   }
 
-  /* Individual animated card */
+  /* ─────────────────────────────── */
+  /* ANIMATED CARD — TEXT ONLY      */
+  /* ─────────────────────────────── */
   .anim-card {
     width: 170px;
     border-radius: 16px;
@@ -276,6 +278,7 @@ const styles = `
     backdrop-filter: blur(6px);
     flex-shrink: 0;
     transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
   }
 
   .anim-card:hover {
@@ -306,6 +309,45 @@ const styles = `
     font-size: 0.72rem;
     color: #6b7280;
     line-height: 1.4;
+  }
+
+  /* ─────────────────────────────── */
+  /* ANIMATED CARD — WITH IMAGE      */
+  /* ─────────────────────────────── */
+  .anim-card.with-image {
+    padding: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .anim-card-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .anim-card-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .anim-card.with-image .anim-card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .anim-card.with-image .anim-card-title {
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+  }
+
+  .anim-card.with-image .anim-card-sub {
+    font-size: 0.68rem;
   }
 
   /* Card color themes */
@@ -824,51 +866,52 @@ const AREA_DEFINITIONS = [
 
 const FAQ_ITEMS = [
   {
-    question: "What Inspired The Co-Founders To Start HostelLink?",
-    answer: "The Co-Founders Of HostelLink Were Inspired By The Challenges Faced By MUBAS Students In Finding Safe And Affordable Off-Campus Accommodation. Seeing The Need For A Reliable Platform That Connects Students With Verified Hostel Owners, They Decided To Create A Solution That Simplifies The Search Process And Ensures Secure Transactions For Both Parties."
+    question: "What Inspired The Co-Founders To Start PezaHostel?",
+    answer: "The Co-Founders Of PezaHostel Were Inspired By The Challenges Faced By MUBAS Students In Finding Safe And Affordable Off-Campus Accommodation. Seeing The Need For A Reliable Platform That Connects Students With Verified Hostel Owners, They Decided To Create A Solution That Simplifies The Search Process And Ensures Secure Transactions For Both Parties."
   },
   {
-    question: "How Do I Get Started With HostelLink?",
+    question: "How Do I Get Started With PezaHostel?",
     answer: "Getting Started Is Easy! Simply Create A Free Account As Either A Student Or Hostel Owner. Students Can Browse Verified Hostels, Compare Prices, And Contact Owners Directly. Hostel Owners Can List Their Properties, Manage Bookings, And Receive Payments Securely Through Our Platform."
   },
   {
-    question: "When Should I Contact HostelLink For Support?",
+    question: "When Should I Contact PezaHostel For Support?",
     answer: "You Can Contact HostelLink Anytime You Need Assistance With Your Account, Have Questions About A Booking, Encounter Technical Issues, Or Need Help With The Payment Process. Our Support Team Is Ready To Assist You Through Email Or Phone During Business Hours."
   },
   {
-    question: "How Does HostelLink Ensure Safety And Security?",
+    question: "How Does PezaHostel Ensure Safety And Security?",
     answer: "HostelLink Verifies All Hostel Owners Through Document Verification And Property Inspections. We Also Implement Secure Payment Processing Through Paychangu, Protect User Data With Encryption, And Have A Review System That Helps Students Make Informed Decisions Based On Previous Tenants' Experiences."
   },
   {
-    question: "Can HostelLink Help Me Find Accommodation Near MUBAS?",
-    answer: "Yes! HostelLink Specializes In Off-Campus Accommodation Near MUBAS. Our Platform Covers All Major Student Areas Including Chitawira, Nkolokosa, Chichiri, Mandala, Queens, And More. You Can Filter By Location, Price, Amenities, And Availability To Find The Perfect Place That Suits Your Needs And Budget."
+    question: "Can PezaHostel Help Me Find Accommodation Near MUBAS?",
+    answer: "Yes! PezaHostel Specializes In Off-Campus Accommodation Near MUBAS. Our Platform Covers All Major Student Areas Including Chitawira, Nkolokosa, Chichiri, Mandala, Queens, And More. You Can Filter By Location, Price, Amenities, And Availability To Find The Perfect Place That Suits Your Needs And Budget."
   }
 ];
 
 // ── HERO ANIMATED CARDS DATA ──
-// Column 1 goes UP, Column 2 goes DOWN
+// Column 1: TEXT-ONLY, IMAGE, TEXT-ONLY, IMAGE (alternating)
 const CARDS_COL1 = [
-  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
-  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
-  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
-  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+  { theme: "blue", icon: "fa fa-shield-alt", title: "Verified Hostels", sub: "All listings checked & approved", image: null },
+  { theme: "orange", icon: "fa fa-tag", title: "Best Prices", sub: "Affordable for every student", image: "https://images.unsplash.com/photo-1633356175129-3b0e5bcf4b38?w=400&auto=format&fit=crop" },
+  { theme: "green", icon: "fa fa-check-circle", title: "Trusted Owners", sub: "Identity-verified landlords", image: null },
+  { theme: "purple", icon: "fa fa-map-marker-alt", title: "Near MUBAS", sub: "Walking distance options", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&auto=format&fit=crop" },
   // Duplicated for seamless loop
-  { theme: "blue",   icon: "fa fa-shield-alt",      title: "Verified Hostels",    sub: "All listings checked & approved" },
-  { theme: "orange", icon: "fa fa-tag",              title: "Best Prices",         sub: "Affordable for every student" },
-  { theme: "green",  icon: "fa fa-check-circle",     title: "Trusted Owners",      sub: "Identity-verified landlords" },
-  { theme: "purple", icon: "fa fa-map-marker-alt",   title: "Near MUBAS",          sub: "Walking distance options" },
+  { theme: "blue", icon: "fa fa-shield-alt", title: "Verified Hostels", sub: "All listings checked & approved", image: null },
+  { theme: "orange", icon: "fa fa-tag", title: "Best Prices", sub: "Affordable for every student", image: "https://images.unsplash.com/photo-1633356175129-3b0e5bcf4b38?w=400&auto=format&fit=crop" },
+  { theme: "green", icon: "fa fa-check-circle", title: "Trusted Owners", sub: "Identity-verified landlords", image: null },
+  { theme: "purple", icon: "fa fa-map-marker-alt", title: "Near MUBAS", sub: "Walking distance options", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&auto=format&fit=crop" },
 ];
 
+// Column 2: IMAGE, TEXT-ONLY, IMAGE, TEXT-ONLY (opposite alternation)
 const CARDS_COL2 = [
-  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
-  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
-  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
-  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
+  { theme: "cyan", icon: "fa fa-bolt", title: "Quick Booking", sub: "Book your room in minutes", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&auto=format&fit=crop" },
+  { theme: "yellow", icon: "fa fa-headset", title: "24/7 Support", sub: "Help whenever you need it", image: null },
+  { theme: "red", icon: "fa fa-credit-card", title: "Mobile Payments", sub: "Airtel Money & TNM Mpamba", image: "https://images.unsplash.com/photo-1556740733-7ee81eba8656?w=400&auto=format&fit=crop" },
+  { theme: "pink", icon: "fa fa-star", title: "Top Rated", sub: "Reviews from real students", image: null },
   // Duplicated for seamless loop
-  { theme: "cyan",   icon: "fa fa-bolt",             title: "Quick Booking",       sub: "Book your room in minutes" },
-  { theme: "yellow", icon: "fa fa-headset",           title: "24/7 Support",        sub: "Help whenever you need it" },
-  { theme: "red",    icon: "fa fa-credit-card",       title: "Mobile Payments",     sub: "Airtel Money & TNM Mpamba" },
-  { theme: "pink",   icon: "fa fa-star",              title: "Top Rated",           sub: "Reviews from real students" },
+  { theme: "cyan", icon: "fa fa-bolt", title: "Quick Booking", sub: "Book your room in minutes", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&auto=format&fit=crop" },
+  { theme: "yellow", icon: "fa fa-headset", title: "24/7 Support", sub: "Help whenever you need it", image: null },
+  { theme: "red", icon: "fa fa-credit-card", title: "Mobile Payments", sub: "Airtel Money & TNM Mpamba", image: "https://images.unsplash.com/photo-1556740733-7ee81eba8656?w=400&auto=format&fit=crop" },
+  { theme: "pink", icon: "fa fa-star", title: "Top Rated", sub: "Reviews from real students", image: null },
 ];
 
 function Navbar({ isAuthenticated, user }) {
@@ -876,10 +919,9 @@ function Navbar({ isAuthenticated, user }) {
   return (
     <nav>
       <button onClick={() => navigate('/')} className="logo">
-        <div className="logo-icon"><img src="/logo2.png" alt="HostelLink" /></div>
+        <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="HostelLink" /></div>
         <div className="logo-text">
-      
-          <span>OFF-CAMPUS ACCOMMODATION</span>
+          <span>Find Your Perfect Hostel in Minutes</span>
         </div>
       </button>
 
@@ -891,7 +933,6 @@ function Navbar({ isAuthenticated, user }) {
         <div className="nav-center-dot" />
         <div className="nav-center-item">Owners</div>
         <div className="nav-center-dot" />
-       
       </div>
 
       <div className="nav-actions">
@@ -947,31 +988,37 @@ function Hero({ isAuthenticated }) {
           </div>
         </div>
 
-        {/* Right — Animated Cards (PayChangu style: two columns, up & down) */}
+        {/* Right — Animated Cards (alternating IMAGE + TEXT-ONLY) */}
         <div className="hero-right">
           <div className="hero-right-mask">
-            {/* Column 1: scrolls UP */}
+            {/* Column 1: TEXT, IMAGE, TEXT, IMAGE alternating */}
             <div className="cards-col cards-col-up">
               {CARDS_COL1.map((card, idx) => (
-                <div key={idx} className={`anim-card ${card.theme}`}>
-                  <div className="anim-card-icon">
-                    <i className={card.icon}></i>
+                <div key={idx} className={`anim-card ${card.theme} ${card.image ? 'with-image' : ''}`}>
+                  {card.image && <img src={card.image} alt={card.title} className="anim-card-image" />}
+                  <div className={card.image ? 'anim-card-content' : ''}>
+                    <div className="anim-card-icon">
+                      <i className={card.icon}></i>
+                    </div>
+                    <div className="anim-card-title">{card.title}</div>
+                    <div className="anim-card-sub">{card.sub}</div>
                   </div>
-                  <div className="anim-card-title">{card.title}</div>
-                  <div className="anim-card-sub">{card.sub}</div>
                 </div>
               ))}
             </div>
 
-            {/* Column 2: scrolls DOWN */}
+            {/* Column 2: IMAGE, TEXT, IMAGE, TEXT (opposite) */}
             <div className="cards-col cards-col-down">
               {CARDS_COL2.map((card, idx) => (
-                <div key={idx} className={`anim-card ${card.theme}`}>
-                  <div className="anim-card-icon">
-                    <i className={card.icon}></i>
+                <div key={idx} className={`anim-card ${card.theme} ${card.image ? 'with-image' : ''}`}>
+                  {card.image && <img src={card.image} alt={card.title} className="anim-card-image" />}
+                  <div className={card.image ? 'anim-card-content' : ''}>
+                    <div className="anim-card-icon">
+                      <i className={card.icon}></i>
+                    </div>
+                    <div className="anim-card-title">{card.title}</div>
+                    <div className="anim-card-sub">{card.sub}</div>
                   </div>
-                  <div className="anim-card-title">{card.title}</div>
-                  <div className="anim-card-sub">{card.sub}</div>
                 </div>
               ))}
             </div>
