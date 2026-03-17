@@ -98,7 +98,6 @@ const styles = `
   .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px; }
   .form-group input { width: 100%; padding: 0.75rem; border: 1.5px solid var(--gray-light); border-radius: 8px; font-size: 0.95rem; font-family: "Manrope", sans-serif; transition: border-color 0.2s; background: white; color: var(--text-dark); }
   .form-group input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,80,26,0.1); }
-  .form-group input.input-error { border-color: #dc2626; }
   .price-breakdown { background: var(--gray-bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--orange); }
   .price-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
   .price-row span { color: var(--text-mid); } .price-row strong { color: var(--text-dark); }
@@ -133,6 +132,20 @@ const getTomorrowStr = () => {
   const d = new Date();
   d.setDate(d.getDate() + 1);
   return d.toISOString().split('T')[0];
+};
+
+const parseDate = (str) => {
+  if (!str) return null;
+  const s = str.trim();
+  if (!s) return null;
+  if (s.includes('/')) {
+    const parts = s.split('/');
+    if (parts.length === 3) {
+      const [month, day, year] = parts;
+      return new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+    }
+  }
+  return new Date(s);
 };
 
 export default function HostelDetailsPage() {
@@ -200,41 +213,89 @@ export default function HostelDetailsPage() {
 
   const calculatePrice = () => {
     const dur = parseInt(bookingData.duration) || 1;
-    if (dur > 0) { const roomCost = currentHostel.price * dur; return { roomCost, platformFee: 2000, totalAmount: roomCost + 2000 }; }
+    if (dur > 0) {
+      const roomCost = currentHostel.price * dur;
+      return { roomCost, platformFee: 2000, totalAmount: roomCost + 2000 };
+    }
     return null;
   };
   const priceBreakdown = calculatePrice();
 
   const handleCreateBooking = async (e) => {
     e.preventDefault();
-    setBookingError(''); setBookingSuccess('');
-    if (!isAuthenticated) { setBookingError('Please login to book'); setTimeout(() => navigate('/login'), 500); return; }
-    const dateValue = bookingData.checkInDate?.trim();
-    if (!dateValue) { setBookingError('Please select a check-in date'); return; }
-    const selectedDate = new Date(dateValue);
-    if (isNaN(selectedDate.getTime())) { setBookingError('Please enter a valid date'); return; }
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
+    setBookingError('');
+    setBookingSuccess('');
+
+    if (!isAuthenticated) {
+      setBookingError('Please login to book');
+      setTimeout(() => navigate('/login'), 500);
+      return;
+    }
+
+    const rawDate = bookingData.checkInDate;
+    if (!rawDate || rawDate.trim() === '') {
+      setBookingError('Please select a check-in date');
+      return;
+    }
+
+    const selectedDate = parseDate(rawDate);
+    if (!selectedDate || isNaN(selectedDate.getTime())) {
+      setBookingError('Please enter a valid check-in date');
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+      setBookingError('Check-in date cannot be in the past');
+      return;
+    }
+
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day   = String(selectedDate.getDate()).padStart(2, '0');
+    const year  = selectedDate.getFullYear();
+    const normalizedDate = `${year}-${month}-${day}`;
+
     const dur = parseInt(bookingData.duration);
-    if (!dur || dur < 1) { setBookingError('Duration must be at least 1 month'); return; }
-    if (user?.role !== 'student') { setBookingError('Only students can make bookings'); return; }
+    if (!dur || dur < 1) {
+      setBookingError('Duration must be at least 1 month');
+      return;
+    }
+
+    if (user?.role !== 'student') {
+      setBookingError('Only students can make bookings');
+      return;
+    }
+
     setBookingLoading(true);
     try {
-      const response = await bookingService.createBooking({ hostelId: id, checkInDate: dateValue, duration: dur, studentId: user._id });
+      const response = await bookingService.createBooking({
+        hostelId: id,
+        checkInDate: normalizedDate,
+        duration: dur,
+        studentId: user._id,
+      });
+
       if (response?.booking) {
         setBooking(response.booking);
         setBookingSuccess('✓ Booking created! Proceeding to payment...');
         setShowBookingForm(false);
         setTimeout(() => setShowPaymentModal(true), 800);
-      } else { setBookingError('Failed to create booking. Please try again.'); }
+      } else {
+        setBookingError('Failed to create booking. Please try again.');
+      }
     } catch (error) {
       setBookingError(error.response?.data?.message || 'Failed to create booking. Please try again.');
-    } finally { setBookingLoading(false); }
+    } finally {
+      setBookingLoading(false);
+    }
   };
 
   const handlePaymentSuccess = () => {
-    setShowPaymentModal(false); setShowBookingForm(false);
-    setBookingData({ checkInDate: getTomorrowStr(), duration: 1 }); setBooking(null);
+    setShowPaymentModal(false);
+    setShowBookingForm(false);
+    setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
+    setBooking(null);
     toast.success('🎉 Payment successful! Booking confirmed.');
     setTimeout(() => navigate('/bookings'), 1500);
   };
@@ -303,12 +364,12 @@ export default function HostelDetailsPage() {
             </div>
             <div className="detail-grid">
               {[
-                { icon: 'fa-door-open', label: 'Total Rooms', value: currentHostel.totalRooms },
+                { icon: 'fa-door-open',  label: 'Total Rooms',    value: currentHostel.totalRooms },
                 { icon: 'fa-check-circle', label: 'Available Now', value: `${currentHostel.availableRooms} rooms`, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-                { icon: 'fa-home', label: 'Room Type', value: currentHostel.type },
-                { icon: 'fa-venus-mars', label: 'Gender', value: currentHostel.gender },
-                { icon: 'fa-phone', label: 'Contact Phone', value: currentHostel.contactPhone },
-                { icon: 'fa-eye', label: 'Total Views', value: currentHostel.viewCount || 0 },
+                { icon: 'fa-home',       label: 'Room Type',      value: currentHostel.type },
+                { icon: 'fa-venus-mars', label: 'Gender',         value: currentHostel.gender },
+                { icon: 'fa-phone',      label: 'Contact Phone',  value: currentHostel.contactPhone },
+                { icon: 'fa-eye',        label: 'Total Views',    value: currentHostel.viewCount || 0 },
               ].map((item, i) => (
                 <div key={i} className="dg-item">
                   <div className="dg-icon" style={item.bg ? { background: item.bg } : {}}>
@@ -345,11 +406,16 @@ export default function HostelDetailsPage() {
         <div className="sidebar">
           <div className="book-card">
             <div className="book-price-display">
-              <div className="book-price-big">MK {currentHostel.price.toLocaleString()}<span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#65676b' }}>/mo</span></div>
+              <div className="book-price-big">
+                MK {currentHostel.price.toLocaleString()}
+                <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#65676b' }}>/mo</span>
+              </div>
               <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
             </div>
             {!isAuthenticated && (
-              <button className="book-btn" onClick={() => navigate('/login')}><i className="fa fa-sign-in-alt" /> Login to Book</button>
+              <button className="book-btn" onClick={() => navigate('/login')}>
+                <i className="fa fa-sign-in-alt" /> Login to Book
+              </button>
             )}
             {isAuthenticated && user?.role === 'owner' && (
               <div style={{ background: '#f4f6fa', borderRadius: 8, padding: '0.75rem', textAlign: 'center', fontSize: '0.85rem', color: '#65676b', fontWeight: 600 }}>
@@ -357,7 +423,11 @@ export default function HostelDetailsPage() {
               </div>
             )}
             {isAuthenticated && user?.role === 'student' && (
-              <button className="book-btn" onClick={() => { setShowBookingForm(!showBookingForm); setBookingError(''); setBookingSuccess(''); }} disabled={currentHostel.availableRooms === 0}>
+              <button
+                className="book-btn"
+                onClick={() => { setShowBookingForm(!showBookingForm); setBookingError(''); setBookingSuccess(''); }}
+                disabled={currentHostel.availableRooms === 0}
+              >
                 <i className="fa fa-calendar-check" />
                 {currentHostel.availableRooms === 0 ? ' No Rooms Available' : showBookingForm ? ' Hide Form' : ' Book Now'}
               </button>
@@ -366,30 +436,68 @@ export default function HostelDetailsPage() {
             <div className="book-info-row"><span>Room Type</span><strong>{currentHostel.type}</strong></div>
             <div className="book-info-row"><span>Gender</span><strong>{currentHostel.gender}</strong></div>
             <div className="book-info-row"><span>Available</span><strong>{currentHostel.availableRooms} of {currentHostel.totalRooms}</strong></div>
-            <div className="book-info-row"><span>Status</span><strong style={{ color: currentHostel.verified ? '#10b981' : '#6b7280' }}>{currentHostel.verified ? '✓ Verified' : 'Unverified'}</strong></div>
+            <div className="book-info-row">
+              <span>Status</span>
+              <strong style={{ color: currentHostel.verified ? '#10b981' : '#6b7280' }}>
+                {currentHostel.verified ? '✓ Verified' : 'Unverified'}
+              </strong>
+            </div>
           </div>
 
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
             <h3>📅 Book This Hostel</h3>
-            {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
-            {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
+            {bookingError && (
+              <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>
+            )}
+            {bookingSuccess && (
+              <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>
+            )}
             <div className="form-group">
               <label>Check-in Date *</label>
-              <input type="date" value={bookingData.checkInDate} onChange={e => { setBookingData({ ...bookingData, checkInDate: e.target.value }); setBookingError(''); }} min={getTodayStr()} />
+              <input
+                type="date"
+                value={bookingData.checkInDate}
+                min={getTodayStr()}
+                onChange={e => {
+                  setBookingData(prev => ({ ...prev, checkInDate: e.target.value }));
+                  setBookingError('');
+                }}
+              />
             </div>
             <div className="form-group">
               <label>Duration (months) *</label>
-              <input type="number" min="1" max="12" value={bookingData.duration} onChange={e => { setBookingData({ ...bookingData, duration: parseInt(e.target.value) || 1 }); setBookingError(''); }} />
+              <input
+                type="number"
+                min="1"
+                max="12"
+                value={bookingData.duration}
+                onChange={e => {
+                  setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
+                  setBookingError('');
+                }}
+              />
             </div>
             {priceBreakdown && (
               <div className="price-breakdown">
-                <div className="price-row"><span>Room Rent ({bookingData.duration}m):</span><strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong></div>
-                <div className="price-row"><span>Platform Fee:</span><strong>MK 2,000</strong></div>
-                <div className="price-row total"><span>Total to Pay:</span><strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong></div>
+                <div className="price-row">
+                  <span>Room Rent ({bookingData.duration}m):</span>
+                  <strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong>
+                </div>
+                <div className="price-row">
+                  <span>Platform Fee:</span>
+                  <strong>MK 2,000</strong>
+                </div>
+                <div className="price-row total">
+                  <span>Total to Pay:</span>
+                  <strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong>
+                </div>
               </div>
             )}
             <button type="submit" className="book-btn" disabled={bookingLoading} style={{ marginTop: '0.5rem' }}>
-              {bookingLoading ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</> : <><i className="fa fa-arrow-right" /> Continue to Payment</>}
+              {bookingLoading
+                ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
+                : <><i className="fa fa-arrow-right" /> Continue to Payment</>
+              }
             </button>
           </form>
 
@@ -398,22 +506,32 @@ export default function HostelDetailsPage() {
               booking={booking}
               hostel={currentHostel}
               isOpen={showPaymentModal}
-              onClose={() => { setShowPaymentModal(false); setShowBookingForm(false); setBookingData({ checkInDate: getTomorrowStr(), duration: 1 }); }}
+              onClose={() => {
+                setShowPaymentModal(false);
+                setShowBookingForm(false);
+                setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
+              }}
               onSuccess={handlePaymentSuccess}
             />
           )}
 
           <div className="owner-card">
             <div className="owner-top">
-              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}</div>
+              <div className="owner-avatar">
+                {currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}
+              </div>
               <div>
                 <div className="owner-info-role">Listed by</div>
-                <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
+                <div className="owner-info-name">
+                  {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
+                </div>
                 <div className="owner-online"><div className="owner-dot" /> Active on HostelLink</div>
               </div>
             </div>
             <div className="owner-btns">
-              <button className="owner-btn owner-btn-blue" onClick={handleMessage}><i className="fa fa-comment-dots" /> Message Owner</button>
+              <button className="owner-btn owner-btn-blue" onClick={handleMessage}>
+                <i className="fa fa-comment-dots" /> Message Owner
+              </button>
               <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
                 <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
               </a>
@@ -425,7 +543,10 @@ export default function HostelDetailsPage() {
             </div>
           </div>
 
-          <button onClick={() => toast.info('Thank you for helping keep HostelLink safe.')} style={{ width: '100%', padding: '0.65rem', background: 'transparent', border: '1px solid var(--gray-light)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', fontFamily: 'Manrope, sans-serif' }}>
+          <button
+            onClick={() => toast.info('Thank you for helping keep HostelLink safe.')}
+            style={{ width: '100%', padding: '0.65rem', background: 'transparent', border: '1px solid var(--gray-light)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', fontFamily: 'Manrope, sans-serif' }}
+          >
             <i className="fa fa-flag" /> Report this listing
           </button>
         </div>
