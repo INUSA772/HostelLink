@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   FaPlus, FaHome, FaCalendarCheck, FaEnvelope,
@@ -49,8 +49,13 @@ const styles = `
   }
   .ld-topbar-left { display: flex; align-items: center; gap: 1rem; }
   .ld-logo { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
-  .ld-logo-icon { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); }
-  .ld-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+  /* ── LOGO IMAGE ── */
+  .ld-logo-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    overflow: hidden; border: 2px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+  .ld-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .ld-logo-name { font-size: 1.15rem; font-weight: 800; color: var(--white); letter-spacing: -0.3px; }
   .ld-logo-badge {
     font-size: 0.6rem; font-weight: 700;
@@ -116,7 +121,7 @@ const styles = `
     font-size: 0.9rem; font-weight: 600; cursor: pointer;
     transition: var(--transition); border: none; background: none;
     width: 100%; text-align: left; font-family: 'Manrope', sans-serif;
-    border-left: 3px solid transparent;
+    border-left: 3px solid transparent; text-decoration: none;
   }
   .ld-drawer-link:hover { background: rgba(255,255,255,0.06); color: white; }
   .ld-drawer-link.active { background: rgba(232,80,26,0.12); color: white; border-left-color: var(--orange); }
@@ -265,7 +270,6 @@ const styles = `
   .ld-search-box input { border: none; outline: none; font-family: 'Manrope', sans-serif; font-size: 0.875rem; color: var(--text-dark); width: 100%; background: transparent; }
   .ld-search-box svg { color: var(--text-light); flex-shrink: 0; }
 
-  /* CARDS GRID */
   .ld-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; padding: 1.5rem; }
 
   .ld-hcard { border: 1.5px solid var(--gray-light); border-radius: 14px; overflow: hidden; transition: var(--transition); background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -307,7 +311,6 @@ const styles = `
   .ld-foot-btn.danger { border-color: #fecaca; color: var(--danger); }
   .ld-foot-btn.danger:hover { border-color: var(--danger); background: var(--danger); color: white; }
 
-  /* TABLE */
   .ld-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .ld-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   .ld-table th { background: var(--gray-bg); padding: 0.85rem 1.1rem; text-align: left; font-size: 0.72rem; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 2px solid var(--gray-light); white-space: nowrap; }
@@ -323,13 +326,11 @@ const styles = `
   .ld-icon-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
   .ld-icon-btn.del:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
-  /* EMPTY */
   .ld-empty { text-align: center; padding: 4rem 2rem; }
   .ld-empty-ico { width: 80px; height: 80px; background: var(--orange-pale); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--orange); margin: 0 auto 1.25rem; }
   .ld-empty h3 { font-size: 1.25rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
   .ld-empty p { color: var(--text-mid); font-size: 0.88rem; margin-bottom: 1.5rem; max-width: 320px; margin-left: auto; margin-right: auto; }
 
-  /* DELETE MODAL */
   .ld-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px); }
   .ld-modal { background: white; border-radius: 18px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.25); animation: modal-in 0.2s ease; }
   @keyframes modal-in { from { opacity:0; transform:scale(0.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
@@ -339,13 +340,11 @@ const styles = `
   .ld-modal-actions { display: flex; gap: 0.75rem; }
   .ld-modal-actions .ld-btn { flex: 1; justify-content: center; }
 
-  /* REFRESH BTN */
   .ld-refresh-btn { display: flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--gray-light); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.8rem; font-weight: 600; color: var(--text-mid); cursor: pointer; transition: var(--transition); font-family: 'Manrope', sans-serif; }
   .ld-refresh-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
   .ld-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .spin { animation: spin 0.8s linear infinite; }
 
-  /* VIEW TOGGLE */
   .ld-view-toggle { display: flex; background: var(--gray-bg); border-radius: 8px; padding: 3px; border: 1px solid var(--gray-light); }
   .ld-view-btn { padding: 0.35rem 0.75rem; border-radius: 6px; border: none; background: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text-mid); transition: var(--transition); font-family: 'Manrope', sans-serif; }
   .ld-view-btn.active { background: white; color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
@@ -385,7 +384,6 @@ const styles = `
   }
 `;
 
-// ── DELETE MODAL ──────────────────────────────────
 function DeleteModal({ hostel, onConfirm, onCancel, loading }) {
   return (
     <div className="ld-modal-backdrop" onClick={e => { if (e.target === e.currentTarget && !loading) onCancel(); }}>
@@ -404,7 +402,6 @@ function DeleteModal({ hostel, onConfirm, onCancel, loading }) {
   );
 }
 
-// ── STAT SKELETON ─────────────────────────────────
 function StatSkeleton() {
   return (
     <div className="ld-stat" style={{ pointerEvents: 'none' }}>
@@ -417,7 +414,6 @@ function StatSkeleton() {
   );
 }
 
-// ── HOSTEL CARD ───────────────────────────────────
 function HostelCard({ hostel, onView, onEdit, onDelete }) {
   const img = hostel.images?.[0]?.url || hostel.images?.[0] || null;
   return (
@@ -438,9 +434,7 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
       </div>
       <div className="ld-hcard-body">
         <div className="ld-hcard-name">{hostel.name}</div>
-        <div className="ld-hcard-addr">
-          <FaMapMarkerAlt /> {hostel.address}
-        </div>
+        <div className="ld-hcard-addr"><FaMapMarkerAlt /> {hostel.address}</div>
         <div className="ld-hcard-stats">
           <div className="ld-hcard-stat">
             <div className="ld-hcard-stat-val">{hostel.availableRooms ?? 0}/{hostel.totalRooms ?? 0}</div>
@@ -462,9 +456,7 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
         </div>
       </div>
       <div className="ld-hcard-foot">
-        <div className="ld-hcard-price">
-          MK {hostel.price?.toLocaleString() ?? '—'}<span> /mo</span>
-        </div>
+        <div className="ld-hcard-price">MK {hostel.price?.toLocaleString() ?? '—'}<span> /mo</span></div>
         <div className="ld-hcard-foot-actions">
           <button className="ld-foot-btn" onClick={onEdit}><FaEdit /> Edit</button>
           <button className="ld-foot-btn danger" onClick={onDelete}><FaTrash /> Delete</button>
@@ -474,7 +466,6 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
   );
 }
 
-// ── MAIN COMPONENT ────────────────────────────────
 const LandlordDashboard = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, token, loading: authLoading } = useAuth();
@@ -490,7 +481,6 @@ const LandlordDashboard = () => {
   const [deleting,       setDeleting]       = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
-  // ── FETCH HOSTELS ──────────────────────────────
   const fetchHostels = useCallback(async (silent = false) => {
     if (!token) return;
     if (!silent) setLoadingHostels(true);
@@ -498,10 +488,7 @@ const LandlordDashboard = () => {
     setError(null);
     try {
       const res = await fetch(`${API_URL}/hostels/my-hostels`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -511,7 +498,6 @@ const LandlordDashboard = () => {
       const list = data.hostels || data.data || data || [];
       setHostels(Array.isArray(list) ? list : []);
     } catch (err) {
-      console.error('fetchHostels error:', err);
       setError(err.message);
       if (silent) toast.error('Refresh failed: ' + err.message);
     } finally {
@@ -520,7 +506,6 @@ const LandlordDashboard = () => {
     }
   }, [token]);
 
-  // ── FETCH UNREAD MESSAGES ──────────────────────
   const fetchUnread = useCallback(async () => {
     if (!token) return;
     try {
@@ -534,20 +519,14 @@ const LandlordDashboard = () => {
     } catch (_) {}
   }, [token]);
 
-  // ✅ Wait for auth to load before role check
   useEffect(() => {
     if (authLoading) return;
     if (!isAuthenticated) { navigate('/login'); return; }
-    if (user?.role !== 'owner') {
-      toast.error('Access denied. Owner account required.');
-      navigate('/');
-      return;
-    }
+    if (user?.role !== 'owner') { toast.error('Access denied. Owner account required.'); navigate('/'); return; }
     fetchHostels();
     fetchUnread();
   }, [authLoading, isAuthenticated, user?.role]);
 
-  // ── DELETE ─────────────────────────────────────
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
@@ -560,8 +539,6 @@ const LandlordDashboard = () => {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.message || 'Delete failed');
       }
-      // ✅ Remove immediately from UI — no refresh needed
-      // Also won't come back on refresh because backend filters isActive: true
       setHostels(prev => prev.filter(h => h._id !== deleteTarget._id));
       toast.success(`"${deleteTarget.name}" deleted successfully`);
       setDeleteTarget(null);
@@ -578,9 +555,9 @@ const LandlordDashboard = () => {
   );
 
   const stats = [
-    { label: 'Active Listings', value: hostels.length,                                                             icon: <FaBuilding />,      color: 'ico-orange' },
-    { label: 'Total Bookings',  value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                         icon: <FaCalendarCheck />, color: 'ico-navy'   },
-    { label: 'Total Views',     value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0),         icon: <FaEye />,           color: 'ico-green'  },
+    { label: 'Active Listings', value: hostels.length,                                                       icon: <FaBuilding />,      color: 'ico-orange' },
+    { label: 'Total Bookings',  value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                   icon: <FaCalendarCheck />, color: 'ico-navy'   },
+    { label: 'Total Views',     value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0),   icon: <FaEye />,           color: 'ico-green'  },
     {
       label: 'Avg Rating',
       value: hostels.length
@@ -591,26 +568,25 @@ const LandlordDashboard = () => {
   ];
 
   const quickActions = [
-    { icon: <FaPlus />,      title: 'List Hostel', sub: 'Add new property',   action: () => navigate('/hostels/create') },
-    { icon: <FaEnvelope />,  title: 'Messages',    sub: 'Chat with students', action: () => navigate('/messages'),  badge: unreadMessages > 0 },
-    { icon: <FaChartLine />, title: 'Analytics',   sub: 'Track performance',  action: () => navigate('/analytics') },
-    { icon: <FaUser />,      title: 'My Profile',  sub: 'Account settings',   action: () => navigate('/profile') },
+    { icon: <FaPlus />,      title: 'List Hostel',  sub: 'Add new property',   action: () => navigate('/hostels/create') },
+    { icon: <FaEnvelope />,  title: 'Messages',     sub: 'Chat with students', action: () => navigate('/messages'),  badge: unreadMessages > 0 },
+    { icon: <FaUser />,      title: 'My Profile',   sub: 'Account settings',   action: () => navigate('/profile')   },
+    { icon: <FaHome />,      title: 'Browse',       sub: 'See all hostels',    action: () => navigate('/hostels')   },
   ];
 
+  // ── DRAWER NAV LINKS — all properly linked ──
   const navLinks = [
-    { icon: <FaHome />,          label: 'Dashboard',     path: '/dashboard' },
-    { icon: <FaBuilding />,      label: 'My Hostels',    path: '/my-hostels' },
-    { icon: <FaCalendarCheck />, label: 'Bookings',      path: '/bookings' },
-    { icon: <FaEnvelope />,      label: 'Messages',      path: '/messages' },
-    { icon: <FaBell />,          label: 'Notifications', path: '/notifications' },
-    { icon: <FaChartLine />,     label: 'Analytics',     path: '/analytics' },
-    { icon: <FaUser />,          label: 'Profile',       path: '/profile' },
-    { icon: <FaCog />,           label: 'Settings',      path: '/settings' },
+    { icon: <FaHome />,          label: 'Dashboard',      path: '/landlord-dashboard' },
+    { icon: <FaBuilding />,      label: 'My Hostels',     path: '/my-hostels'         },
+    { icon: <FaCalendarCheck />, label: 'Bookings',       path: '/bookings'           },
+    { icon: <FaEnvelope />,      label: 'Messages',       path: '/messages'           },
+    { icon: <FaBell />,          label: 'Notifications',  path: '/notifications'      },
+    { icon: <FaUser />,          label: 'Profile',        path: '/profile'            },
+    { icon: <FaCog />,           label: 'Settings',       path: '/profile'            },
   ];
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  // ── AUTH LOADING SCREEN ────────────────────────
   if (authLoading) {
     return (
       <>
@@ -629,7 +605,6 @@ const LandlordDashboard = () => {
     <>
       <style>{styles}</style>
 
-      {/* DELETE MODAL */}
       {deleteTarget && (
         <DeleteModal
           hostel={deleteTarget}
@@ -639,16 +614,16 @@ const LandlordDashboard = () => {
         />
       )}
 
-      {/* OVERLAY */}
       <div className={`ld-overlay${drawerOpen ? ' open' : ''}`} onClick={() => setDrawerOpen(false)} />
 
       {/* DRAWER */}
       <div className={`ld-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="ld-drawer-top">
-          <a href="/" className="ld-logo">
+          {/* ── DRAWER LOGO using PezaHostelLogo.png ── */}
+          <Link to="/" className="ld-logo">
             <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
             <span className="ld-logo-name">PezaHostel</span>
-          </a>
+          </Link>
           <button className="ld-drawer-close" onClick={() => setDrawerOpen(false)}><FaTimes /></button>
         </div>
         <div className="ld-drawer-user">
@@ -662,14 +637,19 @@ const LandlordDashboard = () => {
         <nav className="ld-drawer-nav">
           <div className="ld-drawer-section">Main Menu</div>
           {navLinks.map((item, i) => (
-            <button
+            <Link
               key={i}
+              to={item.path}
               className={`ld-drawer-link${window.location.pathname === item.path ? ' active' : ''}`}
-              onClick={() => { navigate(item.path); setDrawerOpen(false); }}
+              onClick={() => setDrawerOpen(false)}
             >
               {item.icon} {item.label}
-            </button>
+            </Link>
           ))}
+          {/* About & Contact links */}
+          <div className="ld-drawer-section">Info</div>
+          <Link to="/about"   className="ld-drawer-link" onClick={() => setDrawerOpen(false)}><FaHome /> About Us</Link>
+          <Link to="/contact" className="ld-drawer-link" onClick={() => setDrawerOpen(false)}><FaEnvelope /> Contact</Link>
         </nav>
         <div className="ld-drawer-foot">
           <button className="ld-drawer-logout" onClick={handleLogout}>
@@ -682,14 +662,15 @@ const LandlordDashboard = () => {
       <nav className="ld-topbar">
         <div className="ld-topbar-left">
           <button className="ld-hamburger" onClick={() => setDrawerOpen(true)}><FaBars /></button>
-          <a href="/" className="ld-logo">
+          {/* ── TOPBAR LOGO using PezaHostelLogo.png ── */}
+          <Link to="/" className="ld-logo">
             <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
             <span className="ld-logo-name">PezaHostel</span>
             <span className="ld-logo-badge">Owner</span>
-          </a>
+          </Link>
         </div>
         <div className="ld-topbar-right">
-          <a href="/profile" className="ld-topbar-btn"><FaUser /> {user?.firstName}</a>
+          <Link to="/profile" className="ld-topbar-btn"><FaUser /> {user?.firstName}</Link>
           <button className="ld-topbar-btn danger" onClick={handleLogout}><FaSignOutAlt /> Sign Out</button>
         </div>
       </nav>
@@ -715,8 +696,6 @@ const LandlordDashboard = () => {
         </div>
 
         <div className="ld-main">
-
-          {/* ERROR */}
           {error && (
             <div className="ld-error-box">
               <FaExclamationTriangle size={18} style={{ flexShrink: 0 }} />
@@ -758,7 +737,7 @@ const LandlordDashboard = () => {
             ))}
           </div>
 
-          {/* MY HOSTELS HEADER */}
+          {/* MY HOSTELS */}
           <div className="ld-sec-hd">
             <h2>
               <FaHome /> My Hostels
@@ -783,7 +762,6 @@ const LandlordDashboard = () => {
             </div>
           </div>
 
-          {/* HOSTEL CONTENT */}
           {loadingHostels ? (
             <div className="ld-loading">
               <FaSpinner className="ld-spinner" />
@@ -841,14 +819,9 @@ const LandlordDashboard = () => {
                   <table className="ld-table">
                     <thead>
                       <tr>
-                        <th>Hostel Name</th>
-                        <th>Location</th>
-                        <th>Rooms</th>
-                        <th>Price/Month</th>
-                        <th>Views</th>
-                        <th>Rating</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Hostel Name</th><th>Location</th><th>Rooms</th>
+                        <th>Price/Month</th><th>Views</th><th>Rating</th>
+                        <th>Status</th><th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -867,9 +840,7 @@ const LandlordDashboard = () => {
                               <strong>{hostel.availableRooms ?? '—'}</strong>/{hostel.totalRooms ?? '—'}
                             </span>
                           </td>
-                          <td style={{ fontWeight:800, color:'var(--orange)' }}>
-                            MK {hostel.price?.toLocaleString() ?? '—'}
-                          </td>
+                          <td style={{ fontWeight:800, color:'var(--orange)' }}>MK {hostel.price?.toLocaleString() ?? '—'}</td>
                           <td>{hostel.totalViews ?? hostel.viewCount ?? 0}</td>
                           <td>
                             <span style={{ display:'flex', alignItems:'center', gap:'0.3rem' }}>

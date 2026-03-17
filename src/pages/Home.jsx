@@ -921,7 +921,7 @@ function Navbar({ isAuthenticated, user }) {
       <button onClick={() => navigate('/')} className="logo">
         <div className="logo-icon"><img src="/PezaHostelLogo.png" alt="HostelLink" /></div>
         <div className="logo-text">
-          <span>Find Your Perfect Hostel in Minutes</span>
+          <span>Find Your Perfect Hostel In Minutes</span>
         </div>
       </button>
 

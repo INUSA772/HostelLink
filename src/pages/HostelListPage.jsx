@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import HostelList from '../components/hostel/HostelList';
 import HostelFilters from '../components/hostel/HostelFilters';
@@ -27,7 +27,6 @@ const styles = `
     --primary-dark: #c43f12;
   }
 
-  /* Lock entire page — zero scroll */
   html, body, #root {
     height: 100%;
     width: 100%;
@@ -35,7 +34,7 @@ const styles = `
     font-family: 'Manrope', sans-serif;
   }
 
-  /* TOPBAR - EXACT same as Register/Login Page */
+  /* TOPBAR */
   .rp-bar {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -52,10 +51,12 @@ const styles = `
   .rp-bar-logo {
     display: flex; align-items: center; gap: 9px; text-decoration: none;
   }
+  /* ── REAL LOGO IMAGE ── */
   .rp-bar-logo-img {
-    width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: 10px; overflow: hidden;
+    flex-shrink: 0; border: 2px solid rgba(255,255,255,0.15);
   }
-  .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; }
+  .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .rp-bar-brand strong {
     display: block; color: #fff; font-size: 0.9rem; font-weight: 800;
     letter-spacing: 1px; font-family: 'Manrope', sans-serif;
@@ -65,6 +66,14 @@ const styles = `
     letter-spacing: 0.4px; font-family: 'Manrope', sans-serif;
   }
   .rp-bar-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .rp-bar-link {
+    color: rgba(255,255,255,0.75); font-size: 0.82rem; font-weight: 600;
+    font-family: 'Manrope', sans-serif; background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.15); padding: 0.36rem 0.85rem;
+    border-radius: 6px; cursor: pointer; text-decoration: none;
+    transition: all 0.18s; display: flex; align-items: center; gap: 5px;
+  }
+  .rp-bar-link:hover { border-color: rgba(255,255,255,0.45); color: #fff; }
   .rp-bar-login {
     color: rgba(255,255,255,0.78); font-size: 0.82rem; font-weight: 600;
     font-family: 'Manrope', sans-serif; background: transparent;
@@ -82,7 +91,7 @@ const styles = `
   }
   .rp-bar-signup:hover { opacity: 0.88; }
 
-  /* MAIN CONTENT - Scrollable area below topbar */
+  /* MAIN CONTENT */
   .rp-main-content {
     position: fixed;
     top: 60px;
@@ -94,13 +103,11 @@ const styles = `
     padding: 2rem 1rem 4rem;
   }
 
-  /* Container */
   .rp-container {
     max-width: 1400px;
     margin: 0 auto;
   }
 
-  /* Header */
   .rp-header {
     margin-bottom: 2rem;
   }
@@ -119,7 +126,6 @@ const styles = `
     font-size: 1.1rem;
   }
 
-  /* Results Count Card */
   .rp-results-card {
     padding: 1rem 1.5rem;
     background: var(--white);
@@ -144,7 +150,6 @@ const styles = `
     font-weight: 500;
   }
 
-  /* Loading State */
   .rp-loading {
     display: flex;
     flex-direction: column;
@@ -169,7 +174,6 @@ const styles = `
     font-size: 0.95rem;
   }
 
-  /* Empty State */
   .rp-empty {
     text-align: center;
     padding: 4rem 2rem;
@@ -216,6 +220,7 @@ const styles = `
   @media (max-width: 768px) {
     .rp-bar { padding: 0 1rem; }
     .rp-bar-brand { display: none; }
+    .rp-bar-link { display: none; }
     .rp-header h1 { font-size: 2rem; }
     .rp-results-card { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
   }
@@ -233,19 +238,12 @@ const HostelListPage = () => {
     changePage
   } = useHostel();
 
-  // Fetch hostels on mount and when filters change
   useEffect(() => {
     fetchHostels();
   }, [filters.search, filters.type, filters.gender, filters.minPrice, filters.maxPrice, filters.amenities, filters.sort, filters.page]);
 
-  const handleFilterChange = (newFilters) => {
-    updateFilters(newFilters);
-  };
-
-  const handleReset = () => {
-    resetFilters();
-  };
-
+  const handleFilterChange = (newFilters) => { updateFilters(newFilters); };
+  const handleReset = () => { resetFilters(); };
   const handlePageChange = (page) => {
     changePage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -256,38 +254,39 @@ const HostelListPage = () => {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* TOPBAR - EXACT same as Register/Login Page */}
+      {/* TOPBAR — real logo + linked About & Contact */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/logo2.png" alt="HostelLink" /></div>
+          <div className="rp-bar-logo-img">
+            <img src="/PezaHostelLogo.png" alt="PezaHostel" />
+          </div>
           <div className="rp-bar-brand">
-            <strong>HOSTELLINK</strong>
-            <span>OFF-CAMPUS ACCOMODATION</span>
+            <strong>PEZAHOSTEL</strong>
+            <span>Find Your Perfect Hostel In Minutes</span>
           </div>
         </Link>
         <div className="rp-bar-actions">
-          <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
+          <Link to="/about"   className="rp-bar-link"><i className="fa fa-info-circle"></i> About</Link>
+          <Link to="/contact" className="rp-bar-link"><i className="fa fa-phone"></i> Contact</Link>
+          <Link to="/login"   className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
           <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
         </div>
       </nav>
 
-      {/* MAIN CONTENT - Scrollable area */}
+      {/* MAIN CONTENT */}
       <div className="rp-main-content">
         <div className="rp-container">
-          {/* Header */}
           <div className="rp-header">
             <h1>Find Your Perfect Hostel</h1>
             <p>Browse {pagination.total} available hostels near MUBAS</p>
           </div>
 
-          {/* Filters */}
           <HostelFilters
             filters={filters}
             onFilterChange={handleFilterChange}
             onReset={handleReset}
           />
 
-          {/* Results Count */}
           {!loading && hostels.length > 0 && (
             <div className="rp-results-card">
               <p className="rp-results-count">
@@ -301,7 +300,6 @@ const HostelListPage = () => {
             </div>
           )}
 
-          {/* Loading State */}
           {loading && (
             <div className="rp-loading">
               <div className="rp-spinner"></div>
@@ -309,7 +307,6 @@ const HostelListPage = () => {
             </div>
           )}
 
-          {/* Empty State */}
           {!loading && hostels.length === 0 && (
             <div className="rp-empty">
               <div className="rp-empty-icon">🏠</div>
@@ -322,12 +319,10 @@ const HostelListPage = () => {
             </div>
           )}
 
-          {/* Hostel List */}
           {!loading && hostels.length > 0 && (
             <HostelList hostels={hostels} loading={loading} />
           )}
 
-          {/* Pagination */}
           {!loading && hostels.length > 0 && pagination.totalPages > 1 && (
             <Pagination
               currentPage={pagination.page}

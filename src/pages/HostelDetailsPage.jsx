@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -16,16 +16,49 @@ const styles = `
     --radius: 12px;
   }
   html, body { font-family: "Manrope", sans-serif; background: var(--gray-bg); color: var(--text-dark); }
-  .hd-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 999; background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1); height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
-  .hd-bar-back { display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; color: var(--navy); font-weight: 700; font-size: 0.95rem; font-family: "Manrope", sans-serif; padding: 0.4rem 0.8rem; border-radius: 6px; transition: background 0.2s; }
+
+  /* TOPBAR — real logo */
+  .hd-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    height: 56px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 1.5rem;
+  }
+  .hd-bar-back {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: none; border: none; cursor: pointer; color: var(--navy);
+    font-weight: 700; font-size: 0.95rem; font-family: "Manrope", sans-serif;
+    padding: 0.4rem 0.8rem; border-radius: 6px; transition: background 0.2s;
+  }
   .hd-bar-back:hover { background: var(--gray-light); }
-  .hd-bar-logo { font-size: 1.1rem; font-weight: 800; color: var(--orange); text-decoration: none; }
-  .hd-bar-right { display: flex; gap: 0.75rem; }
-  .hd-bar-btn { padding: 0.4rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; font-family: "Manrope", sans-serif; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+
+  /* Real logo in center */
+  .hd-bar-logo {
+    display: flex; align-items: center; gap: 8px; text-decoration: none;
+  }
+  .hd-bar-logo-img {
+    width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
+    border: 2px solid rgba(232,80,26,0.2); flex-shrink: 0;
+  }
+  .hd-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hd-bar-logo-text {
+    font-size: 1rem; font-weight: 800; color: var(--orange); letter-spacing: -0.3px;
+  }
+
+  .hd-bar-right { display: flex; gap: 0.75rem; align-items: center; }
+  .hd-bar-btn {
+    padding: 0.4rem 1rem; border-radius: 6px; border: none; cursor: pointer;
+    font-weight: 600; font-size: 0.85rem; font-family: "Manrope", sans-serif;
+    transition: all 0.2s; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 0.4rem;
+  }
   .hd-bar-btn-solid { background: var(--orange); color: var(--white); }
   .hd-bar-btn-solid:hover { opacity: 0.9; }
   .hd-bar-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
   .hd-bar-btn-ghost:hover { background: #dddfe1; }
+  .hd-bar-btn-nav { background: transparent; border: 1px solid var(--gray-light) !important; color: var(--text-dark); }
+  .hd-bar-btn-nav:hover { background: var(--gray-light); }
+
   .hd-page { padding-top: 72px; max-width: 1180px; margin: 0 auto; padding-bottom: 4rem; display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; padding-left: 1rem; padding-right: 1rem; }
   .carousel-wrap { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .carousel-stage { position: relative; width: 100%; background: #111; aspect-ratio: 16/10; overflow: hidden; }
@@ -116,6 +149,7 @@ const styles = `
     .detail-grid { grid-template-columns: 1fr; } .amenities-grid { grid-template-columns: 1fr; }
     .thumb-row { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
     .map-embed { height: 220px; }
+    .hd-bar-btn-nav { display: none; }
   }
 `;
 
@@ -171,7 +205,10 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+        <Link to="/" className="hd-bar-logo">
+          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+          <span className="hd-bar-logo-text">PezaHostel</span>
+        </Link>
         <div />
       </nav>
       <div className="hd-center"><div className="hd-spinner" /><p style={{ color: '#65676b' }}>Loading...</p></div>
@@ -183,7 +220,10 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+        <Link to="/" className="hd-bar-logo">
+          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+          <span className="hd-bar-logo-text">PezaHostel</span>
+        </Link>
         <div />
       </nav>
       <div className="hd-center">
@@ -233,23 +273,14 @@ export default function HostelDetailsPage() {
     }
 
     const rawDate = bookingData.checkInDate;
-    if (!rawDate || rawDate.trim() === '') {
-      setBookingError('Please select a check-in date');
-      return;
-    }
+    if (!rawDate || rawDate.trim() === '') { setBookingError('Please select a check-in date'); return; }
 
     const selectedDate = parseDate(rawDate);
-    if (!selectedDate || isNaN(selectedDate.getTime())) {
-      setBookingError('Please enter a valid check-in date');
-      return;
-    }
+    if (!selectedDate || isNaN(selectedDate.getTime())) { setBookingError('Please enter a valid check-in date'); return; }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) {
-      setBookingError('Check-in date cannot be in the past');
-      return;
-    }
+    if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
 
     const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
     const day   = String(selectedDate.getDate()).padStart(2, '0');
@@ -257,15 +288,8 @@ export default function HostelDetailsPage() {
     const normalizedDate = `${year}-${month}-${day}`;
 
     const dur = parseInt(bookingData.duration);
-    if (!dur || dur < 1) {
-      setBookingError('Duration must be at least 1 month');
-      return;
-    }
-
-    if (user?.role !== 'student') {
-      setBookingError('Only students can make bookings');
-      return;
-    }
+    if (!dur || dur < 1) { setBookingError('Duration must be at least 1 month'); return; }
+    if (user?.role !== 'student') { setBookingError('Only students can make bookings'); return; }
 
     setBookingLoading(true);
     try {
@@ -305,19 +329,37 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+      {/* TOPBAR — real logo + linked nav */}
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <a href="/" className="hd-bar-logo">🏠 HostelLink</a>
+
+        <Link to="/" className="hd-bar-logo">
+          <div className="hd-bar-logo-img">
+            <img src="/PezaHostelLogo.png" alt="PezaHostel" />
+          </div>
+          <span className="hd-bar-logo-text">PezaHostel</span>
+        </Link>
+
         <div className="hd-bar-right">
-          {isAuthenticated
-            ? <a href="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-th-large" /> Dashboard</a>
-            : <><a href="/login" className="hd-bar-btn hd-bar-btn-ghost">Login</a><a href="/register" className="hd-bar-btn hd-bar-btn-solid">Sign Up</a></>
-          }
+          <Link to="/about"   className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-info-circle" /> About</Link>
+          <Link to="/contact" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-phone" /> Contact</Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/bookings"  className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-bookmark" /> My Bookings</Link>
+              <Link to="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-th-large" /> Dashboard</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login"    className="hd-bar-btn hd-bar-btn-ghost">Login</Link>
+              <Link to="/register" className="hd-bar-btn hd-bar-btn-solid">Sign Up</Link>
+            </>
+          )}
         </div>
       </nav>
 
       <div className="hd-page">
         <div>
+          {/* CAROUSEL */}
           <div className="carousel-wrap">
             <div className="carousel-stage">
               {images.length > 0
@@ -349,6 +391,7 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
+          {/* DETAIL CARD */}
           <div className="detail-card">
             <div className="detail-price">MK {currentHostel.price.toLocaleString()} <span>/ month</span></div>
             <div className="detail-name">{currentHostel.name}</div>
@@ -364,12 +407,12 @@ export default function HostelDetailsPage() {
             </div>
             <div className="detail-grid">
               {[
-                { icon: 'fa-door-open',  label: 'Total Rooms',    value: currentHostel.totalRooms },
-                { icon: 'fa-check-circle', label: 'Available Now', value: `${currentHostel.availableRooms} rooms`, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-                { icon: 'fa-home',       label: 'Room Type',      value: currentHostel.type },
-                { icon: 'fa-venus-mars', label: 'Gender',         value: currentHostel.gender },
-                { icon: 'fa-phone',      label: 'Contact Phone',  value: currentHostel.contactPhone },
-                { icon: 'fa-eye',        label: 'Total Views',    value: currentHostel.viewCount || 0 },
+                { icon: 'fa-door-open',    label: 'Total Rooms',    value: currentHostel.totalRooms },
+                { icon: 'fa-check-circle', label: 'Available Now',  value: `${currentHostel.availableRooms} rooms`, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+                { icon: 'fa-home',         label: 'Room Type',      value: currentHostel.type },
+                { icon: 'fa-venus-mars',   label: 'Gender',         value: currentHostel.gender },
+                { icon: 'fa-phone',        label: 'Contact Phone',  value: currentHostel.contactPhone },
+                { icon: 'fa-eye',          label: 'Total Views',    value: currentHostel.viewCount || 0 },
               ].map((item, i) => (
                 <div key={i} className="dg-item">
                   <div className="dg-icon" style={item.bg ? { background: item.bg } : {}}>
@@ -396,6 +439,7 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
+          {/* MAP */}
           <div className="map-card">
             <h3><i className="fa fa-map-marked-alt" style={{ color: 'var(--orange)', marginRight: '0.4rem' }} /> Location on Map</h3>
             <iframe className="map-embed" title="Hostel Location" src={mapEmbedUrl} allowFullScreen loading="lazy" />
@@ -403,6 +447,7 @@ export default function HostelDetailsPage() {
           </div>
         </div>
 
+        {/* SIDEBAR */}
         <div className="sidebar">
           <div className="book-card">
             <div className="book-price-display">
@@ -446,22 +491,15 @@ export default function HostelDetailsPage() {
 
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
             <h3>📅 Book This Hostel</h3>
-            {bookingError && (
-              <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>
-            )}
-            {bookingSuccess && (
-              <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>
-            )}
+            {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
+            {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
             <div className="form-group">
               <label>Check-in Date *</label>
               <input
                 type="date"
                 value={bookingData.checkInDate}
                 min={getTodayStr()}
-                onChange={e => {
-                  setBookingData(prev => ({ ...prev, checkInDate: e.target.value }));
-                  setBookingError('');
-                }}
+                onChange={e => { setBookingData(prev => ({ ...prev, checkInDate: e.target.value })); setBookingError(''); }}
               />
             </div>
             <div className="form-group">
@@ -471,26 +509,14 @@ export default function HostelDetailsPage() {
                 min="1"
                 max="12"
                 value={bookingData.duration}
-                onChange={e => {
-                  setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 }));
-                  setBookingError('');
-                }}
+                onChange={e => { setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 })); setBookingError(''); }}
               />
             </div>
             {priceBreakdown && (
               <div className="price-breakdown">
-                <div className="price-row">
-                  <span>Room Rent ({bookingData.duration}m):</span>
-                  <strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong>
-                </div>
-                <div className="price-row">
-                  <span>Platform Fee:</span>
-                  <strong>MK 2,000</strong>
-                </div>
-                <div className="price-row total">
-                  <span>Total to Pay:</span>
-                  <strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong>
-                </div>
+                <div className="price-row"><span>Room Rent ({bookingData.duration}m):</span><strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong></div>
+                <div className="price-row"><span>Platform Fee:</span><strong>MK 2,000</strong></div>
+                <div className="price-row total"><span>Total to Pay:</span><strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong></div>
               </div>
             )}
             <button type="submit" className="book-btn" disabled={bookingLoading} style={{ marginTop: '0.5rem' }}>
@@ -525,7 +551,7 @@ export default function HostelDetailsPage() {
                 <div className="owner-info-name">
                   {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
                 </div>
-                <div className="owner-online"><div className="owner-dot" /> Active on HostelLink</div>
+                <div className="owner-online"><div className="owner-dot" /> Active on PezaHostel</div>
               </div>
             </div>
             <div className="owner-btns">
@@ -543,8 +569,23 @@ export default function HostelDetailsPage() {
             </div>
           </div>
 
+          {/* Quick nav links */}
+          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius)', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <Link to="/about"   style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
+              <i className="fa fa-info-circle" /> About PezaHostel
+            </Link>
+            <Link to="/contact" style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
+              <i className="fa fa-phone" /> Contact Us
+            </Link>
+            {isAuthenticated && (
+              <Link to="/bookings" style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
+                <i className="fa fa-bookmark" /> My Bookings
+              </Link>
+            )}
+          </div>
+
           <button
-            onClick={() => toast.info('Thank you for helping keep HostelLink safe.')}
+            onClick={() => toast.info('Thank you for helping keep PezaHostel safe.')}
             style={{ width: '100%', padding: '0.65rem', background: 'transparent', border: '1px solid var(--gray-light)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', fontFamily: 'Manrope, sans-serif' }}
           >
             <i className="fa fa-flag" /> Report this listing

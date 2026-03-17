@@ -8,7 +8,8 @@ import {
   FaCog, FaSignOutAlt, FaArrowRight, FaChartLine, FaCheckCircle,
   FaMapMarkerAlt, FaStar, FaPhone, FaFilter, FaSearch, FaVideo,
   FaThumbsUp, FaComment, FaShare, FaEllipsisH, FaImages,
-  FaUserFriends, FaChevronDown, FaChevronRight, FaBars, FaTimes
+  FaUserFriends, FaChevronDown, FaChevronRight, FaBars, FaTimes,
+  FaInfoCircle, FaPhoneAlt
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Pagination from '../components/common/Pagination';
@@ -47,11 +48,10 @@ const styles = `
   }
   .fb-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
   .fb-logo-icon {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--orange) 0%, #c0390e 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; box-shadow: 0 2px 8px rgba(232,80,26,0.35); flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 10px;
+    overflow: hidden; flex-shrink: 0; border: 2px solid rgba(232,80,26,0.2);
   }
+  .fb-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .fb-logo-text { font-size: 1.2rem; font-weight: 900; color: var(--orange); letter-spacing: -0.5px; }
   .fb-search-form {
     display: flex; align-items: center; gap: 8px; background: var(--gray-bg);
@@ -339,7 +339,7 @@ const styles = `
   .fb-listing-price { font-size: 0.73rem; color: var(--text-mid); font-weight: 700; }
   .fb-right-footer { font-size: 0.72rem; color: var(--text-mid); line-height: 1.9; padding: 0 8px; font-weight: 600; }
   .fb-right-footer a { color: var(--text-mid); text-decoration: none; }
-  .fb-right-footer a:hover { text-decoration: underline; }
+  .fb-right-footer a:hover { text-decoration: underline; color: var(--orange); }
 
   .fb-loading, .fb-empty { text-align: center; padding: 3rem 2rem; background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 16px; }
   .fb-spinner { width: 44px; height: 44px; border: 4px solid var(--gray-light); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
@@ -398,7 +398,7 @@ const styles = `
     .fb-post { width: 100%; border-radius: 10px; }
   }
   @media (max-width: 480px) {
-    html, body { overflow-x: hidden; width: 100%; font-size: 16px; }
+    html, body { overflow-x: hidden; width: 100%; }
     .fb-center { padding: 10px 10px 90px !important; }
     .fb-welcome { padding: 20px 16px; border-radius: 10px; }
     .fb-welcome h2 { font-size: 1.3rem !important; font-weight: 900 !important; color: #ffffff !important; line-height: 1.3; }
@@ -444,15 +444,6 @@ const styles = `
     .fb-post-owner { font-size: 0.95rem !important; }
   }
 `;
-
-const HostelLinkLogo = () => (
-  <div className="fb-logo-icon">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10.5L12 3L21 10.5V21C21 21.55 20.55 22 20 22H15V16H9V22H4C3.45 22 3 21.55 3 21V10.5Z" fill="white"/>
-      <circle cx="12" cy="12" r="2" fill="rgba(232,80,26,0.85)"/>
-    </svg>
-  </div>
-);
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -516,27 +507,28 @@ const StudentDashboard = () => {
   const initials = ((user?.firstName?.[0] || '') + (user?.lastName?.[0] || '')).toUpperCase() || 'HL';
 
   const stats = [
-    { label: 'Bookings',  value: statsLoading ? '...' : statsData.bookings,              icon: '📋', color: '#e8501a', bg: 'rgba(232,80,26,0.1)',   link: '/bookings'  },
-    { label: 'Messages',  value: statsLoading ? '...' : statsData.messages,              icon: '💬', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)',   link: '/messages'  },
-    { label: 'Saved',     value: statsLoading ? '...' : statsData.saved,                 icon: '❤️', color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   link: '/favorites' },
-    { label: 'Hostels',   value: pagination?.total || hostels.length,                    icon: '🏠', color: '#10b981', bg: 'rgba(16,185,129,0.1)'                     },
+    { label: 'Bookings',  value: statsLoading ? '...' : statsData.bookings,  icon: '📋', color: '#e8501a', bg: 'rgba(232,80,26,0.1)',  link: '/bookings'  },
+    { label: 'Messages',  value: statsLoading ? '...' : statsData.messages,  icon: '💬', color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)',  link: '/messages'  },
+    { label: 'Saved',     value: statsLoading ? '...' : statsData.saved,     icon: '❤️', color: '#ef4444', bg: 'rgba(239,68,68,0.1)',  link: '/favorites' },
+    { label: 'Hostels',   value: pagination?.total || hostels.length,         icon: '🏠', color: '#10b981', bg: 'rgba(16,185,129,0.1)'                    },
   ];
 
   const sidebarLinks = [
-    { icon: <FaHome />,     label: 'Browse Hostels', link: '/hostels',       color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
-    { icon: <FaBookmark />, label: 'My Bookings',    link: '/bookings',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
-    { icon: <FaHeart />,    label: 'Saved Hostels',  link: '/favorites',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
-    { icon: <FaEnvelope />, label: 'Messages',       link: '/messages',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)', badge: statsData.messages > 0 ? statsData.messages : null },
-    { icon: <FaBell />,     label: 'Notifications',  link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', badge: statsData.notifications > 0 ? statsData.notifications : null },
-    { icon: <FaVideo />,    label: 'Hostel Videos',  link: '/videos',        color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-    { icon: <FaCog />,      label: 'Settings',       link: '/profile',       color: '#6b7280', bg: 'rgba(107,114,128,0.1)'},
+    { icon: <FaHome />,         label: 'Browse Hostels', link: '/hostels',       color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
+    { icon: <FaBookmark />,     label: 'My Bookings',    link: '/bookings',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
+    { icon: <FaHeart />,        label: 'Saved Hostels',  link: '/favorites',     color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
+    { icon: <FaEnvelope />,     label: 'Messages',       link: '/messages',      color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)', badge: statsData.messages > 0 ? statsData.messages : null },
+    { icon: <FaBell />,         label: 'Notifications',  link: '/notifications', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', badge: statsData.notifications > 0 ? statsData.notifications : null },
+    { icon: <FaInfoCircle />,   label: 'About Us',       link: '/about',         color: '#0891b2', bg: 'rgba(8,145,178,0.1)'  },
+    { icon: <FaPhoneAlt />,     label: 'Contact Us',     link: '/contact',       color: '#059669', bg: 'rgba(5,150,105,0.1)'  },
+    { icon: <FaCog />,          label: 'Settings',       link: '/profile',       color: '#6b7280', bg: 'rgba(107,114,128,0.1)'},
   ];
 
   const quickLinks = [
-    { icon: <FaBookmark />, label: 'My Bookings',   sub: statsData.bookings > 0 ? `${statsData.bookings} booking${statsData.bookings !== 1 ? 's' : ''}` : 'View reservations', link: '/bookings',  color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
-    { icon: <FaHeart />,    label: 'Saved Hostels', sub: statsData.saved > 0 ? `${statsData.saved} saved` : 'No saved hostels',                                                 link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
-    { icon: <FaEnvelope />, label: 'Messages',      sub: statsData.messages > 0 ? `${statsData.messages} unread` : 'No new messages',                                          link: '/messages',  color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
-    { icon: <FaVideo />,    label: 'Hostel Videos', sub: 'Watch tours',                                                                                                         link: '/videos',    color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+    { icon: <FaBookmark />,   label: 'My Bookings',   sub: statsData.bookings > 0 ? `${statsData.bookings} booking${statsData.bookings !== 1 ? 's' : ''}` : 'View reservations', link: '/bookings',  color: '#e8501a', bg: 'rgba(232,80,26,0.1)'  },
+    { icon: <FaHeart />,      label: 'Saved Hostels', sub: statsData.saved > 0 ? `${statsData.saved} saved` : 'No saved hostels',                                               link: '/favorites', color: '#ef4444', bg: 'rgba(239,68,68,0.1)'  },
+    { icon: <FaEnvelope />,   label: 'Messages',      sub: statsData.messages > 0 ? `${statsData.messages} unread` : 'No new messages',                                        link: '/messages',  color: '#1a3fa4', bg: 'rgba(26,63,164,0.1)'  },
+    { icon: <FaInfoCircle />, label: 'About Us',      sub: 'Learn about PezaHostel',                                                                                           link: '/about',     color: '#0891b2', bg: 'rgba(8,145,178,0.1)'  },
   ];
 
   const renderImages = (hostel) => {
@@ -673,13 +665,15 @@ const StudentDashboard = () => {
     <>
       <style>{styles}</style>
 
-      {/* TOPBAR */}
+      {/* TOPBAR — real logo */}
       <nav className="fb-topbar">
         <button className="fb-menu-btn" onClick={() => setMobileMenuOpen(o => !o)}>
           {mobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
         <Link to="/" className="fb-logo">
-          <HostelLinkLogo />
+          <div className="fb-logo-icon">
+            <img src="/PezaHostelLogo.png" alt="PezaHostel" />
+          </div>
           <span className="fb-logo-text">PezaHostel</span>
         </Link>
         <form onSubmit={handleSearch} className="fb-search-form">
@@ -689,10 +683,10 @@ const StudentDashboard = () => {
         <div className="fb-topbar-center">
           {[
             { icon: <FaHome />,        key: 'home'         },
-            { icon: <FaVideo />,       key: 'videos',        link: '/videos'        },
             { icon: <FaBookmark />,    key: 'bookings',      link: '/bookings'      },
             { icon: <FaUserFriends />, key: 'messages',      link: '/messages',      badge: statsData.messages > 0 ? statsData.messages : null },
             { icon: <FaBell />,        key: 'notifications', link: '/notifications', badge: statsData.notifications > 0 ? statsData.notifications : null },
+            { icon: <FaInfoCircle />,  key: 'about',         link: '/about'         },
           ].map(tab => tab.link ? (
             <Link key={tab.key} to={tab.link} className={`fb-nav-tab${activeTab===tab.key?' active':''}`} onClick={() => setActiveTab(tab.key)}>
               {tab.icon}
@@ -715,7 +709,6 @@ const StudentDashboard = () => {
       {mobileMenuOpen && <div className="fb-left-overlay" onClick={() => setMobileMenuOpen(false)} />}
 
       <div className="fb-page">
-
         {/* LEFT SIDEBAR */}
         <aside className={`fb-left${mobileMenuOpen ? ' mobile-open' : ''}`}>
           <SidebarContent />
@@ -724,7 +717,7 @@ const StudentDashboard = () => {
         {/* CENTER FEED */}
         <main className="fb-center">
           <div className="fb-welcome">
-            <h2>Welcome back, {user?.firstName}! 👋</h2>
+            <h2>Welcome back, {user?.firstName}! </h2>
             <p>Discover your perfect student hostel near MUBAS campus</p>
           </div>
 
@@ -822,7 +815,7 @@ const StudentDashboard = () => {
           ))}
           <hr className="fb-right-divider" />
           <div className="fb-right-footer">
-            <a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/help">Help</a><br />
+            <Link to="/about">About</Link> · <Link to="/contact">Contact</Link> · <Link to="/hostels">Browse Hostels</Link> · <Link to="/bookings">My Bookings</Link><br />
             © {new Date().getFullYear()} PezaHostel MUBAS
           </div>
         </aside>
@@ -833,9 +826,9 @@ const StudentDashboard = () => {
         <div className="fb-bottom-nav-inner">
           {[
             { icon: <FaHome />,     label: 'Home',     key: 'home',     action: () => setActiveTab('home')       },
-            { icon: <FaVideo />,    label: 'Videos',   key: 'videos',   action: () => navigate('/videos')        },
             { icon: <FaBookmark />, label: 'Bookings', key: 'bookings', action: () => navigate('/bookings')      },
             { icon: <FaEnvelope />, label: 'Messages', key: 'messages', action: () => navigate('/messages'),      badge: statsData.messages > 0 ? statsData.messages : null },
+            { icon: <FaInfoCircle />, label: 'About',  key: 'about',    action: () => navigate('/about')         },
             { icon: <FaUser />,     label: 'Profile',  key: 'profile',  action: () => navigate('/profile')       },
           ].map(tab => (
             <button key={tab.key} className={`fb-bottom-tab${activeTab===tab.key?' active':''}`} onClick={tab.action}>
