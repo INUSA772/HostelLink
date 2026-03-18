@@ -875,11 +875,11 @@ const FAQ_ITEMS = [
   },
   {
     question: "When Should I Contact PezaHostel For Support?",
-    answer: "You Can Contact HostelLink Anytime You Need Assistance With Your Account, Have Questions About A Booking, Encounter Technical Issues, Or Need Help With The Payment Process. Our Support Team Is Ready To Assist You Through Email Or Phone During Business Hours."
+    answer: "You Can Contact PezaHostel Anytime You Need Assistance With Your Account, Have Questions About A Booking, Encounter Technical Issues, Or Need Help With The Payment Process. Our Support Team Is Ready To Assist You Through Email Or Phone During Business Hours."
   },
   {
     question: "How Does PezaHostel Ensure Safety And Security?",
-    answer: "HostelLink Verifies All Hostel Owners Through Document Verification And Property Inspections. We Also Implement Secure Payment Processing Through Paychangu, Protect User Data With Encryption, And Have A Review System That Helps Students Make Informed Decisions Based On Previous Tenants' Experiences."
+    answer: "PezaHostel Verifies All Hostel Owners Through Document Verification And Property Inspections. We Also Implement Secure Payment Processing Through Paychangu, Protect User Data With Encryption, And Have A Review System That Helps Students Make Informed Decisions Based On Previous Tenants' Experiences."
   },
   {
     question: "Can PezaHostel Help Me Find Accommodation Near MUBAS?",

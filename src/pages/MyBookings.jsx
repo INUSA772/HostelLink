@@ -242,7 +242,7 @@ const styles = `
   .booking-hostel-info h3 {
     font-size: 1.3rem;
     font-weight: 800;
-    color: var(--navy);
+    color: white;
     margin-bottom: 0.75rem;
     font-family: 'Poppins', sans-serif;
   }
