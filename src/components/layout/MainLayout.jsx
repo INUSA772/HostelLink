@@ -17,11 +17,13 @@ const NO_FOOTER_PAGES = [
   '/analytics',
   '/settings',
   '/hostels/',
+  '/admin',
 ];
 
 const NO_NAVBAR_PAGES = [
   '/messages',
   '/hostels/',
+  '/admin',
 ];
 
 const MainLayout = ({ children }) => {
