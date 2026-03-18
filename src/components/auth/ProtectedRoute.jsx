@@ -16,7 +16,11 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
   // Check if user role is allowed
   if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-    return <Navigate to="/dashboard" replace />;
+    // Redirect based on role
+    if (user?.role === 'admin')   return <Navigate to="/admin" replace />;
+    if (user?.role === 'owner')   return <Navigate to="/landlord-dashboard" replace />;
+    if (user?.role === 'student') return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
