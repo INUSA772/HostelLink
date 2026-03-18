@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const getDashboardUrl = (userRole) => {
+    if (userRole === 'admin')   return '/admin';           // ← added
     if (userRole === 'student') return '/dashboard';
     if (userRole === 'owner')   return '/landlord-dashboard';
     return '/';
