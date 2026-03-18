@@ -142,7 +142,7 @@ const timeAgo = (date) => {
 
 export default function AdminDashboard() {
   const navigate  = useNavigate();
-  const { user }  = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastUp,  setLastUp]  = useState('');
@@ -161,11 +161,13 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (user?.role !== 'admin') { navigate('/'); return; }
+    if (authLoading) return; // wait for auth to finish
+    if (!user) { navigate('/login'); return; }
+    if (user.role !== 'admin') { navigate('/'); return; }
     load();
-  }, []);
+  }, [authLoading, user]);
 
-  if (loading) return (
+  if (authLoading || loading) return (
     <>
       <style>{styles}</style>
       <div className="adm-wrap">
@@ -190,12 +192,12 @@ export default function AdminDashboard() {
   const maxReg      = Math.max(...regByMonth.map(r => r.count), 1);
 
   const statCards = [
-    { icon: '👥', label: 'Total Users',    val: fmt(stats.totalUsers),           accent: '#e8501a', iconBg: 'rgba(232,80,26,0.12)',  change: `+${stats.newUsersToday || 0} today`,          up: true  },
-    { icon: '🎓', label: 'Students',       val: fmt(roleBreakdown.students),      accent: '#2655d4', iconBg: 'rgba(38,85,212,0.12)',  change: `${studentPct}% of users`,                     up: false },
-    { icon: '🏠', label: 'Hostel Owners',  val: fmt(roleBreakdown.owners),        accent: '#10b981', iconBg: 'rgba(16,185,129,0.12)', change: `${ownerPct}% of users`,                       up: false },
-    { icon: '🏢', label: 'Total Hostels',  val: fmt(stats.totalHostels),          accent: '#8b5cf6', iconBg: 'rgba(139,92,246,0.12)', change: `${stats.activeHostels || 0} active`,           up: false },
-    { icon: '📋', label: 'Total Bookings', val: fmt(stats.totalBookings),         accent: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)', change: `${stats.pendingBookings || 0} pending`,        up: true  },
-    { icon: '💰', label: 'Total Revenue',  val: `MK ${fmt(stats.totalRevenue)}`,  accent: '#10b981', iconBg: 'rgba(16,185,129,0.12)', change: 'confirmed bookings',                           up: true  },
+    { icon: '👥', label: 'Total Users',    val: fmt(stats.totalUsers),          accent: '#e8501a', iconBg: 'rgba(232,80,26,0.12)',  change: `+${stats.newUsersToday || 0} today`,     up: true  },
+    { icon: '🎓', label: 'Students',       val: fmt(roleBreakdown.students),     accent: '#2655d4', iconBg: 'rgba(38,85,212,0.12)',  change: `${studentPct}% of users`,                up: false },
+    { icon: '🏠', label: 'Hostel Owners',  val: fmt(roleBreakdown.owners),       accent: '#10b981', iconBg: 'rgba(16,185,129,0.12)', change: `${ownerPct}% of users`,                  up: false },
+    { icon: '🏢', label: 'Total Hostels',  val: fmt(stats.totalHostels),         accent: '#8b5cf6', iconBg: 'rgba(139,92,246,0.12)', change: `${stats.activeHostels || 0} active`,      up: false },
+    { icon: '📋', label: 'Total Bookings', val: fmt(stats.totalBookings),        accent: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)', change: `${stats.pendingBookings || 0} pending`,   up: true  },
+    { icon: '💰', label: 'Total Revenue',  val: `MK ${fmt(stats.totalRevenue)}`, accent: '#10b981', iconBg: 'rgba(16,185,129,0.12)', change: 'confirmed bookings',                      up: true  },
   ];
 
   return (
