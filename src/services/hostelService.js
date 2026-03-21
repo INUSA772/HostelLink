@@ -1,12 +1,9 @@
 import api from './api';
 
 const hostelService = {
-  // Get all hostels with filters
   getAllHostels: async (filters = {}) => {
     try {
       const params = new URLSearchParams();
-      
-      // Add filters to query params
       if (filters.search) params.append('search', filters.search);
       if (filters.type) params.append('type', filters.type);
       if (filters.minPrice) params.append('minPrice', filters.minPrice);
@@ -19,7 +16,6 @@ const hostelService = {
       if (filters.sort) params.append('sort', filters.sort);
       if (filters.page) params.append('page', filters.page);
       if (filters.limit) params.append('limit', filters.limit);
-      
       const response = await api.get(`/hostels?${params.toString()}`);
       return response.data;
     } catch (error) {
@@ -27,7 +23,6 @@ const hostelService = {
     }
   },
 
-  // Get single hostel by ID
   getHostelById: async (id) => {
     try {
       const response = await api.get(`/hostels/${id}`);
@@ -37,7 +32,6 @@ const hostelService = {
     }
   },
 
-  // Create new hostel (Owner only)
   createHostel: async (hostelData) => {
     try {
       const response = await api.post('/hostels', hostelData);
@@ -47,7 +41,6 @@ const hostelService = {
     }
   },
 
-  // Update hostel (Owner only)
   updateHostel: async (id, hostelData) => {
     try {
       const response = await api.put(`/hostels/${id}`, hostelData);
@@ -57,7 +50,6 @@ const hostelService = {
     }
   },
 
-  // Delete hostel (Owner only)
   deleteHostel: async (id) => {
     try {
       const response = await api.delete(`/hostels/${id}`);
@@ -67,17 +59,16 @@ const hostelService = {
     }
   },
 
-  // Get hostels by owner
+  // ✅ FIXED: correct endpoint
   getOwnerHostels: async () => {
     try {
-      const response = await api.get('/hostels/owner/my-hostels');
+      const response = await api.get('/hostels/my-hostels');
       return response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  // Get nearby hostels
   getNearbyHostels: async (lat, lng, radius = 5) => {
     try {
       const response = await api.get('/hostels/nearby', {
