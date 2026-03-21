@@ -32,8 +32,6 @@ const styles = `
   .rp-bar-actions{display:flex;align-items:center;gap:0.6rem;}
   .rp-bar-login{color:rgba(255,255,255,0.78);font-size:0.82rem;font-weight:600;background:transparent;border:1.5px solid rgba(255,255,255,0.2);padding:0.36rem 0.95rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.18s;display:flex;align-items:center;gap:5px;}
   .rp-bar-login:hover{border-color:rgba(255,255,255,0.55);color:#fff;}
-  .rp-bar-signup{color:#fff;font-size:0.82rem;font-weight:700;background:var(--orange);border:none;padding:0.36rem 0.95rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:opacity 0.18s;display:flex;align-items:center;gap:5px;}
-  .rp-bar-signup:hover{opacity:0.88;}
 
   .rp-main-content{position:fixed;top:60px;left:0;right:0;bottom:0;overflow-y:auto;background:var(--gray-lighter);padding:2rem 1rem;}
   .rp-container{max-width:900px;margin:0 auto;}
@@ -78,7 +76,6 @@ const styles = `
   .rp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* ROOMS */
   .room-card{background:#f9fafb;border:1.5px solid var(--light-gray);border-radius:12px;padding:1.25rem;margin-bottom:1rem;position:relative;}
   .room-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
   .room-card-title{font-size:0.95rem;font-weight:800;color:var(--navy);}
@@ -93,6 +90,8 @@ const styles = `
   .add-room-btn{width:100%;padding:0.85rem;border:2px dashed var(--orange);border-radius:10px;background:var(--primary-light);color:var(--orange);font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;font-family:'Manrope',sans-serif;margin-top:0.5rem;}
   .add-room-btn:hover{background:var(--orange);color:white;}
   .rooms-summary{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#1d4ed8;font-weight:600;display:flex;align-items:center;gap:0.5rem;}
+  .room-input{width:100%;padding:0.6rem 0.75rem;border:1.5px solid var(--light-gray);border-radius:8px;font-size:0.875rem;font-family:'Manrope',sans-serif;outline:none;transition:border-color 0.2s;}
+  .room-input:focus{border-color:var(--orange);}
 
   @media(max-width:768px){
     .rp-bar{padding:0 1rem;}
@@ -148,7 +147,6 @@ const CreateHostel = () => {
     setFormData(prev => ({ ...prev, location: { ...prev.location, [field]: value } }));
   };
 
-  // ── Room management ───────────────────────────────────────────
   const addRoom = () => {
     setFormData(prev => ({
       ...prev,
@@ -204,7 +202,6 @@ const CreateHostel = () => {
     }));
   };
 
-  // ── Validation ────────────────────────────────────────────────
   const validateStep1 = () => {
     if (!formData.name || !formData.description || !formData.type) {
       toast.error('Please fill in all basic information'); return false;
@@ -245,18 +242,22 @@ const CreateHostel = () => {
     return true;
   };
 
-  const nextStep = () => {
+  // ✅ FIX: always prevent default, only advance if validation passes
+  const handleNext = (e) => {
+    e.preventDefault();
     if (currentStep === 1 && validateStep1()) setCurrentStep(2);
     else if (currentStep === 2 && validateStep2()) setCurrentStep(3);
     else if (currentStep === 3 && validateStep3()) setCurrentStep(4);
   };
 
-  const prevStep = () => setCurrentStep(currentStep - 1);
+  const prevStep = (e) => {
+    e.preventDefault();
+    setCurrentStep(currentStep - 1);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep4()) return;
-
     try {
       const hostelData = {
         ...formData,
@@ -276,10 +277,9 @@ const CreateHostel = () => {
           images: r.images || []
         }))
       };
-
       await createHostel(hostelData);
       toast.success('🎉 Hostel created successfully!');
-      navigate('/my-hostels');
+      navigate('/landlord-dashboard');
     } catch (error) {
       console.error(error);
     }
@@ -302,7 +302,9 @@ const CreateHostel = () => {
           </div>
         </Link>
         <div className="rp-bar-actions">
-          <Link to="/landlord-dashboard" className="rp-bar-login"><i className="fa fa-arrow-left"></i> Dashboard</Link>
+          <Link to="/landlord-dashboard" className="rp-bar-login">
+            <i className="fa fa-arrow-left"></i> Dashboard
+          </Link>
         </div>
       </nav>
 
@@ -329,6 +331,7 @@ const CreateHostel = () => {
             ))}
           </div>
 
+          {/* ✅ FIX: form only submits on step 4 publish button */}
           <form onSubmit={handleSubmit}>
             <div className="rp-card">
 
@@ -338,15 +341,15 @@ const CreateHostel = () => {
                   <h2><FaHome /> Basic Information</h2>
                   <div className="rp-form-group">
                     <label className="rp-label">Hostel Name <span className="rp-required">*</span></label>
-                    <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Green Valley Hostel" required />
+                    <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Green Valley Hostel" />
                   </div>
                   <div className="rp-form-group">
                     <label className="rp-label">Description <span className="rp-required">*</span></label>
-                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe your hostel..." rows={5} required />
+                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe your hostel..." rows={5} />
                   </div>
                   <div className="rp-form-group">
                     <label className="rp-label">Room Type <span className="rp-required">*</span></label>
-                    <Select name="type" value={formData.type} onChange={handleChange} options={HOSTEL_TYPES.map(t => ({ value: t, label: t }))} required />
+                    <Select name="type" value={formData.type} onChange={handleChange} options={HOSTEL_TYPES.map(t => ({ value: t, label: t }))} />
                   </div>
                 </div>
               )}
@@ -357,7 +360,7 @@ const CreateHostel = () => {
                   <h2><FaMapMarkerAlt /> Location & Pricing</h2>
                   <div className="rp-form-group">
                     <label className="rp-label">Address <span className="rp-required">*</span></label>
-                    <Input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="e.g., Chirimba Road, Blantyre" required />
+                    <Input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="e.g., Chirimba Road, Blantyre" />
                   </div>
                   <div className="rp-grid-2">
                     <div className="rp-form-group">
@@ -372,11 +375,11 @@ const CreateHostel = () => {
                   <p className="rp-tip">💡 Use Google Maps to find exact coordinates</p>
                   <div className="rp-form-group">
                     <label className="rp-label">Monthly Price (MWK) <span className="rp-required">*</span></label>
-                    <Input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="e.g., 45000" icon={<FaDollarSign />} required />
+                    <Input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="e.g., 45000" icon={<FaDollarSign />} />
                   </div>
                   <div className="rp-form-group">
                     <label className="rp-label">Contact Phone Number <span className="rp-required">*</span></label>
-                    <Input type="tel" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="e.g., 0986584136" required />
+                    <Input type="tel" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="e.g., 0986584136" />
                   </div>
                 </div>
               )}
@@ -388,16 +391,16 @@ const CreateHostel = () => {
                   <div className="rp-grid-2">
                     <div className="rp-form-group">
                       <label className="rp-label">Total Rooms <span className="rp-required">*</span></label>
-                      <Input type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g., 20" required />
+                      <Input type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g., 20" />
                     </div>
                     <div className="rp-form-group">
                       <label className="rp-label">Available Rooms <span className="rp-required">*</span></label>
-                      <Input type="number" name="availableRooms" value={formData.availableRooms} onChange={handleChange} placeholder="e.g., 15" required />
+                      <Input type="number" name="availableRooms" value={formData.availableRooms} onChange={handleChange} placeholder="e.g., 15" />
                     </div>
                   </div>
                   <div className="rp-form-group">
                     <label className="rp-label">Gender Preference <span className="rp-required">*</span></label>
-                    <Select name="gender" value={formData.gender} onChange={handleChange} options={GENDER_OPTIONS} required />
+                    <Select name="gender" value={formData.gender} onChange={handleChange} options={GENDER_OPTIONS} />
                   </div>
                   <div className="rp-form-group">
                     <label className="rp-label">Amenities <span className="rp-required">*</span></label>
@@ -454,10 +457,10 @@ const CreateHostel = () => {
                           <label className="rp-label">Room Number/Name <span className="rp-required">*</span></label>
                           <input
                             type="text"
+                            className="room-input"
                             value={room.roomNumber}
                             onChange={e => updateRoom(room.id, 'roomNumber', e.target.value)}
                             placeholder="e.g., A1 or Room 1"
-                            style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1.5px solid var(--light-gray)', borderRadius: 8, fontSize: '0.875rem', fontFamily: 'Manrope,sans-serif', outline: 'none' }}
                           />
                         </div>
                         <div className="rp-form-group" style={{ marginBottom: 0 }}>
@@ -465,10 +468,10 @@ const CreateHostel = () => {
                           <input
                             type="number"
                             min="1"
+                            className="room-input"
                             value={room.totalBedspaces}
                             onChange={e => updateRoom(room.id, 'totalBedspaces', e.target.value)}
                             placeholder="e.g., 4"
-                            style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1.5px solid var(--light-gray)', borderRadius: 8, fontSize: '0.875rem', fontFamily: 'Manrope,sans-serif', outline: 'none' }}
                           />
                         </div>
                         <div className="rp-form-group" style={{ marginBottom: 0 }}>
@@ -476,10 +479,10 @@ const CreateHostel = () => {
                           <input
                             type="number"
                             min="0"
+                            className="room-input"
                             value={room.availableBedspaces}
                             onChange={e => updateRoom(room.id, 'availableBedspaces', e.target.value)}
                             placeholder="e.g., 2"
-                            style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1.5px solid var(--light-gray)', borderRadius: 8, fontSize: '0.875rem', fontFamily: 'Manrope,sans-serif', outline: 'none' }}
                           />
                         </div>
                       </div>
@@ -489,10 +492,10 @@ const CreateHostel = () => {
                         <input
                           type="number"
                           min="0"
+                          className="room-input"
                           value={room.price}
                           onChange={e => updateRoom(room.id, 'price', e.target.value)}
                           placeholder={`Default: MK ${Number(formData.price).toLocaleString()}`}
-                          style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1.5px solid var(--light-gray)', borderRadius: 8, fontSize: '0.875rem', fontFamily: 'Manrope,sans-serif', outline: 'none' }}
                         />
                       </div>
 
@@ -503,7 +506,8 @@ const CreateHostel = () => {
                           onChange={e => updateRoom(room.id, 'description', e.target.value)}
                           placeholder="e.g., Corner room with window, very spacious..."
                           rows={2}
-                          style={{ width: '100%', padding: '0.6rem 0.75rem', border: '1.5px solid var(--light-gray)', borderRadius: 8, fontSize: '0.875rem', fontFamily: 'Manrope,sans-serif', outline: 'none', resize: 'vertical' }}
+                          className="room-input"
+                          style={{ resize: 'vertical' }}
                         />
                       </div>
 
@@ -519,10 +523,7 @@ const CreateHostel = () => {
                               </button>
                             </div>
                           ))}
-                          <div
-                            className="room-img-add"
-                            onClick={() => roomImgRefs.current[room.id]?.click()}
-                          >
+                          <div className="room-img-add" onClick={() => roomImgRefs.current[room.id]?.click()}>
                             {uploadingRoom[room.id]
                               ? <><div className="rp-spinner" style={{ borderTopColor: 'var(--orange)', borderColor: 'var(--light-gray)' }} /><span>Uploading...</span></>
                               : <><FaCamera /><span>Add Photo</span></>
@@ -553,16 +554,23 @@ const CreateHostel = () => {
                 </div>
               )}
 
-              {/* Navigation */}
+              {/* Navigation Buttons */}
               <div className="rp-nav-buttons">
                 {currentStep > 1 && (
-                  <button type="button" className="rp-btn-outline" onClick={prevStep}>← Previous</button>
+                  <button type="button" className="rp-btn-outline" onClick={prevStep}>
+                    ← Previous
+                  </button>
                 )}
                 {currentStep < 4 ? (
-                  <button type="button" className="rp-btn-primary" onClick={nextStep}>Next →</button>
+                  <button type="button" className="rp-btn-primary" onClick={handleNext}>
+                    Next →
+                  </button>
                 ) : (
                   <button type="submit" className="rp-btn-primary" disabled={loading}>
-                    {loading ? <><div className="rp-spinner"></div> Publishing...</> : <>🎉 Publish Hostel</>}
+                    {loading
+                      ? <><div className="rp-spinner"></div> Publishing...</>
+                      : <>🎉 Publish Hostel</>
+                    }
                   </button>
                 )}
               </div>
