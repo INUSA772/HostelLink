@@ -17,18 +17,8 @@ const styles = `
   }
   html, body { font-family: "Manrope", sans-serif; background: var(--gray-bg); color: var(--text-dark); }
 
-  .hd-bar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-    background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    height: 56px; display: flex; align-items: center;
-    justify-content: space-between; padding: 0 1.5rem;
-  }
-  .hd-bar-back {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: none; border: none; cursor: pointer; color: var(--navy);
-    font-weight: 700; font-size: 0.95rem; font-family: "Manrope", sans-serif;
-    padding: 0.4rem 0.8rem; border-radius: 6px; transition: background 0.2s;
-  }
+  .hd-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 999; background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1); height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+  .hd-bar-back { display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; color: var(--navy); font-weight: 700; font-size: 0.95rem; font-family: "Manrope", sans-serif; padding: 0.4rem 0.8rem; border-radius: 6px; transition: background 0.2s; }
   .hd-bar-back:hover { background: var(--gray-light); }
   .hd-bar-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
   .hd-bar-logo-img { width: 32px; height: 32px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(232,80,26,0.2); flex-shrink: 0; }
@@ -82,7 +72,6 @@ const styles = `
   .amenity-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: var(--gray-bg); border-radius: 8px; font-size: 0.85rem; color: var(--text-dark); font-weight: 500; }
   .amenity-chip i { color: var(--orange); width: 16px; text-align: center; }
 
-  /* ── ROOMS SECTION ── */
   .rooms-section { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .rooms-section h3 { font-size: 1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
   .rooms-section h3 i { color: var(--orange); }
@@ -111,7 +100,7 @@ const styles = `
   .room-stat-val { font-size: 0.9rem; font-weight: 800; color: var(--navy); }
   .room-stat-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
   .room-card-price { font-size: 0.88rem; font-weight: 800; color: var(--orange); margin-bottom: 0.4rem; }
-  .room-card-desc { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+  .room-card-desc { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; margin-bottom: 0.75rem; }
 
   .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
@@ -184,9 +173,7 @@ const AMENITY_ICONS = {
 };
 
 const getTodayStr = () => new Date().toISOString().split('T')[0];
-const getTomorrowStr = () => {
-  const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0];
-};
+const getTomorrowStr = () => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; };
 const parseDate = (str) => {
   if (!str) return null;
   const s = str.trim();
@@ -201,15 +188,90 @@ const parseDate = (str) => {
   return new Date(s);
 };
 
-// ── Room Card Component ────────────────────────────────────────────────────
-function RoomCard({ room }) {
+// ── Bedspace Selection Modal ───────────────────────────────────────────────
+function BedspaceModal({ room, hostelPrice, onBook, onClose }) {
+  const [selectedBed, setSelectedBed] = useState(null);
+  const price = room.price > 0 ? room.price : hostelPrice;
+  const bookedBeds = room.totalBedspaces - room.availableBedspaces;
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', width: '100%', maxWidth: 420, boxShadow: '0 24px 60px rgba(0,0,0,0.3)', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0d1b3e' }}>🚪 {room.roomNumber} — Choose Bedspace</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#65676b' }}>✕</button>
+        </div>
+
+        <p style={{ fontSize: '0.8rem', color: '#65676b', marginBottom: '1rem' }}>
+          {room.availableBedspaces} of {room.totalBedspaces} bedspaces available · MK {price.toLocaleString()}/month
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.6rem', marginBottom: '1.25rem' }}>
+          {Array.from({ length: room.totalBedspaces }).map((_, i) => {
+            const bedNum = i + 1;
+            const isBooked = bedNum <= bookedBeds;
+            const isSelected = selectedBed === bedNum;
+            return (
+              <button
+                key={bedNum}
+                disabled={isBooked}
+                onClick={() => setSelectedBed(bedNum)}
+                style={{
+                  padding: '0.75rem 0.5rem', borderRadius: 10,
+                  border: isSelected ? '2.5px solid #e8501a' : '1.5px solid #e4e6eb',
+                  background: isBooked ? '#f3f4f6' : isSelected ? '#fff3ef' : 'white',
+                  cursor: isBooked ? 'not-allowed' : 'pointer',
+                  fontWeight: 800, fontSize: '0.82rem', fontFamily: 'Manrope, sans-serif',
+                  color: isBooked ? '#9ca3af' : isSelected ? '#e8501a' : '#0d1b3e',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>{isBooked ? '🔴' : isSelected ? '✅' : '🛏️'}</span>
+                <span>Bed {bedNum}</span>
+                <span style={{ fontSize: '0.62rem', fontWeight: 600, color: isBooked ? '#9ca3af' : '#65676b' }}>
+                  {isBooked ? 'Taken' : 'Free'}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedBed && (
+          <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 8, padding: '0.75rem', marginBottom: '1rem', fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
+            ✅ Selected: Bed {selectedBed} in {room.roomNumber} · MK {price.toLocaleString()}/month
+          </div>
+        )}
+
+        <button
+          disabled={!selectedBed}
+          onClick={() => onBook({ roomId: room._id, roomNumber: room.roomNumber, bedspaceNumber: selectedBed, price })}
+          style={{
+            width: '100%', padding: '0.85rem',
+            background: selectedBed ? '#e8501a' : '#e4e6eb',
+            color: selectedBed ? 'white' : '#9ca3af',
+            border: 'none', borderRadius: 8, fontWeight: 800, fontSize: '0.95rem',
+            cursor: selectedBed ? 'pointer' : 'not-allowed',
+            fontFamily: 'Manrope, sans-serif', transition: 'all 0.2s'
+          }}
+        >
+          {selectedBed ? `Book Bed ${selectedBed} →` : 'Select a bedspace first'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Room Card ─────────────────────────────────────────────────────────────
+function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRole }) {
   const [imgIdx, setImgIdx] = useState(0);
   const images = room.images || [];
   const isAvailable = room.availableBedspaces > 0;
+  const price = room.price > 0 ? room.price : hostelPrice;
+  const bookedBeds = room.totalBedspaces - room.availableBedspaces;
 
   return (
     <div className="room-card">
-      {/* Room Images */}
       <div className="room-card-imgs">
         {images.length > 0 ? (
           <>
@@ -217,26 +279,18 @@ function RoomCard({ room }) {
             {images.length > 1 && (
               <>
                 <div className="room-card-imgs-nav">
-                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p - 1 + images.length) % images.length)}>
-                    <i className="fa fa-chevron-left" />
-                  </button>
-                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p + 1) % images.length)}>
-                    <i className="fa fa-chevron-right" />
-                  </button>
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p - 1 + images.length) % images.length)}><i className="fa fa-chevron-left" /></button>
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p + 1) % images.length)}><i className="fa fa-chevron-right" /></button>
                 </div>
                 <div className="room-img-counter">{imgIdx + 1}/{images.length}</div>
               </>
             )}
           </>
         ) : (
-          <div className="room-no-img">
-            <i className="fa fa-bed" />
-            <span>No photos</span>
-          </div>
+          <div className="room-no-img"><i className="fa fa-bed" /><span>No photos</span></div>
         )}
       </div>
 
-      {/* Room Info */}
       <div className="room-card-body">
         <div className="room-card-header">
           <span className="room-card-name">🚪 {room.roomNumber}</span>
@@ -251,27 +305,53 @@ function RoomCard({ room }) {
             <div className="room-stat-lbl">Total Beds</div>
           </div>
           <div className="room-stat">
-            <div className="room-stat-val" style={{ color: isAvailable ? '#059669' : '#dc2626' }}>
-              {room.availableBedspaces}
-            </div>
+            <div className="room-stat-val" style={{ color: isAvailable ? '#059669' : '#dc2626' }}>{room.availableBedspaces}</div>
             <div className="room-stat-lbl">Available</div>
           </div>
         </div>
 
-        {room.price > 0 && (
-          <div className="room-card-price">
-            MK {room.price.toLocaleString()} <span style={{ fontWeight: 500, fontSize: '0.75rem', color: '#65676b' }}>/bedspace/mo</span>
+        <div className="room-card-price">
+          MK {price.toLocaleString()} <span style={{ fontWeight: 500, fontSize: '0.75rem', color: '#65676b' }}>/bedspace/mo</span>
+        </div>
+
+        {room.description && <div className="room-card-desc">{room.description}</div>}
+
+        {/* Bedspace visual */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.75rem' }}>
+          {Array.from({ length: room.totalBedspaces }).map((_, i) => (
+            <span key={i} style={{ fontSize: '1.1rem', opacity: i < bookedBeds ? 0.3 : 1 }} title={i < bookedBeds ? 'Occupied' : 'Available'}>🛏️</span>
+          ))}
+        </div>
+
+        {isAuthenticated && userRole === 'student' && isAvailable && (
+          <button
+            onClick={() => onSelectBedspace(room)}
+            style={{ width: '100%', padding: '0.6rem', background: '#e8501a', color: 'white', border: 'none', borderRadius: 7, fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'Manrope, sans-serif', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+          >
+            <i className="fa fa-bed" /> Select Bedspace
+          </button>
+        )}
+        {!isAuthenticated && (
+          <div style={{ fontSize: '0.75rem', color: '#65676b', textAlign: 'center', padding: '0.4rem', background: '#f4f6fa', borderRadius: 6, fontWeight: 600 }}>
+            Login to book a bedspace
           </div>
         )}
-
-        {room.description && (
-          <div className="room-card-desc">{room.description}</div>
+        {isAuthenticated && userRole !== 'student' && (
+          <div style={{ fontSize: '0.75rem', color: '#65676b', textAlign: 'center', padding: '0.4rem', background: '#f4f6fa', borderRadius: 6, fontWeight: 600 }}>
+            Only students can book
+          </div>
+        )}
+        {!isAvailable && (
+          <div style={{ fontSize: '0.75rem', color: '#dc2626', textAlign: 'center', padding: '0.4rem', background: '#fef2f2', borderRadius: 6, fontWeight: 700 }}>
+            🔴 This room is fully occupied
+          </div>
         )}
       </div>
     </div>
   );
 }
 
+// ── Main Page ─────────────────────────────────────────────────────────────
 export default function HostelDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -287,6 +367,7 @@ export default function HostelDetailsPage() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   useEffect(() => { fetchHostelById(id); window.scrollTo(0, 0); }, [id]);
 
@@ -295,10 +376,7 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo">
-          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-          <span className="hd-bar-logo-text">PezaHostel</span>
-        </Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
         <div />
       </nav>
       <div className="hd-center"><div className="hd-spinner" /><p style={{ color: '#65676b' }}>Loading...</p></div>
@@ -310,10 +388,7 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo">
-          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-          <span className="hd-bar-logo-text">PezaHostel</span>
-        </Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
         <div />
       </nav>
       <div className="hd-center">
@@ -346,10 +421,7 @@ export default function HostelDetailsPage() {
 
   const calculatePrice = () => {
     const dur = parseInt(bookingData.duration) || 1;
-    if (dur > 0) {
-      const roomCost = currentHostel.price * dur;
-      return { roomCost, platformFee: 2000, totalAmount: roomCost + 2000 };
-    }
+    if (dur > 0) { const roomCost = currentHostel.price * dur; return { roomCost, platformFee: 2000, totalAmount: roomCost + 2000 }; }
     return null;
   };
   const priceBreakdown = calculatePrice();
@@ -378,14 +450,34 @@ export default function HostelDetailsPage() {
         setBookingSuccess('✓ Booking created! Proceeding to payment...');
         setShowBookingForm(false);
         setTimeout(() => setShowPaymentModal(true), 800);
-      } else {
-        setBookingError('Failed to create booking. Please try again.');
-      }
+      } else { setBookingError('Failed to create booking. Please try again.'); }
     } catch (error) {
       setBookingError(error.response?.data?.message || 'Failed to create booking. Please try again.');
-    } finally {
-      setBookingLoading(false);
-    }
+    } finally { setBookingLoading(false); }
+  };
+
+  const handleBedspaceBook = async ({ roomId, roomNumber, bedspaceNumber, price }) => {
+    if (!isAuthenticated) { toast.error('Please login to book'); navigate('/login'); return; }
+    setSelectedRoom(null);
+    setBookingLoading(true);
+    try {
+      const response = await bookingService.createBooking({
+        hostelId: id,
+        checkInDate: getTomorrowStr(),
+        duration: 1,
+        studentId: user._id,
+        roomId,
+        bedspaceNumber,
+      });
+      if (response?.booking) {
+        setBooking(response.booking);
+        toast.success(`✅ Bed ${bedspaceNumber} in ${roomNumber} reserved! Proceed to payment.`);
+        setTimeout(() => setShowPaymentModal(true), 500);
+        fetchHostelById(id);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to book bedspace. Please try again.');
+    } finally { setBookingLoading(false); }
   };
 
   const handlePaymentSuccess = () => {
@@ -400,6 +492,16 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+      {/* Bedspace Modal */}
+      {selectedRoom && (
+        <BedspaceModal
+          room={selectedRoom}
+          hostelPrice={currentHostel.price}
+          onClose={() => setSelectedRoom(null)}
+          onBook={handleBedspaceBook}
+        />
+      )}
 
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
@@ -507,11 +609,10 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
-          {/* ── ROOMS SECTION ── */}
+          {/* ROOMS SECTION */}
           {rooms.length > 0 && (
             <div className="rooms-section">
               <h3><i className="fa fa-bed" /> Available Rooms & Bedspaces</h3>
-
               <div className="rooms-summary-bar">
                 <div className="rooms-summary-item">
                   <i className="fa fa-door-open" style={{ color: 'var(--orange)' }} />
@@ -530,10 +631,16 @@ export default function HostelDetailsPage() {
                   <span style={{ color: '#dc2626' }}>{totalBedspaces - availableBedspaces}</span> Occupied
                 </div>
               </div>
-
               <div className="rooms-grid">
                 {rooms.map((room, i) => (
-                  <RoomCard key={room._id || i} room={room} />
+                  <RoomCard
+                    key={room._id || i}
+                    room={room}
+                    hostelPrice={currentHostel.price}
+                    onSelectBedspace={setSelectedRoom}
+                    isAuthenticated={isAuthenticated}
+                    userRole={user?.role}
+                  />
                 ))}
               </div>
             </div>
@@ -559,9 +666,7 @@ export default function HostelDetailsPage() {
               <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
             </div>
             {!isAuthenticated && (
-              <button className="book-btn" onClick={() => navigate('/login')}>
-                <i className="fa fa-sign-in-alt" /> Login to Book
-              </button>
+              <button className="book-btn" onClick={() => navigate('/login')}><i className="fa fa-sign-in-alt" /> Login to Book</button>
             )}
             {isAuthenticated && user?.role === 'owner' && (
               <div style={{ background: '#f4f6fa', borderRadius: 8, padding: '0.75rem', textAlign: 'center', fontSize: '0.85rem', color: '#65676b', fontWeight: 600 }}>
@@ -575,7 +680,7 @@ export default function HostelDetailsPage() {
                 disabled={currentHostel.availableRooms === 0}
               >
                 <i className="fa fa-calendar-check" />
-                {currentHostel.availableRooms === 0 ? ' No Rooms Available' : showBookingForm ? ' Hide Form' : ' Book Now'}
+                {currentHostel.availableRooms === 0 ? ' No Rooms Available' : showBookingForm ? ' Hide Form' : ' Book Whole Room'}
               </button>
             )}
             <hr className="book-divider" />
