@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 import { handleApiError } from '../../utils/helpers';
 
@@ -15,7 +16,6 @@ const styles = `
     --green:#16a34a; --red:#dc2626;
   }
   html,body,#root{height:100%;width:100%;overflow:hidden;font-family:'Manrope',sans-serif;}
-
   .rp-bar{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(8,18,48,0.97);backdrop-filter:blur(8px);box-shadow:0 2px 18px rgba(0,0,0,0.4);}
   .rp-bar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
   .rp-bar-logo-img{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;}
@@ -26,14 +26,12 @@ const styles = `
   .rp-bar-login:hover{border-color:rgba(255,255,255,0.55);color:#fff;}
   .rp-bar-signup{color:#fff;font-size:0.82rem;font-weight:700;background:var(--orange);border:none;padding:0.36rem 0.95rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:opacity 0.18s;display:flex;align-items:center;gap:5px;}
   .rp-bar-signup:hover{opacity:0.88;}
-
   .rp-main{position:fixed;top:60px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:#f4f6fb;overflow-y:auto;padding:1rem 0;}
   .rp-card{background:#fff;border-radius:var(--card-radius);box-shadow:0 8px 40px rgba(13,27,62,0.12);padding:1.6rem 1.7rem 1.4rem;width:420px;max-width:90%;max-height:90vh;overflow-y:auto;}
   .rp-card-hdr{text-align:center;margin-bottom:1.1rem;}
   .rp-card-hdr h2{font-size:1.28rem;font-weight:800;color:var(--navy);margin-bottom:0.15rem;}
   .rp-card-hdr p{color:var(--text-mid);font-size:0.75rem;}
   .rp-line{width:38px;height:3px;background:var(--orange);border-radius:2px;margin:0.45rem auto 0;}
-
   .rp-role-lbl{display:block;font-size:0.62rem;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.28rem;}
   .rp-role-row{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
   .rp-role-opt{position:relative;}
@@ -41,7 +39,6 @@ const styles = `
   .rp-role-btn{display:flex;align-items:center;gap:0.4rem;padding:0.46rem 0.75rem;border:1.5px solid #e5e7eb;border-radius:7px;cursor:pointer;font-size:0.78rem;font-weight:600;color:var(--text-mid);background:#fafafa;transition:all 0.18s;user-select:none;font-family:'Manrope',sans-serif;}
   .rp-role-btn:hover{border-color:var(--blue);color:var(--blue);}
   .rp-role-opt input:checked+.rp-role-btn{border-color:var(--orange);color:var(--orange);background:#fff5f2;}
-
   .rp-sec{font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.9px;margin:0.65rem 0 0.5rem;display:flex;align-items:center;gap:0.4rem;}
   .rp-sec::after{content:'';flex:1;height:1px;background:#ececec;}
   .rp-row{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;}
@@ -52,7 +49,6 @@ const styles = `
   .rp-input{width:100%;border:1.5px solid #e5e7eb;border-radius:6px;padding:0.44rem 0.65rem 0.44rem 1.9rem;font-size:0.78rem;font-family:'Manrope',sans-serif;color:var(--text-dark);font-weight:500;background:#fafafa;outline:none;transition:border-color 0.18s,box-shadow 0.18s,background 0.18s;}
   .rp-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(26,63,164,0.07);}
   .rp-input::placeholder{color:#c0c6d0;font-weight:400;}
-
   .rp-captcha{border:1.5px solid #e5e7eb;border-radius:6px;padding:0.55rem 0.75rem;background:#fafafa;display:flex;align-items:center;justify-content:space-between;margin-bottom:0.55rem;cursor:pointer;transition:border-color 0.18s;user-select:none;}
   .rp-captcha:hover{border-color:var(--blue);}
   .rp-cap-l{display:flex;align-items:center;gap:0.55rem;}
@@ -65,7 +61,6 @@ const styles = `
   @keyframes rpspin{to{transform:rotate(360deg);}}
   .rp-cap-r{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
   .rp-cap-note{font-size:0.47rem;color:#9ca3af;text-align:right;line-height:1.3;}
-
   .rp-terms{display:flex;align-items:flex-start;gap:0.4rem;margin-bottom:0.75rem;font-size:0.72rem;color:var(--text-mid);line-height:1.5;cursor:pointer;}
   .rp-terms input{width:12px;height:12px;margin-top:2px;cursor:pointer;accent-color:var(--orange);flex-shrink:0;}
   .rp-terms a{color:var(--blue);font-weight:600;text-decoration:none;}
@@ -77,9 +72,14 @@ const styles = `
   .rp-login-link{text-align:center;margin-top:0.8rem;font-size:0.76rem;color:var(--text-mid);}
   .rp-login-link a{color:var(--orange);font-weight:700;text-decoration:none;}
   .rp-login-link a:hover{text-decoration:underline;}
-
+  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.62rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-bottom:0.75rem;}
+  .g-btn:hover:not(:disabled){background:#f8f9fa;border-color:#c0c0c0;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+  .g-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .g-btn svg{width:18px;height:18px;flex-shrink:0;}
+  .or-divider{display:flex;align-items:center;gap:0.75rem;margin:0.75rem 0;font-size:0.72rem;color:#9ca3af;font-weight:600;}
+  .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e5e7eb;}
   .otp-wrap{text-align:center;padding:0.5rem 0;}
-  .otp-phone-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:1.2rem;}
+  .otp-email-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:1.2rem;}
   .otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;}
   .otp-input{width:46px;height:52px;border:2px solid #e5e7eb;border-radius:8px;text-align:center;font-size:1.3rem;font-weight:800;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;transition:all 0.18s;background:#fafafa;}
   .otp-input:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,80,26,0.1);}
@@ -91,8 +91,6 @@ const styles = `
   .otp-resend:hover:not(:disabled){text-decoration:underline;}
   .otp-error{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.78rem;color:var(--red);font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;}
   .otp-success{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.78rem;color:var(--green);font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;}
-  .otp-info{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:8px;padding:0.65rem 0.8rem;font-size:0.75rem;color:#92400e;font-weight:600;margin-bottom:1rem;line-height:1.5;}
-
   @media(max-width:768px){
     .rp-bar{padding:0 1rem;}
     .rp-bar-brand{display:none;}
@@ -102,8 +100,17 @@ const styles = `
   }
 `;
 
-// ── OTP SCREEN ────────────────────────────────────────────────────────────
-const OtpScreen = ({ userId, phone, onSuccess }) => {
+const GoogleIcon = () => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+  </svg>
+);
+
+// ── OTP SCREEN ─────────────────────────────────────────
+const OtpScreen = ({ userId, email, onSuccess }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
@@ -147,8 +154,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   const handleVerify = async () => {
     const otpString = otp.join('');
     if (otpString.length !== 6) { setError('Please enter the complete 6-digit code.'); return; }
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
       const res = await fetch(`${API_URL}/auth/verify-otp`, {
         method: 'POST',
@@ -157,23 +163,19 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
       });
       const data = await res.json();
       if (data.success) {
-        setSuccess('Phone verified! Redirecting...');
+        setSuccess('Email verified! Redirecting...');
         setTimeout(() => onSuccess(data), 1000);
       } else {
         setError(data.message || 'Invalid OTP. Please try again.');
         setOtp(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
       }
-    } catch {
-      setError('Connection error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError('Connection error. Please try again.'); }
+    finally { setLoading(false); }
   };
 
   const handleResend = async () => {
-    setResending(true);
-    setError('');
+    setResending(true); setError('');
     try {
       const res = await fetch(`${API_URL}/auth/resend-otp`, {
         method: 'POST',
@@ -185,30 +187,22 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
         setTimeLeft(600);
         setOtp(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
-        toast.success('New code sent!');
-      } else {
-        setError(data.message || 'Could not resend. Try again.');
-      }
-    } catch {
-      setError('Connection error. Please try again.');
-    } finally {
-      setResending(false);
-    }
+        toast.success('New code sent to your email!');
+      } else { setError(data.message || 'Could not resend. Try again.'); }
+    } catch { setError('Connection error. Please try again.'); }
+    finally { setResending(false); }
   };
 
   return (
     <div className="otp-wrap">
-      <div style={{fontSize:'2.5rem',marginBottom:'0.75rem'}}>📱</div>
+      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📧</div>
       <div className="rp-card-hdr">
-        <h2>Verify Your Phone</h2>
-        <p>We sent a 6-digit code to your phone</p>
+        <h2>Verify Your Email</h2>
+        <p>We sent a 6-digit code to your email</p>
         <div className="rp-line"></div>
       </div>
-      <div className="otp-phone-badge">
-        <i className="fa fa-phone" /> {phone}
-      </div>
-      <div className="otp-info">
-        ⚠️ Using <strong>Sandbox mode</strong> — go to Africa's Talking dashboard → click <strong>Launch Simulator</strong> to see your OTP code.
+      <div className="otp-email-badge">
+        <i className="fa fa-envelope" /> {email}
       </div>
       {error && <div className="otp-error"><i className="fa fa-exclamation-circle" /> {error}</div>}
       {success && <div className="otp-success"><i className="fa fa-check-circle" /> {success}</div>}
@@ -218,9 +212,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
             key={i}
             ref={el => inputRefs.current[i] = el}
             className={`otp-input${digit ? ' filled' : ''}`}
-            type="text"
-            inputMode="numeric"
-            maxLength={1}
+            type="text" inputMode="numeric" maxLength={1}
             value={digit}
             onChange={e => handleChange(i, e.target.value)}
             onKeyDown={e => handleKeyDown(i, e)}
@@ -231,7 +223,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
       <div className="otp-timer">
         {timeLeft > 0
           ? <>Code expires in <span>{formatTime(timeLeft)}</span></>
-          : <span style={{color:'var(--red)'}}>Code expired — request a new one</span>
+          : <span style={{ color: 'var(--red)' }}>Code expired — request a new one</span>
         }
       </div>
       <button className="rp-submit" onClick={handleVerify} disabled={loading || otp.join('').length !== 6}>
@@ -239,8 +231,8 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
           ? <><div className="rp-submit-spin" /> Verifying...</>
           : <><i className="fa fa-check" /> Verify & Complete Registration</>}
       </button>
-      <div style={{marginTop:'0.75rem',textAlign:'center'}}>
-        <span style={{fontSize:'0.75rem',color:'var(--text-mid)'}}>Didn't receive the code? </span>
+      <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--text-mid)' }}>Didn't receive the code? </span>
         <button className="otp-resend" onClick={handleResend} disabled={resending || timeLeft > 540}>
           {resending ? 'Sending...' : 'Resend Code'}
         </button>
@@ -249,13 +241,14 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   );
 };
 
-// ── MAIN REGISTER FORM ────────────────────────────────────────────────────
+// ── MAIN REGISTER FORM ─────────────────────────────────
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    firstName:'', lastName:'', email:'', phone:'',
-    password:'', confirmPassword:'', role:'student', studentId:''
+    firstName: '', lastName: '', email: '', phone: '',
+    password: '', confirmPassword: '', role: 'student', studentId: ''
   });
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
@@ -274,6 +267,39 @@ const RegisterForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200);
   };
 
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setGoogleLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          credential: tokenResponse.access_token,
+          role: formData.role
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        toast.success(`Welcome, ${data.user.firstName}! 🎉`);
+        const dashboardUrl = data.user.role === 'owner' ? '/landlord-dashboard' : '/dashboard';
+        setTimeout(() => navigate(dashboardUrl), 500);
+      } else {
+        toast.error(data.message || 'Google sign up failed');
+      }
+    } catch {
+      toast.error('Google sign up failed. Please try again.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error('Google sign up failed'),
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!captchaChecked) { toast.error('Please verify you are not a robot!'); return; }
@@ -285,18 +311,15 @@ const RegisterForm = () => {
       const { confirmPassword, ...dataToSend } = formData;
       const data = await register(dataToSend);
 
-      // Owner — show OTP screen
       if (data.requiresOtp) {
         setOtpUserId(data.userId);
         setShowOtp(true);
-        toast.info('Verification code sent to your phone!');
+        toast.info('Verification code sent to your email!');
         return;
       }
 
-      // Student — registered immediately
       toast.success('Registration successful! Please login.');
       setTimeout(() => navigate('/login'), 500);
-
     } catch (error) {
       toast.error(handleApiError(error));
     } finally {
@@ -305,7 +328,7 @@ const RegisterForm = () => {
   };
 
   const handleOtpSuccess = () => {
-    toast.success('Phone verified! Registration complete.');
+    toast.success('Email verified! Registration complete.');
     setTimeout(() => navigate('/login'), 500);
   };
 
@@ -322,7 +345,6 @@ const RegisterForm = () => {
     </nav>
   );
 
-  // OTP SCREEN
   if (showOtp) return (
     <>
       <style>{styles}</style>
@@ -330,14 +352,10 @@ const RegisterForm = () => {
       <Nav />
       <div className="rp-main">
         <div className="rp-card">
-          <OtpScreen
-            userId={otpUserId}
-            phone={formData.phone}
-            onSuccess={handleOtpSuccess}
-          />
+          <OtpScreen userId={otpUserId} email={formData.email} onSuccess={handleOtpSuccess} />
           <button
             onClick={() => setShowOtp(false)}
-            style={{width:'100%',padding:'0.55rem',background:'transparent',border:'1.5px solid #e5e7eb',borderRadius:'7px',cursor:'pointer',color:'var(--text-mid)',fontSize:'0.78rem',fontWeight:600,marginTop:'0.5rem',fontFamily:'Manrope,sans-serif'}}
+            style={{ width: '100%', padding: '0.55rem', background: 'transparent', border: '1.5px solid #e5e7eb', borderRadius: '7px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.5rem', fontFamily: 'Manrope,sans-serif' }}
           >
             <i className="fa fa-arrow-left" /> Back to Form
           </button>
@@ -346,7 +364,6 @@ const RegisterForm = () => {
     </>
   );
 
-  // REGISTRATION FORM
   return (
     <>
       <style>{styles}</style>
@@ -360,26 +377,35 @@ const RegisterForm = () => {
             <div className="rp-line"></div>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <span className="rp-role-lbl">I am a</span>
-            <div className="rp-role-row">
-              <div className="rp-role-opt">
-                <input type="radio" id="rs" name="role" value="student" checked={formData.role==='student'} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor="rs"><i className="fa fa-user-graduate"></i> Student</label>
-              </div>
-              <div className="rp-role-opt">
-                <input type="radio" id="ro" name="role" value="owner" checked={formData.role==='owner'} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor="ro"><i className="fa fa-building"></i> Hostel Owner</label>
-              </div>
+          <span className="rp-role-lbl">I am a</span>
+          <div className="rp-role-row">
+            <div className="rp-role-opt">
+              <input type="radio" id="rs" name="role" value="student" checked={formData.role === 'student'} onChange={handleChange} />
+              <label className="rp-role-btn" htmlFor="rs"><i className="fa fa-user-graduate"></i> Student</label>
             </div>
+            <div className="rp-role-opt">
+              <input type="radio" id="ro" name="role" value="owner" checked={formData.role === 'owner'} onChange={handleChange} />
+              <label className="rp-role-btn" htmlFor="ro"><i className="fa fa-building"></i> Hostel Owner</label>
+            </div>
+          </div>
 
-            {formData.role === 'owner' && (
-              <div style={{background:'#fffbeb',border:'1.5px solid #fcd34d',borderRadius:'8px',padding:'0.65rem 0.8rem',fontSize:'0.75rem',color:'#92400e',fontWeight:600,marginBottom:'0.75rem',lineHeight:1.5}}>
-                <i className="fa fa-shield-alt" style={{marginRight:'0.4rem'}} />
-                As a hostel owner, your phone number will be verified via SMS to protect students from fraud.
-              </div>
-            )}
+          <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
+            {googleLoading
+              ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
+              : <><GoogleIcon /> Continue with Google</>
+            }
+          </button>
 
+          <div className="or-divider">or sign up with email</div>
+
+          {formData.role === 'owner' && (
+            <div style={{ background: '#fffbeb', border: '1.5px solid #fcd34d', borderRadius: '8px', padding: '0.65rem 0.8rem', fontSize: '0.75rem', color: '#92400e', fontWeight: 600, marginBottom: '0.75rem', lineHeight: 1.5 }}>
+              <i className="fa fa-shield-alt" style={{ marginRight: '0.4rem' }} />
+              As a hostel owner, your email will be verified via OTP to protect students from fraud.
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
             <div className="rp-sec"><i className="fa fa-user"></i> Personal Information</div>
             <div className="rp-row">
               <div className="rp-grp">
@@ -415,7 +441,6 @@ const RegisterForm = () => {
                 </div>
               </div>
             )}
-
             <div className="rp-sec"><i className="fa fa-lock"></i> Security</div>
             <div className="rp-row">
               <div className="rp-grp">
@@ -434,13 +459,13 @@ const RegisterForm = () => {
 
             <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
               <div className="rp-cap-l">
-                <div className={`rp-cap-box${captchaChecked?' on':''}`}></div>
+                <div className={`rp-cap-box${captchaChecked ? ' on' : ''}`}></div>
                 {captchaLoading
                   ? <span className="rp-cap-txt spin-mode"><div className="rp-spin"></div> Verifying...</span>
                   : <span className="rp-cap-txt">{captchaChecked ? 'Verified ✓' : "I'm not a robot"}</span>}
               </div>
               <div className="rp-cap-r">
-                <i className="fa fa-shield-alt" style={{color:'#4285f4',fontSize:'1.15rem'}}></i>
+                <i className="fa fa-shield-alt" style={{ color: '#4285f4', fontSize: '1.15rem' }}></i>
                 <div className="rp-cap-note">reCAPTCHA<br />Privacy · Terms</div>
               </div>
             </div>
@@ -452,8 +477,8 @@ const RegisterForm = () => {
 
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
-                ? <><div className="rp-submit-spin"></div> {formData.role==='owner' ? 'Sending OTP...' : 'Creating Account...'}</>
-                : <><i className="fa fa-user-plus"></i> {formData.role==='owner' ? 'Continue & Verify Phone' : 'Create Account'}</>}
+                ? <><div className="rp-submit-spin"></div> {formData.role === 'owner' ? 'Sending OTP...' : 'Creating Account...'}</>
+                : <><i className="fa fa-user-plus"></i> {formData.role === 'owner' ? 'Continue & Verify Email' : 'Create Account'}</>}
             </button>
           </form>
 

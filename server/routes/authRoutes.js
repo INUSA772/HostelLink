@@ -7,13 +7,15 @@ const {
   forgotPassword,
   resetPassword,
   verifyOtp,
-  resendOtp
+  resendOtp,
+  googleAuth,
 } = require('../controllers/authController');
 const { verifyId, verifyFace } = require('../controllers/verifyController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/google', googleAuth);
 router.get('/me', protect, getMe);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
