@@ -1,13 +1,22 @@
 const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
-const Transaction = require('../models/Transaction');
 
 // @desc  Create a new booking
 // @route POST /api/bookings
 exports.createBooking = async (req, res) => {
   try {
-    const { hostelId, checkIn: checkInRaw, checkInDate, duration, roomType, specialRequests } = req.body;
-    const checkIn = checkInRaw || checkInDate; // ← accept both field names
+    const {
+      hostelId,
+      checkIn: checkInRaw,
+      checkInDate,
+      duration,
+      roomType,
+      specialRequests,
+      roomId,
+      bedspaceNumber
+    } = req.body;
+
+    const checkIn = checkInRaw || checkInDate;
 
     if (!checkIn) {
       return res.status(400).json({ success: false, message: 'Check-in date is required' });
@@ -16,8 +25,40 @@ exports.createBooking = async (req, res) => {
     const hostel = await Hostel.findById(hostelId);
     if (!hostel) return res.status(404).json({ success: false, message: 'Hostel not found' });
     if (!hostel.isActive) return res.status(400).json({ success: false, message: 'Hostel is not available' });
-    if (hostel.availableRooms < 1) return res.status(400).json({ success: false, message: 'No rooms available in this hostel' });
 
+    // ── If booking a specific bedspace ───────────────────────
+    let selectedRoom = null;
+    let roomNumberLabel = null;
+
+    if (roomId) {
+      selectedRoom = hostel.rooms.id(roomId);
+      if (!selectedRoom) {
+        return res.status(404).json({ success: false, message: 'Room not found' });
+      }
+      if (selectedRoom.availableBedspaces < 1) {
+        return res.status(400).json({ success: false, message: 'No bedspaces available in this room' });
+      }
+      // Check if this specific bedspace is already booked
+      if (bedspaceNumber) {
+        const bedspaceTaken = await Booking.findOne({
+          hostel: hostelId,
+          roomId: roomId,
+          bedspaceNumber: bedspaceNumber,
+          status: { $in: ['payment_pending', 'confirmed', 'active'] }
+        });
+        if (bedspaceTaken) {
+          return res.status(400).json({ success: false, message: `Bedspace ${bedspaceNumber} in ${selectedRoom.roomNumber} is already booked` });
+        }
+      }
+      roomNumberLabel = selectedRoom.roomNumber;
+    } else {
+      // General booking — check available rooms
+      if (hostel.availableRooms < 1) {
+        return res.status(400).json({ success: false, message: 'No rooms available in this hostel' });
+      }
+    }
+
+    // Check existing booking
     const existing = await Booking.findOne({
       student: req.user._id,
       hostel: hostelId,
@@ -27,6 +68,9 @@ exports.createBooking = async (req, res) => {
       return res.status(400).json({ success: false, message: 'You already have an active booking at this hostel' });
     }
 
+    // Determine amount
+    const amount = selectedRoom?.price > 0 ? selectedRoom.price : hostel.price;
+
     const booking = await Booking.create({
       student: req.user._id,
       hostel: hostelId,
@@ -34,9 +78,21 @@ exports.createBooking = async (req, res) => {
       duration: duration || 1,
       roomType,
       specialRequests,
-      amount: hostel.price,
+      amount,
       status: 'payment_pending',
+      roomId: roomId || null,
+      roomNumber: roomNumberLabel,
+      bedspaceNumber: bedspaceNumber || null,
     });
+
+    // ── Immediately reserve bedspace so no one else can book it ──
+    if (selectedRoom) {
+      selectedRoom.availableBedspaces = Math.max(0, selectedRoom.availableBedspaces - 1);
+      if (selectedRoom.availableBedspaces === 0) {
+        selectedRoom.isAvailable = false;
+      }
+      await hostel.save();
+    }
 
     await booking.populate('hostel', 'name address price owner');
     await booking.populate('student', 'firstName lastName email phone');
@@ -123,14 +179,17 @@ exports.confirmBooking = async (req, res) => {
     const hostel = await Hostel.findById(booking.hostel);
     if (!hostel) return res.status(404).json({ success: false, message: 'Hostel not found' });
 
-    if (hostel.availableRooms < 1) {
-      booking.status = 'cancelled';
-      await booking.save();
-      return res.status(400).json({ success: false, message: 'No rooms available. Booking cancelled.' });
+    // If room-specific booking, bedspace was already reserved on creation
+    // Just decrement available rooms for general bookings
+    if (!booking.roomId) {
+      if (hostel.availableRooms < 1) {
+        booking.status = 'cancelled';
+        await booking.save();
+        return res.status(400).json({ success: false, message: 'No rooms available. Booking cancelled.' });
+      }
+      hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
+      await hostel.save();
     }
-
-    hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
-    await hostel.save();
 
     booking.status = 'confirmed';
     booking.paymentStatus = 'paid';
@@ -165,7 +224,18 @@ exports.cancelBooking = async (req, res) => {
       return res.status(400).json({ success: false, message: `Booking is already ${booking.status}` });
     }
 
-    if (['confirmed', 'active'].includes(booking.status) && hostel) {
+    // Restore bedspace if room-specific booking
+    if (booking.roomId && hostel) {
+      const room = hostel.rooms.id(booking.roomId);
+      if (room) {
+        room.availableBedspaces = Math.min(room.totalBedspaces, room.availableBedspaces + 1);
+        room.isAvailable = true;
+        await hostel.save();
+      }
+    }
+
+    // Restore available rooms for general bookings
+    if (!booking.roomId && ['confirmed', 'active'].includes(booking.status) && hostel) {
       hostel.availableRooms = Math.min(hostel.totalRooms, hostel.availableRooms + 1);
       await hostel.save();
     }

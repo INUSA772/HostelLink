@@ -12,6 +12,20 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Hostel',
       required: true,
     },
+    // ── Room & Bedspace ──────────────────────────────────────
+    roomId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null
+    },
+    roomNumber: {
+      type: String,
+      default: null
+    },
+    bedspaceNumber: {
+      type: Number,
+      default: null
+    },
+    // ────────────────────────────────────────────────────────
     checkIn: {
       type: Date,
       required: [true, 'Check-in date is required'],
@@ -61,7 +75,6 @@ const bookingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Auto-calculate checkout date based on duration in months
 bookingSchema.pre('save', function () {
   if (this.checkIn && this.duration) {
     const checkout = new Date(this.checkIn);
