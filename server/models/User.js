@@ -22,14 +22,18 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, 'Please add phone number'],
-      trim: true
+      trim: true,
+      default: ''
     },
     password: {
       type: String,
-      required: [true, 'Please add password'],
       minlength: [8, 'Password must be at least 8 characters'],
       select: false
+    },
+    // ── Google OAuth ───────────────────────────────────────
+    googleId: {
+      type: String,
+      default: null
     },
     role: {
       type: String,
@@ -39,7 +43,7 @@ const userSchema = new mongoose.Schema(
     studentId: {
       type: String,
       required: function () {
-        return this.role === 'student';
+        return this.role === 'student' && !this.googleId;
       }
     },
     profilePicture: {
@@ -89,13 +93,16 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Only hash password if it exists and was modified
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
+  if (!this.password) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.matchPassword = function (enteredPassword) {
+  if (!this.password) return Promise.resolve(false);
   return bcrypt.compare(enteredPassword, this.password);
 };
 
