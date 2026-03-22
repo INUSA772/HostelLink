@@ -72,11 +72,11 @@ const styles = `
   .rp-login-link{text-align:center;margin-top:0.8rem;font-size:0.76rem;color:var(--text-mid);}
   .rp-login-link a{color:var(--orange);font-weight:700;text-decoration:none;}
   .rp-login-link a:hover{text-decoration:underline;}
-  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.62rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-bottom:0.75rem;}
+  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.62rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-top:0.5rem;}
   .g-btn:hover:not(:disabled){background:#f8f9fa;border-color:#c0c0c0;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
   .g-btn:disabled{opacity:0.6;cursor:not-allowed;}
   .g-btn svg{width:18px;height:18px;flex-shrink:0;}
-  .or-divider{display:flex;align-items:center;gap:0.75rem;margin:0.75rem 0;font-size:0.72rem;color:#9ca3af;font-weight:600;}
+  .or-divider{display:flex;align-items:center;gap:0.75rem;margin:0.85rem 0 0;font-size:0.72rem;color:#9ca3af;font-weight:600;}
   .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e5e7eb;}
   .otp-wrap{text-align:center;padding:0.5rem 0;}
   .otp-email-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:1.2rem;}
@@ -208,16 +208,11 @@ const OtpScreen = ({ userId, email, onSuccess }) => {
       {success && <div className="otp-success"><i className="fa fa-check-circle" /> {success}</div>}
       <div className="otp-inputs" onPaste={handlePaste}>
         {otp.map((digit, i) => (
-          <input
-            key={i}
-            ref={el => inputRefs.current[i] = el}
+          <input key={i} ref={el => inputRefs.current[i] = el}
             className={`otp-input${digit ? ' filled' : ''}`}
-            type="text" inputMode="numeric" maxLength={1}
-            value={digit}
+            type="text" inputMode="numeric" maxLength={1} value={digit}
             onChange={e => handleChange(i, e.target.value)}
-            onKeyDown={e => handleKeyDown(i, e)}
-            autoFocus={i === 0}
-          />
+            onKeyDown={e => handleKeyDown(i, e)} autoFocus={i === 0} />
         ))}
       </div>
       <div className="otp-timer">
@@ -227,9 +222,7 @@ const OtpScreen = ({ userId, email, onSuccess }) => {
         }
       </div>
       <button className="rp-submit" onClick={handleVerify} disabled={loading || otp.join('').length !== 6}>
-        {loading
-          ? <><div className="rp-submit-spin" /> Verifying...</>
-          : <><i className="fa fa-check" /> Verify & Complete Registration</>}
+        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Complete Registration</>}
       </button>
       <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
         <span style={{ fontSize: '0.75rem', color: 'var(--text-mid)' }}>Didn't receive the code? </span>
@@ -267,16 +260,20 @@ const RegisterForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200);
   };
 
+  // ── Google Sign Up ──────────────────────────────────
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
+      // Fetch user info from Google using the access token
+      const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+      });
+      const googleUserInfo = await userInfoRes.json();
+
       const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          credential: tokenResponse.access_token,
-          role: formData.role
-        })
+        body: JSON.stringify({ googleUserInfo, role: formData.role })
       });
       const data = await res.json();
       if (data.success) {
@@ -305,19 +302,16 @@ const RegisterForm = () => {
     if (!captchaChecked) { toast.error('Please verify you are not a robot!'); return; }
     if (formData.password !== formData.confirmPassword) { toast.error('Passwords do not match!'); return; }
     if (formData.role === 'student' && !formData.studentId) { toast.error('Student ID is required!'); return; }
-
     setLoading(true);
     try {
       const { confirmPassword, ...dataToSend } = formData;
       const data = await register(dataToSend);
-
       if (data.requiresOtp) {
         setOtpUserId(data.userId);
         setShowOtp(true);
         toast.info('Verification code sent to your email!');
         return;
       }
-
       toast.success('Registration successful! Please login.');
       setTimeout(() => navigate('/login'), 500);
     } catch (error) {
@@ -353,10 +347,8 @@ const RegisterForm = () => {
       <div className="rp-main">
         <div className="rp-card">
           <OtpScreen userId={otpUserId} email={formData.email} onSuccess={handleOtpSuccess} />
-          <button
-            onClick={() => setShowOtp(false)}
-            style={{ width: '100%', padding: '0.55rem', background: 'transparent', border: '1.5px solid #e5e7eb', borderRadius: '7px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.5rem', fontFamily: 'Manrope,sans-serif' }}
-          >
+          <button onClick={() => setShowOtp(false)}
+            style={{ width: '100%', padding: '0.55rem', background: 'transparent', border: '1.5px solid #e5e7eb', borderRadius: '7px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.5rem', fontFamily: 'Manrope,sans-serif' }}>
             <i className="fa fa-arrow-left" /> Back to Form
           </button>
         </div>
@@ -377,6 +369,7 @@ const RegisterForm = () => {
             <div className="rp-line"></div>
           </div>
 
+          {/* Role Selection */}
           <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             <div className="rp-role-opt">
@@ -389,15 +382,6 @@ const RegisterForm = () => {
             </div>
           </div>
 
-          <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
-            {googleLoading
-              ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
-              : <><GoogleIcon /> Continue with Google</>
-            }
-          </button>
-
-          <div className="or-divider">or sign up with email</div>
-
           {formData.role === 'owner' && (
             <div style={{ background: '#fffbeb', border: '1.5px solid #fcd34d', borderRadius: '8px', padding: '0.65rem 0.8rem', fontSize: '0.75rem', color: '#92400e', fontWeight: 600, marginBottom: '0.75rem', lineHeight: 1.5 }}>
               <i className="fa fa-shield-alt" style={{ marginRight: '0.4rem' }} />
@@ -405,6 +389,7 @@ const RegisterForm = () => {
             </div>
           )}
 
+          {/* EMAIL FORM FIRST */}
           <form onSubmit={handleSubmit}>
             <div className="rp-sec"><i className="fa fa-user"></i> Personal Information</div>
             <div className="rp-row">
@@ -456,7 +441,6 @@ const RegisterForm = () => {
                 </div>
               </div>
             </div>
-
             <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
               <div className="rp-cap-l">
                 <div className={`rp-cap-box${captchaChecked ? ' on' : ''}`}></div>
@@ -469,16 +453,22 @@ const RegisterForm = () => {
                 <div className="rp-cap-note">reCAPTCHA<br />Privacy · Terms</div>
               </div>
             </div>
-
             <label className="rp-terms">
               <input type="checkbox" required />
               <span>I agree to the <Link to="/terms">Terms &amp; Conditions</Link> and <Link to="/privacy">Privacy Policy</Link></span>
             </label>
-
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
                 ? <><div className="rp-submit-spin"></div> {formData.role === 'owner' ? 'Sending OTP...' : 'Creating Account...'}</>
                 : <><i className="fa fa-user-plus"></i> {formData.role === 'owner' ? 'Continue & Verify Email' : 'Create Account'}</>}
+            </button>
+
+            {/* GOOGLE AT BOTTOM */}
+            <div className="or-divider">or register faster with</div>
+            <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
+              {googleLoading
+                ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
+                : <><GoogleIcon /> Continue with Google</>}
             </button>
           </form>
 

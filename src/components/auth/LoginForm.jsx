@@ -67,11 +67,11 @@ const styles = `
   .rp-link{text-align:center;margin-top:0.8rem;font-size:0.76rem;color:var(--text-mid);}
   .rp-link a{color:var(--orange);font-weight:700;text-decoration:none;}
   .rp-link a:hover{text-decoration:underline;}
-  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.62rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-bottom:0.75rem;}
+  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.62rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-top:0.5rem;}
   .g-btn:hover:not(:disabled){background:#f8f9fa;border-color:#c0c0c0;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
   .g-btn:disabled{opacity:0.6;cursor:not-allowed;}
   .g-btn svg{width:18px;height:18px;flex-shrink:0;}
-  .or-divider{display:flex;align-items:center;gap:0.75rem;margin:0.75rem 0;font-size:0.72rem;color:#9ca3af;font-weight:600;}
+  .or-divider{display:flex;align-items:center;gap:0.75rem;margin:0.85rem 0 0;font-size:0.72rem;color:#9ca3af;font-weight:600;}
   .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e5e7eb;}
   @media(max-width:768px){.rp-bar{padding:0 1rem;}.rp-bar-brand{display:none;}.rp-card{max-height:85vh;}}
 `;
@@ -102,13 +102,20 @@ const LoginForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200);
   };
 
+  // ── Google Login ───────────────────────────────────
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
+      // Fetch user info from Google using access token
+      const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+      });
+      const googleUserInfo = await userInfoRes.json();
+
       const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: tokenResponse.access_token })
+        body: JSON.stringify({ googleUserInfo })
       });
       const data = await res.json();
       if (data.success) {
@@ -171,16 +178,7 @@ const LoginForm = () => {
             <div className="rp-line"></div>
           </div>
 
-          {/* Google Login */}
-          <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
-            {googleLoading
-              ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
-              : <><GoogleIcon /> Continue with Google</>
-            }
-          </button>
-
-          <div className="or-divider">or sign in with email</div>
-
+          {/* EMAIL FORM FIRST */}
           <form onSubmit={handleSubmit}>
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="email">Email Address</label>
@@ -189,7 +187,6 @@ const LoginForm = () => {
                 <input id="email" className="rp-input" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" required />
               </div>
             </div>
-
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="password">Password</label>
               <div className="rp-wrap">
@@ -197,38 +194,38 @@ const LoginForm = () => {
                 <input id="password" className="rp-input" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" required />
               </div>
             </div>
-
             <div className="rp-row-flex">
-              <label className="rp-checkbox">
-                <input type="checkbox" /> Remember me
-              </label>
+              <label className="rp-checkbox"><input type="checkbox" /> Remember me</label>
               <Link to="/forgot-password" className="rp-forgot">Forgot Password?</Link>
             </div>
-
             <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
               <div className="rp-cap-l">
                 <div className={`rp-cap-box${captchaChecked ? ' on' : ''}`}></div>
                 {captchaLoading
                   ? <span className="rp-cap-txt spin-mode"><div className="rp-spin"></div> Verifying...</span>
-                  : <span className="rp-cap-txt">{captchaChecked ? 'Verified ✓' : "I'm not a robot"}</span>
-                }
+                  : <span className="rp-cap-txt">{captchaChecked ? 'Verified ✓' : "I'm not a robot"}</span>}
               </div>
               <div className="rp-cap-r">
                 <i className="fa fa-shield-alt" style={{ color: '#4285f4', fontSize: '1.15rem' }}></i>
                 <div className="rp-cap-note">reCAPTCHA<br />Privacy · Terms</div>
               </div>
             </div>
-
             <label className="rp-terms">
               <input type="checkbox" required />
               <span>I agree to the <Link to="/terms">Terms &amp; Conditions</Link> and <Link to="/privacy">Privacy Policy</Link></span>
             </label>
-
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
                 ? <><div className="rp-submit-spin"></div> Signing in...</>
-                : <><i className="fa fa-sign-in-alt"></i> Sign In</>
-              }
+                : <><i className="fa fa-sign-in-alt"></i> Sign In</>}
+            </button>
+
+            {/* GOOGLE AT BOTTOM */}
+            <div className="or-divider">or sign in faster with</div>
+            <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
+              {googleLoading
+                ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
+                : <><GoogleIcon /> Continue with Google</>}
             </button>
           </form>
 
