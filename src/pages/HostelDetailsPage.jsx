@@ -17,7 +17,6 @@ const styles = `
   }
   html, body { font-family: "Manrope", sans-serif; background: var(--gray-bg); color: var(--text-dark); }
 
-  /* TOPBAR — real logo */
   .hd-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 999;
     background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -31,27 +30,12 @@ const styles = `
     padding: 0.4rem 0.8rem; border-radius: 6px; transition: background 0.2s;
   }
   .hd-bar-back:hover { background: var(--gray-light); }
-
-  /* Real logo in center */
-  .hd-bar-logo {
-    display: flex; align-items: center; gap: 8px; text-decoration: none;
-  }
-  .hd-bar-logo-img {
-    width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
-    border: 2px solid rgba(232,80,26,0.2); flex-shrink: 0;
-  }
+  .hd-bar-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .hd-bar-logo-img { width: 32px; height: 32px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(232,80,26,0.2); flex-shrink: 0; }
   .hd-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .hd-bar-logo-text {
-    font-size: 1rem; font-weight: 800; color: var(--orange); letter-spacing: -0.3px;
-  }
-
+  .hd-bar-logo-text { font-size: 1rem; font-weight: 800; color: var(--orange); letter-spacing: -0.3px; }
   .hd-bar-right { display: flex; gap: 0.75rem; align-items: center; }
-  .hd-bar-btn {
-    padding: 0.4rem 1rem; border-radius: 6px; border: none; cursor: pointer;
-    font-weight: 600; font-size: 0.85rem; font-family: "Manrope", sans-serif;
-    transition: all 0.2s; text-decoration: none; display: inline-flex;
-    align-items: center; gap: 0.4rem;
-  }
+  .hd-bar-btn { padding: 0.4rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; font-family: "Manrope", sans-serif; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
   .hd-bar-btn-solid { background: var(--orange); color: var(--white); }
   .hd-bar-btn-solid:hover { opacity: 0.9; }
   .hd-bar-btn-ghost { background: var(--gray-light); color: var(--text-dark); }
@@ -60,6 +44,7 @@ const styles = `
   .hd-bar-btn-nav:hover { background: var(--gray-light); }
 
   .hd-page { padding-top: 72px; max-width: 1180px; margin: 0 auto; padding-bottom: 4rem; display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; padding-left: 1rem; padding-right: 1rem; }
+
   .carousel-wrap { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .carousel-stage { position: relative; width: 100%; background: #111; aspect-ratio: 16/10; overflow: hidden; }
   .carousel-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity 0.3s; }
@@ -77,6 +62,7 @@ const styles = `
   .thumb { aspect-ratio: 1; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2.5px solid transparent; transition: all 0.2s; }
   .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .thumb:hover { border-color: var(--text-mid); } .thumb.active { border-color: var(--orange); }
+
   .detail-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .detail-price { font-size: 2.2rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 0.75rem; }
   .detail-price span { font-size: 1rem; font-weight: 500; color: var(--text-mid); }
@@ -95,11 +81,44 @@ const styles = `
   .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.5rem; }
   .amenity-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: var(--gray-bg); border-radius: 8px; font-size: 0.85rem; color: var(--text-dark); font-weight: 500; }
   .amenity-chip i { color: var(--orange); width: 16px; text-align: center; }
+
+  /* ── ROOMS SECTION ── */
+  .rooms-section { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
+  .rooms-section h3 { font-size: 1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  .rooms-section h3 i { color: var(--orange); }
+  .rooms-summary-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light); margin-top: 0.5rem; }
+  .rooms-summary-item { background: var(--gray-bg); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 700; color: var(--text-mid); display: flex; align-items: center; gap: 0.4rem; }
+  .rooms-summary-item span { color: var(--navy); font-size: 1rem; font-weight: 800; }
+  .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .room-card { border: 1.5px solid var(--gray-light); border-radius: 10px; overflow: hidden; transition: all 0.2s; background: #fafafa; }
+  .room-card:hover { border-color: var(--orange); box-shadow: 0 4px 16px rgba(232,80,26,0.12); }
+  .room-card-imgs { position: relative; height: 160px; background: #e5e7eb; overflow: hidden; }
+  .room-card-imgs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .room-card-imgs-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 6px; pointer-events: none; }
+  .room-img-btn { background: rgba(0,0,0,0.5); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; pointer-events: all; transition: background 0.2s; }
+  .room-img-btn:hover { background: rgba(0,0,0,0.8); }
+  .room-img-counter { position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+  .room-no-img { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-mid); gap: 0.4rem; font-size: 0.8rem; }
+  .room-no-img i { font-size: 2rem; opacity: 0.3; }
+  .room-card-body { padding: 0.9rem; }
+  .room-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+  .room-card-name { font-size: 0.92rem; font-weight: 800; color: var(--navy); }
+  .room-avail-badge { font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+  .room-avail-badge.available { background: rgba(16,185,129,0.12); color: #059669; }
+  .room-avail-badge.full { background: rgba(239,68,68,0.1); color: #dc2626; }
+  .room-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .room-stat { background: var(--gray-bg); border-radius: 7px; padding: 0.45rem 0.6rem; }
+  .room-stat-val { font-size: 0.9rem; font-weight: 800; color: var(--navy); }
+  .room-stat-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
+  .room-card-price { font-size: 0.88rem; font-weight: 800; color: var(--orange); margin-bottom: 0.4rem; }
+  .room-card-desc { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
   .map-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
   .map-embed { width: 100%; height: 300px; border-radius: 10px; overflow: hidden; border: none; }
   .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
   .map-address i { color: var(--orange); margin-top: 2px; }
+
   .sidebar { position: sticky; top: 72px; height: fit-content; display: flex; flex-direction: column; gap: 1rem; }
   .owner-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .owner-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
@@ -113,6 +132,7 @@ const styles = `
   .owner-btn-blue { background: var(--blue); color: var(--white); } .owner-btn-blue:hover { background: var(--navy); }
   .owner-btn-green { background: #10b981; color: var(--white); } .owner-btn-green:hover { background: #059669; }
   .owner-btn-ghost { background: var(--gray-light); color: var(--text-dark); } .owner-btn-ghost:hover { background: #dddfe1; }
+
   .book-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .book-price-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .book-price-big { font-size: 1.5rem; font-weight: 800; color: var(--orange); }
@@ -138,18 +158,20 @@ const styles = `
   .price-row.total strong { color: var(--orange); }
   .form-error { background: #fee2e2; color: #991b1b; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; border-left: 3px solid #dc2626; }
   .form-success { background: #dcfce7; color: #15803d; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; border-left: 3px solid #16a34a; }
+
   .hd-center { max-width: 1180px; margin: 0 auto; padding: 6rem 1rem 2rem; text-align: center; }
   .hd-spinner { width: 48px; height: 48px; border: 4px solid var(--gray-light); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hd-error { font-size: 1.1rem; color: var(--text-mid); margin-bottom: 1rem; }
+
   @media (max-width: 960px) { .hd-page { grid-template-columns: 1fr; } .sidebar { position: static; } }
   @media (max-width: 600px) {
     .hd-page { padding-left: 0.5rem; padding-right: 0.5rem; gap: 1rem; }
     .detail-price { font-size: 1.7rem; } .detail-name { font-size: 1.2rem; }
     .detail-grid { grid-template-columns: 1fr; } .amenities-grid { grid-template-columns: 1fr; }
     .thumb-row { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
-    .map-embed { height: 220px; }
-    .hd-bar-btn-nav { display: none; }
+    .map-embed { height: 220px; } .hd-bar-btn-nav { display: none; }
+    .rooms-grid { grid-template-columns: 1fr; }
   }
 `;
 
@@ -163,11 +185,8 @@ const AMENITY_ICONS = {
 
 const getTodayStr = () => new Date().toISOString().split('T')[0];
 const getTomorrowStr = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().split('T')[0];
+  const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0];
 };
-
 const parseDate = (str) => {
   if (!str) return null;
   const s = str.trim();
@@ -176,11 +195,82 @@ const parseDate = (str) => {
     const parts = s.split('/');
     if (parts.length === 3) {
       const [month, day, year] = parts;
-      return new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+      return new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`);
     }
   }
   return new Date(s);
 };
+
+// ── Room Card Component ────────────────────────────────────────────────────
+function RoomCard({ room }) {
+  const [imgIdx, setImgIdx] = useState(0);
+  const images = room.images || [];
+  const isAvailable = room.availableBedspaces > 0;
+
+  return (
+    <div className="room-card">
+      {/* Room Images */}
+      <div className="room-card-imgs">
+        {images.length > 0 ? (
+          <>
+            <img src={images[imgIdx]} alt={room.roomNumber} />
+            {images.length > 1 && (
+              <>
+                <div className="room-card-imgs-nav">
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p - 1 + images.length) % images.length)}>
+                    <i className="fa fa-chevron-left" />
+                  </button>
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p + 1) % images.length)}>
+                    <i className="fa fa-chevron-right" />
+                  </button>
+                </div>
+                <div className="room-img-counter">{imgIdx + 1}/{images.length}</div>
+              </>
+            )}
+          </>
+        ) : (
+          <div className="room-no-img">
+            <i className="fa fa-bed" />
+            <span>No photos</span>
+          </div>
+        )}
+      </div>
+
+      {/* Room Info */}
+      <div className="room-card-body">
+        <div className="room-card-header">
+          <span className="room-card-name">🚪 {room.roomNumber}</span>
+          <span className={`room-avail-badge ${isAvailable ? 'available' : 'full'}`}>
+            {isAvailable ? `${room.availableBedspaces} free` : 'Full'}
+          </span>
+        </div>
+
+        <div className="room-card-stats">
+          <div className="room-stat">
+            <div className="room-stat-val">{room.totalBedspaces}</div>
+            <div className="room-stat-lbl">Total Beds</div>
+          </div>
+          <div className="room-stat">
+            <div className="room-stat-val" style={{ color: isAvailable ? '#059669' : '#dc2626' }}>
+              {room.availableBedspaces}
+            </div>
+            <div className="room-stat-lbl">Available</div>
+          </div>
+        </div>
+
+        {room.price > 0 && (
+          <div className="room-card-price">
+            MK {room.price.toLocaleString()} <span style={{ fontWeight: 500, fontSize: '0.75rem', color: '#65676b' }}>/bedspace/mo</span>
+          </div>
+        )}
+
+        {room.description && (
+          <div className="room-card-desc">{room.description}</div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function HostelDetailsPage() {
   const { id } = useParams();
@@ -240,6 +330,9 @@ export default function HostelDetailsPage() {
   const rating = currentHostel.averageRating || 4.5;
   const starsStr = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
   const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(currentHostel.address || currentHostel.name)}&output=embed`;
+  const rooms = currentHostel.rooms || [];
+  const totalBedspaces = rooms.reduce((a, r) => a + (r.totalBedspaces || 0), 0);
+  const availableBedspaces = rooms.reduce((a, r) => a + (r.availableBedspaces || 0), 0);
 
   const handleMessage = () => {
     if (!isAuthenticated) { toast.error('Please login to message the owner'); navigate('/login'); return; }
@@ -263,43 +356,23 @@ export default function HostelDetailsPage() {
 
   const handleCreateBooking = async (e) => {
     e.preventDefault();
-    setBookingError('');
-    setBookingSuccess('');
-
-    if (!isAuthenticated) {
-      setBookingError('Please login to book');
-      setTimeout(() => navigate('/login'), 500);
-      return;
-    }
-
+    setBookingError(''); setBookingSuccess('');
+    if (!isAuthenticated) { setBookingError('Please login to book'); setTimeout(() => navigate('/login'), 500); return; }
     const rawDate = bookingData.checkInDate;
-    if (!rawDate || rawDate.trim() === '') { setBookingError('Please select a check-in date'); return; }
-
+    if (!rawDate?.trim()) { setBookingError('Please select a check-in date'); return; }
     const selectedDate = parseDate(rawDate);
     if (!selectedDate || isNaN(selectedDate.getTime())) { setBookingError('Please enter a valid check-in date'); return; }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0,0,0,0);
     if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
-
-    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-    const day   = String(selectedDate.getDate()).padStart(2, '0');
-    const year  = selectedDate.getFullYear();
-    const normalizedDate = `${year}-${month}-${day}`;
-
+    const month = String(selectedDate.getMonth()+1).padStart(2,'0');
+    const day = String(selectedDate.getDate()).padStart(2,'0');
+    const normalizedDate = `${selectedDate.getFullYear()}-${month}-${day}`;
     const dur = parseInt(bookingData.duration);
     if (!dur || dur < 1) { setBookingError('Duration must be at least 1 month'); return; }
     if (user?.role !== 'student') { setBookingError('Only students can make bookings'); return; }
-
     setBookingLoading(true);
     try {
-      const response = await bookingService.createBooking({
-        hostelId: id,
-        checkInDate: normalizedDate,
-        duration: dur,
-        studentId: user._id,
-      });
-
+      const response = await bookingService.createBooking({ hostelId: id, checkInDate: normalizedDate, duration: dur, studentId: user._id });
       if (response?.booking) {
         setBooking(response.booking);
         setBookingSuccess('✓ Booking created! Proceeding to payment...');
@@ -316,8 +389,7 @@ export default function HostelDetailsPage() {
   };
 
   const handlePaymentSuccess = () => {
-    setShowPaymentModal(false);
-    setShowBookingForm(false);
+    setShowPaymentModal(false); setShowBookingForm(false);
     setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
     setBooking(null);
     toast.success('🎉 Payment successful! Booking confirmed.');
@@ -329,28 +401,23 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* TOPBAR — real logo + linked nav */}
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-
         <Link to="/" className="hd-bar-logo">
-          <div className="hd-bar-logo-img">
-            <img src="/PezaHostelLogo.png" alt="PezaHostel" />
-          </div>
+          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
           <span className="hd-bar-logo-text">PezaHostel</span>
         </Link>
-
         <div className="hd-bar-right">
-          <Link to="/about"   className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-info-circle" /> About</Link>
+          <Link to="/about" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-info-circle" /> About</Link>
           <Link to="/contact" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-phone" /> Contact</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/bookings"  className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-bookmark" /> My Bookings</Link>
+              <Link to="/bookings" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-bookmark" /> My Bookings</Link>
               <Link to="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-th-large" /> Dashboard</Link>
             </>
           ) : (
             <>
-              <Link to="/login"    className="hd-bar-btn hd-bar-btn-ghost">Login</Link>
+              <Link to="/login" className="hd-bar-btn hd-bar-btn-ghost">Login</Link>
               <Link to="/register" className="hd-bar-btn hd-bar-btn-solid">Sign Up</Link>
             </>
           )}
@@ -359,6 +426,7 @@ export default function HostelDetailsPage() {
 
       <div className="hd-page">
         <div>
+
           {/* CAROUSEL */}
           <div className="carousel-wrap">
             <div className="carousel-stage">
@@ -407,12 +475,12 @@ export default function HostelDetailsPage() {
             </div>
             <div className="detail-grid">
               {[
-                { icon: 'fa-door-open',    label: 'Total Rooms',    value: currentHostel.totalRooms },
-                { icon: 'fa-check-circle', label: 'Available Now',  value: `${currentHostel.availableRooms} rooms`, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-                { icon: 'fa-home',         label: 'Room Type',      value: currentHostel.type },
-                { icon: 'fa-venus-mars',   label: 'Gender',         value: currentHostel.gender },
-                { icon: 'fa-phone',        label: 'Contact Phone',  value: currentHostel.contactPhone },
-                { icon: 'fa-eye',          label: 'Total Views',    value: currentHostel.viewCount || 0 },
+                { icon: 'fa-door-open',    label: 'Total Rooms',   value: currentHostel.totalRooms },
+                { icon: 'fa-check-circle', label: 'Available Now', value: `${currentHostel.availableRooms} rooms`, color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+                { icon: 'fa-home',         label: 'Room Type',     value: currentHostel.type },
+                { icon: 'fa-venus-mars',   label: 'Gender',        value: currentHostel.gender },
+                { icon: 'fa-phone',        label: 'Contact Phone', value: currentHostel.contactPhone },
+                { icon: 'fa-eye',          label: 'Total Views',   value: currentHostel.viewCount || 0 },
               ].map((item, i) => (
                 <div key={i} className="dg-item">
                   <div className="dg-icon" style={item.bg ? { background: item.bg } : {}}>
@@ -439,12 +507,45 @@ export default function HostelDetailsPage() {
             )}
           </div>
 
+          {/* ── ROOMS SECTION ── */}
+          {rooms.length > 0 && (
+            <div className="rooms-section">
+              <h3><i className="fa fa-bed" /> Available Rooms & Bedspaces</h3>
+
+              <div className="rooms-summary-bar">
+                <div className="rooms-summary-item">
+                  <i className="fa fa-door-open" style={{ color: 'var(--orange)' }} />
+                  <span>{rooms.length}</span> Rooms
+                </div>
+                <div className="rooms-summary-item">
+                  <i className="fa fa-bed" style={{ color: 'var(--orange)' }} />
+                  <span>{totalBedspaces}</span> Total Bedspaces
+                </div>
+                <div className="rooms-summary-item">
+                  <i className="fa fa-check-circle" style={{ color: '#059669' }} />
+                  <span style={{ color: '#059669' }}>{availableBedspaces}</span> Available
+                </div>
+                <div className="rooms-summary-item">
+                  <i className="fa fa-times-circle" style={{ color: '#dc2626' }} />
+                  <span style={{ color: '#dc2626' }}>{totalBedspaces - availableBedspaces}</span> Occupied
+                </div>
+              </div>
+
+              <div className="rooms-grid">
+                {rooms.map((room, i) => (
+                  <RoomCard key={room._id || i} room={room} />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* MAP */}
           <div className="map-card">
             <h3><i className="fa fa-map-marked-alt" style={{ color: 'var(--orange)', marginRight: '0.4rem' }} /> Location on Map</h3>
             <iframe className="map-embed" title="Hostel Location" src={mapEmbedUrl} allowFullScreen loading="lazy" />
             <div className="map-address"><i className="fa fa-map-marker-alt" /><span>{currentHostel.address}</span></div>
           </div>
+
         </div>
 
         {/* SIDEBAR */}
@@ -481,6 +582,12 @@ export default function HostelDetailsPage() {
             <div className="book-info-row"><span>Room Type</span><strong>{currentHostel.type}</strong></div>
             <div className="book-info-row"><span>Gender</span><strong>{currentHostel.gender}</strong></div>
             <div className="book-info-row"><span>Available</span><strong>{currentHostel.availableRooms} of {currentHostel.totalRooms}</strong></div>
+            {rooms.length > 0 && (
+              <div className="book-info-row">
+                <span>Bedspaces</span>
+                <strong style={{ color: '#059669' }}>{availableBedspaces} of {totalBedspaces} free</strong>
+              </div>
+            )}
             <div className="book-info-row">
               <span>Status</span>
               <strong style={{ color: currentHostel.verified ? '#10b981' : '#6b7280' }}>
@@ -495,22 +602,13 @@ export default function HostelDetailsPage() {
             {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
             <div className="form-group">
               <label>Check-in Date *</label>
-              <input
-                type="date"
-                value={bookingData.checkInDate}
-                min={getTodayStr()}
-                onChange={e => { setBookingData(prev => ({ ...prev, checkInDate: e.target.value })); setBookingError(''); }}
-              />
+              <input type="date" value={bookingData.checkInDate} min={getTodayStr()}
+                onChange={e => { setBookingData(prev => ({ ...prev, checkInDate: e.target.value })); setBookingError(''); }} />
             </div>
             <div className="form-group">
               <label>Duration (months) *</label>
-              <input
-                type="number"
-                min="1"
-                max="12"
-                value={bookingData.duration}
-                onChange={e => { setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 })); setBookingError(''); }}
-              />
+              <input type="number" min="1" max="12" value={bookingData.duration}
+                onChange={e => { setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 })); setBookingError(''); }} />
             </div>
             {priceBreakdown && (
               <div className="price-breakdown">
@@ -522,8 +620,7 @@ export default function HostelDetailsPage() {
             <button type="submit" className="book-btn" disabled={bookingLoading} style={{ marginTop: '0.5rem' }}>
               {bookingLoading
                 ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
-                : <><i className="fa fa-arrow-right" /> Continue to Payment</>
-              }
+                : <><i className="fa fa-arrow-right" /> Continue to Payment</>}
             </button>
           </form>
 
@@ -532,32 +629,22 @@ export default function HostelDetailsPage() {
               booking={booking}
               hostel={currentHostel}
               isOpen={showPaymentModal}
-              onClose={() => {
-                setShowPaymentModal(false);
-                setShowBookingForm(false);
-                setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
-              }}
+              onClose={() => { setShowPaymentModal(false); setShowBookingForm(false); setBookingData({ checkInDate: getTomorrowStr(), duration: 1 }); }}
               onSuccess={handlePaymentSuccess}
             />
           )}
 
           <div className="owner-card">
             <div className="owner-top">
-              <div className="owner-avatar">
-                {currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}
-              </div>
+              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}</div>
               <div>
                 <div className="owner-info-role">Listed by</div>
-                <div className="owner-info-name">
-                  {currentHostel.owner?.firstName} {currentHostel.owner?.lastName}
-                </div>
+                <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
                 <div className="owner-online"><div className="owner-dot" /> Active on PezaHostel</div>
               </div>
             </div>
             <div className="owner-btns">
-              <button className="owner-btn owner-btn-blue" onClick={handleMessage}>
-                <i className="fa fa-comment-dots" /> Message Owner
-              </button>
+              <button className="owner-btn owner-btn-blue" onClick={handleMessage}><i className="fa fa-comment-dots" /> Message Owner</button>
               <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
                 <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
               </a>
@@ -569,9 +656,8 @@ export default function HostelDetailsPage() {
             </div>
           </div>
 
-          {/* Quick nav links */}
           <div style={{ background: 'var(--white)', borderRadius: 'var(--radius)', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <Link to="/about"   style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
+            <Link to="/about" style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
               <i className="fa fa-info-circle" /> About PezaHostel
             </Link>
             <Link to="/contact" style={{ fontSize: '0.85rem', color: 'var(--orange)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
