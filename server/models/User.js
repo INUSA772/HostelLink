@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
+      unique: true,
+      sparse: true,
       default: ''
     },
     password: {
@@ -37,14 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['student', 'owner', 'admin'],
-      default: 'student'
-    },
-    studentId: {
-      type: String,
-      required: function () {
-        return this.role === 'student' && !this.googleId;
-      }
+      enum: ['tenant', 'landlord', 'admin'],
+      default: 'tenant'
     },
     profilePicture: {
       type: String,
@@ -52,12 +48,14 @@ const userSchema = new mongoose.Schema(
     },
     verified: {
       type: Boolean,
-      default: false
+      default: true
     },
     verificationStatus: {
       type: String,
       enum: ['unverified', 'pending', 'verified', 'rejected'],
-      default: 'unverified'
+      default: function() {
+        return this.role === 'landlord' ? 'pending' : 'verified';
+      }
     },
     verificationDocuments: [{ type: String }],
     isActive: {
@@ -75,7 +73,7 @@ const userSchema = new mongoose.Schema(
     otpExpire: { type: Date },
     otpAttempts: { type: Number, default: 0 },
     otpBlockedUntil: { type: Date },
-    phoneVerified: { type: Boolean, default: false },
+    phoneVerified: { type: Boolean, default: true },
 
     // ── Escrow wallet ──────────────────────────────────────
     walletBalance: { type: Number, default: 0 },

@@ -27,9 +27,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const getDashboardUrl = (userRole) => {
-    if (userRole === 'admin')   return '/admin';           // ← added
-    if (userRole === 'student') return '/dashboard';
-    if (userRole === 'owner')   return '/landlord-dashboard';
+    if (userRole === 'admin')     return '/admin';
+    if (userRole === 'tenant')    return '/dashboard';
+    if (userRole === 'landlord')  return '/landlord-dashboard';
     return '/';
   };
 
@@ -52,12 +52,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.register(userData);
 
-      // Owner needs OTP — do NOT log them in yet
+      // Landlord needs verification - don't log them in yet
       if (data.requiresOtp) {
         return data;
       }
 
-      // Student — log in immediately
+      // Tenant - log in immediately
       setUser(data.user);
       setToken(data.token);
       setIsAuthenticated(true);
