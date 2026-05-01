@@ -16,33 +16,29 @@ const styles = `
     --green:#16a34a; --red:#dc2626; --yellow:#f59e0b;
   }
   html,body,#root{height:100%;width:100%;overflow:hidden;font-family:'Manrope',sans-serif;}
-  .rp-bar{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;background:rgba(8,18,48,0.97);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.3);}
+  .rp-bar{position:fixed;top:0;left:0;right:0;z-index:500;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;background:rgba(8,18,48,0.97);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.3);}
   .rp-bar-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-  .rp-bar-logo-img{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;}
+  .rp-bar-logo-img{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;}
   .rp-bar-logo-img img{width:100%;height:100%;object-fit:cover;}
-  .rp-bar-brand span{color:rgba(255,255,255,0.42);font-size:0.5rem;}
+  .rp-bar-brand span{color:rgba(255,255,255,0.42);font-size:0.45rem;}
   .rp-bar-actions{display:flex;align-items:center;gap:0.5rem;}
-  .rp-bar-login{color:rgba(255,255,255,0.78);font-size:0.75rem;font-weight:600;background:transparent;border:1.5px solid rgba(255,255,255,0.2);padding:0.3rem 0.85rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.18s;}
+  .rp-bar-login{color:rgba(255,255,255,0.78);font-size:0.7rem;font-weight:600;background:transparent;border:1.5px solid rgba(255,255,255,0.2);padding:0.25rem 0.8rem;border-radius:6px;cursor:pointer;text-decoration:none;}
   .rp-bar-login:hover{border-color:rgba(255,255,255,0.55);color:#fff;}
-  .rp-bar-signup{color:#fff;font-size:0.75rem;font-weight:700;background:var(--orange);border:none;padding:0.3rem 0.85rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:opacity 0.18s;}
+  .rp-bar-signup{color:#fff;font-size:0.7rem;font-weight:700;background:var(--orange);border:none;padding:0.25rem 0.8rem;border-radius:6px;cursor:pointer;text-decoration:none;}
   .rp-bar-signup:hover{opacity:0.88;}
-  .rp-main{position:fixed;top:56px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:#f4f6fb;overflow:hidden;}
-  .rp-card{background:#fff;border-radius:var(--card-radius);box-shadow:0 8px 32px rgba(13,27,62,0.12);padding:1.2rem;width:400px;max-width:90%;max-height:90vh;overflow-y:auto;}
-  .rp-card::-webkit-scrollbar{width:4px;}
-  .rp-card::-webkit-scrollbar-track{background:#f1f1f1;border-radius:4px;}
-  .rp-card::-webkit-scrollbar-thumb{background:var(--orange);border-radius:4px;}
-  .rp-card-hdr{text-align:center;margin-bottom:0.8rem;}
-  .rp-card-hdr h2{font-size:1.2rem;font-weight:800;color:var(--navy);margin-bottom:0.1rem;}
+  .rp-main{position:fixed;top:52px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:#f4f6fb;overflow:auto;padding:0.5rem;}
+  .rp-card{background:#fff;border-radius:var(--card-radius);box-shadow:0 8px 28px rgba(13,27,62,0.12);padding:1rem 1.2rem;width:400px;max-width:100%;margin:0 auto;}
+  .rp-card-hdr{text-align:center;margin-bottom:0.5rem;}
+  .rp-card-hdr h2{font-size:1.25rem;font-weight:800;color:var(--navy);margin-bottom:0.1rem;}
   .rp-card-hdr p{color:var(--text-mid);font-size:0.7rem;}
-  .rp-line{width:32px;height:2.5px;background:var(--orange);border-radius:2px;margin:0.35rem auto 0;}
+  .rp-line{width:35px;height:2.5px;background:var(--orange);border-radius:2px;margin:0.35rem auto 0;}
   .rp-role-lbl{display:block;font-size:0.6rem;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.25rem;}
-  .rp-role-row{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.7rem;}
+  .rp-role-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.7rem;}
   .rp-role-opt{position:relative;}
   .rp-role-opt input{position:absolute;opacity:0;width:0;height:0;}
   .rp-role-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.4rem 0.5rem;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;color:var(--text-mid);background:#fafafa;transition:all 0.18s;}
   .rp-role-btn:hover{border-color:var(--blue);color:var(--blue);}
   .rp-role-opt input:checked+.rp-role-btn{border-color:var(--orange);color:var(--orange);background:#fff5f2;}
-  .rp-row{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0;}
   .rp-grp{margin-bottom:0.6rem;}
   .rp-lbl{display:flex;justify-content:space-between;align-items:center;font-size:0.6rem;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.2rem;}
   .rp-strength{font-size:0.55rem;text-transform:none;font-weight:600;}
@@ -53,11 +49,12 @@ const styles = `
   .rp-ico{position:absolute;left:0.65rem;color:var(--blue);font-size:0.7rem;pointer-events:none;}
   .rp-toggle{position:absolute;right:0.65rem;color:#9ca3af;font-size:0.7rem;cursor:pointer;z-index:2;}
   .rp-toggle:hover{color:var(--blue);}
-  .rp-input{width:100%;border:1.5px solid #e5e7eb;border-radius:8px;padding:0.42rem 0.6rem 0.42rem 1.9rem;font-size:0.75rem;font-family:'Manrope',sans-serif;color:var(--text-dark);font-weight:500;background:#fafafa;outline:none;transition:all 0.18s;}
+  .rp-input{width:100%;border:1.5px solid #e5e7eb;border-radius:8px;padding:0.45rem 0.7rem 0.45rem 2rem;font-size:0.75rem;font-family:'Manrope',sans-serif;color:var(--text-dark);font-weight:500;background:#fafafa;outline:none;transition:all 0.18s;}
   .rp-input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(26,63,164,0.07);}
   .rp-input.password-weak{border-color:var(--red);}
   .rp-input.password-medium{border-color:var(--yellow);}
   .rp-input.password-strong{border-color:var(--green);}
+  .rp-input::placeholder{font-size:0.7rem;color:#cbd5e1;}
   .rp-captcha{border:1.5px solid #e5e7eb;border-radius:8px;padding:0.45rem 0.7rem;background:#fafafa;display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;cursor:pointer;}
   .rp-cap-l{display:flex;align-items:center;gap:0.5rem;}
   .rp-cap-box{width:16px;height:16px;border:2px solid #9ca3af;border-radius:3px;display:flex;align-items:center;justify-content:center;}
@@ -71,31 +68,32 @@ const styles = `
   .rp-terms{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.7rem;font-size:0.68rem;color:var(--text-mid);}
   .rp-terms input{width:12px;height:12px;cursor:pointer;accent-color:var(--orange);flex-shrink:0;}
   .rp-terms a{color:var(--blue);font-weight:600;text-decoration:none;}
-  .rp-submit{width:100%;background:var(--orange);color:#fff;border:none;cursor:pointer;padding:0.55rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity 0.18s;}
+  .rp-submit{width:100%;background:var(--orange);color:#fff;border:none;cursor:pointer;padding:0.6rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:700;font-family:'Manrope',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity 0.18s;}
   .rp-submit:hover:not(:disabled){opacity:0.9;}
   .rp-submit:disabled{opacity:0.6;cursor:not-allowed;}
   .rp-submit-spin{width:11px;height:11px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:rpspin 0.7s linear infinite;}
-  .rp-login-link{text-align:center;margin-top:0.7rem;font-size:0.72rem;color:var(--text-mid);}
+  .rp-login-link{text-align:center;margin-top:0.7rem;font-size:0.7rem;color:var(--text-mid);}
   .rp-login-link a{color:var(--orange);font-weight:700;text-decoration:none;}
-  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.55rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-top:0.5rem;}
+  .g-btn{width:100%;background:#fff;color:#3c4043;border:1.5px solid #dadce0;cursor:pointer;padding:0.6rem 1rem;border-radius:8px;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.18s;margin-top:0.5rem;}
   .g-btn:hover:not(:disabled){background:#f8f9fa;border-color:#c0c0c0;}
   .g-btn:disabled{opacity:0.6;cursor:not-allowed;}
   .g-btn svg{width:16px;height:16px;}
-  .or-divider{display:flex;align-items:center;gap:0.6rem;margin:0.7rem 0 0.5rem;font-size:0.68rem;color:#9ca3af;}
+  .or-divider{display:flex;align-items:center;gap:0.7rem;margin:0.7rem 0 0.5rem;font-size:0.68rem;color:#9ca3af;}
   .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e5e7eb;}
   .otp-wrap{text-align:center;}
-  .otp-email-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.4rem 0.8rem;font-size:0.75rem;font-weight:700;color:#1d4ed8;margin-bottom:1rem;}
-  .otp-inputs{display:flex;gap:0.4rem;justify-content:center;margin-bottom:0.8rem;}
-  .otp-input{width:42px;height:48px;border:2px solid #e5e7eb;border-radius:8px;text-align:center;font-size:1.2rem;font-weight:800;font-family:'Manrope',sans-serif;outline:none;}
+  .otp-phone-badge{display:inline-flex;align-items:center;gap:0.5rem;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.45rem 0.9rem;font-size:0.75rem;font-weight:700;color:#1d4ed8;margin-bottom:1rem;}
+  .otp-inputs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:0.9rem;}
+  .otp-input{width:44px;height:50px;border:2px solid #e5e7eb;border-radius:8px;text-align:center;font-size:1.2rem;font-weight:800;font-family:'Manrope',sans-serif;outline:none;}
   .otp-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,80,26,0.1);}
-  .otp-timer{font-size:0.7rem;color:var(--text-mid);margin-bottom:0.7rem;}
+  .otp-timer{font-size:0.7rem;color:var(--text-mid);margin-bottom:0.8rem;}
   .otp-timer span{color:var(--orange);font-weight:800;}
   .otp-resend{background:transparent;border:none;color:var(--blue);font-size:0.72rem;font-weight:700;cursor:pointer;}
   .otp-resend:disabled{color:#9ca3af;cursor:not-allowed;}
 
   @media (max-width: 480px) {
-    .rp-card{padding:1rem;width:95%;}
-    .rp-row{grid-template-columns:1fr;gap:0;}
+    .rp-card{padding:0.9rem;width:95%;}
+    .rp-input{padding:0.4rem 0.6rem 0.4rem 1.8rem;}
+    .otp-input{width:38px;height:45px;}
   }
 `;
 
@@ -108,7 +106,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const OtpScreen = ({ userId, email, onSuccess }) => {
+const OtpScreen = ({ userId, phone, onSuccess }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
@@ -130,6 +128,21 @@ const OtpScreen = ({ userId, email, onSuccess }) => {
     if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) {
+      setOtp(pasted.split(''));
+      inputRefs.current[5]?.focus();
+    }
+  };
+
   const handleVerify = async () => {
     const otpString = otp.join('');
     if (otpString.length !== 6) { toast.error('Please enter the complete code'); return; }
@@ -142,11 +155,33 @@ const OtpScreen = ({ userId, email, onSuccess }) => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('Email verified!');
+        toast.success('Phone number verified!');
         setTimeout(() => onSuccess(data), 1000);
       } else {
         toast.error(data.message || 'Invalid OTP');
         setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+      }
+    } catch { toast.error('Connection error'); }
+    finally { setLoading(false); }
+  };
+
+  const handleResend = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/resend-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTimeLeft(600);
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+        toast.success('New verification code sent!');
+      } else {
+        toast.error(data.message || 'Could not resend code');
       }
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
@@ -155,28 +190,44 @@ const OtpScreen = ({ userId, email, onSuccess }) => {
   return (
     <div className="otp-wrap">
       <div className="rp-card-hdr">
-        <h2>Verify Email</h2>
-        <p>Enter the code sent to {email}</p>
+        <h2>Verify Your Phone</h2>
+        <p>Enter the 6-digit code sent to your phone</p>
         <div className="rp-line"></div>
       </div>
-      <div className="otp-inputs">
+      <div className="otp-phone-badge">
+        <i className="fa fa-phone" /> {phone}
+      </div>
+      <div className="otp-inputs" onPaste={handlePaste}>
         {otp.map((digit, i) => (
           <input key={i} ref={el => inputRefs.current[i] = el}
             className="otp-input" type="text" inputMode="numeric" maxLength={1} value={digit}
-            onChange={e => handleChange(i, e.target.value)} autoFocus={i === 0} />
+            onChange={e => handleChange(i, e.target.value)}
+            onKeyDown={e => handleKeyDown(i, e)} autoFocus={i === 0} />
         ))}
       </div>
-      <div className="otp-timer">Expires in <span>{formatTime(timeLeft)}</span></div>
+      <div className="otp-timer">
+        {timeLeft > 0 ? (
+          <>Code expires in <span>{formatTime(timeLeft)}</span></>
+        ) : (
+          <span style={{ color: 'var(--red)' }}>Code expired - request a new one</span>
+        )}
+      </div>
       <button className="rp-submit" onClick={handleVerify} disabled={loading || otp.join('').length !== 6}>
-        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : 'Verify & Continue'}
+        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Continue</>}
       </button>
+      <div style={{ marginTop: '0.75rem', textAlign: 'center' }}>
+        <span style={{ fontSize: '0.7rem', color: 'var(--text-mid)' }}>Didn't receive the code? </span>
+        <button className="otp-resend" onClick={handleResend} disabled={loading || timeLeft > 550}>
+          {loading ? 'Sending...' : 'Resend Code'}
+        </button>
+      </div>
     </div>
   );
 };
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    fullName: '', email: '', phone: '', password: '', confirmPassword: '', role: 'tenant'
+    fullName: '', phone: '', password: '', confirmPassword: '', role: 'tenant'
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -189,16 +240,13 @@ const RegisterForm = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Password strength checker
   const checkPasswordStrength = (password) => {
     if (!password) return '';
-    
     let strength = 0;
     if (password.length >= 8) strength++;
     if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
     if (password.match(/\d/)) strength++;
     if (password.match(/[^a-zA-Z\d]/)) strength++;
-    
     if (strength <= 2) return 'weak';
     if (strength === 3) return 'medium';
     return 'strong';
@@ -207,7 +255,6 @@ const RegisterForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
     if (name === 'password') {
       setPasswordStrength(checkPasswordStrength(value));
     }
@@ -218,7 +265,6 @@ const RegisterForm = () => {
     setTimeout(() => setCaptchaChecked(true), 800);
   };
 
-  // SECURITY: Rate limiting tracking
   const [attempts, setAttempts] = useState(0);
   
   const handleGoogleSuccess = async (tokenResponse) => {
@@ -232,20 +278,20 @@ const RegisterForm = () => {
       const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ googleUserInfo, role: formData.role })
+        body: JSON.stringify({ 
+          googleUserInfo, 
+          role: formData.role, 
+          phone: formData.phone,
+          fullName: formData.fullName || googleUserInfo.name
+        })
       });
       const data = await res.json();
       
       if (data.success) {
-        // SECURITY: Generate secure session token
-        const token = data.token;
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // SECURITY: Set token expiry
         const expiry = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
         localStorage.setItem('tokenExpiry', expiry);
-        
         toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
         const dashboardUrl = data.user.role === 'landlord' ? '/landlord-dashboard' : '/dashboard';
         setTimeout(() => navigate(dashboardUrl), 500);
@@ -267,7 +313,6 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // SECURITY: Rate limiting
     if (attempts >= 5) {
       toast.error('Too many registration attempts. Please try again later.');
       return;
@@ -278,7 +323,6 @@ const RegisterForm = () => {
       return;
     }
     
-    // SECURITY: Password validation
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match!');
       return;
@@ -289,37 +333,33 @@ const RegisterForm = () => {
       return;
     }
     
-    // SECURITY: Password strength check
     if (passwordStrength === 'weak') {
       toast.error('Please use a stronger password (mix of uppercase, lowercase, numbers, and special characters)');
       return;
     }
     
-    // SECURITY: Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address');
+    // Malawian phone number validation
+    const phoneRegex = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error('Enter valid Malawian number (e.g., 0888123456 or +265888123456)');
       return;
     }
     
-    // SECURITY: Phone validation
-const phoneRegex = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
-if (!phoneRegex.test(formData.phone)) {
-  toast.error('Please enter a valid Malawian phone number (e.g., 0888123456 or +265888123456)');
-  return;
-}
+    if (!formData.fullName.trim()) {
+      toast.error('Please enter your full name');
+      return;
+    }
     
     setAttempts(prev => prev + 1);
     setLoading(true);
     
     try {
-      // SECURITY: Hash password before sending (additional layer)
       const data = await register(formData);
       
       if (data.requiresOtp) {
         setOtpUserId(data.userId);
         setShowOtp(true);
-        toast.info('Verification code sent!');
+        toast.info('Verification code sent to your phone!');
       } else {
         toast.success('Registration successful! Please login');
         setTimeout(() => navigate('/login'), 500);
@@ -332,7 +372,7 @@ if (!phoneRegex.test(formData.phone)) {
   };
 
   const handleOtpSuccess = () => {
-    toast.success('Email verified! Please login');
+    toast.success('Phone verified! Please login');
     setTimeout(() => navigate('/login'), 500);
   };
 
@@ -352,10 +392,11 @@ if (!phoneRegex.test(formData.phone)) {
   if (showOtp) return (
     <>
       <style>{styles}</style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <Nav />
       <div className="rp-main">
         <div className="rp-card">
-          <OtpScreen userId={otpUserId} email={formData.email} onSuccess={handleOtpSuccess} />
+          <OtpScreen userId={otpUserId} phone={formData.phone} onSuccess={handleOtpSuccess} />
         </div>
       </div>
     </>
@@ -370,7 +411,7 @@ if (!phoneRegex.test(formData.phone)) {
         <div className="rp-card">
           <div className="rp-card-hdr">
             <h2>Create Account</h2>
-            <p>Secure & verified platform</p>
+            <p>Join Malawi's trusted rental platform</p>
             <div className="rp-line"></div>
           </div>
 
@@ -391,24 +432,15 @@ if (!phoneRegex.test(formData.phone)) {
               <label className="rp-lbl">Full Name</label>
               <div className="rp-wrap">
                 <i className="fa fa-user rp-ico"></i>
-                <input className="rp-input" type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Majid inusa" required autoComplete="name" />
+                <input className="rp-input" type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="John Banda" required autoComplete="name" />
               </div>
             </div>
 
-            <div className="rp-row">
-              <div className="rp-grp">
-                <label className="rp-lbl">Email</label>
-                <div className="rp-wrap">
-                  <i className="fa fa-envelope rp-ico"></i>
-                  <input className="rp-input" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="hello@example.com" required autoComplete="email" />
-                </div>
-              </div>
-              <div className="rp-grp">
-                <label className="rp-lbl">Phone</label>
-                <div className="rp-wrap">
-                  <i className="fa fa-phone rp-ico"></i>
-                  <input className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+265998123454" required autoComplete="tel" />
-                </div>
+            <div className="rp-grp">
+              <label className="rp-lbl">Phone Number</label>
+              <div className="rp-wrap">
+                <i className="fa fa-phone rp-ico"></i>
+                <input className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="0888123456 or +265888123456" required autoComplete="tel" />
               </div>
             </div>
 
