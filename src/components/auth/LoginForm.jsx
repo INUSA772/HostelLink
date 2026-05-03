@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
@@ -92,15 +92,27 @@ const GoogleIcon = () => (
   </svg>
 );
 
+// ── decides where to send user after login ──
+const getRedirectPath = (user, from) => {
+  if (from && from !== '/login' && from !== '/register') return from;
+  if (user.role === 'landlord') return '/landlord-dashboard';
+  if (user.role === 'admin')    return '/admin';
+  return '/dashboard';
+};
+
 const LoginForm = () => {
-  const [formData, setFormData] = useState({ phone: '', password: '', role: 'tenant' });
+  const [formData, setFormData]         = useState({ phone: '', password: '', role: 'tenant' });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]           = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { login }  = useAuth();
+  const navigate   = useNavigate();
+  const location   = useLocation();
+
+  // where they were trying to go before being sent to login
+  const from = location.state?.from || null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -113,7 +125,6 @@ const LoginForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200);
   };
 
-  // Google Login
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
@@ -122,18 +133,19 @@ const LoginForm = () => {
       });
       const googleUserInfo = await userInfoRes.json();
 
-      const res = await fetch(`${API_URL}/auth/google`, {
+      const res  = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ googleUserInfo, role: formData.role })
       });
       const data = await res.json();
+
       if (data.success) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         toast.success(`Welcome back, ${data.user.fullName || data.user.firstName}!`);
-        const dashboardUrl = data.user.role === 'landlord' ? '/landlord-dashboard' : '/dashboard';
-        setTimeout(() => navigate(dashboardUrl), 500);
+        // ── redirect to where they came from or their dashboard ──
+        setTimeout(() => navigate(getRedirectPath(data.user, from)), 500);
       } else {
         toast.error(data.message || 'Google login failed');
       }
@@ -151,40 +163,39 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!captchaChecked) { 
-      toast.error('Please verify you are not a robot!'); 
+
+    if (!captchaChecked) {
+      toast.error('Please verify you are not a robot!');
       return;
     }
-    
-    // Validate Malawian phone number
+
     const phoneRegex = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast.error('Enter valid Malawian number (e.g., 0888123456 or +265888123456)');
       return;
     }
-    
+
     if (!formData.password) {
       toast.error('Please enter your password');
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await login(formData);
       toast.success('Login successful!');
-      
-      // Redirect based on role and verification status
+
       if (response.user.role === 'landlord') {
         if (response.user.verificationStatus === 'pending') {
           toast.info('Your account is pending verification. You will be notified once approved.');
         } else if (response.user.verificationStatus === 'rejected') {
           toast.error('Verification failed. Please contact support.');
         }
-        navigate('/landlord-dashboard');
-      } else {
-        navigate('/dashboard');
       }
+
+      // ── redirect to where they came from or their dashboard ──
+      navigate(getRedirectPath(response.user, from), { replace: true });
+
     } catch (error) {
       toast.error(handleApiError(error));
     } finally {
@@ -203,7 +214,7 @@ const LoginForm = () => {
           <div className="rp-bar-brand"><span>FIND YOUR HOME</span></div>
         </Link>
         <div className="rp-bar-actions">
-          <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
+          <Link to="/login"    className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
           <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
         </div>
       </nav>
@@ -216,15 +227,16 @@ const LoginForm = () => {
             <div className="rp-line"></div>
           </div>
 
-          {/* Role Selection */}
           <div className="rp-role-lbl">I am a</div>
           <div className="rp-role-row">
             <div className="rp-role-opt">
-              <input type="radio" id="rt" name="role" value="tenant" checked={formData.role === 'tenant'} onChange={handleChange} />
+              <input type="radio" id="rt" name="role" value="tenant"
+                checked={formData.role === 'tenant'} onChange={handleChange} />
               <label className="rp-role-btn" htmlFor="rt"><i className="fa fa-user"></i> Tenant</label>
             </div>
             <div className="rp-role-opt">
-              <input type="radio" id="rl" name="role" value="landlord" checked={formData.role === 'landlord'} onChange={handleChange} />
+              <input type="radio" id="rl" name="role" value="landlord"
+                checked={formData.role === 'landlord'} onChange={handleChange} />
               <label className="rp-role-btn" htmlFor="rl"><i className="fa fa-home"></i> Landlord</label>
             </div>
           </div>
@@ -234,7 +246,10 @@ const LoginForm = () => {
               <label className="rp-lbl" htmlFor="phone">Phone Number</label>
               <div className="rp-wrap">
                 <i className="fa fa-phone rp-ico"></i>
-                <input id="phone" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="0888123456 or +265888123456" required autoComplete="tel" />
+                <input id="phone" className="rp-input" type="tel" name="phone"
+                  value={formData.phone} onChange={handleChange}
+                  placeholder="0888123456 or +265888123456"
+                  required autoComplete="tel" />
               </div>
             </div>
 
@@ -242,8 +257,13 @@ const LoginForm = () => {
               <label className="rp-lbl" htmlFor="password">Password</label>
               <div className="rp-wrap">
                 <i className="fa fa-lock rp-ico"></i>
-                <input id="password" className="rp-input" type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" required autoComplete="current-password" />
-                <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`} onClick={() => setShowPassword(!showPassword)}></i>
+                <input id="password" className="rp-input"
+                  type={showPassword ? "text" : "password"}
+                  name="password" value={formData.password} onChange={handleChange}
+                  placeholder="Enter your password"
+                  required autoComplete="current-password" />
+                <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`}
+                  onClick={() => setShowPassword(!showPassword)}></i>
               </div>
             </div>
 
@@ -258,8 +278,9 @@ const LoginForm = () => {
               <div className="rp-cap-l">
                 <div className={`rp-cap-box${captchaChecked ? ' on' : ''}`}></div>
                 {captchaLoading
-                  ? <span className="rp-cap-txt spin-mode"><div className="rp-spin"></div> Verifying...</span>
-                  : <span className="rp-cap-txt">{captchaChecked ? 'Verified ✓' : "I'm not a robot"}</span>}
+                  ? <span className="rp-cap-txt"><div className="rp-spin"></div> Verifying...</span>
+                  : <span className="rp-cap-txt">{captchaChecked ? 'Verified ✓' : "I'm not a robot"}</span>
+                }
               </div>
               <div className="rp-cap-r">
                 <i className="fa fa-shield-alt" style={{ color: '#4285f4', fontSize: '1rem' }}></i>
@@ -270,19 +291,22 @@ const LoginForm = () => {
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
                 ? <><div className="rp-submit-spin"></div> Signing in...</>
-                : <><i className="fa fa-sign-in-alt"></i> Sign In</>}
+                : <><i className="fa fa-sign-in-alt"></i> Sign In</>
+              }
             </button>
 
-            {/* Google Authentication */}
             <div className="or-divider">or sign in faster with</div>
             <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
               {googleLoading
                 ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting...</>
-                : <><GoogleIcon /> Continue with Google</>}
+                : <><GoogleIcon /> Continue with Google</>
+              }
             </button>
           </form>
 
-          <p className="rp-link">Don't have an account? <Link to="/register">Sign up here</Link></p>
+          <p className="rp-link">
+            Don't have an account? <Link to="/register">Sign up here</Link>
+          </p>
         </div>
       </div>
     </>
