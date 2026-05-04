@@ -10,13 +10,16 @@ connectDB();
 const app    = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'https://hostel-link.vercel.app',
+  'https://pezahostel.vercel.app',
+  'https://pezanyumba.vercel.app',
+];
+
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:5173',
-      'https://hostel-link.vercel.app',
-      'https://pezahostel.vercel.app',
-    ],
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -33,11 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://hostel-link.vercel.app',
-    'https://pezahostel.vercel.app',
-  ],
+  origin: ALLOWED_ORIGINS,
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -45,7 +44,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // ── HEALTH CHECKS ─────────────────────────────────
 app.get('/', (req, res) => {
-  res.json({ success: true, message: 'PezaHostel API is running!' });
+  res.json({ success: true, message: 'PezaNyumba API is running!' });
 });
 app.get('/api/test', (req, res) => {
   res.json({ success: true, message: 'API is working!' });
@@ -60,7 +59,7 @@ const reviewRoutes       = require('./routes/reviewRoutes');
 const userRoutes         = require('./routes/userRoutes');
 const messageRoutes      = require('./routes/messageRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
-const adminRoutes        = require('./routes/adminRoutes'); // ← NEW
+const adminRoutes        = require('./routes/adminRoutes');
 
 app.use('/api/auth',          authRoutes);
 app.use('/api/hostels',       hostelRoutes);
@@ -70,7 +69,7 @@ app.use('/api/reviews',       reviewRoutes);
 app.use('/api/users',         userRoutes);
 app.use('/api/messages',      messageRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/admin',         adminRoutes); // ← NEW
+app.use('/api/admin',         adminRoutes);
 
 // ── GLOBAL ERROR HANDLER ──────────────────────────
 app.use((err, req, res, next) => {
