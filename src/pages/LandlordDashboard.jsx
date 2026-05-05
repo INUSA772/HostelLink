@@ -321,7 +321,7 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
         <div className="ld-hcard-stats">
           <div className="ld-hcard-stat">
             <div className="ld-hcard-stat-val">{hostel.availableRooms ?? 0}/{hostel.totalRooms ?? 0}</div>
-            <div className="ld-hcard-stat-lbl">Rooms</div>
+            <div className="ld-hcard-stat-lbl">Units</div>
           </div>
           <div className="ld-hcard-stat">
             <div className="ld-hcard-stat-val">{hostel.totalViews ?? hostel.viewCount ?? 0}</div>
@@ -364,6 +364,9 @@ const LandlordDashboard = () => {
   const [deleting,       setDeleting]       = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
+  // Helper — display-friendly role label
+  const roleLabel = user?.role === 'land_seller' ? 'Land Seller' : 'Landlord';
+
   const fetchHostels = useCallback(async (silent = false) => {
     if (!token) return;
     if (!silent) setLoadingHostels(true);
@@ -405,9 +408,9 @@ const LandlordDashboard = () => {
   useEffect(() => {
     if (authLoading) return;
     if (!isAuthenticated) { navigate('/login'); return; }
-    // ✅ FIXED: was 'owner', now 'landlord'
-    if (user?.role !== 'landlord') {
-      toast.error('Access denied. Landlord account required.');
+    // Allow both landlord and land_seller
+    if (user?.role !== 'landlord' && user?.role !== 'land_seller') {
+      toast.error('Access denied. Landlord or Land Seller account required.');
       navigate('/');
       return;
     }
@@ -517,8 +520,7 @@ const LandlordDashboard = () => {
           <div>
             <div className="ld-drawer-uname">{user?.firstName} {user?.lastName}</div>
             <div className="ld-drawer-uemail">{user?.email}</div>
-            {/* ✅ FIXED: was 'Owner', now 'Landlord' */}
-            <div className="ld-drawer-role">Landlord</div>
+            <div className="ld-drawer-role">{roleLabel}</div>
           </div>
         </div>
         <nav className="ld-drawer-nav">
@@ -551,8 +553,7 @@ const LandlordDashboard = () => {
           <Link to="/" className="ld-logo">
             <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
             <span className="ld-logo-name">PezaNyumba</span>
-            {/* ✅ FIXED: was 'Owner', now 'Landlord' */}
-            <span className="ld-logo-badge">Landlord</span>
+            <span className="ld-logo-badge">{roleLabel}</span>
           </Link>
         </div>
         <div className="ld-topbar-right">
@@ -566,10 +567,11 @@ const LandlordDashboard = () => {
         <div className="ld-banner">
           <div className="ld-banner-inner">
             <div>
-              {/* ✅ FIXED: was 'Owner Portal', now 'Landlord Portal' */}
-              <div className="ld-banner-eyebrow">🏢 Landlord Portal</div>
+              <div className="ld-banner-eyebrow">
+                {user?.role === 'land_seller' ? '🌱 Land Seller Portal' : '🏢 Landlord Portal'}
+              </div>
               <h1>Welcome back, {user?.firstName}!</h1>
-              <p>Manage your properties and connect with tenants</p>
+              <p>Manage your properties and connect with buyers</p>
             </div>
             <div className="ld-banner-btns">
               <button className="ld-btn ld-btn-orange" onClick={() => navigate('/hostels/create')}>
@@ -659,7 +661,7 @@ const LandlordDashboard = () => {
               <div className="ld-empty">
                 <div className="ld-empty-ico"><FaBuilding /></div>
                 <h3>No properties listed yet</h3>
-                <p>Start by adding your first property to connect with tenants looking for accommodation</p>
+                <p>Start by adding your first property to connect with buyers and tenants</p>
                 <button className="ld-btn ld-btn-orange" onClick={() => navigate('/hostels/create')}>
                   <FaPlus /> List Your First Property
                 </button>
@@ -706,8 +708,8 @@ const LandlordDashboard = () => {
                   <table className="ld-table">
                     <thead>
                       <tr>
-                        <th>Property Name</th><th>Location</th><th>Rooms</th>
-                        <th>Price/Month</th><th>Views</th><th>Rating</th>
+                        <th>Property Name</th><th>Location</th><th>Units</th>
+                        <th>Price</th><th>Views</th><th>Rating</th>
                         <th>Status</th><th>Actions</th>
                       </tr>
                     </thead>

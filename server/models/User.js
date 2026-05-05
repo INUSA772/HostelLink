@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['tenant', 'landlord', 'admin'],
-      default: 'tenant'
+      enum: ['landlord', 'land_seller', 'admin'], // tenant removed, land_seller added
+      default: 'landlord'
     },
     profilePicture: {
       type: String,
@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['unverified', 'pending', 'verified', 'rejected'],
       default: function() {
-        return this.role === 'landlord' ? 'pending' : 'verified';
+        return (this.role === 'landlord' || this.role === 'land_seller') ? 'pending' : 'verified';
       }
     },
     verificationDocuments: [{ type: String }],
