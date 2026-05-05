@@ -10,6 +10,14 @@ function waLink(num) {
   return `https://wa.me/${intl}`;
 }
 
+// ── Track WhatsApp click ──────────────────────────────────────────────────────
+function trackWhatsappClick(hostelId) {
+  if (!hostelId) return;
+  fetch(`${API_URL}/admin/hostels/${hostelId}/whatsapp-click`, {
+    method: "POST",
+  }).catch(() => {}); // silent — never block the user
+}
+
 const PROPERTY_TYPES = [
   { icon: "fa fa-home",        label: "House",           desc: "Family homes"        },
   { icon: "fa fa-building",    label: "Flat/Apartment",  desc: "Modern apartments"   },
@@ -73,7 +81,6 @@ function normalise(p) {
     gender:       p.gender || "",
     amenities:    p.amenities || [],
     images:       p.images || p.photos || [],
-    // contact — check every possible field from the API
     contactPhone: p.contactPhone || p.owner?.phone || p.phone || "",
     whatsapp:     p.whatsapp || p.contactPhone || p.owner?.phone || p.phone || "",
     ownerName:    p.owner ? `${p.owner.firstName || ""} ${p.owner.lastName || ""}`.trim() : "",
@@ -281,7 +288,6 @@ const styles = `
   .ph-prop-meta { display:flex; gap:.8rem; margin-top:.5rem; flex-wrap:wrap; }
   .ph-prop-meta-item { font-size:.72rem; color:var(--mid); display:flex; align-items:center; gap:3px; }
   .ph-prop-meta-item i { color:var(--teal); }
-  /* action buttons on card */
   .ph-prop-actions { padding:.75rem 1rem; border-top:1px solid var(--light-border); display:flex; gap:.5rem; }
   .ph-prop-wa {
     flex:1; background:var(--wa); color:white; border:none; border-radius:8px;
@@ -381,8 +387,8 @@ const styles = `
    PROPERTY CARD  (with WhatsApp + Call)
 ═══════════════════════════════════════ */
 function PropertyCard({ property }) {
-  const p    = normalise(property);
-  const imgs = p.images;
+  const p      = normalise(property);
+  const imgs   = p.images;
   const imgSrc = imgs[0] || null;
   const isForSale = p.listingType.toLowerCase().includes("sale");
   const wa   = waLink(p.whatsapp);
@@ -420,7 +426,13 @@ function PropertyCard({ property }) {
 
       <div className="ph-prop-actions">
         {wa && (
-          <a className="ph-prop-wa" href={wa} target="_blank" rel="noopener noreferrer">
+          <a
+            className="ph-prop-wa"
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsappClick(p._id)}
+          >
             <i className="fab fa-whatsapp" /> WhatsApp
           </a>
         )}
@@ -462,7 +474,6 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
       return;
     }
 
-    // Fallback: fetch directly — uses /hostels endpoint
     const param = filter === "district"
       ? `district=${encodeURIComponent(filterValue)}`
       : `type=${encodeURIComponent(filterValue)}`;
@@ -618,7 +629,7 @@ function TrustBar() {
 }
 
 /* ═══════════════════════════════════════
-   DISTRICTS SLIDER  — fetches /hostels
+   DISTRICTS SLIDER
 ═══════════════════════════════════════ */
 function DistrictsSection({ allProperties }) {
   const [filtered, setFiltered]     = useState([]);
@@ -704,9 +715,9 @@ function DistrictsSection({ allProperties }) {
           ) : (
             <div className="ph-prop-track" style={{transform:`translateX(-${current * CARD_W}px)`}}>
               {filtered.map((raw, i) => {
-                const p       = normalise(raw);
-                const imgSrc  = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
-                const price   = formatPrice(p.price, p.listingType);
+                const p      = normalise(raw);
+                const imgSrc = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
+                const price  = formatPrice(p.price, p.listingType);
                 return (
                   <button
                     key={p._id || i}
@@ -805,11 +816,11 @@ function TypesSection({ allProperties }) {
 ═══════════════════════════════════════ */
 function LocationsSection({ onDistrictClick }) {
   const locs = [
-    { img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"           },
-    { img:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop",          count:"9 Properties",   name:"Blantyre", desc:"Commercial Hub",           icon:"fa fa-building"       },
-    { img:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&auto=format&fit=crop",          count:"5 Properties",   name:"Zomba",    desc:"University Town",          icon:"fa fa-university"     },
-    { img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region Hub",      icon:"fa fa-mountain"       },
-    { img:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&auto=format&fit=crop",          count:"6 Properties",   name:"Mangochi", desc:"Lakeshore Living",         icon:"fa fa-water"          },
+    { img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"       },
+    { img:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop",          count:"9 Properties",   name:"Blantyre", desc:"Commercial Hub",           icon:"fa fa-building"   },
+    { img:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&auto=format&fit=crop",          count:"5 Properties",   name:"Zomba",    desc:"University Town",          icon:"fa fa-university" },
+    { img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region Hub",      icon:"fa fa-mountain"   },
+    { img:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&auto=format&fit=crop",          count:"6 Properties",   name:"Mangochi", desc:"Lakeshore Living",         icon:"fa fa-water"      },
   ];
   return (
     <section className="ph-locs-sec">
@@ -832,7 +843,7 @@ function LocationsSection({ onDistrictClick }) {
 }
 
 /* ═══════════════════════════════════════
-   DUAL / FEATURES / FAQ  (unchanged)
+   DUAL / FEATURES / FAQ
 ═══════════════════════════════════════ */
 function DualSection() {
   return (
@@ -903,18 +914,16 @@ function FAQSection() {
 }
 
 /* ═══════════════════════════════════════
-   ROOT — fetches from /hostels
+   ROOT
 ═══════════════════════════════════════ */
 export default function Home() {
   const [allProperties, setAllProperties] = useState([]);
   const [locDrawer, setLocDrawer]         = useState(null);
 
   useEffect(() => {
-    // ✅ correct endpoint — your backend uses /hostels
     fetch(`${API_URL}/hostels?limit=500`)
       .then(r => r.json())
       .then(data => {
-        // handle both {hostels:[]} and {properties:[]} and {data:[]}
         const arr = data.hostels || data.properties || data.data || [];
         setAllProperties(arr);
       })

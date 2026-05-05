@@ -188,10 +188,11 @@ const GoogleIcon = () => (
 const getRedirectPath = (user, from) => {
   if (from && from !== '/login' && from !== '/register') return from;
   if (user.role === 'landlord')    return '/landlord-dashboard';
-  if (user.role === 'land_seller') return '/landlord-dashboard'; // ← add this
+  if (user.role === 'land_seller') return '/landlord-dashboard';
   if (user.role === 'admin')       return '/admin';
   return '/dashboard';
 };
+
 /* ─────────────────────────────────────────────
    MAIN LOGIN FORM
 ───────────────────────────────────────────── */
@@ -226,7 +227,7 @@ const LoginForm = () => {
         headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
       });
       const googleUserInfo = await infoRes.json();
-      const res  = await fetch(`${API_URL}/auth/google`, {
+      const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ googleUserInfo, role: formData.role }),
@@ -254,16 +255,28 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!captcha) { toast.error('Please verify you are not a robot'); return; }
-    const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
-    if (!phoneRgx.test(formData.phone)) {
-      toast.error('Enter a valid Malawian number (e.g. 0888123456)');
-      return;
-    }
     if (!formData.password) { toast.error('Please enter your password'); return; }
+
+    const isEmail = formData.phone.includes('@');
+
+    if (!isEmail) {
+      const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+      if (!phoneRgx.test(formData.phone)) {
+        toast.error('Enter a valid Malawian number (e.g. 0888123456)');
+        return;
+      }
+    }
+
+    // Send email or phone depending on what was entered
+    const payload = isEmail
+      ? { email: formData.phone, password: formData.password }
+      : { phone: formData.phone, password: formData.password };
+
     setLoading(true);
     try {
-      const response = await login(formData);
+      const response = await login(payload);
       toast.success('Login successful!');
       if (response.user.role === 'landlord') {
         if (response.user.verificationStatus === 'pending') {
@@ -312,8 +325,8 @@ const LoginForm = () => {
           <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             {[
-              { value: 'land_seller',   icon: 'fa-user', label: 'Land Seller'   },
-              { value: 'landlord', icon: 'fa-home', label: 'Landlord' },
+              { value: 'land_seller', icon: 'fa-user', label: 'Land Seller' },
+              { value: 'landlord',    icon: 'fa-home', label: 'Landlord'    },
             ].map(r => (
               <div className="rp-role-opt" key={r.value}>
                 <input type="radio" id={`role_${r.value}`} name="role"
@@ -327,14 +340,14 @@ const LoginForm = () => {
 
           <form onSubmit={handleSubmit}>
 
-            {/* Phone */}
+            {/* Phone / Email */}
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="phone">Phone Number</label>
               <div className="rp-wrap">
                 <i className="fa fa-phone rp-ico" />
-                <input id="phone" className="rp-input" type="tel" name="phone"
+                <input id="phone" className="rp-input" type="text" name="phone"
                   value={formData.phone} onChange={handleChange}
-                  placeholder="0888123456 or +265888123456"
+                  placeholder="0888123456 or admin@email.com"
                   required autoComplete="tel" />
               </div>
             </div>
