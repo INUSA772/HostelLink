@@ -7,9 +7,6 @@ import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-/* ─────────────────────────────────────────────
-   STYLES
-───────────────────────────────────────────── */
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,7 +16,6 @@ const styles = `
     --amber:       #f5a623;
     --amber-light: #fef3d8;
     --amber-dark:  #d4870a;
-    --white:       #fff;
     --off-white:   #f7f8fa;
     --border:      #e8eaed;
     --text-dark:   #111827;
@@ -33,36 +29,32 @@ const styles = `
   }
   html, body, #root { height: 100%; font-family: var(--font); }
 
-  /* ── NAV ── */
+  /* NAV */
   .rp-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
     padding: 0 1.5rem; background: var(--navy);
     box-shadow: 0 2px 16px rgba(0,0,0,.25);
   }
-  .rp-bar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .rp-bar-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
   .rp-bar-logo-img {
-    width: 36px; height: 36px; border-radius: 9px; overflow: hidden;
-    background: white; 
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
+    background: white; display: flex; align-items: center; justify-content: center;
   }
   .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; }
-  .rp-bar-brand strong { display: block; font-size: .92rem; font-weight: 800; color: #fff; letter-spacing: -.2px; }
-  .rp-bar-brand span   { font-size: .56rem; color: rgba(255,255,255,.45); letter-spacing: .6px; }
+  .rp-bar-brand strong { font-size: .9rem; font-weight: 800; color: #fff; }
   .rp-bar-login {
-    color: rgba(255,255,255,.8); font-size: .8rem; font-weight: 700;
-    border: 1.5px solid rgba(255,255,255,.2); padding: .32rem .9rem;
+    color: rgba(255,255,255,.8); font-size: .78rem; font-weight: 700;
+    border: 1.5px solid rgba(255,255,255,.2); padding: .28rem .85rem;
     border-radius: 8px; cursor: pointer; text-decoration: none; transition: all .18s;
-    font-family: var(--font);
   }
   .rp-bar-login:hover { border-color: var(--amber); color: var(--amber); }
 
-  /* ── FULL-SCREEN BG ── */
+  /* BG */
   .rp-main {
-    position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
     display: flex; align-items: center; justify-content: center;
-    overflow-y: auto; padding: 1.2rem 1rem;
+    overflow-y: auto; padding: .75rem 1rem;
     background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
     background-size: cover; background-position: center;
   }
@@ -72,72 +64,60 @@ const styles = `
     pointer-events: none;
   }
 
-  /* ── CARD ── */
+  /* CARD */
   .rp-card {
     position: relative; z-index: 2;
-    background: #fff; border-radius: 18px;
-    box-shadow: 0 28px 70px rgba(0,0,0,.28);
-    padding: 1.8rem 1.8rem 1.4rem;
-    width: 400px; max-width: 100%;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.28);
+    padding: 1.4rem 1.6rem 1.2rem;
+    width: 420px; max-width: 100%;
   }
 
-  /* ── HEADER ── */
-  .rp-hdr { text-align: center; margin-bottom: 1.2rem; }
-  .rp-hdr h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); letter-spacing: -.3px; }
-  .rp-hdr p  { font-size: .78rem; color: var(--text-mid); margin-top: .2rem; }
-  .rp-line   { width: 36px; height: 3px; background: var(--amber); border-radius: 2px; margin: .45rem auto 0; }
+  /* HEADER */
+  .rp-hdr { text-align: center; margin-bottom: .9rem; }
+  .rp-hdr h2 { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); }
+  .rp-hdr p  { font-size: .74rem; color: var(--text-mid); margin-top: .15rem; }
+  .rp-line   { width: 32px; height: 3px; background: var(--amber); border-radius: 2px; margin: .35rem auto 0; }
 
-  /* ── ROLE PILLS ── */
-  .rp-role-lbl {
-    font-size: .62rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: .5px;
-    display: block; margin-bottom: .35rem;
-  }
-  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1rem; }
+  /* ROLE */
+  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-bottom: .85rem; }
   .rp-role-opt { position: relative; }
   .rp-role-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
   .rp-role-btn {
-    display: flex; align-items: center; justify-content: center; gap: .4rem;
-    padding: .55rem .5rem; border: 1.5px solid var(--border);
-    border-radius: 9px; cursor: pointer; font-size: .78rem;
+    display: flex; align-items: center; justify-content: center; gap: .35rem;
+    padding: .45rem .5rem; border: 1.5px solid var(--border);
+    border-radius: 8px; cursor: pointer; font-size: .75rem;
     font-weight: 700; color: var(--text-mid); background: var(--off-white);
     transition: all .18s; font-family: var(--font);
   }
   .rp-role-btn:hover { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); }
   .rp-role-opt input:checked + .rp-role-btn {
     border-color: var(--amber); color: var(--amber-dark);
-    background: var(--amber-light);
-    box-shadow: 0 0 0 2px rgba(245,166,35,.2);
+    background: var(--amber-light); box-shadow: 0 0 0 2px rgba(245,166,35,.2);
   }
 
-  /* ── NOTICE BANNER ── */
-  .rp-notice {
-    background: var(--amber-light); border: 1.5px solid #f0d89a;
-    border-radius: 9px; padding: .6rem .85rem; margin-bottom: 1rem;
-    display: flex; align-items: flex-start; gap: .5rem;
-    font-size: .74rem; color: #7a4f00; line-height: 1.5;
-  }
-  .rp-notice i { color: var(--amber); margin-top: 1px; flex-shrink: 0; }
+  /* TWO COLUMN ROW */
+  .rp-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
 
-  /* ── FORM FIELDS ── */
-  .rp-grp { margin-bottom: .75rem; }
+  /* FORM FIELDS */
+  .rp-grp { margin-bottom: .6rem; }
   .rp-lbl {
     display: flex; justify-content: space-between; align-items: center;
-    font-size: .62rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: .4px; margin-bottom: .22rem;
+    font-size: .6rem; font-weight: 700; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: .4px; margin-bottom: .18rem;
   }
-  .rp-strength { font-size: .6rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
+  .rp-strength { font-size: .58rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
   .rp-strength.weak   { color: var(--red); }
   .rp-strength.medium { color: var(--yellow); }
   .rp-strength.strong { color: var(--green); }
   .rp-wrap { position: relative; display: flex; align-items: center; }
-  .rp-ico    { position: absolute; left: .7rem; color: var(--amber-dark); font-size: .78rem; pointer-events: none; z-index: 1; }
-  .rp-toggle { position: absolute; right: .7rem; color: #9ca3af; font-size: .78rem; cursor: pointer; z-index: 2; }
+  .rp-ico    { position: absolute; left: .65rem; color: var(--amber-dark); font-size: .75rem; pointer-events: none; z-index: 1; }
+  .rp-toggle { position: absolute; right: .65rem; color: #9ca3af; font-size: .75rem; cursor: pointer; z-index: 2; }
   .rp-toggle:hover { color: var(--amber-dark); }
   .rp-input {
-    width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
-    padding: .52rem .75rem .52rem 2.1rem;
-    font-size: .8rem; font-family: var(--font);
+    width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: .46rem .7rem .46rem 2rem;
+    font-size: .78rem; font-family: var(--font);
     color: var(--text-dark); font-weight: 500; background: var(--off-white);
     outline: none; transition: all .18s;
   }
@@ -145,90 +125,89 @@ const styles = `
     border-color: var(--amber); background: #fff;
     box-shadow: 0 0 0 3px rgba(245,166,35,.12);
   }
-  .rp-input::placeholder { font-size: .73rem; color: #c3c8d0; }
+  .rp-input::placeholder { font-size: .7rem; color: #c3c8d0; }
   .rp-input.password-weak   { border-color: var(--red); }
   .rp-input.password-medium { border-color: var(--yellow); }
   .rp-input.password-strong { border-color: var(--green); }
 
-  /* ── WHATSAPP FIELD ── */
-  .rp-wa-ico { position: absolute; left: .7rem; color: var(--wa); font-size: .9rem; pointer-events: none; z-index: 1; }
+  /* WHATSAPP */
+  .rp-wa-ico { position: absolute; left: .65rem; color: var(--wa); font-size: .85rem; pointer-events: none; z-index: 1; }
   .rp-input.wa-field:focus { border-color: var(--wa); box-shadow: 0 0 0 3px rgba(37,211,102,.12); }
-  .rp-wa-note { font-size: .65rem; color: var(--text-mid); margin-top: .18rem; display: flex; align-items: center; gap: 4px; }
+  .rp-wa-note { font-size: .6rem; color: var(--text-mid); margin-top: .12rem; display: flex; align-items: center; gap: 3px; }
   .rp-wa-note i { color: var(--wa); }
 
-  /* ── CAPTCHA ── */
+  /* CAPTCHA + TERMS ROW */
+  .rp-bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: .7rem; align-items: center; }
   .rp-captcha {
-    border: 1.5px solid var(--border); border-radius: 9px;
-    padding: .5rem .75rem; background: var(--off-white);
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: .42rem .6rem; background: var(--off-white);
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: .75rem; cursor: pointer; transition: border-color .2s;
+    cursor: pointer; transition: border-color .2s; height: 100%;
   }
   .rp-captcha:hover { border-color: var(--amber); }
-  .rp-cap-l { display: flex; align-items: center; gap: .5rem; }
+  .rp-cap-l { display: flex; align-items: center; gap: .4rem; }
   .rp-cap-box {
-    width: 16px; height: 16px; border: 2px solid #9ca3af;
+    width: 15px; height: 15px; border: 2px solid #9ca3af;
     border-radius: 3px; display: flex; align-items: center; justify-content: center;
-    transition: all .2s;
+    transition: all .2s; flex-shrink: 0;
   }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .6rem; font-weight: 700; }
-  .rp-cap-txt { font-size: .74rem; font-weight: 600; color: var(--text-dark); }
+  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .55rem; font-weight: 700; }
+  .rp-cap-txt { font-size: .68rem; font-weight: 600; color: var(--text-dark); }
   .rp-spin {
-    width: 11px; height: 11px; border: 2px solid #e5e7eb;
+    width: 10px; height: 10px; border: 2px solid #e5e7eb;
     border-top-color: var(--amber); border-radius: 50%;
     animation: rpspin .7s linear infinite; display: inline-block;
   }
   @keyframes rpspin { to { transform: rotate(360deg); } }
-  .rp-cap-note { font-size: .48rem; color: #9ca3af; text-align: right; line-height: 1.3; }
-
-  /* ── TERMS ── */
+  .rp-cap-note { font-size: .45rem; color: #9ca3af; text-align: right; line-height: 1.3; }
   .rp-terms {
-    display: flex; align-items: center; gap: .4rem;
-    margin-bottom: .85rem; font-size: .7rem; color: var(--text-mid); cursor: pointer;
+    display: flex; align-items: center; gap: .35rem;
+    font-size: .66rem; color: var(--text-mid); cursor: pointer; line-height: 1.4;
   }
-  .rp-terms input { width: 13px; height: 13px; cursor: pointer; accent-color: var(--navy); flex-shrink: 0; }
+  .rp-terms input { width: 12px; height: 12px; cursor: pointer; accent-color: var(--navy); flex-shrink: 0; }
   .rp-terms a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
   .rp-terms a:hover { color: var(--amber); }
 
-  /* ── SUBMIT ── */
+  /* SUBMIT */
   .rp-submit {
     width: 100%; background: var(--navy); color: #fff; border: none;
-    cursor: pointer; padding: .7rem 1rem; border-radius: 9px;
-    font-size: .84rem; font-weight: 700; font-family: var(--font);
+    cursor: pointer; padding: .62rem 1rem; border-radius: 9px;
+    font-size: .82rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background .2s, transform .15s, box-shadow .2s;
+    transition: background .2s, transform .15s;
     box-shadow: 0 4px 16px rgba(15,25,35,.28);
   }
-  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,25,35,.35); }
-  .rp-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); }
+  .rp-submit:disabled { opacity: .6; cursor: not-allowed; }
   .rp-submit-spin {
-    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35);
+    width: 11px; height: 11px; border: 2px solid rgba(255,255,255,.35);
     border-top-color: #fff; border-radius: 50%; animation: rpspin .7s linear infinite;
   }
 
-  /* ── GOOGLE ── */
+  /* GOOGLE */
   .or-div {
-    display: flex; align-items: center; gap: .6rem;
-    margin: .75rem 0 .55rem; font-size: .7rem; color: #9ca3af;
+    display: flex; align-items: center; gap: .5rem;
+    margin: .55rem 0 .45rem; font-size: .67rem; color: #9ca3af;
   }
   .or-div::before, .or-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .g-btn {
     width: 100%; background: #fff; color: #3c4043;
     border: 1.5px solid #dadce0; cursor: pointer;
-    padding: .6rem 1rem; border-radius: 9px;
-    font-size: .8rem; font-weight: 700; font-family: var(--font);
+    padding: .55rem 1rem; border-radius: 9px;
+    font-size: .78rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: all .18s;
   }
-  .g-btn:hover:not(:disabled) { background: var(--off-white); border-color: #b0b0b0; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-  .g-btn svg { width: 16px; height: 16px; }
+  .g-btn:hover:not(:disabled) { background: var(--off-white); border-color: #b0b0b0; }
+  .g-btn svg { width: 15px; height: 15px; }
 
-  /* ── SIGN IN LINK ── */
-  .rp-link { text-align: center; margin-top: .9rem; font-size: .73rem; color: var(--text-mid); }
+  /* SIGN IN */
+  .rp-link { text-align: center; margin-top: .65rem; font-size: .7rem; color: var(--text-mid); }
   .rp-link a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
   .rp-link a:hover { color: var(--amber); }
 
-  /* ── OTP ── */
+  /* OTP */
   .otp-wrap { text-align: center; }
   .otp-phone-badge {
     display: inline-flex; align-items: center; gap: .5rem;
@@ -249,17 +228,15 @@ const styles = `
     background: transparent; border: none; color: var(--amber-dark);
     font-size: .7rem; font-weight: 700; cursor: pointer; font-family: var(--font);
   }
-  .otp-resend:hover { color: var(--amber); }
   .otp-resend:disabled { color: #9ca3af; cursor: not-allowed; }
 
   @media (max-width: 480px) {
-    .rp-card { padding: 1.4rem 1.1rem; }
-    .rp-bar  { padding: 0 1rem; }
-    .otp-input { width: 36px; height: 43px; }
+    .rp-card { padding: 1.2rem 1rem; }
+    .rp-row { grid-template-columns: 1fr; }
+    .rp-bottom-row { grid-template-columns: 1fr; }
   }
 `;
 
-/* ─── Google Icon ─── */
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -269,10 +246,9 @@ const GoogleIcon = () => (
   </svg>
 );
 
-/* ─── OTP Screen ─── */
 const OtpScreen = ({ userId, phone, onSuccess }) => {
-  const [otp, setOtp]         = useState(['', '', '', '', '', '']);
-  const [loading, setLoading] = useState(false);
+  const [otp, setOtp]           = useState(['', '', '', '', '', '']);
+  const [loading, setLoading]   = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const inputRefs = useRef([]);
 
@@ -323,7 +299,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
       });
       const d = await r.json();
       if (d.success) { setTimeLeft(600); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); toast.success('New code sent!'); }
-      else { toast.error(d.message || 'Could not resend'); }
+      else toast.error(d.message || 'Could not resend');
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
   };
@@ -347,17 +323,13 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
       <div className="otp-timer">
         {timeLeft > 0
           ? <>Expires in <span>{fmt(timeLeft)}</span></>
-          : <span style={{ color: '#dc2626' }}>Code expired</span>
-        }
+          : <span style={{ color: '#dc2626' }}>Code expired</span>}
       </div>
       <button className="rp-submit" onClick={verify} disabled={loading || otp.join('').length !== 6}>
-        {loading
-          ? <><div className="rp-submit-spin" /> Verifying...</>
-          : <><i className="fa fa-check" /> Verify & Continue</>
-        }
+        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Continue</>}
       </button>
-      <div style={{ marginTop: '.65rem', textAlign: 'center' }}>
-        <span style={{ fontSize: '.7rem', color: '#6b7280' }}>Didn't get it? </span>
+      <div style={{ marginTop: '.55rem', textAlign: 'center' }}>
+        <span style={{ fontSize: '.68rem', color: '#6b7280' }}>Didn't get it? </span>
         <button className="otp-resend" onClick={resend} disabled={loading || timeLeft > 550}>
           {loading ? 'Sending…' : 'Resend'}
         </button>
@@ -366,9 +338,6 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   MAIN REGISTER FORM
-───────────────────────────────────────────── */
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     fullName: '', phone: '', whatsapp: '', sameAsPhone: true,
@@ -417,7 +386,6 @@ const RegisterForm = () => {
     setTimeout(() => { setCaptchaLoading(false); setCaptcha(true); }, 1100);
   };
 
-  /* Google OAuth */
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
@@ -440,7 +408,7 @@ const RegisterForm = () => {
         localStorage.setItem('tokenExpiry', new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
         toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
         setTimeout(() => navigate('/landlord-dashboard'), 500);
-      } else { toast.error(data.message || 'Google sign-up failed'); }
+      } else toast.error(data.message || 'Google sign-up failed');
     } catch { toast.error('Google sign-up failed'); }
     finally { setGoogleLoading(false); }
   };
@@ -460,16 +428,13 @@ const RegisterForm = () => {
     const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
     if (!phoneRgx.test(formData.phone)) { toast.error('Enter a valid Malawian number (e.g. 0888123456)'); return; }
     if (!formData.fullName.trim()) { toast.error('Please enter your full name'); return; }
-
     setAttempts(a => a + 1);
     setLoading(true);
     try {
       const payload = { ...formData, whatsapp: formData.sameAsPhone ? formData.phone : formData.whatsapp };
       const data = await register(payload);
       if (data.requiresOtp) {
-        setOtpUserId(data.userId);
-        setShowOtp(true);
-        toast.info('Verification code sent!');
+        setOtpUserId(data.userId); setShowOtp(true); toast.info('Verification code sent!');
       } else {
         toast.success('Registration successful! Please login.');
         setTimeout(() => navigate('/login'), 500);
@@ -486,21 +451,13 @@ const RegisterForm = () => {
   const Navbar = () => (
     <nav className="rp-bar">
       <Link to="/" className="rp-bar-logo">
-        <div className="rp-bar-logo-img">
-          <img src="/PEZ.png" alt="PezaNyumba" />
-        </div>
-        <div className="rp-bar-brand">
-          <strong>PezaNyumba</strong>
-         
-        </div>
+        <div className="rp-bar-logo-img"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+        <div className="rp-bar-brand"><strong>PezaNyumba</strong></div>
       </Link>
-      <Link to="/login" className="rp-bar-login">
-        <i className="fa fa-sign-in-alt" /> Login
-      </Link>
+      <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt" /> Login</Link>
     </nav>
   );
 
-  /* OTP screen */
   if (showOtp) return (
     <>
       <style>{styles}</style>
@@ -519,26 +476,16 @@ const RegisterForm = () => {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <Navbar />
-
       <div className="rp-main">
         <div className="rp-card">
 
           <div className="rp-hdr">
-            <h2>List Your Property</h2>
+            <h2>Create Account</h2>
             <p>Register as a landlord or land seller</p>
             <div className="rp-line" />
           </div>
 
-          {/* Owners-only notice 
-          <div className="rp-notice">
-            <i className="fa fa-info-circle" />
-            <span>
-              <strong>Landlords &amp; land sellers only.</strong> Tenants and buyers browse freely — no account needed.
-            </span>
-          </div>*/}
-
           {/* Role */}
-          <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             {[
               { value: 'landlord',    icon: 'fa-home',     label: 'Landlord'    },
@@ -567,97 +514,87 @@ const RegisterForm = () => {
               </div>
             </div>
 
-            {/* Phone */}
-            <div className="rp-grp">
-              <label className="rp-lbl" htmlFor="phone">Phone Number</label>
-              <div className="rp-wrap">
-                <i className="fa fa-phone rp-ico" />
-                <input id="phone" className="rp-input" type="tel" name="phone"
-                  value={formData.phone} onChange={handleChange}
-                  placeholder="0888123456 or +265888123456"
-                  required autoComplete="tel" />
+            {/* Phone + WhatsApp side by side */}
+            <div className="rp-row">
+              <div className="rp-grp">
+                <label className="rp-lbl" htmlFor="phone">Phone</label>
+                <div className="rp-wrap">
+                  <i className="fa fa-phone rp-ico" />
+                  <input id="phone" className="rp-input" type="tel" name="phone"
+                    value={formData.phone} onChange={handleChange}
+                    placeholder="0888123456" required autoComplete="tel" />
+                </div>
               </div>
-            </div>
-
-            {/* WhatsApp */}
-            <div className="rp-grp">
-              <label className="rp-lbl" htmlFor="whatsapp">
-                WhatsApp Number
-                <label style={{ display:'flex', alignItems:'center', gap:'4px', fontSize:'.62rem', fontWeight:600, textTransform:'none', cursor:'pointer', letterSpacing:0 }}>
-                  <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange}
-                    style={{ width:12, height:12, accentColor:'var(--amber)' }} />
-                  Same as phone
+              <div className="rp-grp">
+                <label className="rp-lbl" htmlFor="whatsapp">
+                  WhatsApp
+                  <label style={{ display:'flex', alignItems:'center', gap:'3px', fontSize:'.58rem', fontWeight:600, textTransform:'none', cursor:'pointer', letterSpacing:0 }}>
+                    <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange}
+                      style={{ width:11, height:11, accentColor:'var(--amber)' }} />
+                    Same
+                  </label>
                 </label>
+                <div className="rp-wrap">
+                  <i className="fab fa-whatsapp rp-wa-ico" />
+                  <input id="whatsapp" className="rp-input wa-field" type="tel" name="whatsapp"
+                    value={formData.sameAsPhone ? formData.phone : formData.whatsapp}
+                    onChange={handleChange} placeholder="0888123456"
+                    disabled={formData.sameAsPhone}
+                    style={{ paddingLeft:'2rem', opacity: formData.sameAsPhone ? 0.7 : 1 }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Password + Confirm side by side */}
+            <div className="rp-row">
+              <div className="rp-grp">
+                <label className="rp-lbl" htmlFor="password">
+                  Password
+                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength === 'weak' ? '⚠️ Weak' : pwStrength === 'medium' ? '⚡ Ok' : '✅ Strong'}</span>}
+                </label>
+                <div className="rp-wrap">
+                  <i className="fa fa-lock rp-ico" />
+                  <input id="password"
+                    className={`rp-input${pwStrength ? ` password-${pwStrength}` : ''}`}
+                    type={showPw ? 'text' : 'password'}
+                    name="password" value={formData.password} onChange={handleChange}
+                    placeholder="Min. 8 chars" required autoComplete="new-password" />
+                  <i className={`fa ${showPw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`} onClick={() => setShowPw(!showPw)} />
+                </div>
+              </div>
+              <div className="rp-grp">
+                <label className="rp-lbl" htmlFor="confirmPassword">Confirm</label>
+                <div className="rp-wrap">
+                  <i className="fa fa-check-circle rp-ico" />
+                  <input id="confirmPassword" className="rp-input"
+                    type={showCpw ? 'text' : 'password'}
+                    name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
+                    placeholder="Repeat" required autoComplete="new-password" />
+                  <i className={`fa ${showCpw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`} onClick={() => setShowCpw(!showCpw)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Captcha + Terms side by side */}
+            <div className="rp-bottom-row">
+              <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
+                <div className="rp-cap-l">
+                  <div className={`rp-cap-box${captcha ? ' on' : ''}`} />
+                  {captchaLoading
+                    ? <span className="rp-cap-txt"><div className="rp-spin" /> Checking…</span>
+                    : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "I'm not a robot"}</span>
+                  }
+                </div>
+                <div>
+                  <i className="fa fa-shield-alt" style={{ color:'var(--amber)', fontSize:'1rem' }} />
+                  <div className="rp-cap-note">Security<br />Check</div>
+                </div>
+              </div>
+              <label className="rp-terms">
+                <input type="checkbox" required />
+                <span>I agree to the <Link to="/terms">Terms</Link> &amp; <Link to="/privacy">Privacy Policy</Link></span>
               </label>
-              <div className="rp-wrap">
-                <i className="fab fa-whatsapp rp-wa-ico" />
-                <input id="whatsapp" className="rp-input wa-field" type="tel" name="whatsapp"
-                  value={formData.sameAsPhone ? formData.phone : formData.whatsapp}
-                  onChange={handleChange} placeholder="0888123456"
-                  disabled={formData.sameAsPhone}
-                  style={{ paddingLeft:'2.1rem', opacity: formData.sameAsPhone ? 0.7 : 1 }} />
-              </div>
-              <div className="rp-wa-note"><i className="fab fa-whatsapp" /> Tenants will WhatsApp you directly on this number</div>
             </div>
-
-            {/* Password */}
-            <div className="rp-grp">
-              <label className="rp-lbl" htmlFor="password">
-                Password
-                {pwStrength && (
-                  <span className={`rp-strength ${pwStrength}`}>
-                    {pwStrength === 'weak'   && '⚠️ Weak'}
-                    {pwStrength === 'medium' && '⚡ Medium'}
-                    {pwStrength === 'strong' && '✅ Strong'}
-                  </span>
-                )}
-              </label>
-              <div className="rp-wrap">
-                <i className="fa fa-lock rp-ico" />
-                <input id="password"
-                  className={`rp-input${pwStrength ? ` password-${pwStrength}` : ''}`}
-                  type={showPw ? 'text' : 'password'}
-                  name="password" value={formData.password} onChange={handleChange}
-                  placeholder="Min. 8 characters" required autoComplete="new-password" />
-                <i className={`fa ${showPw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`}
-                  onClick={() => setShowPw(!showPw)} />
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="rp-grp">
-              <label className="rp-lbl" htmlFor="confirmPassword">Confirm Password</label>
-              <div className="rp-wrap">
-                <i className="fa fa-check-circle rp-ico" />
-                <input id="confirmPassword" className="rp-input"
-                  type={showCpw ? 'text' : 'password'}
-                  name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
-                  placeholder="Repeat password" required autoComplete="new-password" />
-                <i className={`fa ${showCpw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`}
-                  onClick={() => setShowCpw(!showCpw)} />
-              </div>
-            </div>
-
-            {/* Captcha */}
-            <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
-              <div className="rp-cap-l">
-                <div className={`rp-cap-box${captcha ? ' on' : ''}`} />
-                {captchaLoading
-                  ? <span className="rp-cap-txt"><div className="rp-spin" /> Verifying…</span>
-                  : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "I'm not a robot"}</span>
-                }
-              </div>
-              <div>
-                <i className="fa fa-shield-alt" style={{ color:'var(--amber)', fontSize:'1.05rem' }} />
-                <div className="rp-cap-note">Security<br />Check</div>
-              </div>
-            </div>
-
-            {/* Terms */}
-            <label className="rp-terms">
-              <input type="checkbox" required />
-              <span>I agree to the <Link to="/terms">Terms</Link> &amp; <Link to="/privacy">Privacy Policy</Link></span>
-            </label>
 
             {/* Submit */}
             <button type="submit" className="rp-submit" disabled={loading}>
@@ -677,9 +614,7 @@ const RegisterForm = () => {
             </button>
           </form>
 
-          <p className="rp-link">
-            Already have an account? <Link to="/login">Sign in</Link>
-          </p>
+          <p className="rp-link">Already have an account? <Link to="/login">Sign in</Link></p>
 
         </div>
       </div>
