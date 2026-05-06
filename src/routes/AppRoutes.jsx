@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
+import PropertiesPage from '../pages/PropertiesPage';
 
 // PUBLIC PAGES
 import Home               from '../pages/Home';
@@ -8,6 +9,7 @@ import LoginForm          from '../components/auth/LoginForm';
 import RegisterForm       from '../components/auth/RegisterForm';
 import HostelListPage     from '../pages/HostelListPage';
 import HostelDetailsPage  from '../pages/HostelDetailsPage';
+<Route path="/properties" element={<PropertiesPage />} />
 import About              from '../pages/About';
 import Contact            from '../pages/Contact';
 import NotFound           from '../pages/NotFound';
