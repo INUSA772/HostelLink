@@ -1,68 +1,480 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-// ── WhatsApp helper ───────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════
+   LANGUAGE SYSTEM
+═══════════════════════════════════════ */
+const LANGS = {
+  en: {
+    code: "en", label: "English", flag: "🇬🇧",
+    // nav / switcher
+    switchLang: "Language",
+    // hero
+    heroBadge:   "Finding homes across Malawi — No sign-up required",
+    heroH1a:     "Find Your",
+    heroH1em:    "Perfect Home",
+    heroH1b:     "Anywhere in Malawi",
+    heroSub:     "No account needed. Browse verified houses, flats, and plots for rent or sale across all 28 districts — just pick your district and start exploring.",
+    heroBrowse:  "Browse Properties",
+    heroList:    "List Your Property",
+    heroTrust1:  "No account to browse",
+    heroTrust2:  "WhatsApp landlords directly",
+    heroTrust3:  "List your property for free. No commission",
+    heroStat1:   "Properties Listed",
+    heroStat2:   "Districts Covered",
+    heroStat3:   "Dispute Protection",
+    // trust bar
+    trust1: "Registered Malawian platform",
+    trust2: "No account needed to browse",
+    trust3: "WhatsApp landlords directly",
+    trust4: "All 28 districts covered",
+    trust5: "Dispute protection built in",
+    // districts section
+    distLabel:   "Browse by location",
+    distTitle1:  "Find Properties by",
+    distTitle2:  "District",
+    distSub:     "Search by location or type — swipe or use arrows to explore all listings.",
+    distSearch:  "Search district or property name…",
+    distAllTypes:"All types",
+    distBtn:     "Search",
+    distLoading: "Loading properties…",
+    distEmpty:   "No properties found. Try a different search.",
+    // types section
+    typesLabel:  "What are you looking for?",
+    typesTitle1: "Browse by",
+    typesTitle2: "Property Type",
+    typesSub:    "Tap any type to instantly see live listings — no sign-up needed.",
+    // locations
+    locsLabel:   "Our property areas",
+    locsTitle1:  "Top Locations Across",
+    locsTitle2:  "Malawi",
+    // dual
+    tenantTitle: "For Tenants & Buyers",
+    tenantNote:  "✓ No account required",
+    tenantDesc:  "Browse all verified properties, view photos, see prices, and get landlord contact info directly — completely free, no sign-up needed.",
+    tenantBtn:   "Start Browsing",
+    landlordTitle:"For Landlords & Owners",
+    landlordNote: "✓ Register to list properties",
+    landlordDesc: "Create a landlord account to list your house, flat, room, or plot. Tenants WhatsApp you directly from your listing.",
+    landlordBtn:  "Register as Landlord",
+    // features
+    featLabel:   "Why choose us",
+    featTitle1:  "Why Choose",
+    featTitle2:  "PezaNyumba?",
+    feat1Title:  "Browse Freely",
+    feat1Desc:   "No account needed. Filter by district, price, and type to find your home instantly.",
+    feat2Title:  "WhatsApp Direct",
+    feat2Desc:   "Tap WhatsApp on any listing to message the landlord instantly — no middlemen.",
+    feat3Title:  "Verified Listings",
+    feat3Desc:   "Every landlord is verified before listing to protect tenants from fraud.",
+    feat4Title:  "Dispute Resolution",
+    feat4Desc:   "If a problem arises, our team mediates and resolves it fairly and quickly.",
+    // faq
+    faqQ1: "How do I find a house on PezaNyumba?",
+    faqA1: "No account needed! Browse by district or type, view full details, then WhatsApp or call the landlord directly.",
+    faqQ2: "Do I need an account to search?",
+    faqA2: "No. Tenants and buyers browse all listings, see prices and photos, and contact landlords completely free.",
+    faqQ3: "Who can create an account on PezaNyumba?",
+    faqA3: "Only landlords and land owners. Tenants just browse freely — no sign-up needed.",
+    faqQ4: "How does PezaNyumba verify landlords?",
+    faqA4: "Every landlord goes through identity and property verification before their listing goes live.",
+    faqQ5: "Can I list my property?",
+    faqA5: "Yes — if you're a landlord or land owner. Register, fill in details, upload photos, and your listing goes live within 24 hours.",
+    // cta
+    ctaTitle: "Are you a Landlord or Land Owner?",
+    ctaSub:   "Register once and start listing your properties to thousands of tenants across Malawi.",
+    ctaBtn:   "Register as Landlord",
+    ctaNote:  "Already have an account?",
+    ctaLogin: "Sign in here",
+    // drawer
+    drawerLoading: "Searching listings…",
+    drawerEmpty1:  "No listings found for",
+    drawerEmpty2:  "Check back soon — landlords are adding new properties every day.",
+    drawerShowing: "Showing",
+    drawerPropsIn: "properties in",
+    drawerListings:"listings",
+    drawerViewAll: "View All",
+    // property types
+    ptHouse:  "House",         ptHouseDesc:  "Family homes",
+    ptFlat:   "Flat/Apartment",ptFlatDesc:   "Modern apartments",
+    ptRoom:   "Single Room",   ptRoomDesc:   "Affordable rooms",
+    ptSelf:   "Self-Contained",ptSelfDesc:   "Own entrance & bath",
+    ptPlot:   "Plot of Land",  ptPlotDesc:   "Build your dream",
+    ptComm:   "Commercial Space",ptCommDesc: "Shops & offices",
+    // cards
+    cardVerified: "Verified Properties", cardVerifiedSub: "All listings checked & approved",
+    cardPrices:   "Best Prices",         cardPricesSub:   "Affordable for every budget",
+    cardTrusted:  "Trusted Landlords",   cardTrustedSub:  "Identity-verified owners",
+    cardDistricts:"All Districts",       cardDistrictsSub:"28 districts covered",
+    cardQuick:    "Quick Inquiry",       cardQuickSub:    "Contact landlords in seconds",
+    cardDispute:  "Dispute Support",     cardDisputeSub:  "We resolve problems fairly",
+    cardDirect:   "Direct Messaging",   cardDirectSub:   "Chat with landlords safely",
+    cardRated:    "Top Rated",           cardRatedSub:    "Reviews from real tenants",
+    // property card
+    forSale: "For Sale", forRent: "For Rent",
+    noContact: "No contact info",
+    waBtn: "WhatsApp", callBtn: "Call",
+    bed: "bed", bath: "bath", avail: "avail.",
+    priceOnRequest: "Price on request",
+  },
+
+  ny: {
+    code: "ny", label: "Chichewa", flag: "🇲🇼",
+    switchLang: "Chilankhulo",
+    heroBadge:   "Kupeza nyumba ku Malawi konse — Palibe akaunti yofunikira",
+    heroH1a:     "Pezani",
+    heroH1em:    "Nyumba Yabwino",
+    heroH1b:     "Kulikonse ku Malawi",
+    heroSub:     "Palibe akaunti yofunikira. Sakani nyumba zazikulu, nyumba zazing'ono, ndi malo ogulitsa ku maboma onse 28 Muno Malawi — sankhani boma lanu ndikuyamba kufufuza malo kapena nyumba m'dera lililonse.",
+    heroBrowse:  "Sakani Nyumba",
+    heroList:    "Ikani Nyumba Yanu",
+    heroTrust1:  "Simukuyenera kukhara ndi account kuti mupeze nyumba",
+    heroTrust2:  "Lumikizanani pa whatsapp kapena kumuyimbila mwini nyumba",
+    heroTrust3:  "Kuyika kapena kupeza nyumba ndiulele",
+    heroStat1:   "Nyumba zomwe zilipo",
+    heroStat2:   "Maboma Alipo",
+    heroStat3:   "Chitetezo cha Mikangano",
+    trust1: "Nsanja yolembetsedwa ku Malawi",
+    trust2: "Palibe akaunti yosaka",
+    trust3: "WhatsApp mwini nyumba mwachindunji",
+    trust4: "Madisitikiti onse 28 alipo",
+      trust5: "Chitetezo cha mikangano chili",
+    distLabel:   "Saka malalo",
+    distTitle1:  "Pezani Nyumba pa",
+    distTitle2:  "Boma",
+    distSub:     "Sakani malalo kapena mtundu — swipe kapena gwiritsa ntchito mivi kuti mufufuza.",
+    distSearch:  "Sakani boma kapena dzina la nyumba…",
+    distAllTypes:"Mitundu yonse",
+    distBtn:     "Sakani",
+    distLoading: "Kutsitsa nyumba…",
+    distEmpty:   "Palibe nyumba zapezeka. Yesani kusaka kwina.",
+    typesLabel:  "Mukufuna chiyani?",
+    typesTitle1: "Sakani pa",
+    typesTitle2: "Mtundu wa Nyumba",
+    typesSub:    "Dinani mtundu uliwonse ndi kuona nyumba zomwe zilipo — palibe kulemba.",
+    locsLabel:   "Malalo athu a nyumba",
+    locsTitle1:  "Malalo Okwaniritsa ku",
+    locsTitle2:  "Malawi",
+    tenantTitle: "Okangomanga & Ogula",
+    tenantNote:  "✓ Palibe akaunti yofunikira",
+    tenantDesc:  "Sakani nyumba zonse zazikulu, onani zithunzi, onani mitengo, ndikupeza nomboro ya mwini nyumba mwachindunji — mwaulere, palibe kulemba.",
+    tenantBtn:   "Yambani Kusaka",
+    landlordTitle:"Eni Nyumba ndi Malo",
+    landlordNote: "✓ Lembelani ndi kuika nyumba",
+    landlordDesc: "Pangani akaunti ya mwini nyumba kuika nyumba yanu. Anthu ofuna nyumba muzalumikizana pa WhatsApp pompopompo!.",
+    landlordBtn:  "Lembeleni ngati Mwini Nyumba",
+    featLabel:   "Chifukwa chosankha ife",
+    featTitle1:  "Chifukwa Kusankha",
+    featTitle2:  "PezaNyumba?",
+    feat1Title:  "Sakani Mwaulere",
+    feat1Desc:   "Palibe akaunti. Sakani pa boma, mtengo, ndi mtundu kupeza nyumba yanu msanga.",
+    feat2Title:  "WhatsApp Mwachindunji",
+    feat2Desc:   "Dinani WhatsApp pa nyumba iliyonse kutumiza uthenga kwa mwini nyumba — palibe pakati.",
+    feat3Title:  "Nyumba Zazikulu",
+    feat3Desc:   "Mwini nyumba aliyense amayezetsa kaye iye ndi nyumbayo kuti alinde anthu ofuna nyumba.",
+    feat4Title:  "Kutha Mikangano",
+    feat4Desc:   "Ngati vuto likubwera, timagwira ntchito ngati pakati ndikutha vutolo mwachilungamo.",
+    faqQ1: "Ndingapeze bwanji nyumba pa PezaNyumba?",
+    faqA1: "Palibe akaunti! Saka pa disitikiti kapena mtundu, onani zambiri, kenako imbani WhatsApp kapena foni kwa mwini nyumba.",
+    faqQ2: "Ndikufunika akaunti kusaka?",
+    faqA2: "Ayi. Anthu ofuna nyumba amayang'ana mauthenga onse, mitengo ndi zithunzi, ndikupeza nomboro mwaulere.",
+    faqQ3: "Ndani amatha kupanga akaunti pa PezaNyumba?",
+    faqA3: "Eni nyumba ndi eni malo okha. Anthu ofuna nyumba amasakabe — palibe kulemba.",
+    faqQ4: "PezaNyumba imayeza bwanji eni nyumba?",
+    faqA4: "Mwini nyumba aliyense amayeza iye ndi malo ake asanapange nyumba yake kuti alinde anthu.",
+    faqQ5: "Nditha kuika nyumba yanga?",
+    faqA5: "Inde — ngati ndinu mwini nyumba kapena mwini malo. Lembeleni, uzuzeni zambiri, ikani zithunzi, ndipo nyumba imakwera pa maola 24.",
+    ctaTitle: "Kodi ndinu Mwini Nyumba kapena Mwini Malo?",
+    ctaSub:   "Lembeleni kamodzi ndiyamba kuika nyumba zanu kwa anthu ambiri afuna nyumba ku Malawi.",
+    ctaBtn:   "Lembelani ngati Mwini Nyumba",
+    ctaNote:  "Muli ndi akaunti kale?",
+    ctaLogin: "Lowani apa",
+    drawerLoading: "Kusaka mauthenga…",
+    drawerEmpty1:  "Palibe nyumba zapezeka pa",
+    drawerEmpty2:  "Bwererani posachedwa — eni nyumba akuwonjezera nyumba tsiku lililonse.",
+    drawerShowing: "Kuwonetsa",
+    drawerPropsIn: "nyumba ku",
+    drawerListings:"mauthenga",
+    drawerViewAll: "Ona Zonse",
+    ptHouse:  "Nyumba",          ptHouseDesc:  "Nyumba za mabanja",
+    ptFlat:   "Flat/Apartment",  ptFlatDesc:   "Ma apartment achisanu",
+    ptRoom:   "Chipinda Chimodzi",ptRoomDesc:  "Zipinda zotsika mtengo",
+    ptSelf:   "Self-Contained",  ptSelfDesc:   "Khomo lake & bafa",
+    ptPlot:   "Gawo la Malo",    ptPlotDesc:   "Mangani lofunira lanu",
+    ptComm:   "Malo a Bizinesi", ptCommDesc:   "Masitolo & maofesi",
+    cardVerified: "Nyumba Zazikulu", cardVerifiedSub: "Mauthenga onse ayezedwa",
+    cardPrices:   "Mitengo Yabwino", cardPricesSub:   "Yoyenera bajeti iliyonse",
+    cardTrusted:  "Eni Nyumba Oyesedwa", cardTrustedSub: "Eni onyezedwa",
+    cardDistricts:"Madisitikiti Onse", cardDistrictsSub:"Madisitikiti 28",
+    cardQuick:    "Funsani Msanga",  cardQuickSub:    "Lumikizani eni nyumba mwamsanga",
+    cardDispute:  "Thandizo la Mikangano", cardDisputeSub: "Timaitha mavuto mwachilungamo",
+    cardDirect:   "Uthenga Wachindunji", cardDirectSub: "Lankhulani ndi eni nyumba motetezeka",
+    cardRated:    "Woyezetsa Kwambiri", cardRatedSub:  "Maganizo a okangomanga weniweni",
+    forSale: "Kugulitsa", forRent: "Kugwiritsa",
+    noContact: "Palibe nomboro",
+    waBtn: "WhatsApp", callBtn: "Imbani",
+    bed: "chipinda", bath: "bafa", avail: "palibe.",
+    priceOnRequest: "Funsani mtengo",
+  },
+
+  tu: {
+    code: "tu", label: "Tumbuka", flag: "🇲🇼",
+    switchLang: "Chilankhulo",
+    heroBadge:   "Kupeza nyumba ku Malawi yose — Palije akaunti yofunikira",
+    heroH1a:     "Peza",
+    heroH1em:    "Nyumba Yabwino",
+    heroH1b:     "Kulikonse ku Malawi",
+    heroSub:     "Palije akaunti yofunikira. Saka nyumba, ma flat, na malo mu madisitiriki yose 28 — sankha disitiriki lako unyamuke.",
+    heroBrowse:  "Saka Nyumba",
+    heroList:    "Lemba Nyumba Yako",
+    heroTrust1:  "Palije akaunti yosaka",
+    heroTrust2:  "WhatsApp mwenye nyumba mwachindunji",
+    heroTrust3:  "Ndalama 2.5% yokha",
+    heroStat1:   "Nyumba Zalembiwa",
+    heroStat2:   "Madisitiriki Yalipo",
+    heroStat3:   "Chitetezo cha Mikangano",
+    trust1: "Nsanja yolembiwa ku Malawi",
+    trust2: "Palije akaunti yosaka",
+    trust3: "WhatsApp mwenye nyumba mwachindunji",
+    trust4: "Madisitiriki yose 28 yalipo",
+    trust5: "Chitetezo cha mikangano chili",
+    distLabel:   "Saka malo",
+    distTitle1:  "Peza Nyumba mu",
+    distTitle2:  "Disitiriki",
+    distSub:     "Saka malo panji mtundu — swipe panji gwirisa ntchito mivi kufufuza.",
+    distSearch:  "Saka disitiriki panji zina la nyumba…",
+    distAllTypes:"Mitundu yose",
+    distBtn:     "Saka",
+    distLoading: "Kutsitsa nyumba…",
+    distEmpty:   "Palije nyumba zapezeka. Yesani kusaka kina.",
+    typesLabel:  "Mukufuna chiyani?",
+    typesTitle1: "Saka pa",
+    typesTitle2: "Mtundu wa Nyumba",
+    typesSub:    "Dinani mtundu uliwonse kuona nyumba zamoyo — palije kulemba.",
+    locsLabel:   "Malo yithu ya nyumba",
+    locsTitle1:  "Malo Yakwaniritsa ku",
+    locsTitle2:  "Malawi",
+    tenantTitle: "Okusunga & Ogula",
+    tenantNote:  "✓ Palije akaunti yofunikira",
+    tenantDesc:  "Saka nyumba zose, ona zithunzi, ona mitengo, na kupeza nambala ya mwenye nyumba mwachindunji — mwaulere, palije kulemba.",
+    tenantBtn:   "Yambani Kusaka",
+    landlordTitle:"Anenye Nyumba & Malo",
+    landlordNote: "✓ Lemba kuika nyumba",
+    landlordDesc: "Pangani akaunti ya mwenye nyumba kuika nyumba yinu. Anthu ofuna nyumba akuzimbani WhatsApp mwachindunji.",
+    landlordBtn:  "Lembani nga Mwenye Nyumba",
+    featLabel:   "Chifukwa chosankha ife",
+    featTitle1:  "Chifukwa Kusankha",
+    featTitle2:  "PezaNyumba?",
+    feat1Title:  "Saka Mwaulere",
+    feat1Desc:   "Palije akaunti. Saka pa disitiriki, mtengo, na mtundu kupeza nyumba yako msanga.",
+    feat2Title:  "WhatsApp Mwachindunji",
+    feat2Desc:   "Dinani WhatsApp pa nyumba iliyonse kutuma uthenga kwa mwenye nyumba — palije pakati.",
+    feat3Title:  "Nyumba Zayezedwa",
+    feat3Desc:   "Mwenye nyumba uliwonse wayezedwa kaye iye na nyumba yake kuti alinde anthu.",
+    feat4Title:  "Kutha Mikangano",
+    feat4Desc:   "Ngati vuto likubwera, tigwira ntchito nga pakati na kutha vutolo mwachilungamo.",
+    faqQ1: "Ndingapeze wuli nyumba pa PezaNyumba?",
+    faqA1: "Palije akaunti! Saka pa disitiriki panji mtundu, ona zambiri, kenako zimba WhatsApp panji foni kwa mwenye nyumba.",
+    faqQ2: "Ndikufunika akaunti kusaka?",
+    faqA2: "Yayi. Anthu ofuna nyumba yayang'ana mauthenga yose, mitengo na zithunzi, na kupeza nambala mwaulere.",
+    faqQ3: "Ndani angapange akaunti pa PezaNyumba?",
+    faqA3: "Anenye nyumba na anenye malo yokha. Anthu ofuna nyumba yasakabe — palije kulemba.",
+    faqQ4: "PezaNyumba iyeza wuli anenye nyumba?",
+    faqA4: "Mwenye nyumba uliwonse wayezedwa iye na malo ake asanapange nyumba yake kuti alinde anthu.",
+    faqQ5: "Ningaike nyumba yane?",
+    faqA5: "Inde — ngati ndimwenye nyumba panji mwenye malo. Lembani, uzuzani zambiri, ikani zithunzi, ndipo nyumba imakwera mu maola 24.",
+    ctaTitle: "Kodi ndimwenye Nyumba panji Mwenye Malo?",
+    ctaSub:   "Lembani kamoza ndiyamba kuika nyumba zinu kwa anthu azinji ofuna nyumba ku Malawi.",
+    ctaBtn:   "Lembani nga Mwenye Nyumba",
+    ctaNote:  "Muli na akaunti kale?",
+    ctaLogin: "Injilani apha",
+    drawerLoading: "Kusaka mauthenga…",
+    drawerEmpty1:  "Palije nyumba zapezeka pa",
+    drawerEmpty2:  "Bwelerani posachedwa — anenye nyumba yakuwonjezerera nyumba zuŵa lililonse.",
+    drawerShowing: "Kuwonetsa",
+    drawerPropsIn: "nyumba mu",
+    drawerListings:"mauthenga",
+    drawerViewAll: "Ona Yose",
+    ptHouse:  "Nyumba",          ptHouseDesc:  "Nyumba za mabanja",
+    ptFlat:   "Flat/Apartment",  ptFlatDesc:   "Ma apartment yamachisanu",
+    ptRoom:   "Chipinda Chimoza",ptRoomDesc:   "Zipinda zotauka mtengo",
+    ptSelf:   "Self-Contained",  ptSelfDesc:   "Khomo lake & bafa",
+    ptPlot:   "Gawo la Malo",    ptPlotDesc:   "Manga lofunira lako",
+    ptComm:   "Malo ya Bizinesi",ptCommDesc:   "Masitolo & maofesi",
+    cardVerified: "Nyumba Zayezedwa",    cardVerifiedSub: "Mauthenga yose yayezedwa",
+    cardPrices:   "Mitengo Yabwino",     cardPricesSub:   "Yoyenera bajeti iliyonse",
+    cardTrusted:  "Anenye Nyumba Oyezedwa", cardTrustedSub: "Anenye oyezedwa",
+    cardDistricts:"Madisitiriki Yose",   cardDistrictsSub:"Madisitiriki 28",
+    cardQuick:    "Funsani Msanga",      cardQuickSub:    "Lumikizani anenye nyumba msanga",
+    cardDispute:  "Thandizo la Mikangano",cardDisputeSub: "Yiitha mavuto mwachilungamo",
+    cardDirect:   "Uthenga Wachindunji",  cardDirectSub:  "Lankhulani na anenye nyumba motetezeka",
+    cardRated:    "Woyezedwa Kwambiri",   cardRatedSub:   "Maganizo ya okusunga weniweni",
+    forSale: "Kugulitsa", forRent: "Kukodisha",
+    noContact: "Palije nambala",
+    waBtn: "WhatsApp", callBtn: "Zimba",
+    bed: "chipinda", bath: "bafa", avail: "palipo.",
+    priceOnRequest: "Funsani mtengo",
+  },
+};
+
+const LangContext = createContext(null);
+const useLang = () => useContext(LangContext);
+
+function useLangState() {
+  const [lang, setLangRaw] = useState(() => {
+    try { return localStorage.getItem("peza_lang") || "en"; } catch { return "en"; }
+  });
+  const setLang = (code) => {
+    setLangRaw(code);
+    try { localStorage.setItem("peza_lang", code); } catch {}
+  };
+  const t = LANGS[lang] || LANGS.en;
+  return { lang, setLang, t, langs: Object.values(LANGS) };
+}
+
+/* ═══════════════════════════════════════
+   LANGUAGE SWITCHER COMPONENT
+   — fixed top-right, always visible
+═══════════════════════════════════════ */
+const langSwitcherStyles = `
+  /* ── LANG SWITCHER ── */
+  .ph-lang-switcher {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 9999;
+  }
+  .ph-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(13,74,64,0.92);
+    border: 1.5px solid rgba(77,217,184,0.35);
+    border-radius: 999px;
+    padding: 7px 14px 7px 10px;
+    color: white;
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    transition: all .2s;
+    font-family: 'Manrope', sans-serif;
+    white-space: nowrap;
+  }
+  .ph-lang-btn:hover { background: rgba(13,74,64,1); border-color: rgba(77,217,184,.65); }
+  .ph-lang-btn .ph-lang-flag { font-size: 1rem; line-height: 1; }
+  .ph-lang-btn .ph-lang-chevron { font-size: .6rem; opacity: .7; transition: transform .2s; }
+  .ph-lang-btn.open .ph-lang-chevron { transform: rotate(180deg); }
+
+  .ph-lang-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1.5px solid #e2ede9;
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.16);
+    overflow: hidden;
+    min-width: 170px;
+    animation: langDrop .18s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes langDrop {
+    from { opacity:0; transform:translateY(-8px) scale(.96); }
+    to   { opacity:1; transform:translateY(0)    scale(1);   }
+  }
+  .ph-lang-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 16px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #111;
+    background: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+    font-family: 'Manrope', sans-serif;
+  }
+  .ph-lang-option:hover  { background: #f0faf7; }
+  .ph-lang-option.active { background: #e8f5f2; color: #0d4a40; }
+  .ph-lang-option .ph-lang-opt-flag { font-size: 1.1rem; }
+  .ph-lang-option .ph-lang-opt-label { flex: 1; }
+  .ph-lang-option .ph-lang-opt-check { color: #1a5c52; font-size: .8rem; }
+  .ph-lang-divider { height: 1px; background: #e2ede9; margin: 0; }
+
+  @media(max-width:480px) {
+    .ph-lang-switcher { top: 10px; right: 10px; }
+    .ph-lang-btn { padding: 6px 11px 6px 9px; font-size: .78rem; }
+  }
+`;
+
+function LanguageSwitcher() {
+  const { lang, setLang, t, langs } = useLang();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const current = LANGS[lang] || LANGS.en;
+
+  return (
+    <div className="ph-lang-switcher" ref={ref}>
+      <button
+        className={`ph-lang-btn${open ? " open" : ""}`}
+        onClick={() => setOpen(o => !o)}
+        aria-label="Switch language"
+      >
+        <span className="ph-lang-flag">{current.flag}</span>
+        <span>{current.label}</span>
+        <span className="ph-lang-chevron">▼</span>
+      </button>
+
+      {open && (
+        <div className="ph-lang-dropdown">
+          {langs.map((l, i) => (
+            <div key={l.code}>
+              {i > 0 && <div className="ph-lang-divider" />}
+              <button
+                className={`ph-lang-option${lang === l.code ? " active" : ""}`}
+                onClick={() => { setLang(l.code); setOpen(false); }}
+              >
+                <span className="ph-lang-opt-flag">{l.flag}</span>
+                <span className="ph-lang-opt-label">{l.label}</span>
+                {lang === l.code && <span className="ph-lang-opt-check">✓</span>}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
 function waLink(num) {
   if (!num) return null;
   const clean = num.toString().replace(/\D/g, "");
   const intl  = clean.startsWith("0") ? "265" + clean.slice(1) : clean;
   return `https://wa.me/${intl}`;
 }
-
-// ── Track WhatsApp click ──────────────────────────────────────────────────────
 function trackWhatsappClick(hostelId) {
   if (!hostelId) return;
-  fetch(`${API_URL}/admin/hostels/${hostelId}/whatsapp-click`, {
-    method: "POST",
-  }).catch(() => {});
+  fetch(`${API_URL}/admin/hostels/${hostelId}/whatsapp-click`, { method: "POST" }).catch(() => {});
 }
-
-const PROPERTY_TYPES = [
-  { icon: "fa fa-home",        label: "House",           desc: "Family homes"        },
-  { icon: "fa fa-building",    label: "Flat/Apartment",  desc: "Modern apartments"   },
-  { icon: "fa fa-bed",         label: "Single Room",     desc: "Affordable rooms"    },
-  { icon: "fa fa-door-closed", label: "Self-Contained",  desc: "Own entrance & bath" },
-  { icon: "fa fa-seedling",    label: "Plot of Land",    desc: "Build your dream"    },
-  { icon: "fa fa-store",       label: "Commercial Space",desc: "Shops & offices"     },
-];
-
-const FAQ_ITEMS = [
-  { question: "How do I find a house on PezaNyumba?",      answer: "No account needed! Browse by district or type, view full details, then WhatsApp or call the landlord directly." },
-  { question: "Do I need an account to search?",           answer: "No. Tenants and buyers browse all listings, see prices and photos, and contact landlords completely free." },
-  { question: "Who can create an account on PezaNyumba?",  answer: "Only landlords and land owners. Tenants just browse freely — no sign-up needed." },
-  { question: "How does PezaNyumba verify landlords?",     answer: "Every landlord goes through identity and property verification before their listing goes live." },
-  { question: "Can I list my property?",                   answer: "Yes — if you're a landlord or land owner. Register, fill in details, upload photos, and your listing goes live within 24 hours." },
-];
-
-const CARDS_COL1 = [
-  { theme: "blue",   icon: "fa fa-shield-alt",    title: "Verified Properties", sub: "All listings checked & approved" },
-  { theme: "orange", icon: "fa fa-tag",            title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-  { theme: "green",  icon: "fa fa-check-circle",  title: "Trusted Landlords",   sub: "Identity-verified owners"        },
-  { theme: "purple", icon: "fa fa-map-marker-alt",title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
-  { theme: "blue",   icon: "fa fa-shield-alt",    title: "Verified Properties", sub: "All listings checked & approved" },
-  { theme: "orange", icon: "fa fa-tag",            title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-  { theme: "green",  icon: "fa fa-check-circle",  title: "Trusted Landlords",   sub: "Identity-verified owners"        },
-  { theme: "purple", icon: "fa fa-map-marker-alt",title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
-];
-const CARDS_COL2 = [
-  { theme:"cyan",   icon:"fa fa-bolt",     title:"Quick Inquiry",    sub:"Contact landlords in seconds", image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
-  { theme:"yellow", icon:"fa fa-headset",  title:"Dispute Support",  sub:"We resolve problems fairly"  },
-  { theme:"red",    icon:"fa fa-comments", title:"Direct Messaging", sub:"Chat with landlords safely",  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
-  { theme:"pink",   icon:"fa fa-star",     title:"Top Rated",        sub:"Reviews from real tenants"   },
-  { theme:"cyan",   icon:"fa fa-bolt",     title:"Quick Inquiry",    sub:"Contact landlords in seconds", image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
-  { theme:"yellow", icon:"fa fa-headset",  title:"Dispute Support",  sub:"We resolve problems fairly"  },
-  { theme:"red",    icon:"fa fa-comments", title:"Direct Messaging", sub:"Chat with landlords safely",  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
-  { theme:"pink",   icon:"fa fa-star",     title:"Top Rated",        sub:"Reviews from real tenants"   },
-];
-
-const FALLBACK_IMGS = [
-  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop",
-];
 
 function normalise(p) {
   return {
@@ -85,9 +497,8 @@ function normalise(p) {
     ownerName:    p.owner ? `${p.owner.firstName || ""} ${p.owner.lastName || ""}`.trim() : "",
   };
 }
-
-function formatPrice(p, listingType) {
-  if (!p) return "Price on request";
+function formatPrice(p, listingType, t) {
+  if (!p) return t.priceOnRequest;
   const suffix = (listingType || "").toLowerCase().includes("sale") ? "" : "/mo";
   return "MWK " + Number(p).toLocaleString() + suffix;
 }
@@ -110,7 +521,6 @@ const styles = `
   a { text-decoration:none; color:inherit; }
   button { font-family:inherit; cursor:pointer; border:none; background:none; padding:0; }
 
-  /* ── HERO ── */
   .ph-hero {
     min-height:100vh; width:100%;
     background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
@@ -184,36 +594,26 @@ const styles = `
     .ph-btn-primary,.ph-btn-ghost{width:100%;max-width:300px;justify-content:center}
     .ph-hero-stats{gap:1.5rem}
   }
-
-  /* ── TRUST BAR ── */
   .ph-trust-bar { background:var(--cream); border-top:1px solid var(--light-border); border-bottom:1px solid var(--light-border); padding:1.2rem; }
   .ph-trust-bar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:2rem; }
   .ph-trust-item { display:flex; align-items:center; gap:8px; font-size:.84rem; font-weight:600; color:var(--mid); }
   .ph-trust-item i { font-size:1.1rem; color:var(--teal); }
   .ph-trust-divider { width:1px; height:28px; background:var(--light-border); }
   @media(max-width:640px){.ph-trust-divider{display:none}}
-
-  /* ── SHARED SECTION ── */
   .ph-sec-label { font-size:.73rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--teal-mid); text-align:center; margin-bottom:.5rem; }
   .ph-sec-title { font-family:'Poppins',sans-serif; font-size:clamp(1.6rem,3.5vw,2.3rem); font-weight:800; text-align:center; line-height:1.15; margin-bottom:.6rem; }
   .ph-sec-title em { font-style:normal; color:var(--teal-mid); }
   .ph-sec-sub { text-align:center; font-size:.93rem; line-height:1.8; color:var(--mid); max-width:520px; margin:0 auto 2.5rem; }
-
-  /* ── DISTRICTS / SLIDER ── */
   .ph-dist-sec { background:var(--gray-bg); padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-dist-search { display:flex; gap:.6rem; max-width:640px; margin:0 auto 2.5rem; flex-wrap:wrap; }
   .ph-dist-search input,.ph-dist-search select { flex:1; min-width:160px; padding:.65rem 1rem; border:1.5px solid #d1d5db; border-radius:10px; font-size:.88rem; background:white; color:#111; outline:none; font-family:inherit; transition:border .2s; }
   .ph-dist-search input:focus,.ph-dist-search select:focus{border-color:var(--teal)}
   .ph-dist-search-btn { background:var(--teal); color:white; border:none; border-radius:10px; padding:.65rem 1.4rem; font-size:.88rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background .2s; font-family:inherit; }
   .ph-dist-search-btn:hover{background:var(--teal-dark)}
-
-  /* slider viewport */
   .ph-slider-viewport { overflow:hidden; max-width:1100px; margin:0 auto; position:relative; cursor:grab; user-select:none; -webkit-user-select:none; }
   .ph-slider-viewport:active { cursor:grabbing; }
   .ph-slider-track { display:flex; gap:1.2rem; transition:transform .55s cubic-bezier(.4,0,.2,1); will-change:transform; }
   .ph-slider-track.no-transition { transition:none !important; }
-
-  /* slide card */
   .ph-slide-card { flex-shrink:0; width:240px; border-radius:16px; overflow:hidden; background:white; border:1.5px solid var(--light-border); cursor:pointer; text-align:left; padding:0; transition:transform .25s,box-shadow .25s; box-shadow:0 2px 12px rgba(0,0,0,.06); }
   .ph-slide-card:hover { transform:translateY(-6px); box-shadow:0 18px 40px rgba(13,74,64,.18); border-color:var(--teal-mid); }
   .ph-slide-img { width:100%; height:155px; object-fit:cover; display:block; pointer-events:none; }
@@ -223,8 +623,6 @@ const styles = `
   .ph-slide-meta { font-size:.74rem; color:#6b7280; display:flex; gap:.7rem; margin-top:.35rem; flex-wrap:wrap; }
   .ph-slide-badge { display:inline-block; font-size:.64rem; font-weight:700; padding:2px 9px; border-radius:20px; background:var(--teal-light); color:var(--teal-dark); margin-top:.45rem; }
   .ph-slide-price { font-size:.92rem; font-weight:800; color:var(--teal); margin-top:.45rem; }
-
-  /* nav */
   .ph-prop-nav { display:flex; align-items:center; justify-content:space-between; max-width:1100px; margin:1.4rem auto 0; }
   .ph-prop-dots { display:flex; gap:6px; }
   .ph-prop-dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; border:none; cursor:pointer; padding:0; transition:all .3s; }
@@ -233,13 +631,9 @@ const styles = `
   .ph-prop-nav-btn { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--teal); background:white; color:var(--teal); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
   .ph-prop-nav-btn:hover { background:var(--teal); color:white; }
   .ph-prop-empty { text-align:center; padding:2.5rem; color:var(--mid); font-size:.9rem; background:white; border-radius:var(--radius); border:1.5px dashed var(--light-border); }
-
-  /* responsive card widths */
   @media(max-width:1100px){ .ph-slide-card{ width: calc((100vw - 3.6rem) / 3) } }
   @media(max-width:768px)  { .ph-slide-card{ width: calc((100vw - 3rem) / 2) } }
   @media(max-width:520px)  { .ph-slide-card{ width: calc(100vw - 2.4rem) } }
-
-  /* ── PROPERTY TYPES ── */
   .ph-types-sec { background:white; padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1rem; max-width:1100px; margin:0 auto; }
   .ph-type-card { background:var(--teal-pale); border:1.5px solid var(--light-border); border-radius:var(--radius); padding:1.8rem 1rem; text-align:center; color:var(--dark); transition:all .25s; }
@@ -250,8 +644,6 @@ const styles = `
   .ph-type-card span { font-size:.72rem; color:var(--mid); transition:color .25s; }
   .ph-type-card:hover span { color:rgba(255,255,255,.80); }
   @media(max-width:520px){.ph-types-grid{grid-template-columns:repeat(2,1fr)}}
-
-  /* ── DRAWER ── */
   .ph-browse-overlay { position:fixed; inset:0; background:rgba(5,22,10,.65); z-index:1000; display:flex; align-items:flex-end; justify-content:center; backdrop-filter:blur(4px); animation:fadeIn .25s ease; }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   .ph-browse-drawer { background:white; width:100%; max-width:1100px; max-height:90vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; animation:slideUp .3s cubic-bezier(.34,1.56,.64,1); overflow:hidden; }
@@ -277,8 +669,6 @@ const styles = `
   .ph-browse-footer strong { color:var(--teal-dark); }
   .ph-browse-see-all { background:var(--teal); color:white; padding:.55rem 1.4rem; border-radius:8px; font-size:.85rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; transition:background .2s; text-decoration:none; border:none; cursor:pointer; font-family:inherit; }
   .ph-browse-see-all:hover{background:var(--teal-dark)}
-
-  /* ── PROPERTY CARD ── */
   .ph-prop-card { border:1.5px solid var(--light-border); border-radius:var(--radius); overflow:hidden; background:white; transition:all .25s; box-shadow:0 2px 8px rgba(0,0,0,.05); display:flex; flex-direction:column; }
   .ph-prop-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(13,74,64,.12); border-color:var(--teal-mid); }
   .ph-prop-img-wrap { position:relative; height:170px; overflow:hidden; background:var(--teal-light); flex-shrink:0; }
@@ -299,22 +689,10 @@ const styles = `
   .ph-prop-meta-item { font-size:.72rem; color:var(--mid); display:flex; align-items:center; gap:3px; }
   .ph-prop-meta-item i { color:var(--teal); }
   .ph-prop-actions { padding:.75rem 1rem; border-top:1px solid var(--light-border); display:flex; gap:.5rem; }
-  .ph-prop-wa {
-    flex:1; background:var(--wa); color:white; border:none; border-radius:8px;
-    padding:.5rem .5rem; font-size:.78rem; font-weight:700;
-    display:flex; align-items:center; justify-content:center; gap:5px;
-    text-decoration:none; transition:background .18s; cursor:pointer;
-  }
+  .ph-prop-wa { flex:1; background:var(--wa); color:white; border:none; border-radius:8px; padding:.5rem .5rem; font-size:.78rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:5px; text-decoration:none; transition:background .18s; cursor:pointer; }
   .ph-prop-wa:hover { background:#128c4e; }
-  .ph-prop-call {
-    background:var(--teal-light); color:var(--teal); border:1.5px solid var(--light-border);
-    border-radius:8px; padding:.5rem .75rem; font-size:.78rem; font-weight:700;
-    display:flex; align-items:center; gap:5px;
-    text-decoration:none; transition:all .18s;
-  }
+  .ph-prop-call { background:var(--teal-light); color:var(--teal); border:1.5px solid var(--light-border); border-radius:8px; padding:.5rem .75rem; font-size:.78rem; font-weight:700; display:flex; align-items:center; gap:5px; text-decoration:none; transition:all .18s; }
   .ph-prop-call:hover { background:var(--teal); color:white; }
-
-  /* ── LOCATIONS GRID ── */
   .ph-locs-sec { background:var(--teal-pale); padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-locs-grid { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:220px 220px; gap:1rem; max-width:1100px; margin:2rem auto 0; }
   .ph-loc-card { border-radius:var(--radius); overflow:hidden; position:relative; border:none; background:transparent; padding:0; cursor:pointer; }
@@ -327,8 +705,6 @@ const styles = `
   .ph-loc-overlay p     { color:rgba(255,255,255,.65); font-size:.8rem; }
   @media(max-width:768px){ .ph-locs-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto} .ph-loc-card.big{grid-row:auto} .ph-loc-card{height:200px} }
   @media(max-width:520px){ .ph-locs-grid{grid-template-columns:1fr} .ph-loc-card{height:180px} }
-
-  /* ── DUAL ── */
   .ph-dual-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; padding:clamp(3rem,6vw,5.5rem) 1.2rem; max-width:1100px; margin:0 auto; }
   .ph-dual-card { background:white; padding:2.5rem 2rem; border-radius:var(--radius); text-align:center; box-shadow:0 8px 28px rgba(13,74,64,.08); border:1px solid var(--light-border); transition:all .3s; display:flex; flex-direction:column; align-items:center; }
   .ph-dual-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(13,74,64,.14); }
@@ -340,8 +716,6 @@ const styles = `
   .ph-dual-note { font-size:.75rem; color:var(--teal-mid); font-weight:700; background:var(--teal-light); padding:.35rem .9rem; border-radius:20px; margin-bottom:1.2rem; }
   .ph-btn-outline { border:2px solid var(--teal); color:var(--teal); background:transparent; padding:.55rem 1.4rem; border-radius:8px; font-size:.88rem; font-weight:700; transition:all .2s; display:inline-block; text-decoration:none; }
   .ph-btn-outline:hover { background:var(--teal); color:white; }
-
-  /* ── FEATURES ── */
   .ph-features-sec { background:var(--gray-bg); padding:clamp(3rem,6vw,5.5rem) 1.2rem; text-align:center; }
   .ph-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; max-width:1100px; margin:2.5rem auto 0; }
   .ph-feature-card { background:white; padding:2rem; border-radius:var(--radius); box-shadow:0 6px 20px rgba(13,74,64,.07); transition:transform .3s; border:1px solid var(--light-border); }
@@ -349,8 +723,6 @@ const styles = `
   .ph-feature-card i { font-size:2rem; color:var(--teal); display:block; margin-bottom:1rem; }
   .ph-feature-card h4 { font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:.5rem; }
   .ph-feature-card p  { font-size:.85rem; color:var(--mid); line-height:1.6; }
-
-  /* ── FAQ ── */
   .ph-faq { position:relative; padding:clamp(3rem,6vw,5.5rem) 1.2rem clamp(4rem,8vw,6rem); background:var(--teal-pale); text-align:center; overflow:hidden; }
   .ph-faq-qmark { position:absolute; right:4%; top:50%; transform:translateY(-50%); font-size:clamp(8rem,20vw,22rem); font-weight:900; color:rgba(26,92,82,.05); pointer-events:none; z-index:1; font-family:'Poppins',sans-serif; line-height:1; }
   .ph-faq-inner { position:relative; z-index:2; }
@@ -371,16 +743,12 @@ const styles = `
   .ph-acc.open .ph-acc-body { max-height:400px; padding:1.2rem 1.8rem; }
   .ph-acc-body p { font-size:.95rem; line-height:1.8; color:var(--mid); font-family:'Poppins',sans-serif; }
   @media(max-width:520px){ .ph-acc-plus{width:44px} .ph-acc-label{padding:0 1rem;min-height:48px} }
-
-  /* ── CTA ── */
   .ph-cta-sec { background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 100%); color:white; text-align:center; padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-cta-sec h2 { font-size:clamp(1.5rem,3vw,2rem); font-weight:800; margin-bottom:.75rem; color:white; }
   .ph-cta-sec p  { color:rgba(255,255,255,.80); margin-bottom:2rem; font-size:1rem; }
   .ph-cta-note { font-size:.8rem; color:rgba(255,255,255,.55); margin-top:1rem; }
   .ph-cta-sec .ph-btn-primary { background:white; color:var(--teal-dark); box-shadow:0 4px 20px rgba(0,0,0,.2); }
   .ph-cta-sec .ph-btn-primary:hover { background:var(--teal-pale); }
-
-  /* ── FOOTER ── */
   .ph-footer { background:#0f1a17; color:rgba(255,255,255,.5); padding:clamp(2rem,5vw,3.5rem) 1.2rem 1.5rem; }
   .ph-footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:2rem; max-width:1100px; margin:0 auto 2rem; }
   .ph-footer-brand strong { display:block; color:white; font-size:1rem; font-weight:800; margin-bottom:.5rem; }
@@ -394,15 +762,15 @@ const styles = `
 `;
 
 /* ═══════════════════════════════════════
-   PROPERTY CARD  (with WhatsApp + Call)
+   PROPERTY CARD
 ═══════════════════════════════════════ */
 function PropertyCard({ property }) {
-  const p      = normalise(property);
-  const imgs   = p.images;
-  const imgSrc = imgs[0] || null;
+  const { t } = useLang();
+  const p         = normalise(property);
+  const imgSrc    = p.images[0] || null;
   const isForSale = p.listingType.toLowerCase().includes("sale");
-  const wa   = waLink(p.whatsapp);
-  const call = p.contactPhone ? `tel:${p.contactPhone}` : null;
+  const wa        = waLink(p.whatsapp);
+  const call      = p.contactPhone ? `tel:${p.contactPhone}` : null;
 
   return (
     <div className="ph-prop-card">
@@ -413,47 +781,29 @@ function PropertyCard({ property }) {
         }
         <div className="ph-prop-badges">
           <span className={`ph-prop-badge ${isForSale ? "sale" : "rent"}`}>
-            {isForSale ? "For Sale" : "For Rent"}
+            {isForSale ? t.forSale : t.forRent}
           </span>
           {p.type && <span className="ph-prop-badge type">{p.type}</span>}
         </div>
       </div>
-
       <div className="ph-prop-body">
         <div className="ph-prop-name">{p.name}</div>
         <div className="ph-prop-loc">
           <i className="fa fa-map-marker-alt" />
           {[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}
         </div>
-        <div className="ph-prop-price">{formatPrice(p.price, p.listingType)}</div>
+        <div className="ph-prop-price">{formatPrice(p.price, p.listingType, t)}</div>
         <div className="ph-prop-meta">
-          {p.bedrooms  > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"  /> {p.bedrooms} bed</span>}
-          {p.bathrooms > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath" /> {p.bathrooms} bath</span>}
-          {p.availableRooms > 0 && <span className="ph-prop-meta-item"><i className="fa fa-door-open" /> {p.availableRooms} avail.</span>}
-          {p.gender && <span className="ph-prop-meta-item"><i className="fa fa-user" /> {p.gender}</span>}
+          {p.bedrooms      > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
+          {p.bathrooms     > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath"      /> {p.bathrooms} {t.bath}</span>}
+          {p.availableRooms> 0 && <span className="ph-prop-meta-item"><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
+          {p.gender              && <span className="ph-prop-meta-item"><i className="fa fa-user"    /> {p.gender}</span>}
         </div>
       </div>
-
       <div className="ph-prop-actions">
-        {wa && (
-          <a
-            className="ph-prop-wa"
-            href={wa}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackWhatsappClick(p._id)}
-          >
-            <i className="fab fa-whatsapp" /> WhatsApp
-          </a>
-        )}
-        {call && (
-          <a className="ph-prop-call" href={call}>
-            <i className="fa fa-phone" /> Call
-          </a>
-        )}
-        {!wa && !call && (
-          <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>
-        )}
+        {wa   && <a className="ph-prop-wa"   href={wa}   target="_blank" rel="noopener noreferrer" onClick={() => trackWhatsappClick(p._id)}><i className="fab fa-whatsapp" /> {t.waBtn}</a>}
+        {call && <a className="ph-prop-call" href={call}><i className="fa fa-phone" /> {t.callBtn}</a>}
+        {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
       </div>
     </div>
   );
@@ -463,39 +813,32 @@ function PropertyCard({ property }) {
    BROWSE DRAWER
 ═══════════════════════════════════════ */
 function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties }) {
+  const { t } = useLang();
   const [loading, setLoading]       = useState(true);
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-
     if (allProperties && allProperties.length > 0) {
       const filtered = allProperties.filter(p => {
         const norm = normalise(p);
-        if (filter === "district")
-          return norm.district.toLowerCase() === filterValue.toLowerCase();
-        if (filter === "type")
-          return norm.type.toLowerCase().includes(filterValue.toLowerCase())
-              || filterValue.toLowerCase().includes(norm.type.toLowerCase());
+        if (filter === "district") return norm.district.toLowerCase() === filterValue.toLowerCase();
+        if (filter === "type")     return norm.type.toLowerCase().includes(filterValue.toLowerCase()) || filterValue.toLowerCase().includes(norm.type.toLowerCase());
         return true;
       });
       setProperties(filtered);
       setLoading(false);
       return;
     }
-
-    const param = filter === "district"
-      ? `district=${encodeURIComponent(filterValue)}`
-      : `type=${encodeURIComponent(filterValue)}`;
+    const param = filter === "district" ? `district=${encodeURIComponent(filterValue)}` : `type=${encodeURIComponent(filterValue)}`;
     fetch(`${API_URL}/hostels?${param}&limit=50`)
       .then(r => r.json())
-      .then(data => {
-        const arr = data.hostels || data.properties || data.data || [];
-        setProperties(arr);
-      })
+      .then(data => setProperties(data.hostels || data.properties || data.data || []))
       .catch(() => setProperties([]))
       .finally(() => setLoading(false));
   }, [filter, filterValue, allProperties]);
+
+  const title = filter === "district" ? `${t.drawerPropsIn.replace("nyumba ","")} ${filterValue}` : `${filterValue}`;
 
   return (
     <div className="ph-browse-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -505,39 +848,30 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
             <div className="ph-browse-header-icon"><i className={filterIcon} /></div>
             <div>
               <h3>{filter === "district" ? `Properties in ${filterValue}` : `${filterValue} Listings`}</h3>
-              <p>{loading ? "Loading…" : `${properties.length} listing${properties.length !== 1 ? "s" : ""} found`}</p>
+              <p>{loading ? t.drawerLoading : `${properties.length} listing${properties.length !== 1 ? "s" : ""} found`}</p>
             </div>
           </div>
           <button className="ph-browse-close" onClick={onClose}>✕</button>
         </div>
-
         <div className="ph-browse-body">
           {loading ? (
-            <div className="ph-browse-loading">
-              <div className="ph-spinner" />
-              <span>Searching listings…</span>
-            </div>
+            <div className="ph-browse-loading"><div className="ph-spinner" /><span>{t.drawerLoading}</span></div>
           ) : properties.length === 0 ? (
             <div className="ph-browse-empty">
               <div className="ph-browse-empty-icon"><i className="fa fa-search" /></div>
-              <h4>No listings found for "{filterValue}"</h4>
-              <p>Check back soon — landlords are adding new properties every day.</p>
+              <h4>{t.drawerEmpty1} "{filterValue}"</h4>
+              <p>{t.drawerEmpty2}</p>
             </div>
           ) : (
             <div className="ph-prop-grid">
-              {properties.map((p, i) => (
-                <PropertyCard key={p._id || p.id || i} property={p} />
-              ))}
+              {properties.map((p, i) => <PropertyCard key={p._id || p.id || i} property={p} />)}
             </div>
           )}
         </div>
-
         {!loading && properties.length > 0 && (
           <div className="ph-browse-footer">
-            <p>Showing <strong>{properties.length}</strong> {filter === "district" ? `properties in ${filterValue}` : `${filterValue} listings`}</p>
-            <a href="/properties" className="ph-browse-see-all">
-              <i className="fa fa-th" /> View All
-            </a>
+            <p>{t.drawerShowing} <strong>{properties.length}</strong> {filter === "district" ? `${t.drawerPropsIn} ${filterValue}` : `${filterValue} ${t.drawerListings}`}</p>
+            <a href="/properties" className="ph-browse-see-all"><i className="fa fa-th" /> {t.drawerViewAll}</a>
           </div>
         )}
       </div>
@@ -549,36 +883,50 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
    HERO
 ═══════════════════════════════════════ */
 function Hero() {
+  const { t } = useLang();
+  const CARDS_COL1 = [
+    { theme:"blue",   icon:"fa fa-shield-alt",    title:t.cardVerified,  sub:t.cardVerifiedSub },
+    { theme:"orange", icon:"fa fa-tag",            title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
+    { theme:"green",  icon:"fa fa-check-circle",  title:t.cardTrusted,   sub:t.cardTrustedSub  },
+    { theme:"purple", icon:"fa fa-map-marker-alt",title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+    { theme:"blue",   icon:"fa fa-shield-alt",    title:t.cardVerified,  sub:t.cardVerifiedSub },
+    { theme:"orange", icon:"fa fa-tag",            title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
+    { theme:"green",  icon:"fa fa-check-circle",  title:t.cardTrusted,   sub:t.cardTrustedSub  },
+    { theme:"purple", icon:"fa fa-map-marker-alt",title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+  ];
+  const CARDS_COL2 = [
+    { theme:"cyan",   icon:"fa fa-bolt",     title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
+    { theme:"yellow", icon:"fa fa-headset",  title:t.cardDispute, sub:t.cardDisputeSub },
+    { theme:"red",    icon:"fa fa-comments", title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
+    { theme:"pink",   icon:"fa fa-star",     title:t.cardRated,   sub:t.cardRatedSub   },
+    { theme:"cyan",   icon:"fa fa-bolt",     title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
+    { theme:"yellow", icon:"fa fa-headset",  title:t.cardDispute, sub:t.cardDisputeSub },
+    { theme:"red",    icon:"fa fa-comments", title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
+    { theme:"pink",   icon:"fa fa-star",     title:t.cardRated,   sub:t.cardRatedSub   },
+  ];
   return (
     <section className="ph-hero">
       <div className="ph-hero-wrapper">
         <div className="ph-hero-left">
           <div className="ph-hero-badge">
             <span className="ph-hero-badge-dot" />
-            Finding homes across Malawi — No sign-up required
+            {t.heroBadge}
           </div>
-          <h1>Find Your <em>Perfect Home</em><br />Anywhere in Malawi</h1>
-          <p className="ph-hero-sub">
-            No account needed. Browse verified houses, flats, and plots for rent or sale
-            across all 28 districts — just pick your district and start exploring.
-          </p>
+          <h1>{t.heroH1a} <em>{t.heroH1em}</em><br />{t.heroH1b}</h1>
+          <p className="ph-hero-sub">{t.heroSub}</p>
           <div className="ph-hero-btns">
-            <a className="ph-btn-primary" href="#browse-districts">
-              <i className="fa fa-search" /> Browse Properties
-            </a>
-            <a className="ph-btn-ghost" href="/register">
-              <i className="fa fa-building" /> List Your Property
-            </a>
+            <a className="ph-btn-primary" href="#browse-districts"><i className="fa fa-search" /> {t.heroBrowse}</a>
+            <a className="ph-btn-ghost"   href="/register"><i className="fa fa-building" /> {t.heroList}</a>
           </div>
           <div className="ph-hero-trust">
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> No account to browse</div>
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> WhatsApp landlords directly</div>
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> 2.5% service fee only</div>
+            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust1}</div>
+            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust2}</div>
+            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust3}</div>
           </div>
           <div className="ph-hero-stats">
-            <div className="ph-hero-stat"><strong>340+</strong><span>Properties Listed</span></div>
-            <div className="ph-hero-stat"><strong>28</strong><span>Districts Covered</span></div>
-            <div className="ph-hero-stat"><strong>🛡️</strong><span>Dispute Protection</span></div>
+            <div className="ph-hero-stat"><strong>340+</strong><span>{t.heroStat1}</span></div>
+            <div className="ph-hero-stat"><strong>28</strong><span>{t.heroStat2}</span></div>
+            <div className="ph-hero-stat"><strong>🛡️</strong><span>{t.heroStat3}</span></div>
           </div>
         </div>
         <div className="ph-hero-right">
@@ -621,34 +969,51 @@ function Hero() {
    TRUST BAR
 ═══════════════════════════════════════ */
 function TrustBar() {
+  const { t } = useLang();
   return (
     <div className="ph-trust-bar">
       <div className="ph-trust-bar-inner">
-        <div className="ph-trust-item"><i className="fa fa-shield-alt" /> Registered Malawian platform</div>
+        <div className="ph-trust-item"><i className="fa fa-shield-alt" /> {t.trust1}</div>
         <div className="ph-trust-divider" />
-        <div className="ph-trust-item"><i className="fa fa-user-slash" /> No account needed to browse</div>
+        <div className="ph-trust-item"><i className="fa fa-user-slash" /> {t.trust2}</div>
         <div className="ph-trust-divider" />
-        <div className="ph-trust-item"><i className="fab fa-whatsapp" /> WhatsApp landlords directly</div>
+        <div className="ph-trust-item"><i className="fab fa-whatsapp" /> {t.trust3}</div>
         <div className="ph-trust-divider" />
-        <div className="ph-trust-item"><i className="fa fa-map-marker-alt" /> All 28 districts covered</div>
+        <div className="ph-trust-item"><i className="fa fa-map-marker-alt" /> {t.trust4}</div>
         <div className="ph-trust-divider" />
-        <div className="ph-trust-item"><i className="fa fa-lock" /> Dispute protection built in</div>
+        <div className="ph-trust-item"><i className="fa fa-lock" /> {t.trust5}</div>
       </div>
     </div>
   );
 }
 
 /* ═══════════════════════════════════════
-   DISTRICTS SLIDER  ← fully rewritten
+   DISTRICTS SLIDER
 ═══════════════════════════════════════ */
+const FALLBACK_IMGS = [
+  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop",
+];
+
 function DistrictsSection({ allProperties }) {
+  const { t } = useLang();
+  const PROPERTY_TYPES_T = [
+    { icon:"fa fa-home",        label:t.ptHouse, desc:t.ptHouseDesc },
+    { icon:"fa fa-building",    label:t.ptFlat,  desc:t.ptFlatDesc  },
+    { icon:"fa fa-bed",         label:t.ptRoom,  desc:t.ptRoomDesc  },
+    { icon:"fa fa-door-closed", label:t.ptSelf,  desc:t.ptSelfDesc  },
+    { icon:"fa fa-seedling",    label:t.ptPlot,  desc:t.ptPlotDesc  },
+    { icon:"fa fa-store",       label:t.ptComm,  desc:t.ptCommDesc  },
+  ];
   const [filtered, setFiltered]     = useState([]);
   const [locSearch, setLocSearch]   = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [current, setCurrent]       = useState(0);
   const [drawer, setDrawer]         = useState(null);
-  const [noTransition, setNoTransition] = useState(false);
-
+  const [visCount, setVisCount]     = useState(4);
   const timerRef    = useRef(null);
   const trackRef    = useRef(null);
   const touchStartX = useRef(null);
@@ -656,8 +1021,6 @@ function DistrictsSection({ allProperties }) {
   const dragStartX  = useRef(null);
   const isDragging  = useRef(false);
 
-  // ── responsive visible count ──────────────────────────────────────────────
-  const [visCount, setVisCount] = useState(4);
   useEffect(() => {
     function calc() {
       const w = window.innerWidth;
@@ -668,12 +1031,10 @@ function DistrictsSection({ allProperties }) {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  // ── filter helpers ────────────────────────────────────────────────────────
   function applyFilter(source, loc, type) {
     const result = source.filter(raw => {
       const p = normalise(raw);
-      const matchLoc  = !loc  || p.district.toLowerCase().includes(loc.toLowerCase())
-                               || p.name.toLowerCase().includes(loc.toLowerCase());
+      const matchLoc  = !loc  || p.district.toLowerCase().includes(loc.toLowerCase()) || p.name.toLowerCase().includes(loc.toLowerCase());
       const matchType = !type || p.type.toLowerCase().includes(type.toLowerCase());
       return matchLoc && matchType;
     });
@@ -682,23 +1043,18 @@ function DistrictsSection({ allProperties }) {
   }
 
   useEffect(() => {
-    if (allProperties && allProperties.length > 0)
-      applyFilter(allProperties, locSearch, typeFilter);
+    if (allProperties && allProperties.length > 0) applyFilter(allProperties, locSearch, typeFilter);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allProperties]);
 
   const handleSearch = () => applyFilter(allProperties || [], locSearch, typeFilter);
-
-  // ── slide mechanics ───────────────────────────────────────────────────────
   const maxIdx = Math.max(0, filtered.length - visCount);
 
   const slideTo = useCallback((idx) => {
     setCurrent(Math.max(0, Math.min(idx, maxIdx)));
   }, [maxIdx]);
 
-  const next = useCallback(() => {
-    setCurrent(c => (c >= maxIdx ? 0 : c + 1));
-  }, [maxIdx]);
+  const next = useCallback(() => setCurrent(c => (c >= maxIdx ? 0 : c + 1)), [maxIdx]);
 
   const resetAuto = useCallback(() => {
     clearInterval(timerRef.current);
@@ -710,7 +1066,6 @@ function DistrictsSection({ allProperties }) {
     return () => clearInterval(timerRef.current);
   }, [filtered, visCount, resetAuto]);
 
-  // read real card + gap width from the DOM
   function getCardW() {
     const track = trackRef.current;
     if (!track || !track.children[0]) return 252;
@@ -718,40 +1073,21 @@ function DistrictsSection({ allProperties }) {
     return track.children[0].getBoundingClientRect().width + gap;
   }
 
-  // ── touch (mobile swipe) ──────────────────────────────────────────────────
-  function onTouchStart(e) {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  }
+  function onTouchStart(e) { touchStartX.current = e.touches[0].clientX; touchStartY.current = e.touches[0].clientY; }
   function onTouchEnd(e) {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     const dy = e.changedTouches[0].clientY - touchStartY.current;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      slideTo(dx < 0 ? current + 1 : current - 1);
-      resetAuto();
-    }
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) { slideTo(dx < 0 ? current + 1 : current - 1); resetAuto(); }
     touchStartX.current = null;
   }
-
-  // ── mouse drag (desktop) ──────────────────────────────────────────────────
-  function onMouseDown(e) {
-    dragStartX.current = e.clientX;
-    isDragging.current = false;
-  }
-  function onMouseMove(e) {
-    if (dragStartX.current === null) return;
-    if (Math.abs(e.clientX - dragStartX.current) > 6) isDragging.current = true;
-  }
+  function onMouseDown(e) { dragStartX.current = e.clientX; isDragging.current = false; }
+  function onMouseMove(e) { if (dragStartX.current !== null && Math.abs(e.clientX - dragStartX.current) > 6) isDragging.current = true; }
   function onMouseUp(e) {
     if (dragStartX.current === null) return;
     const dx = e.clientX - dragStartX.current;
-    if (isDragging.current && Math.abs(dx) > 40) {
-      slideTo(dx < 0 ? current + 1 : current - 1);
-      resetAuto();
-    }
-    dragStartX.current = null;
-    isDragging.current = false;
+    if (isDragging.current && Math.abs(dx) > 40) { slideTo(dx < 0 ? current + 1 : current - 1); resetAuto(); }
+    dragStartX.current = null; isDragging.current = false;
   }
 
   const translateX = current * getCardW();
@@ -760,80 +1096,50 @@ function DistrictsSection({ allProperties }) {
   return (
     <>
       <section className="ph-dist-sec" id="browse-districts">
-        <p className="ph-sec-label">Browse by location</p>
-        <h2 className="ph-sec-title">Find Properties by <em style={{color:"#2d8a72"}}>District</em></h2>
-        <p className="ph-sec-sub">Search by location or type — swipe or use arrows to explore all listings.</p>
-
+        <p className="ph-sec-label">{t.distLabel}</p>
+        <h2 className="ph-sec-title">{t.distTitle1} <em style={{color:"#2d8a72"}}>{t.distTitle2}</em></h2>
+        <p className="ph-sec-sub">{t.distSub}</p>
         <div className="ph-dist-search">
-          <input
-            type="text"
-            placeholder="Search district or property name…"
-            value={locSearch}
-            onChange={e => setLocSearch(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleSearch()}
-          />
+          <input type="text" placeholder={t.distSearch} value={locSearch}
+            onChange={e => setLocSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSearch()} />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
-            <option value="">All types</option>
-            {PROPERTY_TYPES.map(t => <option key={t.label} value={t.label}>{t.label}</option>)}
+            <option value="">{t.distAllTypes}</option>
+            {PROPERTY_TYPES_T.map(pt => <option key={pt.label} value={pt.label}>{pt.label}</option>)}
           </select>
           <button className="ph-dist-search-btn" onClick={handleSearch}>
-            <i className="fa fa-search" /> Search
+            <i className="fa fa-search" /> {t.distBtn}
           </button>
         </div>
-
-        <div
-          className="ph-slider-viewport"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}
-        >
+        <div className="ph-slider-viewport"
+          onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
+          onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}>
           {filtered.length === 0 ? (
             <div className="ph-prop-empty">
               <i className="fa fa-search" style={{fontSize:"2rem",opacity:.3,display:"block",marginBottom:".75rem"}} />
-              {allProperties && allProperties.length === 0
-                ? "Loading properties…"
-                : "No properties found. Try a different search."}
+              {allProperties && allProperties.length === 0 ? t.distLoading : t.distEmpty}
             </div>
           ) : (
-            <div
-              ref={trackRef}
-              className={`ph-slider-track${noTransition ? " no-transition" : ""}`}
-              style={{ transform: `translateX(-${translateX}px)` }}
-            >
+            <div ref={trackRef} className="ph-slider-track" style={{transform:`translateX(-${translateX}px)`}}>
               {filtered.map((raw, i) => {
                 const p      = normalise(raw);
                 const imgSrc = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
-                const price  = formatPrice(p.price, p.listingType);
                 return (
-                  <button
-                    key={p._id || i}
-                    className="ph-slide-card"
-                    onClick={() => {
-                      if (!isDragging.current)
-                        setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" });
-                    }}
-                    onDragStart={e => e.preventDefault()}
-                  >
-                    <img
-                      src={imgSrc}
-                      alt={p.name}
-                      className="ph-slide-img"
-                      draggable="false"
-                      onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }}
-                    />
+                  <button key={p._id || i} className="ph-slide-card"
+                    onClick={() => { if (!isDragging.current) setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" }); }}
+                    onDragStart={e => e.preventDefault()}>
+                    <img src={imgSrc} alt={p.name} className="ph-slide-img" draggable="false"
+                      onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }} />
                     <div className="ph-slide-body">
                       <div className="ph-slide-district">{p.district || "Malawi"}</div>
                       <div className="ph-slide-name">{p.name}</div>
                       <div className="ph-slide-meta">
-                        {p.bedrooms  > 0 && <span><i className="fa fa-bed"  /> {p.bedrooms} bed</span>}
-                        {p.bathrooms > 0 && <span><i className="fa fa-bath" /> {p.bathrooms}</span>}
-                        {p.availableRooms > 0 && <span><i className="fa fa-door-open" /> {p.availableRooms} avail.</span>}
+                        {p.bedrooms      > 0 && <span><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
+                        {p.bathrooms     > 0 && <span><i className="fa fa-bath"      /> {p.bathrooms}</span>}
+                        {p.availableRooms> 0 && <span><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
                       </div>
                       {p.type && <span className="ph-slide-badge">{p.type}</span>}
-                      <div className="ph-slide-price">{price}</div>
+                      <div className="ph-slide-price">{formatPrice(p.price, p.listingType, t)}</div>
                     </div>
                   </button>
                 );
@@ -841,16 +1147,12 @@ function DistrictsSection({ allProperties }) {
             </div>
           )}
         </div>
-
         {filtered.length > visCount && (
           <div className="ph-prop-nav">
             <div className="ph-prop-dots">
               {Array.from({ length: DOT_COUNT }).map((_, i) => (
-                <button
-                  key={i}
-                  className={`ph-prop-dot${current === i ? " active" : ""}`}
-                  onClick={() => { slideTo(i); resetAuto(); }}
-                />
+                <button key={i} className={`ph-prop-dot${current === i ? " active" : ""}`}
+                  onClick={() => { slideTo(i); resetAuto(); }} />
               ))}
             </div>
             <div className="ph-prop-nav-btns">
@@ -860,15 +1162,9 @@ function DistrictsSection({ allProperties }) {
           </div>
         )}
       </section>
-
       {drawer && (
-        <BrowseDrawer
-          filter="district"
-          filterValue={drawer.label}
-          filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)}
-          allProperties={allProperties}
-        />
+        <BrowseDrawer filter="district" filterValue={drawer.label} filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)} allProperties={allProperties} />
       )}
     </>
   );
@@ -878,31 +1174,33 @@ function DistrictsSection({ allProperties }) {
    PROPERTY TYPES
 ═══════════════════════════════════════ */
 function TypesSection({ allProperties }) {
+  const { t } = useLang();
+  const PROPERTY_TYPES_T = [
+    { icon:"fa fa-home",        label:t.ptHouse, desc:t.ptHouseDesc },
+    { icon:"fa fa-building",    label:t.ptFlat,  desc:t.ptFlatDesc  },
+    { icon:"fa fa-bed",         label:t.ptRoom,  desc:t.ptRoomDesc  },
+    { icon:"fa fa-door-closed", label:t.ptSelf,  desc:t.ptSelfDesc  },
+    { icon:"fa fa-seedling",    label:t.ptPlot,  desc:t.ptPlotDesc  },
+    { icon:"fa fa-store",       label:t.ptComm,  desc:t.ptCommDesc  },
+  ];
   const [drawer, setDrawer] = useState(null);
   return (
     <>
       <section className="ph-types-sec">
-        <p className="ph-sec-label">What are you looking for?</p>
-        <h2 className="ph-sec-title">Browse by <em>Property Type</em></h2>
-        <p className="ph-sec-sub">Tap any type to instantly see live listings — no sign-up needed.</p>
+        <p className="ph-sec-label">{t.typesLabel}</p>
+        <h2 className="ph-sec-title">{t.typesTitle1} <em>{t.typesTitle2}</em></h2>
+        <p className="ph-sec-sub">{t.typesSub}</p>
         <div className="ph-types-grid">
-          {PROPERTY_TYPES.map(t => (
-            <button key={t.label} className="ph-type-card" onClick={() => setDrawer(t)}>
-              <i className={t.icon} />
-              <h4>{t.label}</h4>
-              <span>{t.desc}</span>
+          {PROPERTY_TYPES_T.map(pt => (
+            <button key={pt.label} className="ph-type-card" onClick={() => setDrawer(pt)}>
+              <i className={pt.icon} /><h4>{pt.label}</h4><span>{pt.desc}</span>
             </button>
           ))}
         </div>
       </section>
       {drawer && (
-        <BrowseDrawer
-          filter="type"
-          filterValue={drawer.label}
-          filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)}
-          allProperties={allProperties}
-        />
+        <BrowseDrawer filter="type" filterValue={drawer.label} filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)} allProperties={allProperties} />
       )}
     </>
   );
@@ -912,6 +1210,7 @@ function TypesSection({ allProperties }) {
    LOCATIONS PHOTO GRID
 ═══════════════════════════════════════ */
 function LocationsSection({ onDistrictClick }) {
+  const { t } = useLang();
   const locs = [
     { img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"       },
     { img:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop",          count:"9 Properties",   name:"Blantyre", desc:"Commercial Hub",           icon:"fa fa-building"   },
@@ -921,16 +1220,14 @@ function LocationsSection({ onDistrictClick }) {
   ];
   return (
     <section className="ph-locs-sec">
-      <p className="ph-sec-label">Our property areas</p>
-      <h2 className="ph-sec-title">Top Locations Across <em>Malawi</em></h2>
+      <p className="ph-sec-label">{t.locsLabel}</p>
+      <h2 className="ph-sec-title">{t.locsTitle1} <em>{t.locsTitle2}</em></h2>
       <div className="ph-locs-grid">
         {locs.map(l => (
           <button key={l.name} className={`ph-loc-card${l.big ? " big" : ""}`} onClick={() => onDistrictClick(l)}>
             <img src={l.img} alt={l.name} />
             <div className="ph-loc-overlay">
-              <small>{l.count}</small>
-              <h4>{l.name}</h4>
-              <p>{l.desc}</p>
+              <small>{l.count}</small><h4>{l.name}</h4><p>{l.desc}</p>
             </div>
           </button>
         ))}
@@ -943,43 +1240,43 @@ function LocationsSection({ onDistrictClick }) {
    DUAL / FEATURES / FAQ
 ═══════════════════════════════════════ */
 function DualSection() {
+  const { t } = useLang();
   return (
     <div className="ph-dual-sec">
       <div className="ph-dual-card">
         <div className="ph-dual-icon tenant"><i className="fa fa-user" /></div>
-        <h3>For Tenants &amp; Buyers</h3>
-        <div className="ph-dual-note">✓ No account required</div>
-        <p>Browse all verified properties, view photos, see prices, and get landlord contact info directly — completely free, no sign-up needed.</p>
-        <a href="#browse-districts" className="ph-btn-outline">Start Browsing</a>
+        <h3>{t.tenantTitle}</h3>
+        <div className="ph-dual-note">{t.tenantNote}</div>
+        <p>{t.tenantDesc}</p>
+        <a href="#browse-districts" className="ph-btn-outline">{t.tenantBtn}</a>
       </div>
       <div className="ph-dual-card">
         <div className="ph-dual-icon landlord"><i className="fa fa-building" /></div>
-        <h3>For Landlords &amp; Owners</h3>
-        <div className="ph-dual-note">✓ Register to list properties</div>
-        <p>Create a landlord account to list your house, flat, room, or plot. Tenants WhatsApp you directly from your listing.</p>
-        <a href="/register" className="ph-btn-outline">Register as Landlord</a>
+        <h3>{t.landlordTitle}</h3>
+        <div className="ph-dual-note">{t.landlordNote}</div>
+        <p>{t.landlordDesc}</p>
+        <a href="/register" className="ph-btn-outline">{t.landlordBtn}</a>
       </div>
     </div>
   );
 }
 
 function FeaturesSection() {
+  const { t } = useLang();
   const features = [
-    { icon:"fa fa-search",        title:"Browse Freely",      desc:"No account needed. Filter by district, price, and type to find your home instantly." },
-    { icon:"fab fa-whatsapp",     title:"WhatsApp Direct",    desc:"Tap WhatsApp on any listing to message the landlord instantly — no middlemen." },
-    { icon:"fa fa-shield-alt",    title:"Verified Listings",  desc:"Every landlord is verified before listing to protect tenants from fraud." },
-    { icon:"fa fa-balance-scale", title:"Dispute Resolution", desc:"If a problem arises, our team mediates and resolves it fairly and quickly." },
+    { icon:"fa fa-search",        title:t.feat1Title, desc:t.feat1Desc },
+    { icon:"fab fa-whatsapp",     title:t.feat2Title, desc:t.feat2Desc },
+    { icon:"fa fa-shield-alt",    title:t.feat3Title, desc:t.feat3Desc },
+    { icon:"fa fa-balance-scale", title:t.feat4Title, desc:t.feat4Desc },
   ];
   return (
     <section className="ph-features-sec">
-      <p className="ph-sec-label">Why choose us</p>
-      <h2 className="ph-sec-title">Why Choose <em>PezaNyumba?</em></h2>
+      <p className="ph-sec-label">{t.featLabel}</p>
+      <h2 className="ph-sec-title">{t.featTitle1} <em>{t.featTitle2}</em></h2>
       <div className="ph-features-grid">
         {features.map(f => (
           <div className="ph-feature-card" key={f.title}>
-            <i className={f.icon} />
-            <h4>{f.title}</h4>
-            <p>{f.desc}</p>
+            <i className={f.icon} /><h4>{f.title}</h4><p>{f.desc}</p>
           </div>
         ))}
       </div>
@@ -988,14 +1285,22 @@ function FeaturesSection() {
 }
 
 function FAQSection() {
+  const { t } = useLang();
   const [open, setOpen] = useState(null);
+  const faqItems = [
+    { question:t.faqQ1, answer:t.faqA1 },
+    { question:t.faqQ2, answer:t.faqA2 },
+    { question:t.faqQ3, answer:t.faqA3 },
+    { question:t.faqQ4, answer:t.faqA4 },
+    { question:t.faqQ5, answer:t.faqA5 },
+  ];
   return (
     <section className="ph-faq">
       <div className="ph-faq-qmark" aria-hidden="true">?</div>
       <div className="ph-faq-inner">
         <h2 className="ph-faq-heading">FAQ</h2>
         <div className="ph-faq-list">
-          {FAQ_ITEMS.map((item, i) => (
+          {faqItems.map((item, i) => (
             <div key={i} className={`ph-acc${open === i ? " open" : ""}`} onClick={() => setOpen(open === i ? null : i)}>
               <div className="ph-acc-header">
                 <div className="ph-acc-plus"><span>+</span></div>
@@ -1014,23 +1319,25 @@ function FAQSection() {
    ROOT
 ═══════════════════════════════════════ */
 export default function Home() {
+  const langState = useLangState();
   const [allProperties, setAllProperties] = useState([]);
   const [locDrawer, setLocDrawer]         = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/hostels?limit=500`)
       .then(r => r.json())
-      .then(data => {
-        const arr = data.hostels || data.properties || data.data || [];
-        setAllProperties(arr);
-      })
+      .then(data => setAllProperties(data.hostels || data.properties || data.data || []))
       .catch(() => {});
   }, []);
 
   return (
-    <>
+    <LangContext.Provider value={langState}>
       <style>{styles}</style>
+      <style>{langSwitcherStyles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+      {/* ── Language switcher — fixed, always on top ── */}
+      <LanguageSwitcher />
 
       <Hero />
       <TrustBar />
@@ -1042,25 +1349,20 @@ export default function Home() {
       <FAQSection />
 
       <section className="ph-cta-sec">
-        <h2>Are you a Landlord or Land Owner?</h2>
-        <p>Register once and start listing your properties to thousands of tenants across Malawi.</p>
+        <h2>{langState.t.ctaTitle}</h2>
+        <p>{langState.t.ctaSub}</p>
         <a href="/register" className="ph-btn-primary">
-          <i className="fa fa-user-plus" /> Register as Landlord
+          <i className="fa fa-user-plus" /> {langState.t.ctaBtn}
         </a>
-        <p className="ph-cta-note">Already have an account?{" "}
-          <a href="/login" style={{color:"#4dd9b8",fontWeight:700}}>Sign in here</a>
+        <p className="ph-cta-note">{langState.t.ctaNote}{" "}
+          <a href="/login" style={{color:"#4dd9b8",fontWeight:700}}>{langState.t.ctaLogin}</a>
         </p>
       </section>
 
       {locDrawer && (
-        <BrowseDrawer
-          filter="district"
-          filterValue={locDrawer.name}
-          filterIcon={locDrawer.icon}
-          onClose={() => setLocDrawer(null)}
-          allProperties={allProperties}
-        />
+        <BrowseDrawer filter="district" filterValue={locDrawer.name} filterIcon={locDrawer.icon}
+          onClose={() => setLocDrawer(null)} allProperties={allProperties} />
       )}
-    </>
+    </LangContext.Provider>
   );
 }
