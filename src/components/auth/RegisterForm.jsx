@@ -11,229 +11,133 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --navy:        #0f1923;
-    --navy-mid:    #1a2e3d;
-    --amber:       #f5a623;
-    --amber-light: #fef3d8;
-    --amber-dark:  #d4870a;
-    --off-white:   #f7f8fa;
-    --border:      #e8eaed;
-    --text-dark:   #111827;
-    --text-mid:    #6b7280;
-    --radius:      12px;
-    --green:       #16a34a;
-    --red:         #dc2626;
-    --yellow:      #f59e0b;
-    --wa:          #25D366;
-    --font:        'Plus Jakarta Sans', sans-serif;
+    --navy: #0f1923; --navy-mid: #1a2e3d;
+    --amber: #f5a623; --amber-light: #fef3d8; --amber-dark: #d4870a;
+    --off-white: #f7f8fa; --border: #e8eaed;
+    --text-dark: #111827; --text-mid: #6b7280;
+    --green: #16a34a; --red: #dc2626; --yellow: #f59e0b;
+    --wa: #25D366; --font: 'Plus Jakarta Sans', sans-serif;
   }
   html, body, #root { height: 100%; font-family: var(--font); }
 
-  /* NAV */
   .rp-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-    height: 56px; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; background: var(--navy);
-    box-shadow: 0 2px 16px rgba(0,0,0,.25);
+    height: 52px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.25rem; background: var(--navy);
   }
   .rp-bar-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-  .rp-bar-logo-img {
-    width: 32px; height: 32px; border-radius: 8px; overflow: hidden;
-    background: white; display: flex; align-items: center; justify-content: center;
-  }
+  .rp-bar-logo-img { width: 30px; height: 30px; border-radius: 7px; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center; }
   .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; }
-  .rp-bar-brand strong { font-size: .9rem; font-weight: 800; color: #fff; }
-  .rp-bar-login {
-    color: rgba(255,255,255,.8); font-size: .78rem; font-weight: 700;
-    border: 1.5px solid rgba(255,255,255,.2); padding: .28rem .85rem;
-    border-radius: 8px; cursor: pointer; text-decoration: none; transition: all .18s;
-  }
+  .rp-bar-brand strong { font-size: .88rem; font-weight: 800; color: #fff; }
+  .rp-bar-login { color: rgba(255,255,255,.8); font-size: .75rem; font-weight: 700; border: 1.5px solid rgba(255,255,255,.2); padding: .26rem .8rem; border-radius: 7px; text-decoration: none; transition: all .18s; }
   .rp-bar-login:hover { border-color: var(--amber); color: var(--amber); }
 
-  /* BG */
   .rp-main {
-    position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
     display: flex; align-items: center; justify-content: center;
-    overflow-y: auto; padding: .75rem 1rem;
+    padding: .5rem 1rem;
     background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
     background-size: cover; background-position: center;
   }
   .rp-main::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(15,25,35,.88) 0%, rgba(26,46,61,.82) 100%);
-    pointer-events: none;
+    background: linear-gradient(135deg, rgba(15,25,35,.9) 0%, rgba(26,46,61,.85) 100%);
   }
 
-  /* CARD */
   .rp-card {
     position: relative; z-index: 2;
     background: #fff; border-radius: 16px;
-    box-shadow: 0 24px 60px rgba(0,0,0,.28);
-    padding: 1.4rem 1.6rem 1.2rem;
-    width: 420px; max-width: 100%;
+    box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    padding: 1.2rem 1.4rem 1rem;
+    width: 460px; max-width: 100%;
   }
 
-  /* HEADER */
-  .rp-hdr { text-align: center; margin-bottom: .9rem; }
-  .rp-hdr h2 { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); }
-  .rp-hdr p  { font-size: .74rem; color: var(--text-mid); margin-top: .15rem; }
-  .rp-line   { width: 32px; height: 3px; background: var(--amber); border-radius: 2px; margin: .35rem auto 0; }
+  .rp-hdr { text-align: center; margin-bottom: .75rem; }
+  .rp-hdr h2 { font-size: 1.15rem; font-weight: 800; color: var(--text-dark); }
+  .rp-hdr p  { font-size: .7rem; color: var(--text-mid); margin-top: .1rem; }
+  .rp-line   { width: 28px; height: 3px; background: var(--amber); border-radius: 2px; margin: .3rem auto 0; }
 
-  /* ROLE */
-  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-bottom: .85rem; }
+  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-bottom: .75rem; }
   .rp-role-opt { position: relative; }
   .rp-role-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
   .rp-role-btn {
-    display: flex; align-items: center; justify-content: center; gap: .35rem;
-    padding: .45rem .5rem; border: 1.5px solid var(--border);
-    border-radius: 8px; cursor: pointer; font-size: .75rem;
-    font-weight: 700; color: var(--text-mid); background: var(--off-white);
-    transition: all .18s; font-family: var(--font);
+    display: flex; align-items: center; justify-content: center; gap: .3rem;
+    padding: .4rem; border: 1.5px solid var(--border); border-radius: 8px;
+    cursor: pointer; font-size: .72rem; font-weight: 700; color: var(--text-mid);
+    background: var(--off-white); transition: all .18s; font-family: var(--font);
   }
   .rp-role-btn:hover { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); }
-  .rp-role-opt input:checked + .rp-role-btn {
-    border-color: var(--amber); color: var(--amber-dark);
-    background: var(--amber-light); box-shadow: 0 0 0 2px rgba(245,166,35,.2);
-  }
+  .rp-role-opt input:checked + .rp-role-btn { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); box-shadow: 0 0 0 2px rgba(245,166,35,.2); }
 
-  /* TWO COLUMN ROW */
-  .rp-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
-
-  /* FORM FIELDS */
-  .rp-grp { margin-bottom: .6rem; }
-  .rp-lbl {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: .6rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: .4px; margin-bottom: .18rem;
-  }
-  .rp-strength { font-size: .58rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
-  .rp-strength.weak   { color: var(--red); }
-  .rp-strength.medium { color: var(--yellow); }
-  .rp-strength.strong { color: var(--green); }
+  .rp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .rp-grp { margin-bottom: .5rem; }
+  .rp-lbl { display: flex; justify-content: space-between; align-items: center; font-size: .58rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: .4px; margin-bottom: .15rem; }
+  .rp-strength { font-size: .56rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
+  .rp-strength.weak { color: var(--red); } .rp-strength.medium { color: var(--yellow); } .rp-strength.strong { color: var(--green); }
   .rp-wrap { position: relative; display: flex; align-items: center; }
-  .rp-ico    { position: absolute; left: .65rem; color: var(--amber-dark); font-size: .75rem; pointer-events: none; z-index: 1; }
-  .rp-toggle { position: absolute; right: .65rem; color: #9ca3af; font-size: .75rem; cursor: pointer; z-index: 2; }
+  .rp-ico { position: absolute; left: .6rem; color: var(--amber-dark); font-size: .72rem; pointer-events: none; z-index: 1; }
+  .rp-wa-ico { position: absolute; left: .6rem; color: var(--wa); font-size: .82rem; pointer-events: none; z-index: 1; }
+  .rp-toggle { position: absolute; right: .6rem; color: #9ca3af; font-size: .72rem; cursor: pointer; z-index: 2; }
   .rp-toggle:hover { color: var(--amber-dark); }
   .rp-input {
     width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
-    padding: .46rem .7rem .46rem 2rem;
-    font-size: .78rem; font-family: var(--font);
-    color: var(--text-dark); font-weight: 500; background: var(--off-white);
-    outline: none; transition: all .18s;
+    padding: .42rem .65rem .42rem 1.9rem;
+    font-size: .75rem; font-family: var(--font); color: var(--text-dark);
+    font-weight: 500; background: var(--off-white); outline: none; transition: all .18s;
   }
-  .rp-input:focus {
-    border-color: var(--amber); background: #fff;
-    box-shadow: 0 0 0 3px rgba(245,166,35,.12);
-  }
-  .rp-input::placeholder { font-size: .7rem; color: #c3c8d0; }
-  .rp-input.password-weak   { border-color: var(--red); }
+  .rp-input:focus { border-color: var(--amber); background: #fff; box-shadow: 0 0 0 3px rgba(245,166,35,.12); }
+  .rp-input::placeholder { font-size: .68rem; color: #c3c8d0; }
+  .rp-input.password-weak { border-color: var(--red); }
   .rp-input.password-medium { border-color: var(--yellow); }
   .rp-input.password-strong { border-color: var(--green); }
-
-  /* WHATSAPP */
-  .rp-wa-ico { position: absolute; left: .65rem; color: var(--wa); font-size: .85rem; pointer-events: none; z-index: 1; }
   .rp-input.wa-field:focus { border-color: var(--wa); box-shadow: 0 0 0 3px rgba(37,211,102,.12); }
-  .rp-wa-note { font-size: .6rem; color: var(--text-mid); margin-top: .12rem; display: flex; align-items: center; gap: 3px; }
-  .rp-wa-note i { color: var(--wa); }
 
-  /* CAPTCHA + TERMS ROW */
-  .rp-bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: .7rem; align-items: center; }
-  .rp-captcha {
-    border: 1.5px solid var(--border); border-radius: 8px;
-    padding: .42rem .6rem; background: var(--off-white);
-    display: flex; align-items: center; justify-content: space-between;
-    cursor: pointer; transition: border-color .2s; height: 100%;
-  }
+  .rp-wa-same { display: flex; align-items: center; gap: 3px; font-size: .56rem; font-weight: 600; color: var(--text-mid); cursor: pointer; letter-spacing: 0; text-transform: none; }
+  .rp-wa-same input { width: 10px; height: 10px; accent-color: var(--amber); cursor: pointer; }
+
+  .rp-footer-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; align-items: center; margin-bottom: .6rem; margin-top: .25rem; }
+  .rp-captcha { border: 1.5px solid var(--border); border-radius: 8px; padding: .38rem .55rem; background: var(--off-white); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color .2s; }
   .rp-captcha:hover { border-color: var(--amber); }
-  .rp-cap-l { display: flex; align-items: center; gap: .4rem; }
-  .rp-cap-box {
-    width: 15px; height: 15px; border: 2px solid #9ca3af;
-    border-radius: 3px; display: flex; align-items: center; justify-content: center;
-    transition: all .2s; flex-shrink: 0;
-  }
+  .rp-cap-l { display: flex; align-items: center; gap: .35rem; }
+  .rp-cap-box { width: 14px; height: 14px; border: 2px solid #9ca3af; border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all .2s; flex-shrink: 0; }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .55rem; font-weight: 700; }
-  .rp-cap-txt { font-size: .68rem; font-weight: 600; color: var(--text-dark); }
-  .rp-spin {
-    width: 10px; height: 10px; border: 2px solid #e5e7eb;
-    border-top-color: var(--amber); border-radius: 50%;
-    animation: rpspin .7s linear infinite; display: inline-block;
-  }
+  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .52rem; font-weight: 700; }
+  .rp-cap-txt { font-size: .65rem; font-weight: 600; color: var(--text-dark); }
+  .rp-cap-note { font-size: .42rem; color: #9ca3af; text-align: right; line-height: 1.3; }
+  .rp-spin { width: 10px; height: 10px; border: 2px solid #e5e7eb; border-top-color: var(--amber); border-radius: 50%; animation: rpspin .7s linear infinite; display: inline-block; }
   @keyframes rpspin { to { transform: rotate(360deg); } }
-  .rp-cap-note { font-size: .45rem; color: #9ca3af; text-align: right; line-height: 1.3; }
-  .rp-terms {
-    display: flex; align-items: center; gap: .35rem;
-    font-size: .66rem; color: var(--text-mid); cursor: pointer; line-height: 1.4;
-  }
-  .rp-terms input { width: 12px; height: 12px; cursor: pointer; accent-color: var(--navy); flex-shrink: 0; }
+  .rp-terms { display: flex; align-items: center; gap: .3rem; font-size: .63rem; color: var(--text-mid); cursor: pointer; line-height: 1.35; }
+  .rp-terms input { width: 11px; height: 11px; cursor: pointer; accent-color: var(--navy); flex-shrink: 0; }
   .rp-terms a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
-  .rp-terms a:hover { color: var(--amber); }
 
-  /* SUBMIT */
-  .rp-submit {
-    width: 100%; background: var(--navy); color: #fff; border: none;
-    cursor: pointer; padding: .62rem 1rem; border-radius: 9px;
-    font-size: .82rem; font-weight: 700; font-family: var(--font);
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background .2s, transform .15s;
-    box-shadow: 0 4px 16px rgba(15,25,35,.28);
-  }
-  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); }
+  .rp-submit { width: 100%; background: var(--navy); color: #fff; border: none; cursor: pointer; padding: .58rem 1rem; border-radius: 9px; font-size: .8rem; font-weight: 700; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .2s; box-shadow: 0 4px 14px rgba(15,25,35,.28); }
+  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); }
   .rp-submit:disabled { opacity: .6; cursor: not-allowed; }
-  .rp-submit-spin {
-    width: 11px; height: 11px; border: 2px solid rgba(255,255,255,.35);
-    border-top-color: #fff; border-radius: 50%; animation: rpspin .7s linear infinite;
-  }
+  .rp-submit-spin { width: 11px; height: 11px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: rpspin .7s linear infinite; }
 
-  /* GOOGLE */
-  .or-div {
-    display: flex; align-items: center; gap: .5rem;
-    margin: .55rem 0 .45rem; font-size: .67rem; color: #9ca3af;
-  }
+  .or-div { display: flex; align-items: center; gap: .5rem; margin: .5rem 0 .4rem; font-size: .65rem; color: #9ca3af; }
   .or-div::before, .or-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .g-btn {
-    width: 100%; background: #fff; color: #3c4043;
-    border: 1.5px solid #dadce0; cursor: pointer;
-    padding: .55rem 1rem; border-radius: 9px;
-    font-size: .78rem; font-weight: 700; font-family: var(--font);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: all .18s;
-  }
+  .g-btn { width: 100%; background: #fff; color: #3c4043; border: 1.5px solid #dadce0; cursor: pointer; padding: .5rem 1rem; border-radius: 9px; font-size: .76rem; font-weight: 700; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .18s; }
   .g-btn:hover:not(:disabled) { background: var(--off-white); border-color: #b0b0b0; }
-  .g-btn svg { width: 15px; height: 15px; }
+  .g-btn svg { width: 14px; height: 14px; }
 
-  /* SIGN IN */
-  .rp-link { text-align: center; margin-top: .65rem; font-size: .7rem; color: var(--text-mid); }
+  .rp-link { text-align: center; margin-top: .55rem; font-size: .68rem; color: var(--text-mid); }
   .rp-link a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
-  .rp-link a:hover { color: var(--amber); }
 
-  /* OTP */
   .otp-wrap { text-align: center; }
-  .otp-phone-badge {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: var(--amber-light); border: 1.5px solid #f0d89a;
-    border-radius: 9px; padding: .4rem .85rem;
-    font-size: .74rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 1rem;
-  }
+  .otp-phone-badge { display: inline-flex; align-items: center; gap: .5rem; background: var(--amber-light); border: 1.5px solid #f0d89a; border-radius: 9px; padding: .4rem .85rem; font-size: .74rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 1rem; }
   .otp-inputs { display: flex; gap: .5rem; justify-content: center; margin-bottom: .85rem; }
-  .otp-input {
-    width: 42px; height: 48px; border: 2px solid var(--border);
-    border-radius: 9px; text-align: center; font-size: 1.15rem;
-    font-weight: 800; font-family: var(--font); outline: none; transition: border-color .18s;
-  }
+  .otp-input { width: 42px; height: 48px; border: 2px solid var(--border); border-radius: 9px; text-align: center; font-size: 1.15rem; font-weight: 800; font-family: var(--font); outline: none; transition: border-color .18s; }
   .otp-input:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(245,166,35,.12); }
   .otp-timer { font-size: .7rem; color: var(--text-mid); margin-bottom: .75rem; }
   .otp-timer span { color: var(--amber-dark); font-weight: 800; }
-  .otp-resend {
-    background: transparent; border: none; color: var(--amber-dark);
-    font-size: .7rem; font-weight: 700; cursor: pointer; font-family: var(--font);
-  }
+  .otp-resend { background: transparent; border: none; color: var(--amber-dark); font-size: .7rem; font-weight: 700; cursor: pointer; font-family: var(--font); }
   .otp-resend:disabled { color: #9ca3af; cursor: not-allowed; }
 
-  @media (max-width: 480px) {
-    .rp-card { padding: 1.2rem 1rem; }
-    .rp-row { grid-template-columns: 1fr; }
-    .rp-bottom-row { grid-template-columns: 1fr; }
+  @media (max-width: 500px) {
+    .rp-card { padding: 1rem .9rem .85rem; }
+    .rp-grid2 { grid-template-columns: 1fr; gap: 0; }
+    .rp-footer-row { grid-template-columns: 1fr; }
   }
 `;
 
@@ -247,7 +151,7 @@ const GoogleIcon = () => (
 );
 
 const OtpScreen = ({ userId, phone, onSuccess }) => {
-  const [otp, setOtp]           = useState(['', '', '', '', '', '']);
+  const [otp, setOtp]           = useState(['','','','','','']);
   const [loading, setLoading]   = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const inputRefs = useRef([]);
@@ -258,47 +162,36 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
     return () => clearInterval(t);
   }, [timeLeft]);
 
-  const fmt = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-
+  const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
   const handleChange = (i, v) => {
     if (!/^\d*$/.test(v)) return;
     const n = [...otp]; n[i] = v.slice(-1); setOtp(n);
-    if (v && i < 5) inputRefs.current[i + 1]?.focus();
+    if (v && i < 5) inputRefs.current[i+1]?.focus();
   };
-  const handleKey = (i, e) => {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) inputRefs.current[i - 1]?.focus();
-  };
+  const handleKey = (i, e) => { if (e.key==='Backspace' && !otp[i] && i>0) inputRefs.current[i-1]?.focus(); };
   const handlePaste = (e) => {
     e.preventDefault();
-    const p = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    if (p.length === 6) { setOtp(p.split('')); inputRefs.current[5]?.focus(); }
+    const p = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,6);
+    if (p.length===6) { setOtp(p.split('')); inputRefs.current[5]?.focus(); }
   };
-
   const verify = async () => {
     const code = otp.join('');
-    if (code.length !== 6) { toast.error('Enter the complete code'); return; }
+    if (code.length!==6) { toast.error('Enter the complete code'); return; }
     setLoading(true);
     try {
-      const r = await fetch(`${API_URL}/auth/verify-otp`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, otp: code }),
-      });
+      const r = await fetch(`${API_URL}/auth/verify-otp`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({userId, otp: code}) });
       const d = await r.json();
       if (d.success) { toast.success('Phone verified!'); setTimeout(() => onSuccess(d), 800); }
-      else { toast.error(d.message || 'Invalid code'); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); }
+      else { toast.error(d.message || 'Invalid code'); setOtp(['','','','','','']); inputRefs.current[0]?.focus(); }
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
   };
-
   const resend = async () => {
     setLoading(true);
     try {
-      const r = await fetch(`${API_URL}/auth/resend-otp`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      });
+      const r = await fetch(`${API_URL}/auth/resend-otp`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({userId}) });
       const d = await r.json();
-      if (d.success) { setTimeLeft(600); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); toast.success('New code sent!'); }
+      if (d.success) { setTimeLeft(600); setOtp(['','','','','','']); inputRefs.current[0]?.focus(); toast.success('New code sent!'); }
       else toast.error(d.message || 'Could not resend');
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
@@ -306,43 +199,30 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
 
   return (
     <div className="otp-wrap">
-      <div className="rp-hdr">
-        <h2>Verify Your Phone</h2>
-        <p>Enter the 6-digit code sent to</p>
-        <div className="rp-line" />
-      </div>
+      <div className="rp-hdr"><h2>Verify Your Phone</h2><p>Enter the 6-digit code sent to</p><div className="rp-line" /></div>
       <div className="otp-phone-badge"><i className="fa fa-phone" /> {phone}</div>
       <div className="otp-inputs" onPaste={handlePaste}>
-        {otp.map((d, i) => (
-          <input key={i} ref={el => inputRefs.current[i] = el}
-            className="otp-input" type="text" inputMode="numeric" maxLength={1} value={d}
+        {otp.map((d,i) => (
+          <input key={i} ref={el => inputRefs.current[i]=el} className="otp-input"
+            type="text" inputMode="numeric" maxLength={1} value={d}
             onChange={e => handleChange(i, e.target.value)}
-            onKeyDown={e => handleKey(i, e)} autoFocus={i === 0} />
+            onKeyDown={e => handleKey(i, e)} autoFocus={i===0} />
         ))}
       </div>
-      <div className="otp-timer">
-        {timeLeft > 0
-          ? <>Expires in <span>{fmt(timeLeft)}</span></>
-          : <span style={{ color: '#dc2626' }}>Code expired</span>}
-      </div>
-      <button className="rp-submit" onClick={verify} disabled={loading || otp.join('').length !== 6}>
+      <div className="otp-timer">{timeLeft > 0 ? <>Expires in <span>{fmt(timeLeft)}</span></> : <span style={{color:'#dc2626'}}>Code expired</span>}</div>
+      <button className="rp-submit" onClick={verify} disabled={loading || otp.join('').length!==6}>
         {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Continue</>}
       </button>
-      <div style={{ marginTop: '.55rem', textAlign: 'center' }}>
-        <span style={{ fontSize: '.68rem', color: '#6b7280' }}>Didn't get it? </span>
-        <button className="otp-resend" onClick={resend} disabled={loading || timeLeft > 550}>
-          {loading ? 'Sending…' : 'Resend'}
-        </button>
+      <div style={{marginTop:'.5rem',textAlign:'center'}}>
+        <span style={{fontSize:'.67rem',color:'#6b7280'}}>Didn't get it? </span>
+        <button className="otp-resend" onClick={resend} disabled={loading || timeLeft > 550}>{loading ? 'Sending…' : 'Resend'}</button>
       </div>
     </div>
   );
 };
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    fullName: '', phone: '', whatsapp: '', sameAsPhone: true,
-    password: '', confirmPassword: '', role: 'landlord',
-  });
+  const [formData, setFormData] = useState({ fullName:'', phone:'', whatsapp:'', sameAsPhone:true, password:'', confirmPassword:'', role:'landlord' });
   const [showPw, setShowPw]               = useState(false);
   const [showCpw, setShowCpw]             = useState(false);
   const [pwStrength, setPwStrength]       = useState('');
@@ -368,10 +248,7 @@ const RegisterForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (name === 'sameAsPhone') {
-      setFormData(p => ({ ...p, sameAsPhone: checked, whatsapp: checked ? p.phone : '' }));
-      return;
-    }
+    if (name === 'sameAsPhone') { setFormData(p => ({ ...p, sameAsPhone: checked, whatsapp: checked ? p.phone : '' })); return; }
     setFormData(p => {
       const next = { ...p, [name]: type === 'checkbox' ? checked : value };
       if (name === 'phone' && p.sameAsPhone) next.whatsapp = value;
@@ -389,23 +266,14 @@ const RegisterForm = () => {
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
-      const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-      });
+      const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } });
       const googleUserInfo = await infoRes.json();
-      const res = await fetch(`${API_URL}/auth/google`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          googleUserInfo, role: formData.role,
-          phone: formData.phone, whatsapp: formData.whatsapp || formData.phone,
-          fullName: formData.fullName || googleUserInfo.name,
-        }),
-      });
+      const res = await fetch(`${API_URL}/auth/google`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ googleUserInfo, role: formData.role, phone: formData.phone, whatsapp: formData.whatsapp || formData.phone, fullName: formData.fullName || googleUserInfo.name }) });
       const data = await res.json();
       if (data.success) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('tokenExpiry', new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('tokenExpiry', new Date().getTime() + 7*24*60*60*1000);
         toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
         setTimeout(() => navigate('/landlord-dashboard'), 500);
       } else toast.error(data.message || 'Google sign-up failed');
@@ -413,10 +281,7 @@ const RegisterForm = () => {
     finally { setGoogleLoading(false); }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: handleGoogleSuccess,
-    onError: () => toast.error('Google sign-up failed'),
-  });
+  const googleLogin = useGoogleLogin({ onSuccess: handleGoogleSuccess, onError: () => toast.error('Google sign-up failed') });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -428,25 +293,18 @@ const RegisterForm = () => {
     const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
     if (!phoneRgx.test(formData.phone)) { toast.error('Enter a valid Malawian number (e.g. 0888123456)'); return; }
     if (!formData.fullName.trim()) { toast.error('Please enter your full name'); return; }
-    setAttempts(a => a + 1);
+    setAttempts(a => a+1);
     setLoading(true);
     try {
       const payload = { ...formData, whatsapp: formData.sameAsPhone ? formData.phone : formData.whatsapp };
       const data = await register(payload);
-      if (data.requiresOtp) {
-        setOtpUserId(data.userId); setShowOtp(true); toast.info('Verification code sent!');
-      } else {
-        toast.success('Registration successful! Please login.');
-        setTimeout(() => navigate('/login'), 500);
-      }
+      if (data.requiresOtp) { setOtpUserId(data.userId); setShowOtp(true); toast.info('Verification code sent!'); }
+      else { toast.success('Registration successful! Please login.'); setTimeout(() => navigate('/login'), 500); }
     } catch (err) { toast.error(handleApiError(err)); }
     finally { setLoading(false); }
   };
 
-  const handleOtpSuccess = () => {
-    toast.success('Verified! Please login.');
-    setTimeout(() => navigate('/login'), 500);
-  };
+  const handleOtpSuccess = () => { toast.success('Verified! Please login.'); setTimeout(() => navigate('/login'), 500); };
 
   const Navbar = () => (
     <nav className="rp-bar">
@@ -463,11 +321,7 @@ const RegisterForm = () => {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <Navbar />
-      <div className="rp-main">
-        <div className="rp-card">
-          <OtpScreen userId={otpUserId} phone={formData.phone} onSuccess={handleOtpSuccess} />
-        </div>
-      </div>
+      <div className="rp-main"><div className="rp-card"><OtpScreen userId={otpUserId} phone={formData.phone} onSuccess={handleOtpSuccess} /></div></div>
     </>
   );
 
@@ -481,57 +335,45 @@ const RegisterForm = () => {
 
           <div className="rp-hdr">
             <h2>Create Account</h2>
-            <p>Register as a landlord or land seller</p>
+            <p>Landlords &amp; land sellers only — tenants browse free</p>
             <div className="rp-line" />
           </div>
 
           {/* Role */}
           <div className="rp-role-row">
-            {[
-              { value: 'landlord',    icon: 'fa-home',     label: 'Landlord'    },
-              { value: 'land_seller', icon: 'fa-seedling', label: 'Land Seller' },
-            ].map(r => (
+            {[{value:'landlord',icon:'fa-home',label:'Landlord'},{value:'land_seller',icon:'fa-seedling',label:'Land Seller'}].map(r => (
               <div className="rp-role-opt" key={r.value}>
-                <input type="radio" id={`role_${r.value}`} name="role" value={r.value}
-                  checked={formData.role === r.value} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor={`role_${r.value}`}>
-                  <i className={`fa ${r.icon}`} /> {r.label}
-                </label>
+                <input type="radio" id={`role_${r.value}`} name="role" value={r.value} checked={formData.role===r.value} onChange={handleChange} />
+                <label className="rp-role-btn" htmlFor={`role_${r.value}`}><i className={`fa ${r.icon}`} /> {r.label}</label>
               </div>
             ))}
           </div>
 
           <form onSubmit={handleSubmit}>
 
-            {/* Full Name */}
+            {/* Full Name — full width */}
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="fullName">Full Name</label>
               <div className="rp-wrap">
                 <i className="fa fa-user rp-ico" />
-                <input id="fullName" className="rp-input" type="text" name="fullName"
-                  value={formData.fullName} onChange={handleChange}
-                  placeholder="John Banda" required autoComplete="name" />
+                <input id="fullName" className="rp-input" type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="John Banda" required autoComplete="name" />
               </div>
             </div>
 
-            {/* Phone + WhatsApp side by side */}
-            <div className="rp-row">
+            {/* Phone + WhatsApp */}
+            <div className="rp-grid2">
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="phone">Phone</label>
                 <div className="rp-wrap">
                   <i className="fa fa-phone rp-ico" />
-                  <input id="phone" className="rp-input" type="tel" name="phone"
-                    value={formData.phone} onChange={handleChange}
-                    placeholder="0888123456" required autoComplete="tel" />
+                  <input id="phone" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="0888123456" required autoComplete="tel" />
                 </div>
               </div>
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="whatsapp">
                   WhatsApp
-                  <label style={{ display:'flex', alignItems:'center', gap:'3px', fontSize:'.58rem', fontWeight:600, textTransform:'none', cursor:'pointer', letterSpacing:0 }}>
-                    <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange}
-                      style={{ width:11, height:11, accentColor:'var(--amber)' }} />
-                    Same
+                  <label className="rp-wa-same">
+                    <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange} /> Same
                   </label>
                 </label>
                 <div className="rp-wrap">
@@ -539,27 +381,24 @@ const RegisterForm = () => {
                   <input id="whatsapp" className="rp-input wa-field" type="tel" name="whatsapp"
                     value={formData.sameAsPhone ? formData.phone : formData.whatsapp}
                     onChange={handleChange} placeholder="0888123456"
-                    disabled={formData.sameAsPhone}
-                    style={{ paddingLeft:'2rem', opacity: formData.sameAsPhone ? 0.7 : 1 }} />
+                    disabled={formData.sameAsPhone} style={{paddingLeft:'1.9rem', opacity: formData.sameAsPhone ? 0.7 : 1}} />
                 </div>
               </div>
             </div>
 
-            {/* Password + Confirm side by side */}
-            <div className="rp-row">
+            {/* Password + Confirm */}
+            <div className="rp-grid2">
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="password">
                   Password
-                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength === 'weak' ? '⚠️ Weak' : pwStrength === 'medium' ? '⚡ Ok' : '✅ Strong'}</span>}
+                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength==='weak'?'⚠ Weak':pwStrength==='medium'?'⚡ Ok':'✓ Strong'}</span>}
                 </label>
                 <div className="rp-wrap">
                   <i className="fa fa-lock rp-ico" />
-                  <input id="password"
-                    className={`rp-input${pwStrength ? ` password-${pwStrength}` : ''}`}
-                    type={showPw ? 'text' : 'password'}
-                    name="password" value={formData.password} onChange={handleChange}
-                    placeholder="Min. 8 chars" required autoComplete="new-password" />
-                  <i className={`fa ${showPw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`} onClick={() => setShowPw(!showPw)} />
+                  <input id="password" className={`rp-input${pwStrength ? ` password-${pwStrength}` : ''}`}
+                    type={showPw ? 'text' : 'password'} name="password" value={formData.password}
+                    onChange={handleChange} placeholder="Min. 8 chars" required autoComplete="new-password" />
+                  <i className={`fa ${showPw?'fa-eye-slash':'fa-eye'} rp-toggle`} onClick={() => setShowPw(!showPw)} />
                 </div>
               </div>
               <div className="rp-grp">
@@ -567,28 +406,25 @@ const RegisterForm = () => {
                 <div className="rp-wrap">
                   <i className="fa fa-check-circle rp-ico" />
                   <input id="confirmPassword" className="rp-input"
-                    type={showCpw ? 'text' : 'password'}
-                    name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
+                    type={showCpw ? 'text' : 'password'} name="confirmPassword"
+                    value={formData.confirmPassword} onChange={handleChange}
                     placeholder="Repeat" required autoComplete="new-password" />
-                  <i className={`fa ${showCpw ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`} onClick={() => setShowCpw(!showCpw)} />
+                  <i className={`fa ${showCpw?'fa-eye-slash':'fa-eye'} rp-toggle`} onClick={() => setShowCpw(!showCpw)} />
                 </div>
               </div>
             </div>
 
-            {/* Captcha + Terms side by side */}
-            <div className="rp-bottom-row">
+            {/* Captcha + Terms */}
+            <div className="rp-footer-row">
               <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
                 <div className="rp-cap-l">
-                  <div className={`rp-cap-box${captcha ? ' on' : ''}`} />
+                  <div className={`rp-cap-box${captcha?' on':''}`} />
                   {captchaLoading
                     ? <span className="rp-cap-txt"><div className="rp-spin" /> Checking…</span>
-                    : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "I'm not a robot"}</span>
+                    : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "Not a robot"}</span>
                   }
                 </div>
-                <div>
-                  <i className="fa fa-shield-alt" style={{ color:'var(--amber)', fontSize:'1rem' }} />
-                  <div className="rp-cap-note">Security<br />Check</div>
-                </div>
+                <div><i className="fa fa-shield-alt" style={{color:'var(--amber)',fontSize:'.95rem'}} /><div className="rp-cap-note">Security<br/>Check</div></div>
               </div>
               <label className="rp-terms">
                 <input type="checkbox" required />
@@ -596,21 +432,14 @@ const RegisterForm = () => {
               </label>
             </div>
 
-            {/* Submit */}
             <button type="submit" className="rp-submit" disabled={loading}>
-              {loading
-                ? <><div className="rp-submit-spin" /> Creating Account…</>
-                : <><i className="fa fa-user-plus" /> Create Account</>
-              }
+              {loading ? <><div className="rp-submit-spin" /> Creating Account…</> : <><i className="fa fa-user-plus" /> Create Account</>}
             </button>
 
             <div className="or-div">or continue with</div>
 
             <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
-              {googleLoading
-                ? <><div className="rp-spin" style={{ borderTopColor:'#4285f4' }} /> Connecting…</>
-                : <><GoogleIcon /> Continue with Google</>
-              }
+              {googleLoading ? <><div className="rp-spin" style={{borderTopColor:'#4285f4'}} /> Connecting…</> : <><GoogleIcon /> Continue with Google</>}
             </button>
           </form>
 
