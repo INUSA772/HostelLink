@@ -111,7 +111,7 @@ const LANGS = {
   ny: {
     code: "ny", label: "Chichewa",
     switchLang: "Chilankhulo",
-    heroBadge:   "Kupeza nyumba ku Malawi konse — palibe akaunti yofunikira",
+    heroBadge:   "Kupeza nyumba ku Malawi konse — simukuyenera kukhara ndi account kuti mupeze nyumba",
     heroH1a:     "Pezani",
     heroH1em:    "Nyumba Yabwino",
     heroH1b:     "Kulikonse ku Malawi",
@@ -170,7 +170,7 @@ const LANGS = {
     faqQ3: "Ndani amatha kupanga akaunti pa PezaNyumba?",
     faqA3: "Eni nyumba ndi eni malo okha. Anthu ofuna nyumba amasakabe — palibe kulemba.",
     faqQ4: "PezaNyumba imayeza bwanji eni nyumba?",
-    faqA4: "Mwini nyumba aliyense amayeza iye ndi malo ake asanapange nyumba yake.",
+    faqA4: "Mwini nyumba aliyense amafufuzidwa kaye asanayambe kuyika nyumba zake pofuna kuteteza anthu ku anthu akuba.",
     faqQ5: "Nditha kuika nyumba yanga?",
     faqA5: "Inde — ngati ndinu mwini nyumba kapena mwini malo. Lembeleni, uzuzeni zambiri, ikani zithunzi, ndipo nyumba imakwera pa maola 24.",
     ctaTitle: "Kodi ndinu Mwini Nyumba kapena Mwini Malo?",
@@ -2199,12 +2199,12 @@ export default function Home() {
   const [allProperties, setAllProperties] = useState([]);
   const [locDrawer, setLocDrawer]         = useState(null);
 
-  useEffect(() => {
-    fetch(`${API_URL}/properties?limit=500`)
-      .then(r => r.json())
-      .then(data => setAllProperties(data.properties || data.data || []))
-      .catch(() => {});
-  }, []);
+ useEffect(() => {
+  fetch(`${API_URL}/hostels?limit=500`)
+    .then(r => r.json())
+    .then(data => setAllProperties(data.hostels || data.data || []))
+    .catch(() => {});
+}, []);
 
   return (
     <LangContext.Provider value={langState}>
