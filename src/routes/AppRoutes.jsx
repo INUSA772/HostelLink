@@ -25,7 +25,7 @@ import MyHostels          from '../pages/MyHostels';
 import CreateHostel       from '../pages/CreateHostel';
 import EditHostel         from '../pages/EditHostel';
 import PaymentReturn      from '../pages/PaymentReturn';
-import AdminDashboard     from '../pages/AdminDashboard'; // ← NEW
+import AdminDashboard     from '../pages/AdminDashboard';
 
 const AppRoutes = () => {
   return (
@@ -45,7 +45,7 @@ const AppRoutes = () => {
       <Route
         path="/payment/confirm/:transactionRef"
         element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['tenant']}>
             <PaymentReturn />
           </ProtectedRoute>
         }
@@ -61,11 +61,11 @@ const AppRoutes = () => {
         }
       />
 
-      {/* ── STUDENT DASHBOARD ── */}
+      {/* ── TENANT DASHBOARD (was StudentDashboard) ── */}
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['tenant']}>
             <StudentDashboard />
           </ProtectedRoute>
         }
@@ -75,7 +75,7 @@ const AppRoutes = () => {
       <Route
         path="/landlord-dashboard"
         element={
-          <ProtectedRoute allowedRoles={['owner']}>
+          <ProtectedRoute allowedRoles={['landlord']}>
             <LandlordDashboard />
           </ProtectedRoute>
         }
@@ -107,11 +107,11 @@ const AppRoutes = () => {
         }
       />
 
-      {/* ── STUDENT ONLY ── */}
+      {/* ── TENANT ONLY ── */}
       <Route
         path="/bookings"
         element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['tenant']}>
             <MyBookings />
           </ProtectedRoute>
         }
@@ -119,17 +119,17 @@ const AppRoutes = () => {
       <Route
         path="/favorites"
         element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['tenant']}>
             <Favorites />
           </ProtectedRoute>
         }
       />
 
-      {/* ── OWNER ONLY ── */}
+      {/* ── LANDLORD ONLY ── */}
       <Route
         path="/my-hostels"
         element={
-          <ProtectedRoute allowedRoles={['owner']}>
+          <ProtectedRoute allowedRoles={['landlord']}>
             <MyHostels />
           </ProtectedRoute>
         }
@@ -137,7 +137,7 @@ const AppRoutes = () => {
       <Route
         path="/hostels/create"
         element={
-          <ProtectedRoute allowedRoles={['owner']}>
+          <ProtectedRoute allowedRoles={['landlord']}>
             <CreateHostel />
           </ProtectedRoute>
         }
@@ -145,7 +145,7 @@ const AppRoutes = () => {
       <Route
         path="/hostels/edit/:id"
         element={
-          <ProtectedRoute allowedRoles={['owner']}>
+          <ProtectedRoute allowedRoles={['landlord']}>
             <EditHostel />
           </ProtectedRoute>
         }

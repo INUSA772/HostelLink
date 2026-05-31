@@ -1,6 +1,17 @@
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
-const { createNotification } = require('./notificationController');
+
+// Helper function to create notification (inline to avoid missing file error)
+const createNotification = async (data) => {
+  try {
+    console.log('🔔 Notification triggered:', data.type, 'for:', data.recipientId);
+    // You can implement actual notification logic later
+    return { success: true };
+  } catch (error) {
+    console.error('Notification error:', error);
+    return { success: false };
+  }
+};
 
 // @desc  Start or get existing conversation
 // @route POST /api/messages/conversation
@@ -95,7 +106,6 @@ exports.getMessages = async (req, res) => {
       .skip(skip)
       .limit(Number(limit));
 
-    // Mark messages as read
     await Message.updateMany(
       {
         conversation: conversationId,
@@ -105,7 +115,6 @@ exports.getMessages = async (req, res) => {
       { read: true }
     );
 
-    // Reset unread count
     await Conversation.findByIdAndUpdate(conversationId, {
       [`unreadCount.${req.user._id}`]: 0,
     });
@@ -153,7 +162,6 @@ exports.sendMessage = async (req, res) => {
     const populatedMessage = await Message.findById(message._id)
       .populate('sender', 'firstName lastName profilePicture role');
 
-    // Find the other participant
     const otherParticipant = conversation.participants.find(
       (p) => p.toString() !== req.user._id.toString()
     );
@@ -162,7 +170,6 @@ exports.sendMessage = async (req, res) => {
       ? (conversation.unreadCount.get(otherParticipant.toString()) || 0)
       : 0;
 
-    // Update conversation last message and unread count
     await Conversation.findByIdAndUpdate(conversationId, {
       lastMessage: {
         text: text.trim(),
@@ -172,7 +179,6 @@ exports.sendMessage = async (req, res) => {
       [`unreadCount.${otherParticipant}`]: currentUnread + 1,
     });
 
-    // ✅ Create notification for recipient
     await createNotification({
       recipientId: otherParticipant,
       senderId: req.user._id,

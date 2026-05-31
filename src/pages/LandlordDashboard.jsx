@@ -49,32 +49,12 @@ const styles = `
   }
   .ld-topbar-left { display: flex; align-items: center; gap: 1rem; }
   .ld-logo { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
-  /* ── LOGO IMAGE ── */
-  .ld-logo-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    overflow: hidden; border: 2px solid rgba(255,255,255,0.15);
-    flex-shrink: 0;
-  }
+  .ld-logo-icon { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; }
   .ld-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .ld-logo-name { font-size: 1.15rem; font-weight: 800; color: var(--white); letter-spacing: -0.3px; }
-  .ld-logo-badge {
-    font-size: 0.6rem; font-weight: 700;
-    background: rgba(232,80,26,0.3); color: #ffb49a;
-    border: 1px solid rgba(232,80,26,0.5);
-    padding: 3px 9px; border-radius: 20px;
-    letter-spacing: 1px; text-transform: uppercase;
-  }
+  .ld-logo-badge { font-size: 0.6rem; font-weight: 700; background: rgba(232,80,26,0.3); color: #ffb49a; border: 1px solid rgba(232,80,26,0.5); padding: 3px 9px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
   .ld-topbar-right { display: flex; align-items: center; gap: 0.6rem; }
-  .ld-topbar-btn {
-    display: flex; align-items: center; gap: 0.4rem;
-    padding: 0.45rem 1rem; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.85);
-    font-size: 0.85rem; font-weight: 600;
-    font-family: 'Manrope', sans-serif;
-    cursor: pointer; transition: var(--transition); text-decoration: none;
-  }
+  .ld-topbar-btn { display: flex; align-items: center; gap: 0.4rem; padding: 0.45rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 600; font-family: 'Manrope', sans-serif; cursor: pointer; transition: var(--transition); text-decoration: none; }
   .ld-topbar-btn:hover { background: rgba(255,255,255,0.15); color: white; }
   .ld-topbar-btn.danger { color: #fca5a5; border-color: rgba(252,165,165,0.3); }
   .ld-topbar-btn.danger:hover { background: rgba(220,38,38,0.25); color: #fca5a5; }
@@ -83,98 +63,39 @@ const styles = `
 
   .ld-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1100; backdrop-filter: blur(2px); }
   .ld-overlay.open { display: block; }
-  .ld-drawer {
-    position: fixed; top: 0; left: 0; bottom: 0; width: 290px;
-    background: var(--navy); z-index: 1200;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    display: flex; flex-direction: column; overflow-y: auto;
-    box-shadow: 4px 0 30px rgba(0,0,0,0.4);
-  }
+  .ld-drawer { position: fixed; top: 0; left: 0; bottom: 0; width: 290px; background: var(--navy); z-index: 1200; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 4px 0 30px rgba(0,0,0,0.4); }
   .ld-drawer.open { transform: translateX(0); }
-  .ld-drawer-top {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
+  .ld-drawer-top { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
   .ld-drawer-close { background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.7); font-size: 1rem; cursor: pointer; padding: 0.4rem; border-radius: 6px; transition: var(--transition); }
   .ld-drawer-close:hover { background: rgba(255,255,255,0.15); color: white; }
-  .ld-drawer-user {
-    padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex; align-items: center; gap: 0.9rem;
-    background: rgba(232,80,26,0.08);
-  }
-  .ld-drawer-avatar {
-    width: 46px; height: 46px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--orange), var(--orange-light)); color: white;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; font-weight: 800; flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(232,80,26,0.4);
-  }
+  .ld-drawer-user { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 0.9rem; background: rgba(232,80,26,0.08); }
+  .ld-drawer-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--orange-light)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 12px rgba(232,80,26,0.4); }
   .ld-drawer-uname { font-size: 0.95rem; font-weight: 700; color: white; }
   .ld-drawer-uemail { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
   .ld-drawer-role { font-size: 0.65rem; font-weight: 700; color: #ffb49a; background: rgba(232,80,26,0.2); padding: 2px 7px; border-radius: 10px; display: inline-block; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
   .ld-drawer-nav { flex: 1; padding: 0.5rem 0; }
   .ld-drawer-section { padding: 0.75rem 1.5rem 0.25rem; font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 1.2px; }
-  .ld-drawer-link {
-    display: flex; align-items: center; gap: 0.85rem;
-    padding: 0.85rem 1.5rem; color: rgba(255,255,255,0.65);
-    font-size: 0.9rem; font-weight: 600; cursor: pointer;
-    transition: var(--transition); border: none; background: none;
-    width: 100%; text-align: left; font-family: 'Manrope', sans-serif;
-    border-left: 3px solid transparent; text-decoration: none;
-  }
+  .ld-drawer-link { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 1.5rem; color: rgba(255,255,255,0.65); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); border: none; background: none; width: 100%; text-align: left; font-family: 'Manrope', sans-serif; border-left: 3px solid transparent; text-decoration: none; }
   .ld-drawer-link:hover { background: rgba(255,255,255,0.06); color: white; }
   .ld-drawer-link.active { background: rgba(232,80,26,0.12); color: white; border-left-color: var(--orange); }
   .ld-drawer-link svg { font-size: 0.9rem; width: 18px; flex-shrink: 0; }
   .ld-drawer-link.active svg { color: var(--orange); }
   .ld-drawer-foot { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); }
-  .ld-drawer-logout {
-    display: flex; align-items: center; gap: 0.75rem;
-    color: #fca5a5; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; background: rgba(220,38,38,0.1); border: 1px solid rgba(252,165,165,0.2);
-    font-family: 'Manrope', sans-serif; width: 100%; padding: 0.7rem 1rem; border-radius: 8px;
-    transition: var(--transition);
-  }
+  .ld-drawer-logout { display: flex; align-items: center; gap: 0.75rem; color: #fca5a5; font-size: 0.9rem; font-weight: 600; cursor: pointer; background: rgba(220,38,38,0.1); border: 1px solid rgba(252,165,165,0.2); font-family: 'Manrope', sans-serif; width: 100%; padding: 0.7rem 1rem; border-radius: 8px; transition: var(--transition); }
   .ld-drawer-logout:hover { background: rgba(220,38,38,0.2); }
 
   .ld-page { padding-top: 64px; min-height: 100vh; }
 
-  .ld-banner {
-    background: linear-gradient(135deg, #0a1628 0%, var(--navy2) 50%, #1a3575 100%);
-    padding: 2.5rem 2rem 3rem; position: relative; overflow: hidden;
-  }
-  .ld-banner::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 75% 50%, rgba(232,80,26,0.18) 0%, transparent 65%);
-  }
-  .ld-banner::after {
-    content: ''; position: absolute; right: -80px; top: -80px;
-    width: 320px; height: 320px; border-radius: 50%;
-    background: rgba(232,80,26,0.05); border: 1px solid rgba(232,80,26,0.12);
-  }
-  .ld-banner-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 2rem; flex-wrap: wrap; position: relative; z-index: 1;
-  }
-  .ld-banner-eyebrow {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.8px;
-    text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem;
-    background: rgba(232,80,26,0.12); padding: 4px 10px; border-radius: 20px;
-    border: 1px solid rgba(232,80,26,0.25);
-  }
+  .ld-banner { background: linear-gradient(135deg, #0a1628 0%, var(--navy2) 50%, #1a3575 100%); padding: 2.5rem 2rem 3rem; position: relative; overflow: hidden; }
+  .ld-banner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 75% 50%, rgba(232,80,26,0.18) 0%, transparent 65%); }
+  .ld-banner::after { content: ''; position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; background: rgba(232,80,26,0.05); border: 1px solid rgba(232,80,26,0.12); }
+  .ld-banner-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .ld-banner-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; background: rgba(232,80,26,0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(232,80,26,0.25); }
   .ld-banner h1 { font-size: 1.9rem; font-weight: 900; color: white; line-height: 1.2; margin-bottom: 0.4rem; letter-spacing: -0.5px; }
   .ld-banner p { font-size: 0.88rem; color: rgba(255,255,255,0.5); font-weight: 500; }
   .ld-banner-btns { display: flex; gap: 0.75rem; flex-shrink: 0; flex-wrap: wrap; }
 
-  .ld-btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.75rem 1.4rem; border-radius: 10px;
-    font-size: 0.88rem; font-weight: 700; font-family: 'Manrope', sans-serif;
-    cursor: pointer; transition: var(--transition); border: none;
-    text-decoration: none; white-space: nowrap;
-  }
+  .ld-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.4rem; border-radius: 10px; font-size: 0.88rem; font-weight: 700; font-family: 'Manrope', sans-serif; cursor: pointer; transition: var(--transition); border: none; text-decoration: none; white-space: nowrap; }
   .ld-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
   .ld-btn-orange { background: var(--orange); color: white; box-shadow: 0 4px 16px rgba(232,80,26,0.4); }
   .ld-btn-orange:hover:not(:disabled) { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,80,26,0.5); }
@@ -187,10 +108,7 @@ const styles = `
 
   .ld-main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
-  .ld-auth-loading {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 1rem; background: var(--gray-bg);
-  }
+  .ld-auth-loading { min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; background: var(--gray-bg); }
   .ld-auth-loading p { color: var(--text-mid); font-weight: 600; font-family: 'Manrope', sans-serif; }
 
   .ld-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; }
@@ -198,27 +116,12 @@ const styles = `
   @keyframes spin { to { transform: rotate(360deg); } }
   .ld-loading p { color: var(--text-mid); font-weight: 600; }
 
-  .ld-error-box {
-    background: #fef2f2; border: 1px solid #fecaca;
-    border-radius: var(--card-radius); padding: 1.25rem 1.5rem;
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1.5rem; color: var(--danger);
-  }
+  .ld-error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--card-radius); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; color: var(--danger); }
   .ld-error-box p { font-size: 0.88rem; font-weight: 600; flex: 1; }
 
   .ld-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-  .ld-stat {
-    background: white; border-radius: var(--card-radius);
-    padding: 1.4rem 1.5rem; border: 1px solid var(--gray-light);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-    display: flex; align-items: center; gap: 1rem;
-    transition: var(--transition); position: relative; overflow: hidden;
-  }
-  .ld-stat::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-    background: var(--orange); transform: scaleY(0); transition: var(--transition);
-    transform-origin: bottom; border-radius: 0 2px 2px 0;
-  }
+  .ld-stat { background: white; border-radius: var(--card-radius); padding: 1.4rem 1.5rem; border: 1px solid var(--gray-light); box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 1rem; transition: var(--transition); position: relative; overflow: hidden; }
+  .ld-stat::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--orange); transform: scaleY(0); transition: var(--transition); transform-origin: bottom; border-radius: 0 2px 2px 0; }
   .ld-stat:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
   .ld-stat:hover::before { transform: scaleY(1); }
   .ld-stat-ico { width: 50px; height: 50px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
@@ -229,10 +132,7 @@ const styles = `
   .ld-stat-num { font-size: 1.85rem; font-weight: 900; color: var(--navy); line-height: 1; margin-bottom: 0.3rem; }
   .ld-stat-lbl { font-size: 0.75rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .ld-skeleton {
-    background: linear-gradient(90deg, #f0f2f5 25%, #e4e6eb 50%, #f0f2f5 75%);
-    background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite;
-  }
+  .ld-skeleton { background: linear-gradient(90deg, #f0f2f5 25%, #e4e6eb 50%, #f0f2f5 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
   .ld-sec-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
@@ -240,14 +140,7 @@ const styles = `
   .ld-sec-hd h2 svg { color: var(--orange); }
 
   .ld-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-  .ld-quick-card {
-    background: white; border: 1.5px solid var(--gray-light);
-    border-radius: var(--card-radius); padding: 1.5rem 1rem;
-    text-align: center; cursor: pointer; transition: var(--transition);
-    display: flex; flex-direction: column; align-items: center; gap: 0.65rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04); font-family: 'Manrope', sans-serif;
-    position: relative;
-  }
+  .ld-quick-card { background: white; border: 1.5px solid var(--gray-light); border-radius: var(--card-radius); padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; align-items: center; gap: 0.65rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); font-family: 'Manrope', sans-serif; position: relative; }
   .ld-quick-card:hover { border-color: var(--orange); box-shadow: 0 8px 28px rgba(232,80,26,0.14); transform: translateY(-4px); }
   .ld-quick-ico { width: 54px; height: 54px; border-radius: 14px; background: var(--orange-pale); color: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: var(--transition); }
   .ld-quick-card:hover .ld-quick-ico { background: var(--orange); color: white; transform: scale(1.05); }
@@ -257,11 +150,7 @@ const styles = `
   @keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.6; transform:scale(1.3); } }
 
   .ld-panel { background: white; border-radius: var(--card-radius); border: 1px solid var(--gray-light); box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 2rem; }
-  .ld-panel-head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--gray-light);
-    background: #f9fafb; flex-wrap: wrap; gap: 0.75rem;
-  }
+  .ld-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--gray-light); background: #f9fafb; flex-wrap: wrap; gap: 0.75rem; }
   .ld-panel-label { font-size: 0.95rem; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 0.5rem; }
   .ld-panel-label svg { color: var(--orange); }
   .ld-count-pill { background: var(--navy); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
@@ -274,16 +163,13 @@ const styles = `
 
   .ld-hcard { border: 1.5px solid var(--gray-light); border-radius: 14px; overflow: hidden; transition: var(--transition); background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   .ld-hcard:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: rgba(232,80,26,0.3); }
-
   .ld-hcard-img { position: relative; height: 180px; overflow: hidden; background: linear-gradient(135deg, #e4e6eb, #f0f2f5); }
   .ld-hcard-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
   .ld-hcard:hover .ld-hcard-img img { transform: scale(1.05); }
   .ld-hcard-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 2.5rem; }
-
   .ld-hcard-status { position: absolute; top: 0.75rem; left: 0.75rem; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; backdrop-filter: blur(8px); }
   .ld-hcard-status.verified { background: rgba(5,150,105,0.9); color: white; }
   .ld-hcard-status.pending  { background: rgba(217,119,6,0.9); color: white; }
-
   .ld-hcard-actions-overlay { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; opacity: 0; transition: var(--transition); }
   .ld-hcard:hover .ld-hcard-actions-overlay { opacity: 1; }
   .ld-hcard-act-btn { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: var(--transition); backdrop-filter: blur(8px); }
@@ -291,17 +177,14 @@ const styles = `
   .ld-hcard-act-btn.edit { background: rgba(26,63,164,0.9); color: white; }
   .ld-hcard-act-btn.del  { background: rgba(220,38,38,0.9); color: white; }
   .ld-hcard-act-btn:hover { transform: scale(1.12); }
-
   .ld-hcard-body { padding: 1.1rem 1.25rem; }
   .ld-hcard-name { font-size: 1rem; font-weight: 800; color: var(--navy); margin-bottom: 0.35rem; }
   .ld-hcard-addr { font-size: 0.8rem; color: var(--text-mid); display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.85rem; }
   .ld-hcard-addr svg { color: var(--orange); flex-shrink: 0; }
-
   .ld-hcard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.85rem; }
   .ld-hcard-stat { background: var(--gray-bg); border-radius: 9px; padding: 0.55rem 0.5rem; text-align: center; }
   .ld-hcard-stat-val { font-size: 0.95rem; font-weight: 800; color: var(--navy); line-height: 1; }
   .ld-hcard-stat-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 0.2rem; }
-
   .ld-hcard-foot { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.25rem; border-top: 1px solid var(--gray-light); background: #fafafa; }
   .ld-hcard-price { font-size: 1rem; font-weight: 800; color: var(--orange); }
   .ld-hcard-price span { font-size: 0.72rem; font-weight: 600; color: var(--text-light); }
@@ -389,8 +272,8 @@ function DeleteModal({ hostel, onConfirm, onCancel, loading }) {
     <div className="ld-modal-backdrop" onClick={e => { if (e.target === e.currentTarget && !loading) onCancel(); }}>
       <div className="ld-modal">
         <div className="ld-modal-icon"><FaTrash /></div>
-        <h3>Delete Hostel?</h3>
-        <p>Are you sure you want to permanently delete <strong>"{hostel?.name}"</strong>? This action cannot be undone.</p>
+        <h3>Delete Property?</h3>
+        <p>Are you sure you want to permanently delete <strong>"{hostel?.name}"</strong>? This cannot be undone.</p>
         <div className="ld-modal-actions">
           <button className="ld-btn ld-btn-outline" onClick={onCancel} disabled={loading}>Cancel</button>
           <button className="ld-btn ld-btn-danger" onClick={onConfirm} disabled={loading}>
@@ -445,8 +328,8 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
             <div className="ld-hcard-stat-lbl">Views</div>
           </div>
           <div className="ld-hcard-stat">
-            <div className="ld-hcard-stat-val" style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:3 }}>
-              <FaStar style={{ color:'#f59e0b', fontSize:'0.75rem' }} />
+            <div className="ld-hcard-stat-val" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+              <FaStar style={{ color: '#f59e0b', fontSize: '0.75rem' }} />
               {hostel.rating ?? hostel.averageRating
                 ? (hostel.rating || hostel.averageRating).toFixed(1)
                 : 'N/A'}
@@ -522,7 +405,12 @@ const LandlordDashboard = () => {
   useEffect(() => {
     if (authLoading) return;
     if (!isAuthenticated) { navigate('/login'); return; }
-    if (user?.role !== 'owner') { toast.error('Access denied. Owner account required.'); navigate('/'); return; }
+    // ✅ FIXED: was 'owner', now 'landlord'
+    if (user?.role !== 'landlord') {
+      toast.error('Access denied. Landlord account required.');
+      navigate('/');
+      return;
+    }
     fetchHostels();
     fetchUnread();
   }, [authLoading, isAuthenticated, user?.role]);
@@ -555,9 +443,9 @@ const LandlordDashboard = () => {
   );
 
   const stats = [
-    { label: 'Active Listings', value: hostels.length,                                                       icon: <FaBuilding />,      color: 'ico-orange' },
-    { label: 'Total Bookings',  value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                   icon: <FaCalendarCheck />, color: 'ico-navy'   },
-    { label: 'Total Views',     value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0),   icon: <FaEye />,           color: 'ico-green'  },
+    { label: 'Active Listings', value: hostels.length,                                                      icon: <FaBuilding />,      color: 'ico-orange' },
+    { label: 'Total Bookings',  value: hostels.reduce((a, h) => a + (h.bookings || 0), 0),                  icon: <FaCalendarCheck />, color: 'ico-navy'   },
+    { label: 'Total Views',     value: hostels.reduce((a, h) => a + (h.totalViews || h.viewCount || 0), 0), icon: <FaEye />,           color: 'ico-green'  },
     {
       label: 'Avg Rating',
       value: hostels.length
@@ -568,21 +456,20 @@ const LandlordDashboard = () => {
   ];
 
   const quickActions = [
-    { icon: <FaPlus />,      title: 'List Hostel',  sub: 'Add new property',   action: () => navigate('/hostels/create') },
-    { icon: <FaEnvelope />,  title: 'Messages',     sub: 'Chat with students', action: () => navigate('/messages'),  badge: unreadMessages > 0 },
-    { icon: <FaUser />,      title: 'My Profile',   sub: 'Account settings',   action: () => navigate('/profile')   },
-    { icon: <FaHome />,      title: 'Browse',       sub: 'See all hostels',    action: () => navigate('/hostels')   },
+    { icon: <FaPlus />,     title: 'List Property', sub: 'Add new property',   action: () => navigate('/hostels/create') },
+    { icon: <FaEnvelope />, title: 'Messages',      sub: 'Chat with tenants',  action: () => navigate('/messages'),  badge: unreadMessages > 0 },
+    { icon: <FaUser />,     title: 'My Profile',    sub: 'Account settings',   action: () => navigate('/profile')   },
+    { icon: <FaHome />,     title: 'Browse',        sub: 'See all properties', action: () => navigate('/hostels')   },
   ];
 
-  // ── DRAWER NAV LINKS — all properly linked ──
   const navLinks = [
-    { icon: <FaHome />,          label: 'Dashboard',      path: '/landlord-dashboard' },
-    { icon: <FaBuilding />,      label: 'My Hostels',     path: '/my-hostels'         },
-    { icon: <FaCalendarCheck />, label: 'Bookings',       path: '/bookings'           },
-    { icon: <FaEnvelope />,      label: 'Messages',       path: '/messages'           },
-    { icon: <FaBell />,          label: 'Notifications',  path: '/notifications'      },
-    { icon: <FaUser />,          label: 'Profile',        path: '/profile'            },
-    { icon: <FaCog />,           label: 'Settings',       path: '/profile'            },
+    { icon: <FaHome />,          label: 'Dashboard',     path: '/landlord-dashboard' },
+    { icon: <FaBuilding />,      label: 'My Properties', path: '/my-hostels'         },
+    { icon: <FaCalendarCheck />, label: 'Bookings',      path: '/bookings'           },
+    { icon: <FaEnvelope />,      label: 'Messages',      path: '/messages'           },
+    { icon: <FaBell />,          label: 'Notifications', path: '/notifications'      },
+    { icon: <FaUser />,          label: 'Profile',       path: '/profile'            },
+    { icon: <FaCog />,           label: 'Settings',      path: '/profile'            },
   ];
 
   const handleLogout = () => { logout(); navigate('/login'); };
@@ -619,19 +506,19 @@ const LandlordDashboard = () => {
       {/* DRAWER */}
       <div className={`ld-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="ld-drawer-top">
-          {/* ── DRAWER LOGO using PezaHostelLogo.png ── */}
           <Link to="/" className="ld-logo">
-            <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-            <span className="ld-logo-name">PezaHostel</span>
+            <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
+            <span className="ld-logo-name">PezaNyumba</span>
           </Link>
           <button className="ld-drawer-close" onClick={() => setDrawerOpen(false)}><FaTimes /></button>
         </div>
         <div className="ld-drawer-user">
-          <div className="ld-drawer-avatar">{user?.firstName?.[0]?.toUpperCase() || 'U'}</div>
+          <div className="ld-drawer-avatar">{user?.firstName?.[0]?.toUpperCase() || 'L'}</div>
           <div>
             <div className="ld-drawer-uname">{user?.firstName} {user?.lastName}</div>
             <div className="ld-drawer-uemail">{user?.email}</div>
-            <div className="ld-drawer-role">Owner</div>
+            {/* ✅ FIXED: was 'Owner', now 'Landlord' */}
+            <div className="ld-drawer-role">Landlord</div>
           </div>
         </div>
         <nav className="ld-drawer-nav">
@@ -646,7 +533,6 @@ const LandlordDashboard = () => {
               {item.icon} {item.label}
             </Link>
           ))}
-          {/* About & Contact links */}
           <div className="ld-drawer-section">Info</div>
           <Link to="/about"   className="ld-drawer-link" onClick={() => setDrawerOpen(false)}><FaHome /> About Us</Link>
           <Link to="/contact" className="ld-drawer-link" onClick={() => setDrawerOpen(false)}><FaEnvelope /> Contact</Link>
@@ -662,11 +548,11 @@ const LandlordDashboard = () => {
       <nav className="ld-topbar">
         <div className="ld-topbar-left">
           <button className="ld-hamburger" onClick={() => setDrawerOpen(true)}><FaBars /></button>
-          {/* ── TOPBAR LOGO using PezaHostelLogo.png ── */}
           <Link to="/" className="ld-logo">
-            <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-            <span className="ld-logo-name">PezaHostel</span>
-            <span className="ld-logo-badge">Owner</span>
+            <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
+            <span className="ld-logo-name">PezaNyumba</span>
+            {/* ✅ FIXED: was 'Owner', now 'Landlord' */}
+            <span className="ld-logo-badge">Landlord</span>
           </Link>
         </div>
         <div className="ld-topbar-right">
@@ -680,13 +566,14 @@ const LandlordDashboard = () => {
         <div className="ld-banner">
           <div className="ld-banner-inner">
             <div>
-              <div className="ld-banner-eyebrow">🏢 Owner Portal</div>
+              {/* ✅ FIXED: was 'Owner Portal', now 'Landlord Portal' */}
+              <div className="ld-banner-eyebrow">🏢 Landlord Portal</div>
               <h1>Welcome back, {user?.firstName}!</h1>
-              <p>Manage your properties and connect with students</p>
+              <p>Manage your properties and connect with tenants</p>
             </div>
             <div className="ld-banner-btns">
               <button className="ld-btn ld-btn-orange" onClick={() => navigate('/hostels/create')}>
-                <FaPlus /> Add New Hostel
+                <FaPlus /> Add New Property
               </button>
               <button className="ld-btn ld-btn-ghost" onClick={() => navigate('/messages')}>
                 <FaEnvelope /> Messages {unreadMessages > 0 && `(${unreadMessages})`}
@@ -737,10 +624,10 @@ const LandlordDashboard = () => {
             ))}
           </div>
 
-          {/* MY HOSTELS */}
+          {/* MY PROPERTIES */}
           <div className="ld-sec-hd">
             <h2>
-              <FaHome /> My Hostels
+              <FaHome /> My Properties
               {!loadingHostels && hostels.length > 0 && (
                 <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-mid)', marginLeft: 4 }}>
                   ({hostels.length})
@@ -757,7 +644,7 @@ const LandlordDashboard = () => {
                 {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
               <button className="ld-btn ld-btn-orange" style={{ fontSize: '0.82rem', padding: '0.5rem 1rem' }} onClick={() => navigate('/hostels/create')}>
-                <FaPlus /> Add Hostel
+                <FaPlus /> Add Property
               </button>
             </div>
           </div>
@@ -765,16 +652,16 @@ const LandlordDashboard = () => {
           {loadingHostels ? (
             <div className="ld-loading">
               <FaSpinner className="ld-spinner" />
-              <p>Loading your hostels...</p>
+              <p>Loading your properties...</p>
             </div>
           ) : hostels.length === 0 && !error ? (
             <div className="ld-panel">
               <div className="ld-empty">
                 <div className="ld-empty-ico"><FaBuilding /></div>
-                <h3>No hostels listed yet</h3>
-                <p>Start by adding your first property to connect with students looking for accommodation</p>
+                <h3>No properties listed yet</h3>
+                <p>Start by adding your first property to connect with tenants looking for accommodation</p>
                 <button className="ld-btn ld-btn-orange" onClick={() => navigate('/hostels/create')}>
-                  <FaPlus /> List Your First Hostel
+                  <FaPlus /> List Your First Property
                 </button>
               </div>
             </div>
@@ -799,7 +686,7 @@ const LandlordDashboard = () => {
               {filtered.length === 0 ? (
                 <div className="ld-empty" style={{ padding: '2.5rem' }}>
                   <p style={{ color: 'var(--text-mid)', marginBottom: 0 }}>
-                    No hostels match "<strong>{searchQuery}</strong>"
+                    No properties match "<strong>{searchQuery}</strong>"
                   </p>
                 </div>
               ) : viewMode === 'cards' ? (
@@ -819,7 +706,7 @@ const LandlordDashboard = () => {
                   <table className="ld-table">
                     <thead>
                       <tr>
-                        <th>Hostel Name</th><th>Location</th><th>Rooms</th>
+                        <th>Property Name</th><th>Location</th><th>Rooms</th>
                         <th>Price/Month</th><th>Views</th><th>Rating</th>
                         <th>Status</th><th>Actions</th>
                       </tr>
@@ -829,22 +716,22 @@ const LandlordDashboard = () => {
                         <tr key={hostel._id}>
                           <td><span className="ld-cell-name">{hostel.name}</span></td>
                           <td>
-                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem', color:'var(--text-mid)', fontSize:'0.83rem' }}>
-                              <FaMapMarkerAlt style={{ color:'var(--orange)', flexShrink:0 }} />
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-mid)', fontSize: '0.83rem' }}>
+                              <FaMapMarkerAlt style={{ color: 'var(--orange)', flexShrink: 0 }} />
                               {hostel.address}
                             </span>
                           </td>
                           <td>
-                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem' }}>
-                              <FaDoorOpen style={{ color:'var(--text-light)' }} />
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                              <FaDoorOpen style={{ color: 'var(--text-light)' }} />
                               <strong>{hostel.availableRooms ?? '—'}</strong>/{hostel.totalRooms ?? '—'}
                             </span>
                           </td>
-                          <td style={{ fontWeight:800, color:'var(--orange)' }}>MK {hostel.price?.toLocaleString() ?? '—'}</td>
+                          <td style={{ fontWeight: 800, color: 'var(--orange)' }}>MK {hostel.price?.toLocaleString() ?? '—'}</td>
                           <td>{hostel.totalViews ?? hostel.viewCount ?? 0}</td>
                           <td>
-                            <span style={{ display:'flex', alignItems:'center', gap:'0.3rem' }}>
-                              <FaStar style={{ color:'#f59e0b' }} />
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                              <FaStar style={{ color: '#f59e0b' }} />
                               {(hostel.rating || hostel.averageRating)
                                 ? (hostel.rating || hostel.averageRating).toFixed(1)
                                 : 'N/A'}

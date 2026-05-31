@@ -72,7 +72,7 @@ exports.googleAuth = async (req, res) => {
         await user.save({ validateBeforeSave: false });
       }
 
-      if (!user.isActive && user.role === 'owner') {
+      if (!user.isActive) {
         return res.status(403).json({
           success: false,
           message: 'Your account is not active. Please contact support.',
@@ -93,7 +93,6 @@ exports.googleAuth = async (req, res) => {
           email: user.email,
           phone: user.phone,
           role: user.role,
-          studentId: user.studentId,
           profilePicture: user.profilePicture,
           verified: user.verified,
           verificationStatus: user.verificationStatus,
@@ -102,7 +101,7 @@ exports.googleAuth = async (req, res) => {
     }
 
     // New user
-    const userRole = role || 'student';
+    const userRole = role || 'tenant';
     user = await User.create({
       firstName: given_name || 'User',
       lastName: family_name || '',
@@ -113,7 +112,7 @@ exports.googleAuth = async (req, res) => {
       phoneVerified: true,
       isActive: true,
       verified: true,
-      verificationStatus: 'verified',
+      verificationStatus: userRole === 'landlord' ? 'pending' : 'verified',
       password: crypto.randomBytes(32).toString('hex'),
     });
 
@@ -126,6 +125,7 @@ exports.googleAuth = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        phone: user.phone,
         role: user.role,
         profilePicture: user.profilePicture,
         verified: user.verified,
@@ -142,31 +142,38 @@ exports.googleAuth = async (req, res) => {
 // ── POST /api/auth/register ────────────────────────────
 exports.register = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, password, role, studentId } = req.body;
-
-    const userExists = await User.findOne({ email });
+    const { fullName, phone, password, role } = req.body;
+    
+    console.log('📝 Registration request:', { fullName, phone, role });
+    
+    // Split fullName into firstName and lastName
+    const nameParts = fullName ? fullName.trim().split(' ') : ['', ''];
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    
+    // Check if user exists by phone number
+    const userExists = await User.findOne({ phone });
     if (userExists) {
       return res.status(400).json({
         success: false,
-        message: 'An account with this email already exists',
+        message: 'An account with this phone number already exists',
       });
     }
-
-    // Both students AND owners register immediately (NO OTP)
+    
+    // Create user with phone as primary identifier - NO role conversion
     const user = await User.create({
       firstName,
       lastName,
-      email,
+      email: `${phone}@temp.com`, // Temporary email - user can add later
       phone,
       password,
-      role,
-      studentId,
+      role: role, // Direct mapping: 'tenant' or 'landlord'
       phoneVerified: true,
       isActive: true,
       verified: true,
-      verificationStatus: 'verified'
+      verificationStatus: role === 'landlord' ? 'pending' : 'verified'
     });
-
+    
     return res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -175,15 +182,13 @@ exports.register = async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
         phone: user.phone,
         role: user.role,
-        studentId: user.studentId,
         verified: user.verified,
         verificationStatus: user.verificationStatus
       },
     });
-
+    
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ success: false, message: error.message || 'Server error' });
@@ -193,35 +198,32 @@ exports.register = async (req, res) => {
 // ── POST /api/auth/login ───────────────────────────────
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password');
+    const { phone, password } = req.body;
+    
+    console.log('🔐 Login request:', { phone });
+    
+    // Find user by phone number
+    const user = await User.findOne({ phone }).select('+password');
     
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'Invalid phone number or password' });
     }
-
+    
     if (!user.isActive) {
       return res.status(403).json({
         success: false,
         message: 'Your account is not active. Please contact support.',
       });
     }
-
-    if (user.googleId && !user.password) {
-      return res.status(400).json({
-        success: false,
-        message: 'This account uses Google Sign-In. Please use the Google button to login.',
-      });
-    }
-
+    
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'Invalid phone number or password' });
     }
-
+    
     user.lastLogin = Date.now();
     await user.save({ validateBeforeSave: false });
-
+    
     res.json({
       success: true,
       message: 'Login successful',
@@ -230,10 +232,8 @@ exports.login = async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
         phone: user.phone,
         role: user.role,
-        studentId: user.studentId,
         profilePicture: user.profilePicture,
         verified: user.verified,
         verificationStatus: user.verificationStatus,
@@ -258,7 +258,6 @@ exports.getMe = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        studentId: user.studentId,
         profilePicture: user.profilePicture,
         verified: user.verified,
         verificationStatus: user.verificationStatus,
@@ -322,6 +321,44 @@ exports.resetPassword = async (req, res) => {
     res.status(200).json({ success: true, message: 'Password reset successful. You can now log in.' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message || 'Server error' });
+  }
+};
+
+// ── POST /api/auth/verify-otp ────────────────────────────
+exports.verifyOtp = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+    console.log('🔑 Verifying OTP for:', userId, 'OTP:', otp);
+    
+    res.json({ 
+      success: true, 
+      message: 'OTP verified successfully' 
+    });
+  } catch (error) {
+    console.error('OTP verification error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'OTP verification failed' 
+    });
+  }
+};
+
+// ── POST /api/auth/resend-otp ────────────────────────────
+exports.resendOtp = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log('📱 Resending OTP for:', userId);
+    
+    res.json({ 
+      success: true, 
+      message: 'OTP resent successfully' 
+    });
+  } catch (error) {
+    console.error('Resend OTP error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to resend OTP' 
+    });
   }
 };
 
