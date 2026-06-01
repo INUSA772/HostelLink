@@ -408,12 +408,12 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="pn-btn-login">
+              {/*<Link to="/login" className="pn-btn-login">
                 <i className="fa fa-sign-in-alt" /> Login
               </Link>
               <Link to="/register" className="pn-btn-signup">
                 <i className="fa fa-user-plus" /> Sign Up
-              </Link>
+              </Link>*/}
             </>
           )}
         </div>
