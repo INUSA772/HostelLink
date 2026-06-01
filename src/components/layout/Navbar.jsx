@@ -29,8 +29,9 @@ const Navbar = () => {
           justify-content: space-between;
           padding: 0 2.5rem;
           height: 68px;
-          background: rgba(13,27,62,0.96);
-          backdrop-filter: blur(8px);
+          background: #ffffff;
+          border-bottom: 1px solid #e8f0ee;
+          box-shadow: 0 1px 8px rgba(13,110,94,0.07);
           font-family: 'Manrope', sans-serif;
         }
 
@@ -38,7 +39,7 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           gap: 10px;
-          color: white;
+          color: #111827;
           cursor: pointer;
           background: none;
           border: none;
@@ -51,7 +52,7 @@ const Navbar = () => {
           border-radius: 50%;
           overflow: hidden;
           flex-shrink: 0;
-          background: rgba(255,255,255,0.12);
+          background: #e8f5f2;
         }
 
         .pn-logo-icon img {
@@ -64,14 +65,14 @@ const Navbar = () => {
           font-size: 1rem;
           font-weight: 800;
           letter-spacing: 1px;
-          color: white;
+          color: #0d4a40;
         }
 
         .pn-logo-text span {
           font-size: 0.62rem;
           opacity: 0.65;
           letter-spacing: 0.5px;
-          color: white;
+          color: #4b5563;
         }
 
         /* ── CENTER FANCY TEXT ── */
@@ -88,7 +89,7 @@ const Navbar = () => {
           font-family: 'Righteous', cursive;
           font-size: 1.05rem;
           letter-spacing: 3px;
-          background: linear-gradient(90deg, #00e5ff 0%, #ffffff 40%, #e8501a 100%);
+          background: linear-gradient(90deg, #0d6e5e 0%, #1a5c52 40%, #2d8a72 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -101,7 +102,7 @@ const Navbar = () => {
           content: '⬡';
           font-size: 0.6rem;
           margin-right: 5px;
-          -webkit-text-fill-color: #00e5ff;
+          -webkit-text-fill-color: #0d6e5e;
           animation: navHex 6s linear infinite;
           display: inline-block;
         }
@@ -119,14 +120,14 @@ const Navbar = () => {
         .pn-center-dot {
           width: 3px; height: 3px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.3);
+          background: #d1d5db;
         }
 
         .pn-center-link {
-          color: rgba(255,255,255,0.8);
-          font-size: 0.78rem;
+          color: #374151;
+          font-size: 0.82rem;
           font-weight: 700;
-          letter-spacing: 2px;
+          letter-spacing: 1px;
           text-transform: uppercase;
           transition: all 0.3s ease;
           text-decoration: none;
@@ -140,11 +141,11 @@ const Navbar = () => {
           bottom: -3px; left: 0;
           width: 0%;
           height: 1.5px;
-          background: #e8501a;
+          background: #0d6e5e;
           transition: width 0.3s ease;
         }
 
-        .pn-center-link:hover { color: white; }
+        .pn-center-link:hover { color: #0d6e5e; }
         .pn-center-link:hover::after { width: 100%; }
 
         /* ── RIGHT ACTIONS ── */
@@ -156,7 +157,7 @@ const Navbar = () => {
         }
 
         .pn-btn-login {
-          color: rgba(255,255,255,0.85);
+          color: #374151;
           font-size: 0.88rem;
           font-weight: 600;
           text-decoration: none;
@@ -165,7 +166,7 @@ const Navbar = () => {
           gap: 5px;
           padding: 0.4rem 0.9rem;
           border-radius: 6px;
-          border: 1.5px solid rgba(255,255,255,0.25);
+          border: 1.5px solid #d1d5db;
           transition: all 0.2s;
           white-space: nowrap;
           background: none;
@@ -174,40 +175,44 @@ const Navbar = () => {
         }
 
         .pn-btn-login:hover {
-          border-color: rgba(255,255,255,0.6);
-          color: white;
+          border-color: #0d6e5e;
+          color: #0d6e5e;
         }
 
         .pn-btn-signup {
-          background: #e8501a;
+          background: #0d6e5e;
           color: white;
           border: none;
           cursor: pointer;
-          padding: 0.45rem 1rem;
-          border-radius: 6px;
+          padding: 0.5rem 1.2rem;
+          border-radius: 8px;
           font-size: 0.88rem;
           font-weight: 700;
           display: flex;
           align-items: center;
           gap: 5px;
-          transition: opacity 0.2s;
+          transition: background 0.2s, box-shadow 0.2s;
           text-decoration: none;
           white-space: nowrap;
           font-family: 'Manrope', sans-serif;
+          box-shadow: 0 2px 8px rgba(13,110,94,0.25);
         }
 
-        .pn-btn-signup:hover { opacity: 0.88; }
+        .pn-btn-signup:hover {
+          background: #0a5a4c;
+          box-shadow: 0 4px 14px rgba(13,110,94,0.35);
+        }
 
         /* ── PROFILE DROPDOWN ── */
         .pn-profile-btn {
           display: flex;
           align-items: center;
           gap: 6px;
-          background: rgba(255,255,255,0.1);
-          border: 1.5px solid rgba(255,255,255,0.2);
-          border-radius: 6px;
+          background: #f0faf7;
+          border: 1.5px solid #b2d8d0;
+          border-radius: 8px;
           padding: 0.4rem 0.9rem;
-          color: white;
+          color: #0d4a40;
           font-size: 0.88rem;
           font-weight: 600;
           cursor: pointer;
@@ -216,8 +221,9 @@ const Navbar = () => {
         }
 
         .pn-profile-btn:hover {
-          background: rgba(255,255,255,0.18);
-          border-color: rgba(255,255,255,0.5);
+          background: #e8f5f2;
+          border-color: #0d6e5e;
+          color: #0d6e5e;
         }
 
         .pn-dropdown {
@@ -226,7 +232,8 @@ const Navbar = () => {
           right: 0;
           background: white;
           border-radius: 10px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+          box-shadow: 0 10px 40px rgba(13,110,94,0.14);
+          border: 1px solid #e8f0ee;
           min-width: 200px;
           overflow: hidden;
           z-index: 1000;
@@ -240,7 +247,7 @@ const Navbar = () => {
           padding: 0.75rem 1rem;
           font-size: 0.88rem;
           font-weight: 600;
-          color: #111827;
+          color: #374151;
           text-decoration: none;
           background: none;
           border: none;
@@ -248,15 +255,15 @@ const Navbar = () => {
           text-align: left;
           cursor: pointer;
           font-family: 'Manrope', sans-serif;
-          transition: background 0.15s;
+          transition: background 0.15s, color 0.15s;
         }
 
-        .pn-dropdown a:hover { background: #f4f6fa; }
-        .pn-dropdown button:hover { background: #fff5f2; color: #e8501a; }
+        .pn-dropdown a:hover { background: #f0faf7; color: #0d6e5e; }
+        .pn-dropdown button:hover { background: #fff5f5; color: #dc2626; }
 
         .pn-dropdown-divider {
           height: 1px;
-          background: #e5e7eb;
+          background: #e8f0ee;
           margin: 0;
         }
 
@@ -267,16 +274,17 @@ const Navbar = () => {
           border: none;
           cursor: pointer;
           font-size: 1.4rem;
-          color: white;
+          color: #374151;
         }
 
         .pn-mobile-menu {
-          background: rgba(13,27,62,0.98);
+          background: #ffffff;
           padding: 1.2rem 2rem;
           display: flex;
           flex-direction: column;
           gap: 1rem;
-          border-top: 1px solid rgba(255,255,255,0.08);
+          border-top: 1px solid #e8f0ee;
+          box-shadow: 0 8px 20px rgba(13,110,94,0.08);
           position: fixed;
           top: 68px;
           left: 0; right: 0;
@@ -285,7 +293,7 @@ const Navbar = () => {
 
         .pn-mobile-menu a,
         .pn-mobile-menu button {
-          color: rgba(255,255,255,0.8);
+          color: #374151;
           font-size: 0.95rem;
           font-weight: 600;
           text-decoration: none;
@@ -299,9 +307,9 @@ const Navbar = () => {
         }
 
         .pn-mobile-menu a:hover,
-        .pn-mobile-menu button:hover { color: #e8501a; }
+        .pn-mobile-menu button:hover { color: #0d6e5e; }
 
-        .pn-mobile-logout { color: #e8501a !important; }
+        .pn-mobile-logout { color: #dc2626 !important; }
 
         @media (max-width: 1024px) {
           .pn-center { display: none; }
@@ -351,7 +359,6 @@ const Navbar = () => {
         <div className="pn-actions">
           {isAuthenticated ? (
             <>
-              {/* Profile button with dropdown */}
               <div style={{ position: 'relative' }}>
                 <button
                   className="pn-profile-btn"
@@ -364,10 +371,7 @@ const Navbar = () => {
 
                 {isProfileMenuOpen && (
                   <div className="pn-dropdown">
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    >
+                    <Link to="/profile" onClick={() => setIsProfileMenuOpen(false)}>
                       <i className="fa fa-user" /> Profile
                     </Link>
                     <Link
@@ -377,33 +381,21 @@ const Navbar = () => {
                       <i className="fa fa-th-large" /> Dashboard
                     </Link>
                     {user?.role === 'landlord' && (
-                      <Link
-                        to="/my-properties"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                      >
+                      <Link to="/my-properties" onClick={() => setIsProfileMenuOpen(false)}>
                         <i className="fa fa-building" /> My Properties
                       </Link>
                     )}
                     {user?.role === 'tenant' && (
                       <>
-                        <Link
-                          to="/favorites"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
+                        <Link to="/favorites" onClick={() => setIsProfileMenuOpen(false)}>
                           <i className="fa fa-heart" /> Saved
                         </Link>
-                        <Link
-                          to="/inquiries"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                        >
+                        <Link to="/inquiries" onClick={() => setIsProfileMenuOpen(false)}>
                           <i className="fa fa-list" /> My Inquiries
                         </Link>
                       </>
                     )}
-                    <Link
-                      to="/messages"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    >
+                    <Link to="/messages" onClick={() => setIsProfileMenuOpen(false)}>
                       <i className="fa fa-envelope" /> Messages
                     </Link>
                     <div className="pn-dropdown-divider" />
@@ -439,11 +431,11 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="pn-mobile-menu">
           <Link to="/properties" onClick={() => setIsMobileMenuOpen(false)}>Browse Properties</Link>
-          <Link to="/about"      onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+          <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
 
           {isAuthenticated ? (
             <>
-              <Link to="/profile"   onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
+              <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
               <Link
                 to={user?.role === 'landlord' ? '/landlord-dashboard' : '/dashboard'}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -459,7 +451,7 @@ const Navbar = () => {
                   <Link to="/inquiries" onClick={() => setIsMobileMenuOpen(false)}>My Inquiries</Link>
                 </>
               )}
-              <Link to="/messages"      onClick={() => setIsMobileMenuOpen(false)}>Messages</Link>
+              <Link to="/messages" onClick={() => setIsMobileMenuOpen(false)}>Messages</Link>
               <Link to="/notifications" onClick={() => setIsMobileMenuOpen(false)}>Notifications</Link>
               <button
                 className="pn-mobile-logout"
@@ -470,7 +462,7 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login"    onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
               <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
             </>
           )}

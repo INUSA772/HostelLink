@@ -7,194 +7,149 @@ const Footer = () => {
 
   const styles = `
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-    
-    :root {
-      --navy: #0d1b3e;
-      --blue: #1a3fa4;
-      --orange: #e8501a;
-      --white: #ffffff;
-      --gray-bg: #f4f6fa;
-      --text-dark: #111827;
-      --text-mid: #4b5563;
-      --gray-light: #d1d5db;
-      --gray-dark: #374151;
-    }
 
-    footer {
+    .pf-footer {
       font-family: 'Manrope', sans-serif;
-      background: linear-gradient(135deg, #313336 0%, var( --gray-dark) 100%);
-      color: var(--white);
+      background: #1a1f2e;
+      color: #ffffff;
+      padding: 4rem 2rem 0;
       margin-top: auto;
-      padding: 4rem 2rem 2rem;
-   
     }
 
-    .footer-container {
+    .pf-container {
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    .footer-content {
+    /* ── MAIN GRID ── */
+    .pf-content {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 3rem;
-      margin-bottom: 3rem;
+      padding-bottom: 3rem;
     }
 
-    .footer-section h3 {
-      font-size: 1.3rem;
+    /* ── BRAND COL ── */
+    .pf-brand-name {
+      font-size: 1.4rem;
       font-weight: 800;
-      color: var(--orange);
-      margin-bottom: 1.2rem;
-      letter-spacing: 0.5px;
-    }
-
-    .footer-section h4 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--white);
+      color: #ffffff;
       margin-bottom: 1rem;
       letter-spacing: 0.3px;
     }
 
-    .footer-section p {
-      color: var(--gray-light);
-      line-height: 1.7;
-      font-size: 0.95rem;
+    .pf-brand-desc {
+      color: #8b92a5;
+      line-height: 1.75;
+      font-size: 0.92rem;
+      max-width: 280px;
+      margin-bottom: 1.5rem;
     }
 
-    .footer-links {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .footer-links li {
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-links a {
-      color: var(--gray-light);
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
+    /* ── SOCIAL ICONS — TandPay square style ── */
+    .pf-socials {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
-    .footer-links a:hover {
-      color: var(--orange);
-      transform: translateX(4px);
-    }
-
-    .contact-info {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .contact-info li {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      color: var(--gray-light);
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-
-    .contact-info i {
-      color: var(--orange);
-      width: 20px;
-      text-align: center;
-      font-size: 1.1rem;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .social-links a {
+    .pf-social-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--orange);
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #2a2f3e;
+      color: #8b92a5;
+      font-size: 1rem;
       text-decoration: none;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+      border: 1px solid #343a4d;
     }
 
-    .social-links a:hover {
-      background: var(--orange);
-      color: var(--white);
-      transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(232, 80, 26, 0.3);
+    .pf-social-btn:hover {
+      background: #0d6e5e;
+      color: #ffffff;
+      transform: translateY(-3px);
+      border-color: #0d6e5e;
     }
 
-    .footer-divider {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 2rem;
-      margin-top: 2rem;
+    /* ── LINK COLUMNS ── */
+    .pf-col h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1.4rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
-    .footer-bottom {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 2rem;
-      text-align: left;
+    .pf-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
     }
 
-    .footer-credit {
-      color: var(--gray-light);
-      font-size: 0.6rem;
-      font-weight: 300;
-    }
-
-    .footer-credit strong {
-      color: var(--orange);
-      font-weight: 300;
-    }
-
-    .footer-copyright {
-      color: var(--gray-light);
-      font-size: 0.6rem;
+    .pf-col ul li a,
+    .pf-col ul li span {
+      color: #8b92a5;
+      text-decoration: none;
+      font-size: 0.92rem;
       font-weight: 500;
-      text-align: right;
+      transition: color 0.2s;
+      display: block;
     }
 
-    @media (max-width: 768px) {
-      footer {
-        padding: 3rem 1rem 1.5rem;
-      }
+    .pf-col ul li a:hover { color: #ffffff; }
 
-      .footer-content {
+    /* ── BOTTOM BAR ── */
+    .pf-bottom {
+      border-top: 1px solid #2a2f3e;
+      padding: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .pf-copyright {
+      color: #555e72;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .pf-credit {
+      color: #555e72;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .pf-credit strong {
+      color: #8b92a5;
+      font-weight: 600;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .pf-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .pf-footer { padding: 3rem 1.2rem 0; }
+      .pf-content {
+        grid-template-columns: 1fr;
         gap: 2rem;
       }
-
-      .footer-bottom {
-        grid-template-columns: 1fr;
+      .pf-bottom {
+        flex-direction: column;
         text-align: center;
-      }
-
-      .footer-copyright {
-        text-align: center;
-      }
-
-      .contact-info li {
-        justify-content: center;
-      }
-
-      .social-links {
-        justify-content: center;
+        gap: 0.5rem;
       }
     }
   `;
@@ -202,130 +157,80 @@ const Footer = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-      
-      <footer>
-        <div className="footer-container">
-          <div className="footer-content">
-            {/* About Section */}
-            <div className="footer-section">
-       <div><h3>PezaHostel</h3> 
-       </div>
-              <p>
-                Making it easy for MUBAS students to find quality accommodation near campus. 
-                Connect directly with hostel owners and find your perfect home away from home.
+
+      <footer className="pf-footer">
+        <div className="pf-container">
+
+          <div className="pf-content">
+
+            {/* ── BRAND ── */}
+            <div className="pf-brand-col">
+              <div className="pf-brand-name">PezaNyumba 🇲🇼</div>
+              <p className="pf-brand-desc">
+                Malawi's platform for finding and listing houses, flats, rooms and plots.
+                Your money is protected. No middlemen. No walking door to door.
               </p>
-            </div>
-
-            {/* Quick Links */}
-            <div className="footer-section">
-              <h4>Quick Links</h4>
-              <ul className="footer-links">
-                <li>
-                  <Link to="/hostels">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    Browse Hostels
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/contact">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/faq">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* For Owners */}
-            <div className="footer-section">
-              <h4>For Hostel Owners</h4>
-              <ul className="footer-links">
-                <li>
-                  <Link to="/register?role=owner">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    List Your Hostel
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/owner-dashboard">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    Owner Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/terms">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    Terms & Conditions
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/privacy">
-                    <i className="fa fa-arrow-right" style={{ fontSize: '0.8rem' }}></i>
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact Info */}
-            <div className="footer-section">
-              <h4>Contact Us</h4>
-              <ul className="contact-info">
-                <li>
-                  <FaMapMarkerAlt />
-                  Blantyre, Malawi
-                </li>
-                <li>
-                  <FaPhone />
-                  +265 920 943 91
-                </li>
-                <li>
-                  <FaEnvelope />
-                  forjiteckco@gmail.com
-                </li>
-              </ul>
-
-              {/* Social Media */}
-              <div className="social-links">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook">
+              <div className="pf-socials">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="pf-social-btn" title="Facebook">
                   <FaFacebook />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="pf-social-btn" title="Twitter">
                   <FaTwitter />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="pf-social-btn" title="Instagram">
                   <FaInstagram />
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="pf-social-btn" title="LinkedIn">
                   <FaLinkedin />
                 </a>
               </div>
             </div>
+
+            {/* ── PRODUCT ── */}
+            <div className="pf-col">
+              <h4>Platform</h4>
+              <ul>
+                <li><Link to="/properties">Browse Properties</Link></li>
+                <li><Link to="/register">List a Property</Link></li>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/faq">FAQ</Link></li>
+              </ul>
+            </div>
+
+            {/* ── COMPANY ── */}
+            <div className="pf-col">
+              <h4>Company</h4>
+              <ul>
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/terms">Terms of Service</Link></li>
+                <li><Link to="/privacy">Privacy Policy</Link></li>
+                <li><Link to="/contact">Report a Dispute</Link></li>
+              </ul>
+            </div>
+
+            {/* ── CONTACT ── */}
+            <div className="pf-col">
+              <h4>Contact</h4>
+              <ul>
+                <li><span>forjiteckco@gmail.com</span></li>
+                <li><span>+265 920 943 91</span></li>
+                <li><Link to="/contact">WhatsApp</Link></li>
+                <li><span>Blantyre, Malawi</span></li>
+              </ul>
+            </div>
+
           </div>
 
-          {/* Bottom Bar */}
-          <div className="footer-divider">
-            <div className="footer-bottom">
-              <p className="footer-credit">
-                Powered by <strong>ForjiTech</strong> <br></br>Connecting Students to Quality Accommodation
-              </p>
-              <p className="footer-copyright">
-                &copy; {currentYear} PezaHostel. All rights reserved.
-              </p>
-            </div>
+          {/* ── BOTTOM BAR ── */}
+          <div className="pf-bottom">
+            <p className="pf-copyright">
+              © {currentYear} PezaNyumba. All rights reserved.
+            </p>
+            <p className="pf-credit">
+              Made with ❤️ in Malawi by <strong>ForjiTech</strong>
+            </p>
           </div>
+
         </div>
       </footer>
     </>
