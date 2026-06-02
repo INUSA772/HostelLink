@@ -338,7 +338,7 @@ const Navbar = () => {
         <Link to="/" className="pn-logo">
           <div className="pn-logo-icon">
 
-            <img src="/PEZALOGO.jpg" alt="PezaNyumba" />
+            <img src="/PEZ.png" alt="PezaNyumba" />
 
           </div>
           <div className="pn-logo-text">
