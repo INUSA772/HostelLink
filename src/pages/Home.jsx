@@ -31,12 +31,12 @@ const FAQ_ITEMS = [
 const CARDS_COL1 = [
   { theme: "blue",   icon: "fa fa-shield-alt",    title: "Verified Properties", sub: "All listings checked & approved" },
   { theme: "orange", icon: "fa fa-tag",            title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-  { theme: "green",  icon: "fa fa-check-circle",  title: "Trusted Landlords",   sub: "Identity-verified owners"        },
-  { theme: "purple", icon: "fa fa-map-marker-alt",title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
-  { theme: "blue",   icon: "fa fa-shield-alt",    title: "Verified Properties", sub: "All listings checked & approved" },
-  { theme: "orange", icon: "fa fa-tag",            title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-  { theme: "green",  icon: "fa fa-check-circle",  title: "Trusted Landlords",   sub: "Identity-verified owners"        },
-  { theme: "purple", icon: "fa fa-map-marker-alt",title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+  { theme: "green", title: "Trusted Landlords",   sub: "Identity-verified owners"        },
+  { theme: "purple", title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+  { theme: "blue",  title: "Verified Properties", sub: "All listings checked & approved" },
+  { theme: "orange", title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
+  { theme: "green",  title: "Trusted Landlords",   sub: "Identity-verified owners"        },
+  { theme: "purple",title: "All Districts",       sub: "28 districts covered",           image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
 ];
 
 const CARDS_COL2 = [
@@ -1103,7 +1103,7 @@ function DualSection() {
         <div className="ph-dual-icon tenant"><i className="fa fa-user" /></div>
         <h3>For Tenants & Buyers</h3>
         <div className="ph-dual-note">✓ No account required</div>
-        <p>Browse all verified properties, view photos, see prices, and get landlord contact info directly — completely free, no sign-up needed.</p>
+        <p>Browse all verified properties, view photos, see prices and get landlord contact info directly — completely free, no sign-up needed.</p>
         <a href="#browse-districts" className="ph-btn-outline">Start Browsing</a>
       </div>
       <div className="ph-dual-card">
