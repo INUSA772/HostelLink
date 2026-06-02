@@ -337,11 +337,9 @@ const Navbar = () => {
         {/* LOGO */}
         <Link to="/" className="pn-logo">
           <div className="pn-logo-icon">
-<<<<<<< HEAD
-            <img src="/PezaHostelLogo.png" alt="PezaNyumba" />
-=======
+
             <img src="/PEZALOGO.jpg" alt="PezaNyumba" />
->>>>>>> 54f7808 (Rebuild repository after fixing broken git config)
+
           </div>
           <div className="pn-logo-text">
             <strong>PezaNyumba</strong>
