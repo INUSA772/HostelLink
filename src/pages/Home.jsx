@@ -764,7 +764,11 @@ function TrustBar() {
       <div className="ph-trust-bar-inner">
         <div className="ph-trust-item"><i className="fa fa-shield-alt" /> Registered Malawian platform</div>
         <div className="ph-trust-divider" />
+
         <div className="ph-trust-item"><i className="fa fa-mobile-alt" /> Powered by mobile money</div>
+
+        <div className="ph-trust-item"><i className="fa fa-mobile-alt" /> Powered by forjiteck</div>
+
         <div className="ph-trust-divider" />
         <div className="ph-trust-item"><i className="fa fa-map-marker-alt" /> Available across all 28 districts</div>
         <div className="ph-trust-divider" />
