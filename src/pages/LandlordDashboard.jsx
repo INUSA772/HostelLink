@@ -538,7 +538,7 @@ const LandlordDashboard = () => {
       <div className={`ld-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="ld-drawer-top">
           <Link to="/" className="ld-logo">
-            <div className="ld-logo-icon"><img src="/PezaHostelLogo.png" alt="PEZ.png" /></div>
+            <div className="ld-logo-icon"><img src="/PEZ.png" alt="PEZ.png" /></div>
             <span className="ld-logo-name">PezaNyumba</span>
           </Link>
           <button className="ld-drawer-close" onClick={() => setDrawerOpen(false)}><FaTimes /></button>
