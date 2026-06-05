@@ -15,7 +15,7 @@ function trackWhatsappClick(hostelId) {
   if (!hostelId) return;
   fetch(`${API_URL}/admin/hostels/${hostelId}/whatsapp-click`, {
     method: "POST",
-  }).catch(() => {}); // silent — never block the user
+  }).catch(() => {});
 }
 
 const PROPERTY_TYPES = [
@@ -34,6 +34,7 @@ const FAQ_ITEMS = [
   { question: "How does PezaNyumba verify landlords?",     answer: "Every landlord goes through identity and property verification before their listing goes live." },
   { question: "Can I list my property?",                   answer: "Yes — if you're a landlord or land owner. Register, fill in details, upload photos, and your listing goes live within 24 hours." },
 ];
+
 const CARDS_COL1 = [
   { theme: "blue",   icon: "fa fa-shield-alt",    title: "Verified Properties", sub: "All listings checked & approved" },
   { theme: "orange", icon: "fa fa-tag",            title: "Best Prices",         sub: "Affordable for every budget",    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
@@ -63,7 +64,6 @@ const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop",
 ];
 
-// ── normalise a hostel/property doc into consistent shape ─────────────────────
 function normalise(p) {
   return {
     _id:          p._id || p.id,
@@ -206,27 +206,38 @@ const styles = `
   .ph-dist-search input:focus,.ph-dist-search select:focus{border-color:var(--teal)}
   .ph-dist-search-btn { background:var(--teal); color:white; border:none; border-radius:10px; padding:.65rem 1.4rem; font-size:.88rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background .2s; font-family:inherit; }
   .ph-dist-search-btn:hover{background:var(--teal-dark)}
-  .ph-prop-slider-outer { overflow:hidden; max-width:1100px; margin:0 auto; }
-  .ph-prop-track { display:flex; gap:1.2rem; transition:transform .6s cubic-bezier(.4,0,.2,1); }
 
-  /* ── SLIDE CARD ── */
-  .ph-slide-card { flex-shrink:0; width:240px; border-radius:14px; overflow:hidden; background:white; border:1.5px solid var(--light-border); cursor:pointer; text-align:left; padding:0; transition:transform .25s,box-shadow .25s; box-shadow:0 2px 8px rgba(0,0,0,.05); }
-  .ph-slide-card:hover { transform:translateY(-5px); box-shadow:0 14px 32px rgba(13,74,64,.18); border-color:var(--teal-mid); }
-  .ph-slide-img { width:100%; height:145px; object-fit:cover; display:block; }
-  .ph-slide-body { padding:.9rem 1rem; }
-  .ph-slide-district { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--teal-mid); margin-bottom:.3rem; }
-  .ph-slide-name { font-size:.92rem; font-weight:800; color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.25rem; }
-  .ph-slide-meta { font-size:.75rem; color:#6b7280; display:flex; gap:.7rem; margin-top:.3rem; flex-wrap:wrap; }
-  .ph-slide-badge { display:inline-block; font-size:.65rem; font-weight:700; padding:2px 8px; border-radius:20px; background:var(--teal-light); color:var(--teal-dark); margin-top:.4rem; }
-  .ph-slide-price { font-size:.9rem; font-weight:800; color:var(--teal); margin-top:.4rem; }
-  .ph-prop-nav { display:flex; align-items:center; justify-content:space-between; max-width:1100px; margin:1.2rem auto 0; }
+  /* slider viewport */
+  .ph-slider-viewport { overflow:hidden; max-width:1100px; margin:0 auto; position:relative; cursor:grab; user-select:none; -webkit-user-select:none; }
+  .ph-slider-viewport:active { cursor:grabbing; }
+  .ph-slider-track { display:flex; gap:1.2rem; transition:transform .55s cubic-bezier(.4,0,.2,1); will-change:transform; }
+  .ph-slider-track.no-transition { transition:none !important; }
+
+  /* slide card */
+  .ph-slide-card { flex-shrink:0; width:240px; border-radius:16px; overflow:hidden; background:white; border:1.5px solid var(--light-border); cursor:pointer; text-align:left; padding:0; transition:transform .25s,box-shadow .25s; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+  .ph-slide-card:hover { transform:translateY(-6px); box-shadow:0 18px 40px rgba(13,74,64,.18); border-color:var(--teal-mid); }
+  .ph-slide-img { width:100%; height:155px; object-fit:cover; display:block; pointer-events:none; }
+  .ph-slide-body { padding:.95rem 1rem; }
+  .ph-slide-district { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:1.8px; color:var(--teal-mid); margin-bottom:.3rem; }
+  .ph-slide-name { font-size:.93rem; font-weight:800; color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.25rem; }
+  .ph-slide-meta { font-size:.74rem; color:#6b7280; display:flex; gap:.7rem; margin-top:.35rem; flex-wrap:wrap; }
+  .ph-slide-badge { display:inline-block; font-size:.64rem; font-weight:700; padding:2px 9px; border-radius:20px; background:var(--teal-light); color:var(--teal-dark); margin-top:.45rem; }
+  .ph-slide-price { font-size:.92rem; font-weight:800; color:var(--teal); margin-top:.45rem; }
+
+  /* nav */
+  .ph-prop-nav { display:flex; align-items:center; justify-content:space-between; max-width:1100px; margin:1.4rem auto 0; }
   .ph-prop-dots { display:flex; gap:6px; }
   .ph-prop-dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; border:none; cursor:pointer; padding:0; transition:all .3s; }
-  .ph-prop-dot.active { background:var(--teal); width:22px; border-radius:4px; }
+  .ph-prop-dot.active { background:var(--teal); width:24px; border-radius:4px; }
   .ph-prop-nav-btns { display:flex; gap:.5rem; }
-  .ph-prop-nav-btn { width:36px; height:36px; border-radius:50%; border:1.5px solid var(--teal); background:white; color:var(--teal); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+  .ph-prop-nav-btn { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--teal); background:white; color:var(--teal); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
   .ph-prop-nav-btn:hover { background:var(--teal); color:white; }
   .ph-prop-empty { text-align:center; padding:2.5rem; color:var(--mid); font-size:.9rem; background:white; border-radius:var(--radius); border:1.5px dashed var(--light-border); }
+
+  /* responsive card widths */
+  @media(max-width:1100px){ .ph-slide-card{ width: calc((100vw - 3.6rem) / 3) } }
+  @media(max-width:768px)  { .ph-slide-card{ width: calc((100vw - 3rem) / 2) } }
+  @media(max-width:520px)  { .ph-slide-card{ width: calc(100vw - 2.4rem) } }
 
   /* ── PROPERTY TYPES ── */
   .ph-types-sec { background:white; padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
@@ -628,7 +639,7 @@ function TrustBar() {
 }
 
 /* ═══════════════════════════════════════
-   DISTRICTS SLIDER
+   DISTRICTS SLIDER  ← fully rewritten
 ═══════════════════════════════════════ */
 function DistrictsSection({ allProperties }) {
   const [filtered, setFiltered]     = useState([]);
@@ -636,11 +647,28 @@ function DistrictsSection({ allProperties }) {
   const [typeFilter, setTypeFilter] = useState("");
   const [current, setCurrent]       = useState(0);
   const [drawer, setDrawer]         = useState(null);
-  const timerRef                    = useRef(null);
+  const [noTransition, setNoTransition] = useState(false);
 
-  const CARD_W  = 252;
-  const VIS_CNT = 4;
+  const timerRef    = useRef(null);
+  const trackRef    = useRef(null);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+  const dragStartX  = useRef(null);
+  const isDragging  = useRef(false);
 
+  // ── responsive visible count ──────────────────────────────────────────────
+  const [visCount, setVisCount] = useState(4);
+  useEffect(() => {
+    function calc() {
+      const w = window.innerWidth;
+      setVisCount(w <= 520 ? 1 : w <= 768 ? 2 : w <= 1100 ? 3 : 4);
+    }
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
+  }, []);
+
+  // ── filter helpers ────────────────────────────────────────────────────────
   function applyFilter(source, loc, type) {
     const result = source.filter(raw => {
       const p = normalise(raw);
@@ -654,37 +682,87 @@ function DistrictsSection({ allProperties }) {
   }
 
   useEffect(() => {
-    if (allProperties && allProperties.length > 0) {
+    if (allProperties && allProperties.length > 0)
       applyFilter(allProperties, locSearch, typeFilter);
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allProperties]);
 
-  const handleSearch = () => {
-    applyFilter(allProperties || [], locSearch, typeFilter);
-  };
+  const handleSearch = () => applyFilter(allProperties || [], locSearch, typeFilter);
 
-  const maxIdx = Math.max(0, filtered.length - VIS_CNT);
+  // ── slide mechanics ───────────────────────────────────────────────────────
+  const maxIdx = Math.max(0, filtered.length - visCount);
 
-  const slide = useCallback((idx) => {
+  const slideTo = useCallback((idx) => {
     setCurrent(Math.max(0, Math.min(idx, maxIdx)));
+  }, [maxIdx]);
+
+  const next = useCallback(() => {
+    setCurrent(c => (c >= maxIdx ? 0 : c + 1));
   }, [maxIdx]);
 
   const resetAuto = useCallback(() => {
     clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setCurrent(c => (c >= maxIdx ? 0 : c + 1));
-    }, 4000);
-  }, [maxIdx]);
+    timerRef.current = setInterval(next, 3500);
+  }, [next]);
 
-  useEffect(() => { resetAuto(); return () => clearInterval(timerRef.current); }, [resetAuto]);
+  useEffect(() => {
+    if (filtered.length > visCount) resetAuto();
+    return () => clearInterval(timerRef.current);
+  }, [filtered, visCount, resetAuto]);
+
+  // read real card + gap width from the DOM
+  function getCardW() {
+    const track = trackRef.current;
+    if (!track || !track.children[0]) return 252;
+    const gap = parseFloat(getComputedStyle(track).gap) || 19.2;
+    return track.children[0].getBoundingClientRect().width + gap;
+  }
+
+  // ── touch (mobile swipe) ──────────────────────────────────────────────────
+  function onTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }
+  function onTouchEnd(e) {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      slideTo(dx < 0 ? current + 1 : current - 1);
+      resetAuto();
+    }
+    touchStartX.current = null;
+  }
+
+  // ── mouse drag (desktop) ──────────────────────────────────────────────────
+  function onMouseDown(e) {
+    dragStartX.current = e.clientX;
+    isDragging.current = false;
+  }
+  function onMouseMove(e) {
+    if (dragStartX.current === null) return;
+    if (Math.abs(e.clientX - dragStartX.current) > 6) isDragging.current = true;
+  }
+  function onMouseUp(e) {
+    if (dragStartX.current === null) return;
+    const dx = e.clientX - dragStartX.current;
+    if (isDragging.current && Math.abs(dx) > 40) {
+      slideTo(dx < 0 ? current + 1 : current - 1);
+      resetAuto();
+    }
+    dragStartX.current = null;
+    isDragging.current = false;
+  }
+
+  const translateX = current * getCardW();
+  const DOT_COUNT  = Math.min(maxIdx + 1, 8);
 
   return (
     <>
       <section className="ph-dist-sec" id="browse-districts">
         <p className="ph-sec-label">Browse by location</p>
         <h2 className="ph-sec-title">Find Properties by <em style={{color:"#2d8a72"}}>District</em></h2>
-        <p className="ph-sec-sub">Search by location or type — click any card to see all listings in that district.</p>
+        <p className="ph-sec-sub">Search by location or type — swipe or use arrows to explore all listings.</p>
 
         <div className="ph-dist-search">
           <input
@@ -703,7 +781,15 @@ function DistrictsSection({ allProperties }) {
           </button>
         </div>
 
-        <div className="ph-prop-slider-outer">
+        <div
+          className="ph-slider-viewport"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}
+        >
           {filtered.length === 0 ? (
             <div className="ph-prop-empty">
               <i className="fa fa-search" style={{fontSize:"2rem",opacity:.3,display:"block",marginBottom:".75rem"}} />
@@ -712,7 +798,11 @@ function DistrictsSection({ allProperties }) {
                 : "No properties found. Try a different search."}
             </div>
           ) : (
-            <div className="ph-prop-track" style={{transform:`translateX(-${current * CARD_W}px)`}}>
+            <div
+              ref={trackRef}
+              className={`ph-slider-track${noTransition ? " no-transition" : ""}`}
+              style={{ transform: `translateX(-${translateX}px)` }}
+            >
               {filtered.map((raw, i) => {
                 const p      = normalise(raw);
                 const imgSrc = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
@@ -721,12 +811,17 @@ function DistrictsSection({ allProperties }) {
                   <button
                     key={p._id || i}
                     className="ph-slide-card"
-                    onClick={() => setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" })}
+                    onClick={() => {
+                      if (!isDragging.current)
+                        setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" });
+                    }}
+                    onDragStart={e => e.preventDefault()}
                   >
                     <img
                       src={imgSrc}
                       alt={p.name}
                       className="ph-slide-img"
+                      draggable="false"
                       onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }}
                     />
                     <div className="ph-slide-body">
@@ -747,17 +842,20 @@ function DistrictsSection({ allProperties }) {
           )}
         </div>
 
-        {filtered.length > VIS_CNT && (
+        {filtered.length > visCount && (
           <div className="ph-prop-nav">
             <div className="ph-prop-dots">
-              {Array.from({length: Math.min(maxIdx + 1, 8)}).map((_, i) => (
-                <button key={i} className={`ph-prop-dot${current === i ? " active" : ""}`}
-                  onClick={() => { slide(i); resetAuto(); }} />
+              {Array.from({ length: DOT_COUNT }).map((_, i) => (
+                <button
+                  key={i}
+                  className={`ph-prop-dot${current === i ? " active" : ""}`}
+                  onClick={() => { slideTo(i); resetAuto(); }}
+                />
               ))}
             </div>
             <div className="ph-prop-nav-btns">
-              <button className="ph-prop-nav-btn" onClick={() => { slide(current - 1); resetAuto(); }}>&#8592;</button>
-              <button className="ph-prop-nav-btn" onClick={() => { slide(current + 1); resetAuto(); }}>&#8594;</button>
+              <button className="ph-prop-nav-btn" onClick={() => { slideTo(current - 1); resetAuto(); }}>&#8592;</button>
+              <button className="ph-prop-nav-btn" onClick={() => { slideTo(current + 1); resetAuto(); }}>&#8594;</button>
             </div>
           </div>
         )}
