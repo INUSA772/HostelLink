@@ -194,36 +194,53 @@ exports.register = async (req, res) => {
     res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 };
-
 // ── POST /api/auth/login ───────────────────────────────
 exports.login = async (req, res) => {
   try {
-    const { phone, password } = req.body;
-    
-    console.log('🔐 Login request:', { phone });
-    
-    // Find user by phone number
-    const user = await User.findOne({ phone }).select('+password');
-    
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid phone number or password' });
+    const { phone, email, password } = req.body;
+
+    console.log('🔐 Login request:', { phone, email });
+
+    let user;
+
+    if (email) {
+      // Admin login via email
+      user = await User.findOne({ email }).select('+password');
+      if (!user || user.role !== 'admin') {
+        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      }
+    } else {
+      // Tenant / Landlord login via phone
+      if (!phone) {
+        return res.status(400).json({ success: false, message: 'Phone number is required' });
+      }
+      user = await User.findOne({ phone }).select('+password');
+      if (!user) {
+        return res.status(401).json({ success: false, message: 'Invalid phone number or password' });
+      }
+      if (user.role === 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin must log in with email' });
+      }
     }
-    
+
     if (!user.isActive) {
       return res.status(403).json({
         success: false,
         message: 'Your account is not active. Please contact support.',
       });
     }
-    
+
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid phone number or password' });
+      return res.status(401).json({
+        success: false,
+        message: email ? 'Invalid email or password' : 'Invalid phone number or password',
+      });
     }
-    
+
     user.lastLogin = Date.now();
     await user.save({ validateBeforeSave: false });
-    
+
     res.json({
       success: true,
       message: 'Login successful',
@@ -232,6 +249,7 @@ exports.login = async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        email: user.email,
         phone: user.phone,
         role: user.role,
         profilePicture: user.profilePicture,

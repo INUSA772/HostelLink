@@ -1,575 +1,722 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import Input from '../components/common/Input';
-import Textarea from '../components/common/Textarea';
-import Select from '../components/common/Select';
-import { HOSTEL_TYPES, GENDER_OPTIONS, AMENITIES, CAMPUS_LOCATION } from '../utils/constants';
-import { FaHome, FaMapMarkerAlt, FaDollarSign, FaBed, FaCheckCircle, FaPlus, FaTrash, FaCamera, FaTimes } from 'react-icons/fa';
+import { FaHome, FaMapMarkerAlt, FaDollarSign, FaBed, FaCheckCircle, FaPlus, FaTrash, FaCamera, FaTimes, FaWhatsapp } from 'react-icons/fa';
 import ImageUpload from '../components/common/ImageUpload';
-import '../styles/global.css';
 
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --navy:#0d1b3e; --navy2:#112255; --blue:#1a3fa4; --orange:#e8501a;
-    --text-dark:#111827; --text-mid:#4b5563; --card-radius:14px;
-    --success:#10b981; --white:#ffffff; --gray:#6b7280;
-    --light-gray:#e5e7eb; --gray-lighter:#f4f6fb;
-    --primary-color:#e8501a; --primary-dark:#c43f12;
-    --primary-light:rgba(232,80,26,0.1); --error:#ef4444;
-  }
-  html,body,#root{height:100%;width:100%;overflow:hidden;font-family:'Manrope',sans-serif;}
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  .rp-bar{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(8,18,48,0.97);backdrop-filter:blur(8px);box-shadow:0 2px 18px rgba(0,0,0,0.4);}
-  .rp-bar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
-  .rp-bar-logo-img{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;}
-  .rp-bar-logo-img img{width:100%;height:100%;object-fit:cover;}
-  .rp-bar-brand strong{display:block;color:#fff;font-size:0.9rem;font-weight:800;letter-spacing:1px;}
-  .rp-bar-brand span{color:rgba(255,255,255,0.42);font-size:0.56rem;}
-  .rp-bar-actions{display:flex;align-items:center;gap:0.6rem;}
-  .rp-bar-login{color:rgba(255,255,255,0.78);font-size:0.82rem;font-weight:600;background:transparent;border:1.5px solid rgba(255,255,255,0.2);padding:0.36rem 0.95rem;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.18s;display:flex;align-items:center;gap:5px;}
-  .rp-bar-login:hover{border-color:rgba(255,255,255,0.55);color:#fff;}
+/* ─── Constants ─── */
+const MALAWI_DISTRICTS = [
+  'Lilongwe','Blantyre','Zomba','Mzuzu','Kasungu','Mangochi',
+  'Dedza','Salima','Ntcheu','Balaka','Machinga','Chiradzulu',
+  'Thyolo','Mulanje','Phalombe','Chikwawa','Nsanje','Neno',
+  'Mwanza','Nkhata Bay','Rumphi','Karonga','Chitipa','Mzimba',
+  'Dowa','Ntchisi','Mchinji','Likoma',
+];
 
-  .rp-main-content{position:fixed;top:60px;left:0;right:0;bottom:0;overflow-y:auto;background:var(--gray-lighter);padding:2rem 1rem;}
-  .rp-container{max-width:900px;margin:0 auto;}
+const PROPERTY_TYPES = [
+  'House','Flat/Apartment','Single Room','Self-Contained',
+  'Plot of Land','Commercial Space','Office Space','Warehouse',
+];
 
-  .rp-header{text-align:center;margin-bottom:2rem;}
-  .rp-header h1{font-size:2rem;font-weight:800;margin-bottom:0.5rem;color:var(--orange);display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-  .rp-header p{color:var(--gray);font-size:1rem;}
+const LISTING_TYPES = ['For Rent','For Sale'];
 
-  .rp-progress{display:flex;justify-content:space-between;margin-bottom:2rem;position:relative;}
-  .rp-progress-line{position:absolute;top:20px;left:0;right:0;height:4px;background-color:var(--light-gray);z-index:0;}
-  .rp-progress-fill{height:100%;background-color:var(--orange);transition:width 0.3s ease;}
-  .rp-step{flex:1;text-align:center;position:relative;z-index:1;}
-  .rp-step-circle{width:40px;height:40px;border-radius:50%;background-color:var(--light-gray);color:var(--white);display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;font-weight:700;transition:all 0.3s ease;}
-  .rp-step-circle.active{background-color:var(--orange);}
-  .rp-step-circle.completed{background-color:var(--success);}
-  .rp-step-label{font-size:0.8rem;color:var(--gray);transition:color 0.3s ease;}
-  .rp-step-label.active{color:var(--orange);font-weight:600;}
-
-  .rp-card{background:var(--white);border-radius:var(--card-radius);box-shadow:0 8px 40px rgba(13,27,62,0.12);padding:2rem;width:100%;}
-  .rp-card h2{font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;}
-  .rp-card h2 svg{color:var(--orange);}
-
-  .rp-form-group{margin-bottom:1.2rem;}
-  .rp-label{display:block;font-size:0.7rem;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;}
-  .rp-required{color:var(--error);margin-left:2px;}
-  .rp-tip{font-size:0.75rem;color:var(--gray);margin-top:0.2rem;margin-bottom:1rem;}
-  .rp-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0.5rem;}
-  .rp-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
-
-  .rp-amenities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;margin-top:0.5rem;margin-bottom:1rem;}
-  .rp-amenity-btn{padding:0.75rem;border-radius:8px;border:2px solid var(--light-gray);background:var(--white);color:var(--text-dark);cursor:pointer;font-size:0.85rem;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'Manrope',sans-serif;font-weight:500;}
-  .rp-amenity-btn:hover{border-color:var(--blue);}
-  .rp-amenity-btn.selected{border-color:var(--orange);background:var(--primary-light);color:var(--orange);font-weight:600;}
-  .rp-selected-count{margin-top:1rem;padding:0.75rem;background:var(--success);color:var(--white);border-radius:8px;text-align:center;font-size:0.85rem;font-weight:600;}
-
-  .rp-nav-buttons{display:flex;justify-content:space-between;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--light-gray);}
-  .rp-btn-outline{background:transparent;border:2px solid var(--orange);color:var(--orange);padding:0.6rem 1.5rem;border-radius:8px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;}
-  .rp-btn-outline:hover{background:var(--primary-light);transform:translateY(-2px);}
-  .rp-btn-primary{background:var(--orange);border:none;color:var(--white);padding:0.6rem 1.5rem;border-radius:8px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:0.5rem;margin-left:auto;}
-  .rp-btn-primary:hover:not(:disabled){opacity:0.9;transform:translateY(-2px);}
-  .rp-btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
-  .rp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  .room-card{background:#f9fafb;border:1.5px solid var(--light-gray);border-radius:12px;padding:1.25rem;margin-bottom:1rem;position:relative;}
-  .room-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
-  .room-card-title{font-size:0.95rem;font-weight:800;color:var(--navy);}
-  .room-delete-btn{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:7px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;transition:all 0.2s;font-family:'Manrope',sans-serif;}
-  .room-delete-btn:hover{background:#dc2626;color:white;}
-  .room-images-row{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;}
-  .room-img-thumb{width:70px;height:70px;border-radius:8px;object-fit:cover;border:2px solid var(--light-gray);}
-  .room-img-add{width:70px;height:70px;border-radius:8px;border:2px dashed var(--light-gray);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:0.65rem;color:var(--gray);gap:0.2rem;transition:all 0.2s;background:white;}
-  .room-img-add:hover{border-color:var(--orange);color:var(--orange);}
-  .room-img-wrap{position:relative;}
-  .room-img-remove{position:absolute;top:-5px;right:-5px;width:18px;height:18px;background:var(--error);border:none;border-radius:50%;color:white;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .add-room-btn{width:100%;padding:0.85rem;border:2px dashed var(--orange);border-radius:10px;background:var(--primary-light);color:var(--orange);font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;font-family:'Manrope',sans-serif;margin-top:0.5rem;}
-  .add-room-btn:hover{background:var(--orange);color:white;}
-  .rooms-summary{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#1d4ed8;font-weight:600;display:flex;align-items:center;gap:0.5rem;}
-  .room-input{width:100%;padding:0.6rem 0.75rem;border:1.5px solid var(--light-gray);border-radius:8px;font-size:0.875rem;font-family:'Manrope',sans-serif;outline:none;transition:border-color 0.2s;}
-  .room-input:focus{border-color:var(--orange);}
-
-  @media(max-width:768px){
-    .rp-bar{padding:0 1rem;}
-    .rp-bar-brand{display:none;}
-    .rp-grid-2,.rp-grid-3{grid-template-columns:1fr;}
-  }
-`;
+const AMENITIES = [
+  'Water 24/7','WiFi','Electricity (ESCOM)','Solar Power',
+  'CCTV Security','Security Guard','Parking','Garden',
+  'Borehole Water','Flush Toilet','Bathroom','Kitchen',
+  'Living Room','Dining Room','Store Room','Servant Quarters',
+  'Fence/Wall','Gate','Tiled Floors','Ceiling',
+];
 
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`;
 const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-const uploadImageToCloudinary = async (file) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_PRESET);
-  const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-  const data = await res.json();
-  return data.secure_url;
+const uploadImg = async (file) => {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  const r = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+  return (await r.json()).secure_url;
 };
 
-const CreateHostel = () => {
+/* ─── Styles ─── */
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal:        #1a5c52;
+    --teal-dark:   #0d4a40;
+    --teal-mid:    #2d8a72;
+    --teal-light:  #e8f5f2;
+    --teal-pale:   #f0faf7;
+    --text-dark:   #111827;
+    --text-mid:    #4b5563;
+    --border:      #e2ede9;
+    --gray-bg:     #f4f6f4;
+    --radius:      12px;
+    --success:     #10b981;
+    --error:       #ef4444;
+    --wa:          #25D366;
+  }
+  html, body, #root { height:100%; font-family:'Manrope',sans-serif; overflow-x:hidden; }
+
+  /* NAV */
+  .cp-bar {
+    position:fixed; top:0; left:0; right:0; z-index:500;
+    height:58px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 1.5rem; background:#fff;
+    border-bottom:1px solid var(--border);
+    box-shadow:0 1px 6px rgba(13,74,64,0.07);
+  }
+  .cp-bar-logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+  .cp-bar-logo-img { width:32px; height:32px; border-radius:50%; overflow:hidden; background:var(--teal-light); }
+  .cp-bar-logo-img img { width:100%; height:100%; object-fit:cover; }
+  .cp-bar-brand strong { display:block; font-size:0.88rem; font-weight:800; color:#0d4a40; }
+  .cp-bar-brand span { font-size:0.56rem; color:#6b7280; }
+  .cp-bar-back {
+    color:#374151; font-size:0.8rem; font-weight:600;
+    border:1.5px solid #d1d5db; padding:0.28rem 0.85rem;
+    border-radius:7px; cursor:pointer; text-decoration:none; transition:all 0.18s;
+    display:flex; align-items:center; gap:5px;
+  }
+  .cp-bar-back:hover { border-color:var(--teal); color:var(--teal); }
+
+  /* MAIN SCROLL AREA */
+  .cp-main { margin-top:58px; min-height:calc(100vh - 58px); background:var(--gray-bg); padding:2rem 1rem 4rem; }
+  .cp-container { max-width:860px; margin:0 auto; }
+
+  /* PAGE HEADER */
+  .cp-page-hdr { text-align:center; margin-bottom:1.8rem; }
+  .cp-page-hdr h1 { font-size:1.7rem; font-weight:800; color:var(--teal-dark); display:flex; align-items:center; justify-content:center; gap:0.5rem; }
+  .cp-page-hdr p  { color:var(--text-mid); font-size:0.88rem; margin-top:0.3rem; }
+
+  /* PROGRESS */
+  .cp-progress { display:flex; justify-content:space-between; margin-bottom:1.8rem; position:relative; }
+  .cp-prog-line { position:absolute; top:18px; left:0; right:0; height:3px; background:var(--border); z-index:0; }
+  .cp-prog-fill { height:100%; background:var(--teal-mid); transition:width 0.35s ease; }
+  .cp-step { flex:1; text-align:center; position:relative; z-index:1; }
+  .cp-step-circle {
+    width:36px; height:36px; border-radius:50%; background:var(--border);
+    color:#9ca3af; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 0.4rem; font-weight:700; font-size:0.82rem; transition:all 0.3s;
+  }
+  .cp-step-circle.active    { background:var(--teal); color:#fff; }
+  .cp-step-circle.completed { background:var(--success); color:#fff; }
+  .cp-step-lbl { font-size:0.72rem; color:#9ca3af; transition:color 0.3s; }
+  .cp-step-lbl.active { color:var(--teal); font-weight:700; }
+
+  /* CARD */
+  .cp-card { background:#fff; border-radius:14px; box-shadow:0 6px 30px rgba(13,74,64,0.09); padding:1.8rem; width:100%; }
+  .cp-card-title { font-size:1.1rem; font-weight:800; color:var(--teal-dark); margin-bottom:1.4rem; display:flex; align-items:center; gap:0.5rem; }
+  .cp-card-title svg { color:var(--teal); }
+
+  /* FORM FIELDS */
+  .cp-grp { margin-bottom:1rem; }
+  .cp-lbl { display:block; font-size:0.62rem; font-weight:700; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.25rem; }
+  .cp-req { color:var(--error); margin-left:2px; }
+  .cp-input, .cp-select, .cp-textarea {
+    width:100%; border:1.5px solid var(--border); border-radius:9px;
+    padding:0.55rem 0.8rem; font-size:0.82rem; font-family:'Manrope',sans-serif;
+    color:var(--text-dark); background:#fafafa; outline:none; transition:all 0.18s;
+  }
+  .cp-input:focus, .cp-select:focus, .cp-textarea:focus {
+    border-color:var(--teal); background:#fff; box-shadow:0 0 0 3px rgba(26,92,82,0.09);
+  }
+  .cp-input::placeholder, .cp-textarea::placeholder { font-size:0.75rem; color:#cbd5e1; }
+  .cp-textarea { resize:vertical; min-height:90px; }
+  .cp-select { appearance:none; cursor:pointer; }
+
+  /* WhatsApp field */
+  .cp-wa-wrap { position:relative; }
+  .cp-wa-ico { position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); color:var(--wa); font-size:1rem; pointer-events:none; }
+  .cp-wa-input { padding-left:2.2rem !important; }
+  .cp-wa-input:focus { border-color:var(--wa) !important; box-shadow:0 0 0 3px rgba(37,211,102,0.10) !important; }
+  .cp-wa-note { font-size:0.65rem; color:var(--text-mid); margin-top:0.2rem; display:flex; align-items:center; gap:4px; }
+  .cp-wa-note svg { color:var(--wa); flex-shrink:0; }
+
+  /* Grid helpers */
+  .cp-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.9rem; }
+  .cp-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.9rem; }
+
+  /* Tip text */
+  .cp-tip { font-size:0.68rem; color:var(--text-mid); margin-top:0.15rem; }
+
+  /* Type pills */
+  .cp-type-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.6rem; margin-top:0.4rem; }
+  .cp-type-pill {
+    padding:0.65rem 0.6rem; border-radius:9px; border:1.5px solid var(--border);
+    background:#fff; color:var(--text-mid); cursor:pointer;
+    font-size:0.78rem; font-weight:600; font-family:'Manrope',sans-serif;
+    display:flex; align-items:center; justify-content:center; gap:0.4rem;
+    transition:all 0.18s;
+  }
+  .cp-type-pill:hover { border-color:var(--teal); color:var(--teal); }
+  .cp-type-pill.active { border-color:var(--teal); background:var(--teal-light); color:var(--teal); font-weight:700; }
+
+  /* Amenities */
+  .cp-amenities { display:grid; grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:0.6rem; margin-top:0.4rem; }
+  .cp-amenity {
+    padding:0.6rem 0.75rem; border-radius:8px; border:1.5px solid var(--border);
+    background:#fff; color:var(--text-dark); cursor:pointer;
+    font-size:0.78rem; font-weight:500; font-family:'Manrope',sans-serif;
+    display:flex; align-items:center; gap:0.4rem; transition:all 0.18s;
+  }
+  .cp-amenity:hover { border-color:var(--teal-mid); }
+  .cp-amenity.active { border-color:var(--teal); background:var(--teal-light); color:var(--teal); font-weight:700; }
+  .cp-amenity-count {
+    margin-top:0.75rem; padding:0.6rem 0.9rem; background:var(--success);
+    color:#fff; border-radius:8px; text-align:center; font-size:0.8rem; font-weight:600;
+  }
+
+  /* Unit cards */
+  .cp-room-card { background:#fafafa; border:1.5px solid var(--border); border-radius:12px; padding:1.1rem; margin-bottom:0.9rem; }
+  .cp-room-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.85rem; }
+  .cp-room-title { font-size:0.9rem; font-weight:800; color:var(--teal-dark); }
+  .cp-room-del { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; border-radius:7px; padding:0.28rem 0.6rem; cursor:pointer; font-size:0.75rem; display:flex; align-items:center; gap:0.3rem; font-family:'Manrope',sans-serif; transition:all 0.18s; }
+  .cp-room-del:hover { background:#dc2626; color:#fff; }
+  .cp-room-imgs { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
+  .cp-room-thumb { width:65px; height:65px; border-radius:8px; object-fit:cover; border:2px solid var(--border); }
+  .cp-room-add-img {
+    width:65px; height:65px; border-radius:8px; border:2px dashed var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; font-size:0.62rem; color:#9ca3af; gap:0.2rem; transition:all 0.18s; background:#fff;
+  }
+  .cp-room-add-img:hover { border-color:var(--teal); color:var(--teal); }
+  .cp-room-img-wrap { position:relative; }
+  .cp-room-rm-img { position:absolute; top:-5px; right:-5px; width:17px; height:17px; background:var(--error); border:none; border-radius:50%; color:#fff; font-size:0.55rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .cp-rooms-summary { background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:8px; padding:0.65rem 0.9rem; margin-bottom:0.85rem; font-size:0.78rem; color:#1d4ed8; font-weight:600; display:flex; align-items:center; gap:0.5rem; }
+  .cp-add-room { width:100%; padding:0.8rem; border:2px dashed var(--teal-mid); border-radius:10px; background:var(--teal-pale); color:var(--teal); font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.2s; font-family:'Manrope',sans-serif; margin-top:0.5rem; }
+  .cp-add-room:hover { background:var(--teal); color:#fff; }
+
+  /* Nav buttons */
+  .cp-nav { display:flex; justify-content:space-between; margin-top:1.6rem; padding-top:1.2rem; border-top:1px solid var(--border); }
+  .cp-btn-back { background:transparent; border:2px solid var(--teal); color:var(--teal); padding:0.58rem 1.4rem; border-radius:8px; font-weight:700; font-size:0.86rem; cursor:pointer; transition:all 0.2s; font-family:'Manrope',sans-serif; }
+  .cp-btn-back:hover { background:var(--teal-light); }
+  .cp-btn-next { background:var(--teal); border:none; color:#fff; padding:0.58rem 1.6rem; border-radius:8px; font-weight:700; font-size:0.86rem; cursor:pointer; transition:all 0.2s; font-family:'Manrope',sans-serif; display:flex; align-items:center; gap:0.5rem; margin-left:auto; box-shadow:0 3px 12px rgba(26,92,82,0.25); }
+  .cp-btn-next:hover:not(:disabled) { background:var(--teal-dark); }
+  .cp-btn-next:disabled { opacity:0.6; cursor:not-allowed; }
+  .cp-spinner { width:13px; height:13px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:cpspin 0.7s linear infinite; }
+  @keyframes cpspin { to { transform:rotate(360deg); } }
+
+  @media(max-width:640px) {
+    .cp-grid-2, .cp-grid-3 { grid-template-columns:1fr; }
+    .cp-bar { padding:0 1rem; }
+    .cp-main { padding:1.2rem 0.7rem 3rem; }
+    .cp-card { padding:1.3rem; }
+    .cp-step-lbl { font-size:0.6rem; }
+  }
+`;
+
+/* ─── Helper: WhatsApp link ─── */
+export const waLink = (num) => {
+  const clean = (num || '').replace(/\D/g, '');
+  // Malawi numbers: convert 0888... → 265888...
+  const intl = clean.startsWith('0') ? '265' + clean.slice(1) : clean;
+  return `https://wa.me/${intl}`;
+};
+
+/* ─────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────── */
+const CreateProperty = () => {
   const navigate = useNavigate();
   const { createHostel, loading } = useHostel();
-  const roomImgRefs = useRef({});
+  const { user } = useAuth();
+  const unitImgRefs = useRef({});
 
-  const [formData, setFormData] = useState({
-    name: '', description: '', type: '', price: '',
+  const [step, setStep] = useState(1);
+  const [uploadingUnit, setUploadingUnit] = useState({});
+
+  const [form, setForm] = useState({
+    // Step 1 — basics
+    name: '',
+    description: '',
+    propertyType: '',
+    listingType: 'For Rent',
+    district: '',
     address: '',
-    location: { lat: CAMPUS_LOCATION.lat, lng: CAMPUS_LOCATION.lng },
-    totalRooms: '', availableRooms: '',
-    amenities: [], gender: '', contactPhone: '', images: [],
-    rooms: []
+    // Step 2 — pricing & contact
+    price: '',
+    contactPhone: user?.phone || '',
+    whatsapp:     user?.whatsapp || user?.phone || '',
+    sameAsContact: true,
+    // Step 3 — details
+    bedrooms: '',
+    bathrooms: '',
+    totalRooms: '',
+    availableRooms: '',
+    gender: '',
+    amenities: [],
+    images: [],
+    // Step 4 — units (optional)
+    units: [],
   });
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [uploadingRoom, setUploadingRoom] = useState({});
+  // Keep whatsapp in sync when sameAsContact is on
+  useEffect(() => {
+    if (form.sameAsContact) setForm(p => ({ ...p, whatsapp: p.contactPhone }));
+  }, [form.contactPhone, form.sameAsContact]);
+
+  const set = (field, value) => setForm(p => ({ ...p, [field]: value }));
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    if (name === 'sameAsContact') {
+      setForm(p => ({ ...p, sameAsContact: checked, whatsapp: checked ? p.contactPhone : '' }));
+      return;
+    }
+    setForm(p => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  const handleAmenityToggle = (amenity) => {
-    setFormData(prev => ({
-      ...prev,
-      amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter(a => a !== amenity)
-        : [...prev.amenities, amenity]
+  const toggleAmenity = (a) => {
+    setForm(p => ({
+      ...p,
+      amenities: p.amenities.includes(a) ? p.amenities.filter(x => x !== a) : [...p.amenities, a],
     }));
   };
 
-  const handleLocationChange = (field, value) => {
-    setFormData(prev => ({ ...prev, location: { ...prev.location, [field]: value } }));
-  };
+  /* ── Unit helpers ── */
+  const addUnit = () => setForm(p => ({
+    ...p,
+    units: [...p.units, { id: Date.now(), unitNumber: `Unit ${p.units.length + 1}`, totalSpaces: '', availableSpaces: '', price: '', description: '', images: [] }],
+  }));
 
-  const addRoom = () => {
-    setFormData(prev => ({
-      ...prev,
-      rooms: [...prev.rooms, {
-        id: Date.now(),
-        roomNumber: `Room ${prev.rooms.length + 1}`,
-        totalBedspaces: '',
-        availableBedspaces: '',
-        price: '',
-        description: '',
-        images: []
-      }]
-    }));
-  };
+  const updateUnit = (id, field, val) => setForm(p => ({ ...p, units: p.units.map(u => u.id === id ? { ...u, [field]: val } : u) }));
+  const removeUnit = (id) => setForm(p => ({ ...p, units: p.units.filter(u => u.id !== id) }));
 
-  const updateRoom = (id, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      rooms: prev.rooms.map(r => r.id === id ? { ...r, [field]: value } : r)
-    }));
-  };
-
-  const removeRoom = (id) => {
-    setFormData(prev => ({ ...prev, rooms: prev.rooms.filter(r => r.id !== id) }));
-  };
-
-  const handleRoomImageUpload = async (roomId, files) => {
-    if (!files || files.length === 0) return;
-    setUploadingRoom(prev => ({ ...prev, [roomId]: true }));
+  const handleUnitImgUpload = async (unitId, files) => {
+    if (!files?.length) return;
+    setUploadingUnit(p => ({ ...p, [unitId]: true }));
     try {
-      const urls = await Promise.all(
-        Array.from(files).map(f => uploadImageToCloudinary(f))
-      );
-      setFormData(prev => ({
-        ...prev,
-        rooms: prev.rooms.map(r =>
-          r.id === roomId ? { ...r, images: [...r.images, ...urls] } : r
-        )
-      }));
-    } catch {
-      toast.error('Failed to upload room images');
-    } finally {
-      setUploadingRoom(prev => ({ ...prev, [roomId]: false }));
-    }
+      const urls = await Promise.all(Array.from(files).map(uploadImg));
+      setForm(p => ({ ...p, units: p.units.map(u => u.id === unitId ? { ...u, images: [...u.images, ...urls] } : u) }));
+    } catch { toast.error('Failed to upload unit images'); }
+    finally { setUploadingUnit(p => ({ ...p, [unitId]: false })); }
   };
 
-  const removeRoomImage = (roomId, imgUrl) => {
-    setFormData(prev => ({
-      ...prev,
-      rooms: prev.rooms.map(r =>
-        r.id === roomId ? { ...r, images: r.images.filter(i => i !== imgUrl) } : r
-      )
-    }));
-  };
+  const removeUnitImg = (unitId, url) => setForm(p => ({ ...p, units: p.units.map(u => u.id === unitId ? { ...u, images: u.images.filter(i => i !== url) } : u) }));
 
-  const validateStep1 = () => {
-    if (!formData.name || !formData.description || !formData.type) {
-      toast.error('Please fill in all basic information'); return false;
+  /* ── Validation ── */
+  const v1 = () => {
+    if (!form.name || !form.description || !form.propertyType || !form.district || !form.address) {
+      toast.error('Please fill in all fields in this step'); return false;
     }
-    if (formData.name.length < 5) { toast.error('Hostel name must be at least 5 characters'); return false; }
-    if (formData.description.length < 20) { toast.error('Description must be at least 20 characters'); return false; }
+    if (form.name.length < 5)         { toast.error('Property name must be at least 5 characters'); return false; }
+    if (form.description.length < 20) { toast.error('Description must be at least 20 characters'); return false; }
     return true;
   };
 
-  const validateStep2 = () => {
-    if (!formData.price || !formData.address || !formData.contactPhone) {
-      toast.error('Please fill in all location and pricing details'); return false;
-    }
-    if (formData.price <= 0) { toast.error('Price must be greater than 0'); return false; }
+  const v2 = () => {
+    if (!form.price || !form.contactPhone) { toast.error('Please enter price and contact phone'); return false; }
+    if (Number(form.price) <= 0)           { toast.error('Price must be greater than 0'); return false; }
+    const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+    if (!phoneRgx.test(form.contactPhone)) { toast.error('Enter a valid Malawian phone number'); return false; }
     return true;
   };
 
-  const validateStep3 = () => {
-    if (!formData.totalRooms || !formData.availableRooms || !formData.gender) {
-      toast.error('Please fill in room details and gender preference'); return false;
-    }
-    if (Number(formData.availableRooms) > Number(formData.totalRooms)) {
-      toast.error('Available rooms cannot exceed total rooms'); return false;
-    }
-    if (formData.amenities.length === 0) {
-      toast.error('Please select at least one amenity'); return false;
+  const v3 = () => {
+    if (form.amenities.length === 0) { toast.error('Please select at least one amenity'); return false; }
+    return true;
+  };
+
+  const v4 = () => {
+    for (const u of form.units) {
+      if (!u.unitNumber?.trim())                { toast.error('All units need a unit number'); return false; }
+      if (!u.totalSpaces || u.totalSpaces < 1)  { toast.error(`${u.unitNumber}: enter total spaces`); return false; }
+      if (u.availableSpaces === '')             { toast.error(`${u.unitNumber}: enter available spaces`); return false; }
     }
     return true;
   };
 
-  const validateStep4 = () => {
-    for (const room of formData.rooms) {
-      if (!room.roomNumber?.trim()) { toast.error('All rooms must have a room number'); return false; }
-      if (!room.totalBedspaces || room.totalBedspaces < 1) { toast.error(`Room ${room.roomNumber}: total bedspaces must be at least 1`); return false; }
-      if (room.availableBedspaces === '' || room.availableBedspaces === undefined) { toast.error(`Room ${room.roomNumber}: please enter available bedspaces`); return false; }
-      if (Number(room.availableBedspaces) > Number(room.totalBedspaces)) { toast.error(`Room ${room.roomNumber}: available bedspaces cannot exceed total`); return false; }
-    }
-    return true;
-  };
-
-  // ✅ FIX: always prevent default, only advance if validation passes
-  const handleNext = (e) => {
+  const next = (e) => {
     e.preventDefault();
-    if (currentStep === 1 && validateStep1()) setCurrentStep(2);
-    else if (currentStep === 2 && validateStep2()) setCurrentStep(3);
-    else if (currentStep === 3 && validateStep3()) setCurrentStep(4);
+    if (step === 1 && v1()) setStep(2);
+    else if (step === 2 && v2()) setStep(3);
+    else if (step === 3 && v3()) setStep(4);
   };
 
-  const prevStep = (e) => {
-    e.preventDefault();
-    setCurrentStep(currentStep - 1);
-  };
+  const back = (e) => { e.preventDefault(); setStep(s => s - 1); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateStep4()) return;
+    if (!v4()) return;
     try {
-      const hostelData = {
-        ...formData,
-        price: Number(formData.price),
-        totalRooms: Number(formData.totalRooms),
-        availableRooms: Number(formData.availableRooms),
-        location: {
-          lat: Number(formData.location.lat),
-          lng: Number(formData.location.lng)
-        },
-        rooms: formData.rooms.map(r => ({
-          roomNumber: r.roomNumber,
-          totalBedspaces: Number(r.totalBedspaces),
-          availableBedspaces: Number(r.availableBedspaces),
-          price: Number(r.price) || 0,
-          description: r.description || '',
-          images: r.images || []
-        }))
+      const payload = {
+        ...form,
+        price:          Number(form.price),
+        bedrooms:       Number(form.bedrooms) || 0,
+        bathrooms:      Number(form.bathrooms) || 0,
+        totalRooms:     Number(form.totalRooms) || 0,
+        availableRooms: Number(form.availableRooms) || 0,
+        whatsapp:       form.sameAsContact ? form.contactPhone : form.whatsapp,
+        location:       { formattedAddress: `${form.address}, ${form.district}` },
+        units: form.units.map(u => ({
+          unitNumber:      u.unitNumber,
+          totalSpaces:     Number(u.totalSpaces),
+          availableSpaces: Number(u.availableSpaces),
+          price:           Number(u.price) || 0,
+          description:     u.description || '',
+          images:          u.images || [],
+        })),
       };
-      await createHostel(hostelData);
-      toast.success('🎉 Hostel created successfully!');
+      await createHostel(payload);
+      toast.success('🎉 Property listed successfully!');
       navigate('/landlord-dashboard');
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to publish property');
     }
   };
 
-  const steps = ['Basic Info', 'Location & Price', 'Details', 'Rooms'];
-  const progressWidth = `${((currentStep - 1) / (steps.length - 1)) * 100}%`;
+  const STEPS = ['Property Info', 'Price & Contact', 'Details', 'Units'];
+  const progress = `${((step - 1) / (STEPS.length - 1)) * 100}%`;
+
+  const isLand = form.propertyType === 'Plot of Land';
 
   return (
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <nav className="rp-bar">
-        <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
-          <div className="rp-bar-brand">
-            <strong>PEZAHOSTEL</strong>
-            <span>OFF-CAMPUS ACCOMMODATION</span>
+      {/* NAV */}
+      <nav className="cp-bar">
+        <Link to="/" className="cp-bar-logo">
+          <div className="cp-bar-logo-img"><img src="/PezaNyumbaLogo.png" alt="PezaNyumba" /></div>
+          <div className="cp-bar-brand">
+            <strong>PezaNyumba</strong>
+            <span>MALAWI'S RENTAL PLATFORM</span>
           </div>
         </Link>
-        <div className="rp-bar-actions">
-          <Link to="/landlord-dashboard" className="rp-bar-login">
-            <i className="fa fa-arrow-left"></i> Dashboard
-          </Link>
-        </div>
+        <Link to="/landlord-dashboard" className="cp-bar-back">
+          <i className="fa fa-arrow-left" /> Dashboard
+        </Link>
       </nav>
 
-      <div className="rp-main-content">
-        <div className="rp-container">
+      <div className="cp-main">
+        <div className="cp-container">
 
-          <div className="rp-header">
-            <h1><FaHome /> List Your Hostel</h1>
-            <p>Connect with MUBAS students looking for accommodation</p>
+          {/* Header */}
+          <div className="cp-page-hdr">
+            <h1><FaHome /> List Your Property</h1>
+            <p>Fill in the details — your listing goes live instantly in your district</p>
           </div>
 
           {/* Progress */}
-          <div className="rp-progress">
-            <div className="rp-progress-line">
-              <div className="rp-progress-fill" style={{ width: progressWidth }} />
-            </div>
-            {steps.map((label, i) => (
-              <div key={i} className="rp-step">
-                <div className={`rp-step-circle ${currentStep > i + 1 ? 'completed' : currentStep === i + 1 ? 'active' : ''}`}>
-                  {currentStep > i + 1 ? '✓' : i + 1}
+          <div className="cp-progress">
+            <div className="cp-prog-line"><div className="cp-prog-fill" style={{ width: progress }} /></div>
+            {STEPS.map((lbl, i) => (
+              <div key={i} className="cp-step">
+                <div className={`cp-step-circle ${step > i + 1 ? 'completed' : step === i + 1 ? 'active' : ''}`}>
+                  {step > i + 1 ? '✓' : i + 1}
                 </div>
-                <p className={`rp-step-label ${currentStep >= i + 1 ? 'active' : ''}`}>{label}</p>
+                <p className={`cp-step-lbl ${step >= i + 1 ? 'active' : ''}`}>{lbl}</p>
               </div>
             ))}
           </div>
 
-          {/* ✅ FIX: form only submits on step 4 publish button */}
           <form onSubmit={handleSubmit}>
-            <div className="rp-card">
+            <div className="cp-card">
 
-              {/* STEP 1 */}
-              {currentStep === 1 && (
-                <div>
-                  <h2><FaHome /> Basic Information</h2>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Hostel Name <span className="rp-required">*</span></label>
-                    <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Green Valley Hostel" />
+              {/* ════ STEP 1 — Property Info ════ */}
+              {step === 1 && (
+                <>
+                  <div className="cp-card-title"><FaHome /> Property Information</div>
+
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Property Name / Title <span className="cp-req">*</span></label>
+                    <input className="cp-input" name="name" value={form.name} onChange={handleChange}
+                      placeholder="e.g., Spacious 3-bedroom house in Area 25" />
                   </div>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Description <span className="rp-required">*</span></label>
-                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe your hostel..." rows={5} />
+
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Description <span className="cp-req">*</span></label>
+                    <textarea className="cp-textarea" name="description" value={form.description} onChange={handleChange}
+                      placeholder="Describe the property — size, condition, surroundings, what makes it special..." />
                   </div>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Room Type <span className="rp-required">*</span></label>
-                    <Select name="type" value={formData.type} onChange={handleChange} options={HOSTEL_TYPES.map(t => ({ value: t, label: t }))} />
+
+                  {/* Property Type pills */}
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Property Type <span className="cp-req">*</span></label>
+                    <div className="cp-type-grid">
+                      {PROPERTY_TYPES.map(t => (
+                        <button key={t} type="button"
+                          className={`cp-type-pill${form.propertyType === t ? ' active' : ''}`}
+                          onClick={() => set('propertyType', t)}>
+                          <i className={
+                            t === 'Plot of Land' ? 'fa fa-seedling' :
+                            t === 'House'        ? 'fa fa-home' :
+                            t === 'Single Room'  ? 'fa fa-bed' :
+                            t === 'Commercial Space' || t === 'Office Space' || t === 'Warehouse' ? 'fa fa-store' :
+                            'fa fa-building'
+                          } />
+                          {t}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+
+                  {/* Listing type */}
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Listing Type <span className="cp-req">*</span></label>
+                    <div className="cp-type-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                      {LISTING_TYPES.map(t => (
+                        <button key={t} type="button"
+                          className={`cp-type-pill${form.listingType === t ? ' active' : ''}`}
+                          onClick={() => set('listingType', t)}>
+                          <i className={t === 'For Rent' ? 'fa fa-key' : 'fa fa-tag'} /> {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* District */}
+                  <div className="cp-grid-2">
+                    <div className="cp-grp">
+                      <label className="cp-lbl">District <span className="cp-req">*</span></label>
+                      <select className="cp-select" name="district" value={form.district} onChange={handleChange}>
+                        <option value="">Select district…</option>
+                        {MALAWI_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                      <p className="cp-tip">Your listing will appear under this district</p>
+                    </div>
+                    <div className="cp-grp">
+                      <label className="cp-lbl">Specific Address / Area <span className="cp-req">*</span></label>
+                      <input className="cp-input" name="address" value={form.address} onChange={handleChange}
+                        placeholder="e.g., Area 25, Chinsapo" />
+                    </div>
+                  </div>
+                </>
               )}
 
-              {/* STEP 2 */}
-              {currentStep === 2 && (
-                <div>
-                  <h2><FaMapMarkerAlt /> Location & Pricing</h2>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Address <span className="rp-required">*</span></label>
-                    <Input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="e.g., Chirimba Road, Blantyre" />
-                  </div>
-                  <div className="rp-grid-2">
-                    <div className="rp-form-group">
-                      <label className="rp-label">Latitude</label>
-                      <Input type="number" step="any" value={formData.location.lat} onChange={e => handleLocationChange('lat', e.target.value)} placeholder="-15.8020" />
-                    </div>
-                    <div className="rp-form-group">
-                      <label className="rp-label">Longitude</label>
-                      <Input type="number" step="any" value={formData.location.lng} onChange={e => handleLocationChange('lng', e.target.value)} placeholder="35.0259" />
-                    </div>
-                  </div>
-                  <p className="rp-tip">💡 Use Google Maps to find exact coordinates</p>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Monthly Price (MWK) <span className="rp-required">*</span></label>
-                    <Input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="e.g., 45000" icon={<FaDollarSign />} />
-                  </div>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Contact Phone Number <span className="rp-required">*</span></label>
-                    <Input type="tel" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="e.g., 0986584136" />
-                  </div>
-                </div>
-              )}
+              {/* ════ STEP 2 — Price & Contact ════ */}
+              {step === 2 && (
+                <>
+                  <div className="cp-card-title"><FaDollarSign /> Price &amp; Contact</div>
 
-              {/* STEP 3 */}
-              {currentStep === 3 && (
-                <div>
-                  <h2><FaBed /> Room Details & Amenities</h2>
-                  <div className="rp-grid-2">
-                    <div className="rp-form-group">
-                      <label className="rp-label">Total Rooms <span className="rp-required">*</span></label>
-                      <Input type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g., 20" />
+                  <div className="cp-grid-2">
+                    <div className="cp-grp">
+                      <label className="cp-lbl">
+                        {form.listingType === 'For Rent' ? 'Monthly Rent (MWK)' : 'Sale Price (MWK)'}
+                        <span className="cp-req">*</span>
+                      </label>
+                      <input className="cp-input" type="number" name="price" value={form.price} onChange={handleChange}
+                        placeholder="e.g., 120000" min="1" />
                     </div>
-                    <div className="rp-form-group">
-                      <label className="rp-label">Available Rooms <span className="rp-required">*</span></label>
-                      <Input type="number" name="availableRooms" value={formData.availableRooms} onChange={handleChange} placeholder="e.g., 15" />
-                    </div>
-                  </div>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Gender Preference <span className="rp-required">*</span></label>
-                    <Select name="gender" value={formData.gender} onChange={handleChange} options={GENDER_OPTIONS} />
-                  </div>
-                  <div className="rp-form-group">
-                    <label className="rp-label">Amenities <span className="rp-required">*</span></label>
-                    <div className="rp-amenities-grid">
-                      {AMENITIES.map(amenity => {
-                        const isSelected = formData.amenities.includes(amenity);
-                        return (
-                          <button key={amenity} type="button" onClick={() => handleAmenityToggle(amenity)} className={`rp-amenity-btn${isSelected ? ' selected' : ''}`}>
-                            {isSelected && <FaCheckCircle />} {amenity}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {formData.amenities.length > 0 && (
-                      <div className="rp-selected-count">✅ {formData.amenities.length} amenity(ies) selected</div>
+                    {!isLand && (
+                      <div className="cp-grp">
+                        <label className="cp-lbl">Bedrooms</label>
+                        <input className="cp-input" type="number" name="bedrooms" value={form.bedrooms} onChange={handleChange}
+                          placeholder="e.g., 3" min="0" />
+                      </div>
                     )}
                   </div>
-                  <ImageUpload
-                    images={formData.images}
-                    onImagesChange={newImages => setFormData(prev => ({ ...prev, images: newImages }))}
-                    maxImages={10}
-                  />
-                </div>
-              )}
 
-              {/* STEP 4 — ROOMS */}
-              {currentStep === 4 && (
-                <div>
-                  <h2><FaBed /> Room Details & Bedspaces</h2>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-mid)', marginBottom: '1.25rem', lineHeight: 1.6 }}>
-                    Add each room individually with its bedspace count and photos. This helps students see exactly what is available.
-                  </p>
-
-                  {formData.rooms.length > 0 && (
-                    <div className="rooms-summary">
-                      <i className="fa fa-info-circle" />
-                      {formData.rooms.length} room(s) added ·{' '}
-                      {formData.rooms.reduce((a, r) => a + (Number(r.totalBedspaces) || 0), 0)} total bedspaces ·{' '}
-                      {formData.rooms.reduce((a, r) => a + (Number(r.availableBedspaces) || 0), 0)} available
+                  {!isLand && (
+                    <div className="cp-grid-2">
+                      <div className="cp-grp">
+                        <label className="cp-lbl">Bathrooms</label>
+                        <input className="cp-input" type="number" name="bathrooms" value={form.bathrooms} onChange={handleChange}
+                          placeholder="e.g., 2" min="0" />
+                      </div>
+                      <div className="cp-grp">
+                        <label className="cp-lbl">Gender Preference</label>
+                        <select className="cp-select" name="gender" value={form.gender} onChange={handleChange}>
+                          <option value="">Any (mixed)</option>
+                          <option value="male">Male only</option>
+                          <option value="female">Female only</option>
+                          <option value="family">Families only</option>
+                        </select>
+                      </div>
                     </div>
                   )}
 
-                  {formData.rooms.map((room, index) => (
-                    <div key={room.id} className="room-card">
-                      <div className="room-card-header">
-                        <span className="room-card-title">🚪 Room {index + 1}</span>
-                        <button type="button" className="room-delete-btn" onClick={() => removeRoom(room.id)}>
+                  {/* Contact Phone */}
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Contact Phone Number <span className="cp-req">*</span></label>
+                    <input className="cp-input" type="tel" name="contactPhone" value={form.contactPhone} onChange={handleChange}
+                      placeholder="0888123456 or +265888123456" />
+                    <p className="cp-tip">Tenants will call this number to inquire</p>
+                  </div>
+
+                  {/* WhatsApp */}
+                  <div className="cp-grp">
+                    <label className="cp-lbl" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>WhatsApp Number <span className="cp-req">*</span></span>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.62rem', fontWeight: 600, textTransform: 'none', cursor: 'pointer', letterSpacing: 0 }}>
+                        <input type="checkbox" name="sameAsContact" checked={form.sameAsContact} onChange={handleChange} style={{ width: 12, height: 12, accentColor: '#25D366' }} />
+                        Same as phone
+                      </label>
+                    </label>
+                    <div className="cp-wa-wrap">
+                      <FaWhatsapp className="cp-wa-ico" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#25D366', fontSize: '1rem' }} />
+                      <input className="cp-input cp-wa-input" type="tel" name="whatsapp"
+                        value={form.sameAsContact ? form.contactPhone : form.whatsapp}
+                        onChange={handleChange}
+                        placeholder="0888123456"
+                        disabled={form.sameAsContact}
+                        style={{ paddingLeft: '2.2rem', opacity: form.sameAsContact ? 0.7 : 1 }} />
+                    </div>
+                    <div className="cp-wa-note">
+                      <FaWhatsapp /> Tenants tap a button to WhatsApp you directly — make sure this is active
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ════ STEP 3 — Details & Amenities ════ */}
+              {step === 3 && (
+                <>
+                  <div className="cp-card-title"><FaBed /> Details &amp; Amenities</div>
+
+                  {!isLand && (
+                    <div className="cp-grid-2" style={{ marginBottom: '1rem' }}>
+                      <div className="cp-grp">
+                        <label className="cp-lbl">Total Units</label>
+                        <input className="cp-input" type="number" name="totalRooms" value={form.totalRooms} onChange={handleChange} placeholder="e.g., 6" min="0" />
+                      </div>
+                      <div className="cp-grp">
+                        <label className="cp-lbl">Available Now</label>
+                        <input className="cp-input" type="number" name="availableRooms" value={form.availableRooms} onChange={handleChange} placeholder="e.g., 3" min="0" />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Amenities <span className="cp-req">*</span></label>
+                    <div className="cp-amenities">
+                      {AMENITIES.map(a => (
+                        <button key={a} type="button"
+                          className={`cp-amenity${form.amenities.includes(a) ? ' active' : ''}`}
+                          onClick={() => toggleAmenity(a)}>
+                          {form.amenities.includes(a) && <FaCheckCircle style={{ fontSize: '0.7rem' }} />}
+                          {a}
+                        </button>
+                      ))}
+                    </div>
+                    {form.amenities.length > 0 && (
+                      <div className="cp-amenity-count">✅ {form.amenities.length} amenity(ies) selected</div>
+                    )}
+                  </div>
+
+                  {/* Property Images */}
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Property Photos</label>
+                    <ImageUpload
+                      images={form.images}
+                      onImagesChange={imgs => set('images', imgs)}
+                      maxImages={12}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* ════ STEP 4 — Units (optional) ════ */}
+              {step === 4 && (
+                <>
+                  <div className="cp-card-title"><FaBed /> Individual Units <span style={{ fontWeight: 400, fontSize: '0.82rem', color: '#9ca3af', marginLeft: '0.5rem' }}>(optional)</span></div>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-mid)', marginBottom: '1rem', lineHeight: 1.6 }}>
+                    Add individual units with their details and photos. This helps tenants find the right space.
+                  </p>
+
+                  {form.units.length > 0 && (
+                    <div className="cp-rooms-summary">
+                      <i className="fa fa-info-circle" />
+                      {form.units.length} unit(s) ·{' '}
+                      {form.units.reduce((a, u) => a + (Number(u.totalSpaces) || 0), 0)} total spaces ·{' '}
+                      {form.units.reduce((a, u) => a + (Number(u.availableSpaces) || 0), 0)} available
+                    </div>
+                  )}
+
+                  {form.units.map((unit, idx) => (
+                    <div key={unit.id} className="cp-room-card">
+                      <div className="cp-room-hdr">
+                        <span className="cp-room-title">🏠 Unit {idx + 1}</span>
+                        <button type="button" className="cp-room-del" onClick={() => removeUnit(unit.id)}>
                           <FaTrash /> Remove
                         </button>
                       </div>
-
-                      <div className="rp-grid-3">
-                        <div className="rp-form-group" style={{ marginBottom: 0 }}>
-                          <label className="rp-label">Room Number/Name <span className="rp-required">*</span></label>
-                          <input
-                            type="text"
-                            className="room-input"
-                            value={room.roomNumber}
-                            onChange={e => updateRoom(room.id, 'roomNumber', e.target.value)}
-                            placeholder="e.g., A1 or Room 1"
-                          />
+                      <div className="cp-grid-3">
+                        <div className="cp-grp" style={{ marginBottom: 0 }}>
+                          <label className="cp-lbl">Unit No. <span className="cp-req">*</span></label>
+                          <input className="cp-input" value={unit.unitNumber}
+                            onChange={e => updateUnit(unit.id, 'unitNumber', e.target.value)} placeholder="e.g., A1" />
                         </div>
-                        <div className="rp-form-group" style={{ marginBottom: 0 }}>
-                          <label className="rp-label">Total Bedspaces <span className="rp-required">*</span></label>
-                          <input
-                            type="number"
-                            min="1"
-                            className="room-input"
-                            value={room.totalBedspaces}
-                            onChange={e => updateRoom(room.id, 'totalBedspaces', e.target.value)}
-                            placeholder="e.g., 4"
-                          />
+                        <div className="cp-grp" style={{ marginBottom: 0 }}>
+                          <label className="cp-lbl">Total Spaces <span className="cp-req">*</span></label>
+                          <input className="cp-input" type="number" min="1" value={unit.totalSpaces}
+                            onChange={e => updateUnit(unit.id, 'totalSpaces', e.target.value)} placeholder="e.g., 4" />
                         </div>
-                        <div className="rp-form-group" style={{ marginBottom: 0 }}>
-                          <label className="rp-label">Available Bedspaces <span className="rp-required">*</span></label>
-                          <input
-                            type="number"
-                            min="0"
-                            className="room-input"
-                            value={room.availableBedspaces}
-                            onChange={e => updateRoom(room.id, 'availableBedspaces', e.target.value)}
-                            placeholder="e.g., 2"
-                          />
+                        <div className="cp-grp" style={{ marginBottom: 0 }}>
+                          <label className="cp-lbl">Available <span className="cp-req">*</span></label>
+                          <input className="cp-input" type="number" min="0" value={unit.availableSpaces}
+                            onChange={e => updateUnit(unit.id, 'availableSpaces', e.target.value)} placeholder="e.g., 2" />
                         </div>
                       </div>
-
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <label className="rp-label">Price per bedspace/month (MWK) — optional</label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="room-input"
-                          value={room.price}
-                          onChange={e => updateRoom(room.id, 'price', e.target.value)}
-                          placeholder={`Default: MK ${Number(formData.price).toLocaleString()}`}
-                        />
+                      <div style={{ marginTop: '0.65rem' }}>
+                        <label className="cp-lbl">Price (optional)</label>
+                        <input className="cp-input" type="number" min="0" value={unit.price}
+                          onChange={e => updateUnit(unit.id, 'price', e.target.value)}
+                          placeholder={`Default: MWK ${Number(form.price || 0).toLocaleString()}`} />
                       </div>
-
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <label className="rp-label">Room Description — optional</label>
-                        <textarea
-                          value={room.description}
-                          onChange={e => updateRoom(room.id, 'description', e.target.value)}
-                          placeholder="e.g., Corner room with window, very spacious..."
-                          rows={2}
-                          className="room-input"
-                          style={{ resize: 'vertical' }}
-                        />
+                      <div style={{ marginTop: '0.65rem' }}>
+                        <label className="cp-lbl">Unit Notes (optional)</label>
+                        <textarea className="cp-textarea" rows={2} value={unit.description}
+                          onChange={e => updateUnit(unit.id, 'description', e.target.value)}
+                          placeholder="e.g., Corner unit with natural light..." style={{ minHeight: 60 }} />
                       </div>
-
-                      {/* Room Images */}
-                      <div style={{ marginTop: '0.75rem' }}>
-                        <label className="rp-label">Room Photos</label>
-                        <div className="room-images-row">
-                          {room.images.map((img, i) => (
-                            <div key={i} className="room-img-wrap">
-                              <img src={img} alt={`Room ${index + 1}`} className="room-img-thumb" />
-                              <button type="button" className="room-img-remove" onClick={() => removeRoomImage(room.id, img)}>
+                      {/* Unit images */}
+                      <div style={{ marginTop: '0.65rem' }}>
+                        <label className="cp-lbl">Unit Photos</label>
+                        <div className="cp-room-imgs">
+                          {unit.images.map((img, i) => (
+                            <div key={i} className="cp-room-img-wrap">
+                              <img src={img} alt="" className="cp-room-thumb" />
+                              <button type="button" className="cp-room-rm-img" onClick={() => removeUnitImg(unit.id, img)}>
                                 <FaTimes />
                               </button>
                             </div>
                           ))}
-                          <div className="room-img-add" onClick={() => roomImgRefs.current[room.id]?.click()}>
-                            {uploadingRoom[room.id]
-                              ? <><div className="rp-spinner" style={{ borderTopColor: 'var(--orange)', borderColor: 'var(--light-gray)' }} /><span>Uploading...</span></>
+                          <div className="cp-room-add-img" onClick={() => unitImgRefs.current[unit.id]?.click()}>
+                            {uploadingUnit[unit.id]
+                              ? <><div className="cp-spinner" style={{ borderTopColor: 'var(--teal)', borderColor: 'var(--border)' }} /><span>Uploading…</span></>
                               : <><FaCamera /><span>Add Photo</span></>
                             }
                           </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            style={{ display: 'none' }}
-                            ref={el => roomImgRefs.current[room.id] = el}
-                            onChange={e => handleRoomImageUpload(room.id, e.target.files)}
-                          />
+                          <input type="file" accept="image/*" multiple style={{ display: 'none' }}
+                            ref={el => unitImgRefs.current[unit.id] = el}
+                            onChange={e => handleUnitImgUpload(unit.id, e.target.files)} />
                         </div>
                       </div>
                     </div>
                   ))}
 
-                  <button type="button" className="add-room-btn" onClick={addRoom}>
-                    <FaPlus /> Add Room
+                  <button type="button" className="cp-add-room" onClick={addUnit}>
+                    <FaPlus /> Add Unit
                   </button>
-
-                  {formData.rooms.length === 0 && (
-                    <p style={{ textAlign: 'center', color: 'var(--gray)', fontSize: '0.82rem', marginTop: '0.75rem' }}>
-                      Rooms are optional but recommended — they help students choose the right bedspace.
+                  {form.units.length === 0 && (
+                    <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.76rem', marginTop: '0.6rem' }}>
+                      You can publish without adding units — they're optional.
                     </p>
                   )}
-                </div>
+                </>
               )}
 
-              {/* Navigation Buttons */}
-              <div className="rp-nav-buttons">
-                {currentStep > 1 && (
-                  <button type="button" className="rp-btn-outline" onClick={prevStep}>
-                    ← Previous
-                  </button>
+              {/* ── Nav buttons ── */}
+              <div className="cp-nav">
+                {step > 1 && (
+                  <button type="button" className="cp-btn-back" onClick={back}>← Back</button>
                 )}
-                {currentStep < 4 ? (
-                  <button type="button" className="rp-btn-primary" onClick={handleNext}>
-                    Next →
-                  </button>
+                {step < 4 ? (
+                  <button type="button" className="cp-btn-next" onClick={next}>Next →</button>
                 ) : (
-                  <button type="submit" className="rp-btn-primary" disabled={loading}>
+                  <button type="submit" className="cp-btn-next" disabled={loading}>
                     {loading
-                      ? <><div className="rp-spinner"></div> Publishing...</>
-                      : <>🎉 Publish Hostel</>
+                      ? <><div className="cp-spinner" /> Publishing…</>
+                      : <>🎉 Publish Property</>
                     }
                   </button>
                 )}
@@ -583,4 +730,4 @@ const CreateHostel = () => {
   );
 };
 
-export default CreateHostel;
+export default CreateProperty;
