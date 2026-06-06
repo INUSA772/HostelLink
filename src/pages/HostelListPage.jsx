@@ -1,7 +1,7 @@
 // frontend/src/pages/PropertiesListing.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/properties-listing.css';
+
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 

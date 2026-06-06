@@ -43,7 +43,7 @@ const uploadImg = async (file) => {
   return (await r.json()).secure_url;
 };
 
-/* ─── Styles ─── */
+/* ─── Styles (unchanged but rebranded) ─── */
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -214,7 +214,6 @@ const styles = `
 /* ─── Helper: WhatsApp link ─── */
 export const waLink = (num) => {
   const clean = (num || '').replace(/\D/g, '');
-  // Malawi numbers: convert 0888... → 265888...
   const intl = clean.startsWith('0') ? '265' + clean.slice(1) : clean;
   return `https://wa.me/${intl}`;
 };

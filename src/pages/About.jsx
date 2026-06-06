@@ -398,10 +398,10 @@ const About = () => {
 
         {/* Hero Section — navy bg, white text */}
         <section className="about-hero">
-          <h1>About PezaHostel</h1>
+          <h1>About PezaNyumba</h1>
           <p>
-            Revolutionizing student accommodation by connecting MUBAS students with safe,
-            affordable, and verified hostel homes near campus.
+            Revolutionizing property & accommodation by connecting students, families and professionals across Malawi
+            with safe, affordable, and verified homes.
           </p>
         </section>
 
@@ -411,13 +411,13 @@ const About = () => {
           <section style={{ marginBottom: '4rem' }}>
             <h2 className="about-section-title">Our <em>Story</em></h2>
             <p className="about-section-desc">
-              PezaHostel was born from a simple observation: MUBAS students struggle to find safe,
-              affordable accommodation near campus. Traditional housing searches are complicated,
+              PezaNyumba was born from a simple observation: people across Malawi struggle to find safe,
+              affordable accommodation near workplaces, schools, and universities. Traditional housing searches are complicated,
               time-consuming, and filled with uncertainty about property quality and owner reliability.
             </p>
             <p className="about-section-desc">
-              We decided to change that. By building a platform that bridges the gap between students
-              and verified hostel owners, we're making student housing simple, secure, and transparent.
+              We decided to change that. By building a platform that bridges the gap between tenants
+              and verified property owners, we're making property search simple, secure, and transparent.
             </p>
           </section>
 
@@ -426,17 +426,17 @@ const About = () => {
             <div className="about-card">
               <div className="about-card-icon">🎯</div>
               <h3>Our Mission</h3>
-              <p>To simplify student accommodation by providing a trusted platform where MUBAS students can find safe, verified hostels with confidence and ease.</p>
+              <p>To simplify property search by providing a trusted platform where everyone can find safe, verified homes with confidence and ease.</p>
             </div>
             <div className="about-card">
               <div className="about-card-icon">🌟</div>
               <h3>Our Vision</h3>
-              <p>To become the leading student housing platform in Malawi, trusted by thousands of students and hostel owners for quality, safety, and transparency.</p>
+              <p>To become the leading real estate platform in Malawi, trusted by thousands of tenants and property owners for quality, safety, and transparency.</p>
             </div>
             <div className="about-card">
               <div className="about-card-icon">💡</div>
               <h3>Our Values</h3>
-              <p>We believe in transparency, safety, affordability, and community. Every decision we make is guided by what's best for our students and hostel owners.</p>
+              <p>We believe in transparency, safety, affordability, and community. Every decision we make is guided by what's best for our users.</p>
             </div>
           </div>
 
@@ -454,7 +454,7 @@ const About = () => {
               <div className="value-item">
                 <div className="value-icon">🛡️</div>
                 <div className="value-content">
-                  <h4>Student Safety</h4>
+                  <h4>Tenant Safety</h4>
                   <p>Safety is our top priority. We verify all properties and owners.</p>
                 </div>
               </div>
@@ -469,14 +469,14 @@ const About = () => {
                 <div className="value-icon">🤝</div>
                 <div className="value-content">
                   <h4>Community</h4>
-                  <p>We're building a community of trust between students and owners.</p>
+                  <p>We're building a community of trust between tenants and owners.</p>
                 </div>
               </div>
               <div className="value-item">
                 <div className="value-icon">⚡</div>
                 <div className="value-content">
                   <h4>Speed & Efficiency</h4>
-                  <p>Find your perfect room in minutes, not weeks.</p>
+                  <p>Find your perfect home in minutes, not weeks.</p>
                 </div>
               </div>
               <div className="value-item">
@@ -494,20 +494,20 @@ const About = () => {
             <h2 className="about-section-title">By The <em>Numbers</em></h2>
             <div className="about-stats">
               <div className="stat-box">
-                <div className="stat-number">200+</div>
-                <div className="stat-label">Students Housed</div>
+                <div className="stat-number">500+</div>
+                <div className="stat-label">Homes Listed</div>
               </div>
               <div className="stat-box">
-                <div className="stat-number">50+</div>
-                <div className="stat-label">Verified Hostels</div>
+                <div className="stat-number">150+</div>
+                <div className="stat-label">Verified Properties</div>
               </div>
               <div className="stat-box">
-                <div className="stat-number">9</div>
-                <div className="stat-label">Campus Areas</div>
+                <div className="stat-number">28</div>
+                <div className="stat-label">Districts Covered</div>
               </div>
               <div className="stat-box">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Student Satisfaction</div>
+                <div className="stat-number">98%</div>
+                <div className="stat-label">Tenant Satisfaction</div>
               </div>
             </div>
           </section>
@@ -531,13 +531,13 @@ const About = () => {
           </section>
 
           {/* CTA */}
-         <section className="about-cta">
-  <h2 style={{ color: '#ffffff' }}>Ready to Find Your Perfect Room?</h2>
-  <p style={{ color: '#ffffff', opacity: 0.9 }}>Join hundreds of MUBAS students who have already found their ideal hostel on PezaHostel.</p>
-  <button className="about-cta-btn" onClick={() => navigate('/register')}>
-    Get Started Today
-  </button>
-</section>
+          <section className="about-cta">
+            <h2 style={{ color: '#ffffff' }}>Ready to Find Your Perfect Home?</h2>
+            <p style={{ color: '#ffffff', opacity: 0.9 }}>Join hundreds of tenants who have already found their ideal property on PezaNyumba.</p>
+            <button className="about-cta-btn" onClick={() => navigate('/register')}>
+              Get Started Today
+            </button>
+          </section>
         </div>
       </div>
     </>

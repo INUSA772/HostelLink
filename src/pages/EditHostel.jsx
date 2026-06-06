@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeft, FaPlus, FaTrash, FaUpload, FaSave, FaSpinner, FaCheckCircle } from 'react-icons/fa';
+import { useHostel } from '../context/HostelContext';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { FaArrowLeft, FaSave, FaSpinner, FaCheckCircle, FaTrash, FaUpload } from 'react-icons/fa';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -32,7 +34,6 @@ const styles = `
     padding-top: 68px;
   }
 
-  /* ── TOP NAV ── */
   .edit-topnav {
     position: sticky;
     top: 0;
@@ -94,7 +95,6 @@ const styles = `
     cursor: not-allowed;
   }
 
-  /* ── PAGE HEADER ── */
   .edit-header {
     background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
     color: white;
@@ -113,14 +113,12 @@ const styles = `
     opacity: 0.9;
   }
 
-  /* ── MAIN CONTENT ── */
   .edit-content {
     max-width: 1000px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
   }
 
-  /* ── FORM SECTION ── */
   .form-section {
     background: white;
     border-radius: var(--card-radius);
@@ -146,7 +144,6 @@ const styles = `
     padding: 2rem;
   }
 
-  /* ── FORM GRID ── */
   .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -161,7 +158,6 @@ const styles = `
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 
-  /* ── FORM GROUP ── */
   .form-group {
     display: flex;
     flex-direction: column;
@@ -213,7 +209,6 @@ const styles = `
     margin-top: 0.3rem;
   }
 
-  /* ── AMENITIES SECTION ── */
   .amenities-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -250,7 +245,6 @@ const styles = `
     font-weight: 600;
   }
 
-  /* ── IMAGE UPLOAD ── */
   .image-upload-section {
     margin-bottom: 2rem;
   }
@@ -297,7 +291,6 @@ const styles = `
     display: none;
   }
 
-  /* ── IMAGE GALLERY ── */
   .image-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -341,7 +334,6 @@ const styles = `
     opacity: 1;
   }
 
-  /* ── PRICING SECTION ── */
   .pricing-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -366,7 +358,6 @@ const styles = `
     padding-left: 2.5rem;
   }
 
-  /* ── SUCCESS MESSAGE ── */
   .success-message {
     background: rgba(5,150,105,0.1);
     border: 1.5px solid var(--success);
@@ -385,7 +376,6 @@ const styles = `
     flex-shrink: 0;
   }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     .edit-header {
       padding: 1.5rem;
@@ -449,46 +439,69 @@ const styles = `
 
 const AMENITIES = [
   'WiFi',
-  'Water Supply',
+  'Water 24/7',
   'Electricity',
   'Parking',
   'Kitchen',
   'Laundry',
-  'Security',
-  'TV/Cable',
-  'AC/Fan',
-  'Bed & Bedding',
-  'Lockers',
+  'Security Guard',
+  'CCTV',
+  'Air Conditioning',
+  'Hot Shower',
+  'Furniture Included',
   'Common Room',
 ];
 
 const EditHostel = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [loading, setLoading] = useState(false);
+  const { currentHostel, loading, fetchHostelById, updateHostel } = useHostel();
+  const { user, isAuthenticated } = useAuth();
+
+  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  
   const [formData, setFormData] = useState({
-    name: 'Chitawira Student Lodge',
-    description: 'A comfortable and secure hostel perfect for MUBAS students...',
-    address: 'Chitawira, Near MUBAS Campus',
-    type: 'hostel',
+    name: '',
+    description: '',
+    address: '',
+    type: '',
     gender: 'mixed',
-    price: 45000,
-    totalRooms: 12,
-    availableRooms: 5,
-    amenities: ['WiFi', 'Water Supply', 'Security'],
-    images: [
-      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&auto=format&fit=crop',
-    ],
+    price: '',
+    totalRooms: '',
+    availableRooms: '',
+    amenities: [],
+    images: [],
   });
+
+  useEffect(() => {
+    if (id) {
+      fetchHostelById(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (currentHostel) {
+      setFormData({
+        name: currentHostel.name || '',
+        description: currentHostel.description || '',
+        address: currentHostel.address || '',
+        type: currentHostel.type || 'hostel',
+        gender: currentHostel.gender || 'mixed',
+        price: currentHostel.price || '',
+        totalRooms: currentHostel.totalRooms || '',
+        availableRooms: currentHostel.availableRooms || '',
+        amenities: currentHostel.amenities || [],
+        images: currentHostel.images || [],
+      });
+    }
+  }, [currentHostel]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'price' || name === 'totalRooms' || name === 'availableRooms' 
-        ? parseInt(value) 
+      [name]: name === 'price' || name === 'totalRooms' || name === 'availableRooms'
+        ? parseInt(value) || 0
         : value,
     }));
   };
@@ -504,6 +517,8 @@ const EditHostel = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
+    // In a real app, you would upload to Cloudinary and get URLs
+    // For now, we'll use local URLs (base64) as placeholder
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -525,60 +540,64 @@ const EditHostel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      toast.success('Hostel updated successfully!');
+    setSaving(true);
+    try {
+      await updateHostel(id, formData);
+      toast.success('Property updated successfully!');
       setSaved(true);
-      setLoading(false);
-
-      setTimeout(() => {
-        setSaved(false);
-      }, 3000);
-    }, 1500);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update property');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading && !currentHostel) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <FaSpinner style={{ animation: 'spin 0.8s linear infinite', fontSize: '2rem', color: 'var(--orange)' }} />
+      </div>
+    );
+  }
+
+  if (!currentHostel && !loading) {
+    return (
+      <div className="edit-hostel-page">
+        <div className="edit-topnav">
+          <button className="edit-back-btn" onClick={() => navigate(-1)}><FaArrowLeft /> Back</button>
+        </div>
+        <div className="edit-content" style={{ textAlign: 'center', padding: '4rem' }}>
+          <h2>Property not found</h2>
+          <button className="edit-back-btn" onClick={() => navigate('/landlord-dashboard')}>Go to Dashboard</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       <style>{styles}</style>
       <div className="edit-hostel-page">
-        {/* Top Nav */}
         <div className="edit-topnav">
           <button className="edit-back-btn" onClick={() => navigate(-1)}>
             <FaArrowLeft /> Back
           </button>
-          <button
-            className="edit-save-btn"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} />
-                Saving...
-              </>
-            ) : (
-              <>
-                <FaSave />
-                Save Changes
-              </>
-            )}
+          <button className="edit-save-btn" onClick={handleSubmit} disabled={saving}>
+            {saving ? <><FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> Saving...</> : <><FaSave /> Save Changes</>}
           </button>
         </div>
 
-        {/* Header */}
         <section className="edit-header">
-          <h1>Edit Hostel Information</h1>
-          <p>Update your hostel details, pricing, amenities, and photos</p>
+          <h1>Edit Property</h1>
+          <p>Update your property details, pricing, amenities, and photos</p>
         </section>
 
-        {/* Content */}
         <div className="edit-content">
           {saved && (
             <div className="success-message">
               <FaCheckCircle />
-              Your hostel has been updated successfully!
+              Your property has been updated successfully!
             </div>
           )}
 
@@ -591,76 +610,39 @@ const EditHostel = () => {
               <div className="form-section-body">
                 <div className="form-grid">
                   <div className="form-group">
-                    <label className="form-label required">Hostel Name</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="e.g., Chitawira Student Lodge"
-                      required
-                    />
+                    <label className="form-label required">Property Name</label>
+                    <input type="text" className="form-input" name="name" value={formData.name} onChange={handleInputChange} required />
                   </div>
-
                   <div className="form-group">
-                    <label className="form-label required">Hostel Type</label>
-                    <select
-                      className="form-select"
-                      name="type"
-                      value={formData.type}
-                      onChange={handleInputChange}
-                    >
+                    <label className="form-label required">Property Type</label>
+                    <select className="form-select" name="type" value={formData.type} onChange={handleInputChange}>
                       <option value="hostel">Hostel</option>
                       <option value="apartment">Apartment</option>
-                      <option value="dormitory">Dormitory</option>
-                      <option value="lodge">Lodge</option>
+                      <option value="house">House</option>
+                      <option value="land">Land</option>
                     </select>
                   </div>
-
                   <div className="form-group">
-                    <label className="form-label required">Gender Type</label>
-                    <select
-                      className="form-select"
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                    >
+                    <label className="form-label required">Gender Preference</label>
+                    <select className="form-select" name="gender" value={formData.gender} onChange={handleInputChange}>
                       <option value="mixed">Mixed</option>
                       <option value="male">Male Only</option>
                       <option value="female">Female Only</option>
                     </select>
                   </div>
                 </div>
-
                 <div className="form-grid full" style={{ marginTop: '1.5rem' }}>
                   <div className="form-group">
                     <label className="form-label required">Address</label>
-                    <input
-                      type="text"
-                      className="form-input"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder="Full address"
-                      required
-                    />
+                    <input type="text" className="form-input" name="address" value={formData.address} onChange={handleInputChange} required />
                     <p className="form-help">Include area name and nearby landmarks</p>
                   </div>
                 </div>
-
                 <div className="form-grid full" style={{ marginTop: '1.5rem' }}>
                   <div className="form-group">
                     <label className="form-label required">Description</label>
-                    <textarea
-                      className="form-textarea"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      placeholder="Describe your hostel..."
-                      required
-                    />
-                    <p className="form-help">Tell potential students about your hostel (amenities, location advantages, etc.)</p>
+                    <textarea className="form-textarea" name="description" value={formData.description} onChange={handleInputChange} required />
+                    <p className="form-help">Describe your property (amenities, location advantages, etc.)</p>
                   </div>
                 </div>
               </div>
@@ -677,42 +659,16 @@ const EditHostel = () => {
                     <label className="form-label required">Price per Month (MWK)</label>
                     <div className="price-input-group">
                       <span className="price-symbol">MK</span>
-                      <input
-                        type="number"
-                        className="form-input"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        placeholder="45000"
-                        required
-                      />
+                      <input type="number" className="form-input" name="price" value={formData.price} onChange={handleInputChange} required />
                     </div>
                   </div>
-
                   <div className="form-group">
                     <label className="form-label required">Total Rooms</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      name="totalRooms"
-                      value={formData.totalRooms}
-                      onChange={handleInputChange}
-                      placeholder="12"
-                      required
-                    />
+                    <input type="number" className="form-input" name="totalRooms" value={formData.totalRooms} onChange={handleInputChange} required />
                   </div>
-
                   <div className="form-group">
                     <label className="form-label required">Available Rooms</label>
-                    <input
-                      type="number"
-                      className="form-input"
-                      name="availableRooms"
-                      value={formData.availableRooms}
-                      onChange={handleInputChange}
-                      placeholder="5"
-                      required
-                    />
+                    <input type="number" className="form-input" name="availableRooms" value={formData.availableRooms} onChange={handleInputChange} required />
                   </div>
                 </div>
               </div>
@@ -728,12 +684,7 @@ const EditHostel = () => {
                 <div className="amenities-grid">
                   {AMENITIES.map((amenity) => (
                     <div key={amenity} className="amenity-checkbox">
-                      <input
-                        type="checkbox"
-                        id={amenity}
-                        checked={formData.amenities.includes(amenity)}
-                        onChange={() => handleAmenityChange(amenity)}
-                      />
+                      <input type="checkbox" id={amenity} checked={formData.amenities.includes(amenity)} onChange={() => handleAmenityChange(amenity)} />
                       <label htmlFor={amenity}>{amenity}</label>
                     </div>
                   ))}
@@ -749,38 +700,20 @@ const EditHostel = () => {
               <div className="form-section-body">
                 <div className="image-upload-section">
                   <label htmlFor="image-upload" className="image-upload-area">
-                    <div className="upload-icon">
-                      <FaUpload />
-                    </div>
+                    <div className="upload-icon"><FaUpload /></div>
                     <div className="upload-text">Click to upload photos</div>
                     <div className="upload-subtext">or drag and drop (JPG, PNG up to 5MB)</div>
                   </label>
-                  <input
-                    id="image-upload"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
+                  <input id="image-upload" type="file" multiple accept="image/*" onChange={handleImageUpload} />
                 </div>
-
                 {formData.images.length > 0 && (
                   <div>
-                    <label className="form-label" style={{ marginTop: '1.5rem', display: 'block' }}>
-                      Uploaded Images ({formData.images.length})
-                    </label>
+                    <label className="form-label" style={{ marginTop: '1.5rem', display: 'block' }}>Uploaded Images ({formData.images.length})</label>
                     <div className="image-gallery">
                       {formData.images.map((image, index) => (
                         <div key={index} className="image-item">
-                          <img src={image} alt={`Hostel ${index + 1}`} />
-                          <button
-                            type="button"
-                            className="image-remove"
-                            onClick={() => handleRemoveImage(index)}
-                            title="Remove image"
-                          >
-                            <FaTrash />
-                          </button>
+                          <img src={image} alt={`Property ${index + 1}`} />
+                          <button type="button" className="image-remove" onClick={() => handleRemoveImage(index)}><FaTrash /></button>
                         </div>
                       ))}
                     </div>
@@ -789,29 +722,8 @@ const EditHostel = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="edit-save-btn"
-              style={{
-                width: '100%',
-                padding: '1rem',
-                marginTop: '2rem',
-                fontSize: '1rem',
-              }}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} />
-                  Saving Changes...
-                </>
-              ) : (
-                <>
-                  <FaSave />
-                  Update Hostel Information
-                </>
-              )}
+            <button type="submit" className="edit-save-btn" style={{ width: '100%', padding: '1rem', marginTop: '2rem', fontSize: '1rem' }} disabled={saving}>
+              {saving ? <><FaSpinner style={{ animation: 'spin 0.8s linear infinite' }} /> Saving Changes...</> : <><FaSave /> Update Property</>}
             </button>
           </form>
         </div>
