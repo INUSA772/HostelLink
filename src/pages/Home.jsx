@@ -8,9 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const LANGS = {
   en: {
     code: "en", label: "English", flag: "🇬🇧",
-    // nav / switcher
     switchLang: "Language",
-    // hero
     heroBadge:   "Finding homes across Malawi — No sign-up required",
     heroH1a:     "Find Your",
     heroH1em:    "Perfect Home",
@@ -24,13 +22,11 @@ const LANGS = {
     heroStat1:   "Properties Listed",
     heroStat2:   "Districts Covered",
     heroStat3:   "Dispute Protection",
-    // trust bar
     trust1: "Registered Malawian platform",
     trust2: "No account needed to browse",
     trust3: "WhatsApp landlords directly",
     trust4: "All 28 districts covered",
     trust5: "Dispute protection built in",
-    // districts section
     distLabel:   "Browse by location",
     distTitle1:  "Find Properties by",
     distTitle2:  "District",
@@ -40,16 +36,13 @@ const LANGS = {
     distBtn:     "Search",
     distLoading: "Loading properties…",
     distEmpty:   "No properties found. Try a different search.",
-    // types section
     typesLabel:  "What are you looking for?",
     typesTitle1: "Browse by",
     typesTitle2: "Property Type",
     typesSub:    "Tap any type to instantly see live listings — no sign-up needed.",
-    // locations
     locsLabel:   "Our property areas",
     locsTitle1:  "Top Locations Across",
     locsTitle2:  "Malawi",
-    // dual
     tenantTitle: "For Tenants & Buyers",
     tenantNote:  "✓ No account required",
     tenantDesc:  "Browse all verified properties, view photos, see prices, and get landlord contact info directly — completely free, no sign-up needed.",
@@ -58,7 +51,6 @@ const LANGS = {
     landlordNote: "✓ Register to list properties",
     landlordDesc: "Create a landlord account to list your house, flat, room, or plot. Tenants WhatsApp you directly from your listing.",
     landlordBtn:  "Register as Landlord",
-    // features
     featLabel:   "Why choose us",
     featTitle1:  "Why Choose",
     featTitle2:  "PezaNyumba?",
@@ -70,7 +62,6 @@ const LANGS = {
     feat3Desc:   "Every landlord is verified before listing to protect tenants from fraud.",
     feat4Title:  "Dispute Resolution",
     feat4Desc:   "If a problem arises, our team mediates and resolves it fairly and quickly.",
-    // faq
     faqQ1: "How do I find a house on PezaNyumba?",
     faqA1: "No account needed! Browse by district or type, view full details, then WhatsApp or call the landlord directly.",
     faqQ2: "Do I need an account to search?",
@@ -81,13 +72,11 @@ const LANGS = {
     faqA4: "Every landlord goes through identity and property verification before their listing goes live.",
     faqQ5: "Can I list my property?",
     faqA5: "Yes — if you're a landlord or land owner. Register, fill in details, upload photos, and your listing goes live within 24 hours.",
-    // cta
     ctaTitle: "Are you a Landlord or Land Owner?",
     ctaSub:   "Register once and start listing your properties to thousands of tenants across Malawi.",
     ctaBtn:   "Register as Landlord",
     ctaNote:  "Already have an account?",
     ctaLogin: "Sign in here",
-    // drawer
     drawerLoading: "Searching listings…",
     drawerEmpty1:  "No listings found for",
     drawerEmpty2:  "Check back soon — landlords are adding new properties every day.",
@@ -95,14 +84,12 @@ const LANGS = {
     drawerPropsIn: "properties in",
     drawerListings:"listings",
     drawerViewAll: "View All",
-    // property types
     ptHouse:  "House",         ptHouseDesc:  "Family homes",
     ptFlat:   "Flat/Apartment",ptFlatDesc:   "Modern apartments",
     ptRoom:   "Single Room",   ptRoomDesc:   "Affordable rooms",
     ptSelf:   "Self-Contained",ptSelfDesc:   "Own entrance & bath",
     ptPlot:   "Plot of Land",  ptPlotDesc:   "Build your dream",
     ptComm:   "Commercial Space",ptCommDesc: "Shops & offices",
-    // cards
     cardVerified: "Verified Properties", cardVerifiedSub: "All listings checked & approved",
     cardPrices:   "Best Prices",         cardPricesSub:   "Affordable for every budget",
     cardTrusted:  "Trusted Landlords",   cardTrustedSub:  "Identity-verified owners",
@@ -111,12 +98,16 @@ const LANGS = {
     cardDispute:  "Dispute Support",     cardDisputeSub:  "We resolve problems fairly",
     cardDirect:   "Direct Messaging",   cardDirectSub:   "Chat with landlords safely",
     cardRated:    "Top Rated",           cardRatedSub:    "Reviews from real tenants",
-    // property card
     forSale: "For Sale", forRent: "For Rent",
     noContact: "No contact info",
     waBtn: "WhatsApp", callBtn: "Call",
     bed: "bed", bath: "bath", avail: "avail.",
     priceOnRequest: "Price on request",
+    navProperties: "Properties",
+    navAbout: "About",
+    navContact: "Contact",
+    navLogin: "Login",
+    navRegister: "List Property",
   },
 
   ny: {
@@ -139,7 +130,7 @@ const LANGS = {
     trust2: "Palibe akaunti yosaka",
     trust3: "WhatsApp mwini nyumba mwachindunji",
     trust4: "Madisitikiti onse 28 alipo",
-      trust5: "Chitetezo cha mikangano chili",
+    trust5: "Chitetezo cha mikangano chili",
     distLabel:   "Saka malalo",
     distTitle1:  "Pezani Nyumba pa",
     distTitle2:  "Boma",
@@ -216,6 +207,11 @@ const LANGS = {
     waBtn: "WhatsApp", callBtn: "Imbani",
     bed: "chipinda", bath: "bafa", avail: "palibe.",
     priceOnRequest: "Funsani mtengo",
+    navProperties: "Nyumba",
+    navAbout: "Za Ife",
+    navContact: "Lumikizani",
+    navLogin: "Lowani",
+    navRegister: "Ikani Nyumba",
   },
 
   tu: {
@@ -315,6 +311,11 @@ const LANGS = {
     waBtn: "WhatsApp", callBtn: "Zimba",
     bed: "chipinda", bath: "bafa", avail: "palipo.",
     priceOnRequest: "Funsani mtengo",
+    navProperties: "Nyumba",
+    navAbout: "Za Ife",
+    navContact: "Lumikizani",
+    navLogin: "Injilani",
+    navRegister: "Lemba Nyumba",
   },
 };
 
@@ -334,39 +335,144 @@ function useLangState() {
 }
 
 /* ═══════════════════════════════════════
-   LANGUAGE SWITCHER COMPONENT
-   — fixed top-right, always visible
+   NAVBAR — top nav with lang switcher
+   (moved away from fixed top-right to
+    avoid clashing with profile menus)
 ═══════════════════════════════════════ */
-const langSwitcherStyles = `
-  /* ── LANG SWITCHER ── */
-  .ph-lang-switcher {
+const navStyles = `
+  .ph-navbar {
     position: fixed;
-    top: 14px;
-    right: 14px;
-    z-index: 9999;
+    top: 0; left: 0; right: 0;
+    z-index: 9000;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: rgba(10, 35, 25, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(77,217,184,0.12);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.35);
   }
-  .ph-lang-btn {
+  .ph-navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .ph-navbar-logo-mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 900; font-size: 16px;
+    letter-spacing: -1px;
+    border: 1.5px solid rgba(77,217,184,0.3);
+    flex-shrink: 0;
+  }
+  .ph-navbar-brand-text {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.3px;
+    font-family: 'Poppins', sans-serif;
+  }
+  .ph-navbar-brand-text em {
+    color: #4dd9b8;
+    font-style: normal;
+  }
+  .ph-navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .ph-nav-link {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.83rem;
+    font-weight: 600;
+    padding: 0.38rem 0.9rem;
+    border-radius: 7px;
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Manrope', sans-serif;
+    white-space: nowrap;
+  }
+  .ph-nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.14);
+  }
+  .ph-nav-link.active {
+    color: #4dd9b8;
+    background: rgba(77,217,184,0.08);
+    border-color: rgba(77,217,184,0.2);
+  }
+  .ph-navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ph-navbar-login {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.83rem;
+    font-weight: 700;
+    padding: 0.38rem 0.9rem;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 7px;
+    background: transparent;
+    text-decoration: none;
+    transition: all 0.18s;
+    font-family: 'Manrope', sans-serif;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .ph-navbar-login:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+  }
+  .ph-navbar-signup {
+    color: #fff;
+    font-size: 0.83rem;
+    font-weight: 700;
+    padding: 0.38rem 1rem;
+    border: none;
+    border-radius: 7px;
+    background: #1a5c52;
+    text-decoration: none;
+    transition: background 0.18s;
+    font-family: 'Manrope', sans-serif;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .ph-navbar-signup:hover { background: #0d4a40; }
+
+  /* ── LANG SWITCHER — in navbar, left of login ── */
+  .ph-lang-pill {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(13,74,64,0.92);
-    border: 1.5px solid rgba(77,217,184,0.35);
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(77,217,184,0.25);
     border-radius: 999px;
-    padding: 7px 14px 7px 10px;
-    color: white;
-    font-size: .82rem;
+    padding: 5px 12px 5px 9px;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.79rem;
     font-weight: 700;
     cursor: pointer;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0,0,0,.25);
     transition: all .2s;
     font-family: 'Manrope', sans-serif;
     white-space: nowrap;
   }
-  .ph-lang-btn:hover { background: rgba(13,74,64,1); border-color: rgba(77,217,184,.65); }
-  .ph-lang-btn .ph-lang-flag { font-size: 1rem; line-height: 1; }
-  .ph-lang-btn .ph-lang-chevron { font-size: .6rem; opacity: .7; transition: transform .2s; }
-  .ph-lang-btn.open .ph-lang-chevron { transform: rotate(180deg); }
+  .ph-lang-pill:hover {
+    background: rgba(77,217,184,0.12);
+    border-color: rgba(77,217,184,.5);
+    color: #fff;
+  }
+  .ph-lang-pill .ph-lp-flag { font-size: 0.95rem; line-height: 1; }
+  .ph-lang-pill .ph-lp-chevron { font-size: .6rem; opacity: .7; transition: transform .2s; }
+  .ph-lang-pill.open .ph-lp-chevron { transform: rotate(180deg); }
 
   .ph-lang-dropdown {
     position: absolute;
@@ -375,10 +481,11 @@ const langSwitcherStyles = `
     background: white;
     border: 1.5px solid #e2ede9;
     border-radius: 14px;
-    box-shadow: 0 16px 48px rgba(0,0,0,.16);
+    box-shadow: 0 16px 48px rgba(0,0,0,.2);
     overflow: hidden;
     min-width: 170px;
     animation: langDrop .18s cubic-bezier(.34,1.56,.64,1);
+    z-index: 9999;
   }
   @keyframes langDrop {
     from { opacity:0; transform:translateY(-8px) scale(.96); }
@@ -402,26 +509,51 @@ const langSwitcherStyles = `
   }
   .ph-lang-option:hover  { background: #f0faf7; }
   .ph-lang-option.active { background: #e8f5f2; color: #0d4a40; }
-  .ph-lang-option .ph-lang-opt-flag { font-size: 1.1rem; }
-  .ph-lang-option .ph-lang-opt-label { flex: 1; }
-  .ph-lang-option .ph-lang-opt-check { color: #1a5c52; font-size: .8rem; }
-  .ph-lang-divider { height: 1px; background: #e2ede9; margin: 0; }
+  .ph-lang-option .ph-lo-flag  { font-size: 1.1rem; }
+  .ph-lang-option .ph-lo-label { flex: 1; }
+  .ph-lang-option .ph-lo-check { color: #1a5c52; font-size: .8rem; }
+  .ph-lang-divider { height: 1px; background: #e2ede9; }
+  .ph-lang-wrap { position: relative; }
 
-  @media(max-width:480px) {
-    .ph-lang-switcher { top: 10px; right: 10px; }
-    .ph-lang-btn { padding: 6px 11px 6px 9px; font-size: .78rem; }
+  /* Mobile hamburger */
+  .ph-navbar-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .ph-navbar-hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  @media(max-width: 900px) {
+    .ph-navbar-center { display: none; }
+    .ph-navbar { padding: 0 1rem; }
+  }
+  @media(max-width: 640px) {
+    .ph-navbar-login { display: none; }
+    .ph-navbar-brand-text { display: none; }
+  }
+  @media(max-width: 400px) {
+    .ph-navbar-signup { display: none; }
   }
 `;
 
-function LanguageSwitcher() {
+function Navbar() {
   const { lang, setLang, t, langs } = useLang();
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef(null);
 
-  // Close on outside click
   useEffect(() => {
     function handler(e) {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -430,35 +562,64 @@ function LanguageSwitcher() {
   const current = LANGS[lang] || LANGS.en;
 
   return (
-    <div className="ph-lang-switcher" ref={ref}>
-      <button
-        className={`ph-lang-btn${open ? " open" : ""}`}
-        onClick={() => setOpen(o => !o)}
-        aria-label="Switch language"
-      >
-        <span className="ph-lang-flag">{current.flag}</span>
-        <span>{current.label}</span>
-        <span className="ph-lang-chevron">▼</span>
-      </button>
+   <nav className="ph-navbar">
+  {/* Logo */}
+  <a href="/" className="ph-navbar-logo">
+    
+    <img 
+      src="/PEZ.png" 
+      alt="PezaNyumba Logo" 
+      className="ph-navbar-logo-mark" 
+    />
 
-      {open && (
-        <div className="ph-lang-dropdown">
-          {langs.map((l, i) => (
-            <div key={l.code}>
-              {i > 0 && <div className="ph-lang-divider" />}
-              <button
-                className={`ph-lang-option${lang === l.code ? " active" : ""}`}
-                onClick={() => { setLang(l.code); setOpen(false); }}
-              >
-                <span className="ph-lang-opt-flag">{l.flag}</span>
-                <span className="ph-lang-opt-label">{l.label}</span>
-                {lang === l.code && <span className="ph-lang-opt-check">✓</span>}
-              </button>
+    <span className="ph-navbar-brand-text">PezaNyumba</span>
+  </a>
+
+
+      {/* Centre nav links */}
+      <div className="ph-navbar-center">
+        <a href="/" className="ph-nav-link active"><i className="fa fa-home" /> Home</a>
+        <a href="/hostels" className="ph-nav-link"><i className="fa fa-building" /> {t.navProperties}</a>
+        <a href="/about"      className="ph-nav-link"><i className="fa fa-info-circle" /> {t.navAbout}</a>
+        <a href="/contact"    className="ph-nav-link"><i className="fa fa-phone" /> {t.navContact}</a>
+      </div>
+
+      {/* Right side: lang + auth */}
+      <div className="ph-navbar-right">
+        {/* Language switcher pill — lives here, NOT fixed top-right */}
+        <div className="ph-lang-wrap" ref={langRef}>
+          <button
+            className={`ph-lang-pill${langOpen ? " open" : ""}`}
+            onClick={() => setLangOpen(o => !o)}
+            aria-label="Switch language"
+          >
+            <span className="ph-lp-flag">{current.flag}</span>
+            <span>{current.label}</span>
+            <span className="ph-lp-chevron">▼</span>
+          </button>
+          {langOpen && (
+            <div className="ph-lang-dropdown">
+              {langs.map((l, i) => (
+                <div key={l.code}>
+                  {i > 0 && <div className="ph-lang-divider" />}
+                  <button
+                    className={`ph-lang-option${lang === l.code ? " active" : ""}`}
+                    onClick={() => { setLang(l.code); setLangOpen(false); }}
+                  >
+                    <span className="ph-lo-flag">{l.flag}</span>
+                    <span className="ph-lo-label">{l.label}</span>
+                    {lang === l.code && <span className="ph-lo-check">✓</span>}
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
-    </div>
+
+        <a href="/login"    className="ph-navbar-login"><i className="fa fa-sign-in-alt" /> {t.navLogin}</a>
+        <a href="/register" className="ph-navbar-signup"><i className="fa fa-plus" /> {t.navRegister}</a>
+      </div>
+    </nav>
   );
 }
 
@@ -517,7 +678,7 @@ const styles = `
     --radius:14px; --green-check:#22c55e; --wa:#25D366;
   }
   html { scroll-behavior: smooth; }
-  body { font-family:'Manrope',sans-serif; color:var(--dark); background:#fff; overflow-x:hidden; }
+  body { font-family:'Manrope',sans-serif; color:var(--dark); background:#fff; overflow-x:hidden; padding-top:60px; }
   a { text-decoration:none; color:inherit; }
   button { font-family:inherit; cursor:pointer; border:none; background:none; padding:0; }
 
@@ -811,6 +972,8 @@ function PropertyCard({ property }) {
 
 /* ═══════════════════════════════════════
    BROWSE DRAWER
+   FIX: "View All" now links to
+   /properties?district=X or ?type=X
 ═══════════════════════════════════════ */
 function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties }) {
   const { t } = useLang();
@@ -830,7 +993,9 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
       setLoading(false);
       return;
     }
-    const param = filter === "district" ? `district=${encodeURIComponent(filterValue)}` : `type=${encodeURIComponent(filterValue)}`;
+    const param = filter === "district"
+      ? `district=${encodeURIComponent(filterValue)}`
+      : `type=${encodeURIComponent(filterValue)}`;
     fetch(`${API_URL}/hostels?${param}&limit=50`)
       .then(r => r.json())
       .then(data => setProperties(data.hostels || data.properties || data.data || []))
@@ -838,7 +1003,10 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
       .finally(() => setLoading(false));
   }, [filter, filterValue, allProperties]);
 
-  const title = filter === "district" ? `${t.drawerPropsIn.replace("nyumba ","")} ${filterValue}` : `${filterValue}`;
+  // ✅ Build the correct "View All" URL that goes to /properties
+  const viewAllUrl = filter === "district"
+    ? `/properties?district=${encodeURIComponent(filterValue)}`
+    : `/properties?type=${encodeURIComponent(filterValue)}`;
 
   return (
     <div className="ph-browse-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -870,8 +1038,16 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
         </div>
         {!loading && properties.length > 0 && (
           <div className="ph-browse-footer">
-            <p>{t.drawerShowing} <strong>{properties.length}</strong> {filter === "district" ? `${t.drawerPropsIn} ${filterValue}` : `${filterValue} ${t.drawerListings}`}</p>
-            <a href="/properties" className="ph-browse-see-all"><i className="fa fa-th" /> {t.drawerViewAll}</a>
+            <p>
+              {t.drawerShowing} <strong>{properties.length}</strong>{" "}
+              {filter === "district"
+                ? `${t.drawerPropsIn} ${filterValue}`
+                : `${filterValue} ${t.drawerListings}`}
+            </p>
+            {/* ✅ Fixed: points to /properties with correct filter param */}
+            <a href={viewAllUrl} className="ph-browse-see-all">
+              <i className="fa fa-th" /> {t.drawerViewAll}
+            </a>
           </div>
         )}
       </div>
@@ -915,7 +1091,8 @@ function Hero() {
           <h1>{t.heroH1a} <em>{t.heroH1em}</em><br />{t.heroH1b}</h1>
           <p className="ph-hero-sub">{t.heroSub}</p>
           <div className="ph-hero-btns">
-            <a className="ph-btn-primary" href="#browse-districts"><i className="fa fa-search" /> {t.heroBrowse}</a>
+            {/* ✅ Browse button links to properties page */}
+            <a className="ph-btn-primary" href="/properties"><i className="fa fa-search" /> {t.heroBrowse}</a>
             <a className="ph-btn-ghost"   href="/register"><i className="fa fa-building" /> {t.heroList}</a>
           </div>
           <div className="ph-hero-trust">
@@ -1248,7 +1425,8 @@ function DualSection() {
         <h3>{t.tenantTitle}</h3>
         <div className="ph-dual-note">{t.tenantNote}</div>
         <p>{t.tenantDesc}</p>
-        <a href="#browse-districts" className="ph-btn-outline">{t.tenantBtn}</a>
+        {/* ✅ Tenant browse links to /properties */}
+        <a href="/properties" className="ph-btn-outline">{t.tenantBtn}</a>
       </div>
       <div className="ph-dual-card">
         <div className="ph-dual-icon landlord"><i className="fa fa-building" /></div>
@@ -1333,11 +1511,11 @@ export default function Home() {
   return (
     <LangContext.Provider value={langState}>
       <style>{styles}</style>
-      <style>{langSwitcherStyles}</style>
+      <style>{navStyles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* ── Language switcher — fixed, always on top ── */}
-      <LanguageSwitcher />
+      {/* ── Navbar (includes lang switcher — no longer fixed top-right) ── */}
+      <Navbar />
 
       <Hero />
       <TrustBar />
@@ -1358,6 +1536,7 @@ export default function Home() {
           <a href="/login" style={{color:"#4dd9b8",fontWeight:700}}>{langState.t.ctaLogin}</a>
         </p>
       </section>
+
 
       {locDrawer && (
         <BrowseDrawer filter="district" filterValue={locDrawer.name} filterIcon={locDrawer.icon}

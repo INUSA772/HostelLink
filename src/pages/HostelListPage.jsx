@@ -1,7 +1,6 @@
 // frontend/src/pages/PropertiesListing.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -161,6 +160,57 @@ const styles = `
 
   .pz-navbar-signup:hover {
     opacity: 0.88;
+  }
+
+  /* ══════════════════════════════════════
+     ACTIVE FILTER BANNER
+     — shown when pre-filtered from Home
+  ══════════════════════════════════════ */
+  .pz-active-filter-banner {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+    color: white;
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pz-active-filter-banner p {
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pz-active-filter-banner p strong {
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+  }
+
+  .pz-clear-filter-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: white;
+    padding: 0.3rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .pz-clear-filter-btn:hover {
+    background: rgba(255,255,255,0.28);
   }
 
   /* ══════════════════════════════════════
@@ -674,6 +724,10 @@ const styles = `
     .pz-property-grid {
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     }
+
+    .pz-active-filter-banner {
+      padding: 0.75rem 1rem;
+    }
   }
 
   @media (max-width: 480px) {
@@ -700,32 +754,48 @@ const styles = `
 // ════════════════════════════════════════════════════════════════
 
 export default function PropertiesListing() {
+  const location = useLocation();
+
+  // ✅ Read ?district=X or ?type=X from the URL on first load
+  // This allows Home.jsx "View All" links to pre-filter this page
+  const getInitialFilters = () => {
+    const params = new URLSearchParams(location.search);
+    return {
+      search:   params.get('search')   || '',
+      type:     params.get('type')     || '',
+      minPrice: params.get('minPrice') || '',
+      maxPrice: params.get('maxPrice') || '',
+      district: params.get('district') || '',
+    };
+  };
+
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    search: '',
-    type: '',
-    minPrice: '',
-    maxPrice: '',
-    district: '',
-  });
+  const [filters, setFilters] = useState(getInitialFilters);
   const [pagination, setPagination] = useState({
     page: 1,
     total: 0,
     totalPages: 0,
   });
 
-  const fetchProperties = async (page = 1) => {
+  // Track which filter came from the URL (for the banner)
+  const urlParams = new URLSearchParams(location.search);
+  const urlDistrict = urlParams.get('district');
+  const urlType     = urlParams.get('type');
+  const hasUrlFilter = !!(urlDistrict || urlType);
+
+  const fetchProperties = async (page = 1, overrideFilters = null) => {
     setLoading(true);
+    const activeFilters = overrideFilters || filters;
     try {
       const params = new URLSearchParams({
         page,
         limit: 12,
-        ...(filters.search && { search: filters.search }),
-        ...(filters.type && { type: filters.type }),
-        ...(filters.minPrice && { minPrice: filters.minPrice }),
-        ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
-        ...(filters.district && { district: filters.district }),
+        ...(activeFilters.search   && { search:   activeFilters.search }),
+        ...(activeFilters.type     && { type:     activeFilters.type }),
+        ...(activeFilters.minPrice && { minPrice: activeFilters.minPrice }),
+        ...(activeFilters.maxPrice && { maxPrice: activeFilters.maxPrice }),
+        ...(activeFilters.district && { district: activeFilters.district }),
       });
 
       const response = await fetch(`${API_URL}/properties?${params}`);
@@ -747,6 +817,13 @@ export default function PropertiesListing() {
     }
   };
 
+  // Fetch on mount — picks up any URL params automatically
+  useEffect(() => {
+    fetchProperties(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Re-fetch when filters change (from user interaction, not initial mount)
   useEffect(() => {
     fetchProperties(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -754,26 +831,27 @@ export default function PropertiesListing() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   const handleReset = () => {
-    setFilters({
-      search: '',
-      type: '',
-      minPrice: '',
-      maxPrice: '',
-      district: '',
-    });
+    const empty = { search: '', type: '', minPrice: '', maxPrice: '', district: '' };
+    setFilters(empty);
+    // Also clear the URL params so the banner disappears
+    window.history.replaceState({}, '', '/properties');
   };
 
   const handlePageChange = (page) => {
     fetchProperties(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Build a readable label for the active URL filter banner
+  const activeFilterLabel = urlDistrict
+    ? `District: ${urlDistrict}`
+    : urlType
+    ? `Type: ${urlType}`
+    : null;
 
   return (
     <>
@@ -805,12 +883,35 @@ export default function PropertiesListing() {
         </div>
       </nav>
 
+      {/* ✅ Active filter banner — only shown when arriving from Home with a pre-filter */}
+      {hasUrlFilter && activeFilterLabel && (
+        <div className="pz-active-filter-banner">
+          <p>
+            <i className="fa fa-filter"></i>
+            Showing results for <strong>{activeFilterLabel}</strong>
+          </p>
+          <button className="pz-clear-filter-btn" onClick={handleReset}>
+            <i className="fa fa-times"></i> Clear filter
+          </button>
+        </div>
+      )}
+
       {/* MAIN CONTENT */}
       <div className="pz-main-content">
         <div className="pz-container">
           <div className="pz-header">
-            <h1>Find Your Perfect Home</h1>
-            <p>Browse verified properties across all districts in Malawi</p>
+            <h1>
+              {filters.district
+                ? `Properties in ${filters.district}`
+                : filters.type
+                ? `${filters.type} Listings`
+                : 'Find Your Perfect Home'}
+            </h1>
+            <p>
+              {filters.district || filters.type
+                ? 'Filtered results — adjust or clear the filters below to see more.'
+                : 'Browse verified properties across all districts in Malawi'}
+            </p>
           </div>
 
           {/* FILTERS */}
@@ -919,7 +1020,7 @@ export default function PropertiesListing() {
           {loading && (
             <div className="pz-loading">
               <div className="pz-spinner"></div>
-              <p>Loading properties...</p>
+              <p>Loading properties{filters.district ? ` in ${filters.district}` : filters.type ? ` — ${filters.type}` : ''}…</p>
             </div>
           )}
 
@@ -928,7 +1029,13 @@ export default function PropertiesListing() {
             <div className="pz-empty">
               <div className="pz-empty-icon">🏠</div>
               <h3>No properties found</h3>
-              <p>Try adjusting your filters or search criteria</p>
+              <p>
+                {filters.district
+                  ? `No listings in ${filters.district} yet. Try a different district or clear the filter.`
+                  : filters.type
+                  ? `No "${filters.type}" listings yet. Try a different type or clear the filter.`
+                  : 'Try adjusting your filters or search criteria.'}
+              </p>
               <button className="pz-empty-btn" onClick={handleReset}>
                 <i className="fa fa-refresh" style={{ marginRight: '0.5rem' }}></i>
                 Clear All Filters
