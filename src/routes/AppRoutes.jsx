@@ -9,7 +9,7 @@ import LoginForm          from '../components/auth/LoginForm';
 import RegisterForm       from '../components/auth/RegisterForm';
 import HostelListPage     from '../pages/HostelListPage';
 import HostelDetailsPage  from '../pages/HostelDetailsPage';
-<Route path="/properties" element={<PropertiesPage />} />
+
 import About              from '../pages/About';
 import Contact            from '../pages/Contact';
 import NotFound           from '../pages/NotFound';
@@ -42,6 +42,8 @@ const AppRoutes = () => {
       <Route path="/hostels/:id"     element={<HostelDetailsPage />} />
       <Route path="/about"           element={<About />} />
       <Route path="/contact"         element={<Contact />} />
+      <Route path="/properties" element={<PropertiesPage />} />
+      
 
       {/* ── PAYMENT RETURN ── */}
       <Route
