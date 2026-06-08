@@ -84,30 +84,27 @@ const LANGS = {
     drawerPropsIn: "properties in",
     drawerListings:"listings",
     drawerViewAll: "View All",
-    ptHouse:  "House",         ptHouseDesc:  "Family homes",
-    ptFlat:   "Flat/Apartment",ptFlatDesc:   "Modern apartments",
-    ptRoom:   "Single Room",   ptRoomDesc:   "Affordable rooms",
-    ptSelf:   "Self-Contained",ptSelfDesc:   "Own entrance & bath",
-    ptPlot:   "Plot of Land",  ptPlotDesc:   "Build your dream",
-    ptComm:   "Commercial Space",ptCommDesc: "Shops & offices",
+    ptHouse:  "House",          ptHouseDesc:  "Family homes",
+    ptFlat:   "Flat/Apartment", ptFlatDesc:   "Modern apartments",
+    ptRoom:   "Single Room",    ptRoomDesc:   "Affordable rooms",
+    ptSelf:   "Self-Contained", ptSelfDesc:   "Own entrance & bath",
+    ptPlot:   "Plot of Land",   ptPlotDesc:   "Build your dream",
+    ptComm:   "Commercial Space",ptCommDesc:  "Shops & offices",
     cardVerified: "Verified Properties", cardVerifiedSub: "All listings checked & approved",
     cardPrices:   "Best Prices",         cardPricesSub:   "Affordable for every budget",
     cardTrusted:  "Trusted Landlords",   cardTrustedSub:  "Identity-verified owners",
     cardDistricts:"All Districts",       cardDistrictsSub:"28 districts covered",
     cardQuick:    "Quick Inquiry",       cardQuickSub:    "Contact landlords in seconds",
     cardDispute:  "Dispute Support",     cardDisputeSub:  "We resolve problems fairly",
-    cardDirect:   "Direct Messaging",   cardDirectSub:   "Chat with landlords safely",
+    cardDirect:   "Direct Messaging",    cardDirectSub:   "Chat with landlords safely",
     cardRated:    "Top Rated",           cardRatedSub:    "Reviews from real tenants",
     forSale: "For Sale", forRent: "For Rent",
     noContact: "No contact info",
     waBtn: "WhatsApp", callBtn: "Call",
     bed: "bed", bath: "bath", avail: "avail.",
     priceOnRequest: "Price on request",
-    navProperties: "Properties",
-    navAbout: "About",
-    navContact: "Contact",
-    navLogin: "Login",
-    navRegister: "List Property",
+    lightboxClose: "Close",
+    lightboxOf: "of",
   },
 
   ny: {
@@ -117,12 +114,12 @@ const LANGS = {
     heroH1a:     "Pezani",
     heroH1em:    "Nyumba Yabwino",
     heroH1b:     "Kulikonse ku Malawi",
-    heroSub:     "Palibe akaunti yofunikira. Sakani nyumba zazikulu, nyumba zazing'ono, ndi malo ogulitsa ku maboma onse 28 Muno Malawi — sankhani boma lanu ndikuyamba kufufuza malo kapena nyumba m'dera lililonse.",
+    heroSub:     "Palibe akaunti yofunikira. Sakani nyumba zazikulu, nyumba zazing'ono, ndi malo ogulitsa ku maboma onse 28 — sankhani boma lanu ndikuyamba kufufuza.",
     heroBrowse:  "Sakani Nyumba",
     heroList:    "Ikani Nyumba Yanu",
-    heroTrust1:  "Simukuyenera kukhara ndi account kuti mupeze nyumba",
-    heroTrust2:  "Lumikizanani pa whatsapp kapena kumuyimbila mwini nyumba",
-    heroTrust3:  "Kuyika kapena kupeza nyumba ndiulele",
+    heroTrust1:  "Simukuyenera akaunti",
+    heroTrust2:  "Lumikizanani pa WhatsApp",
+    heroTrust3:  "Kuyika nyumba ndiulele",
     heroStat1:   "Nyumba zomwe zilipo",
     heroStat2:   "Maboma Alipo",
     heroStat3:   "Chitetezo cha Mikangano",
@@ -134,7 +131,7 @@ const LANGS = {
     distLabel:   "Saka malalo",
     distTitle1:  "Pezani Nyumba pa",
     distTitle2:  "Boma",
-    distSub:     "Sakani malalo kapena mtundu — swipe kapena gwiritsa ntchito mivi kuti mufufuza.",
+    distSub:     "Sakani malalo kapena mtundu — swipe kapena gwiritsa ntchito mivi kuti mufufuze.",
     distSearch:  "Sakani boma kapena dzina la nyumba…",
     distAllTypes:"Mitundu yonse",
     distBtn:     "Sakani",
@@ -149,11 +146,11 @@ const LANGS = {
     locsTitle2:  "Malawi",
     tenantTitle: "Okangomanga & Ogula",
     tenantNote:  "✓ Palibe akaunti yofunikira",
-    tenantDesc:  "Sakani nyumba zonse zazikulu, onani zithunzi, onani mitengo, ndikupeza nomboro ya mwini nyumba mwachindunji — mwaulere, palibe kulemba.",
+    tenantDesc:  "Sakani nyumba zonse, onani zithunzi, onani mitengo, ndikupeza nomboro ya mwini nyumba mwachindunji.",
     tenantBtn:   "Yambani Kusaka",
     landlordTitle:"Eni Nyumba ndi Malo",
     landlordNote: "✓ Lembelani ndi kuika nyumba",
-    landlordDesc: "Pangani akaunti ya mwini nyumba kuika nyumba yanu. Anthu ofuna nyumba muzalumikizana pa WhatsApp pompopompo!.",
+    landlordDesc: "Pangani akaunti ya mwini nyumba kuika nyumba yanu. Anthu ofuna nyumba muzalumikizana pa WhatsApp.",
     landlordBtn:  "Lembeleni ngati Mwini Nyumba",
     featLabel:   "Chifukwa chosankha ife",
     featTitle1:  "Chifukwa Kusankha",
@@ -163,7 +160,7 @@ const LANGS = {
     feat2Title:  "WhatsApp Mwachindunji",
     feat2Desc:   "Dinani WhatsApp pa nyumba iliyonse kutumiza uthenga kwa mwini nyumba — palibe pakati.",
     feat3Title:  "Nyumba Zazikulu",
-    feat3Desc:   "Mwini nyumba aliyense amayezetsa kaye iye ndi nyumbayo kuti alinde anthu ofuna nyumba.",
+    feat3Desc:   "Mwini nyumba aliyense amayezetsa kaye iye ndi nyumbayo.",
     feat4Title:  "Kutha Mikangano",
     feat4Desc:   "Ngati vuto likubwera, timagwira ntchito ngati pakati ndikutha vutolo mwachilungamo.",
     faqQ1: "Ndingapeze bwanji nyumba pa PezaNyumba?",
@@ -173,7 +170,7 @@ const LANGS = {
     faqQ3: "Ndani amatha kupanga akaunti pa PezaNyumba?",
     faqA3: "Eni nyumba ndi eni malo okha. Anthu ofuna nyumba amasakabe — palibe kulemba.",
     faqQ4: "PezaNyumba imayeza bwanji eni nyumba?",
-    faqA4: "Mwini nyumba aliyense amayeza iye ndi malo ake asanapange nyumba yake kuti alinde anthu.",
+    faqA4: "Mwini nyumba aliyense amayeza iye ndi malo ake asanapange nyumba yake.",
     faqQ5: "Nditha kuika nyumba yanga?",
     faqA5: "Inde — ngati ndinu mwini nyumba kapena mwini malo. Lembeleni, uzuzeni zambiri, ikani zithunzi, ndipo nyumba imakwera pa maola 24.",
     ctaTitle: "Kodi ndinu Mwini Nyumba kapena Mwini Malo?",
@@ -188,30 +185,27 @@ const LANGS = {
     drawerPropsIn: "nyumba ku",
     drawerListings:"mauthenga",
     drawerViewAll: "Ona Zonse",
-    ptHouse:  "Nyumba",          ptHouseDesc:  "Nyumba za mabanja",
-    ptFlat:   "Flat/Apartment",  ptFlatDesc:   "Ma apartment achisanu",
-    ptRoom:   "Chipinda Chimodzi",ptRoomDesc:  "Zipinda zotsika mtengo",
-    ptSelf:   "Self-Contained",  ptSelfDesc:   "Khomo lake & bafa",
-    ptPlot:   "Gawo la Malo",    ptPlotDesc:   "Mangani lofunira lanu",
-    ptComm:   "Malo a Bizinesi", ptCommDesc:   "Masitolo & maofesi",
-    cardVerified: "Nyumba Zazikulu", cardVerifiedSub: "Mauthenga onse ayezedwa",
-    cardPrices:   "Mitengo Yabwino", cardPricesSub:   "Yoyenera bajeti iliyonse",
-    cardTrusted:  "Eni Nyumba Oyesedwa", cardTrustedSub: "Eni onyezedwa",
-    cardDistricts:"Madisitikiti Onse", cardDistrictsSub:"Madisitikiti 28",
-    cardQuick:    "Funsani Msanga",  cardQuickSub:    "Lumikizani eni nyumba mwamsanga",
-    cardDispute:  "Thandizo la Mikangano", cardDisputeSub: "Timaitha mavuto mwachilungamo",
-    cardDirect:   "Uthenga Wachindunji", cardDirectSub: "Lankhulani ndi eni nyumba motetezeka",
-    cardRated:    "Woyezetsa Kwambiri", cardRatedSub:  "Maganizo a okangomanga weniweni",
+    ptHouse:  "Nyumba",           ptHouseDesc:  "Nyumba za mabanja",
+    ptFlat:   "Flat/Apartment",   ptFlatDesc:   "Ma apartment achisanu",
+    ptRoom:   "Chipinda Chimodzi", ptRoomDesc:  "Zipinda zotsika mtengo",
+    ptSelf:   "Self-Contained",   ptSelfDesc:   "Khomo lake & bafa",
+    ptPlot:   "Gawo la Malo",     ptPlotDesc:   "Mangani lofunira lanu",
+    ptComm:   "Malo a Bizinesi",  ptCommDesc:   "Masitolo & maofesi",
+    cardVerified: "Nyumba Zazikulu",      cardVerifiedSub: "Mauthenga onse ayezedwa",
+    cardPrices:   "Mitengo Yabwino",      cardPricesSub:   "Yoyenera bajeti iliyonse",
+    cardTrusted:  "Eni Nyumba Oyesedwa",  cardTrustedSub:  "Eni onyezedwa",
+    cardDistricts:"Madisitikiti Onse",    cardDistrictsSub:"Madisitikiti 28",
+    cardQuick:    "Funsani Msanga",       cardQuickSub:    "Lumikizani eni nyumba mwamsanga",
+    cardDispute:  "Thandizo la Mikangano",cardDisputeSub:  "Timaitha mavuto mwachilungamo",
+    cardDirect:   "Uthenga Wachindunji", cardDirectSub:   "Lankhulani ndi eni nyumba motetezeka",
+    cardRated:    "Woyezetsa Kwambiri",   cardRatedSub:    "Maganizo a okangomanga weniweni",
     forSale: "Kugulitsa", forRent: "Kugwiritsa",
     noContact: "Palibe nomboro",
     waBtn: "WhatsApp", callBtn: "Imbani",
     bed: "chipinda", bath: "bafa", avail: "palibe.",
     priceOnRequest: "Funsani mtengo",
-    navProperties: "Nyumba",
-    navAbout: "Za Ife",
-    navContact: "Lumikizani",
-    navLogin: "Lowani",
-    navRegister: "Ikani Nyumba",
+    lightboxClose: "Tseka",
+    lightboxOf: "pa",
   },
 
   tu: {
@@ -226,7 +220,7 @@ const LANGS = {
     heroList:    "Lemba Nyumba Yako",
     heroTrust1:  "Palije akaunti yosaka",
     heroTrust2:  "WhatsApp mwenye nyumba mwachindunji",
-    heroTrust3:  "Ndalama 2.5% yokha",
+    heroTrust3:  "Kulemba nyumba mwaulere",
     heroStat1:   "Nyumba Zalembiwa",
     heroStat2:   "Madisitiriki Yalipo",
     heroStat3:   "Chitetezo cha Mikangano",
@@ -253,7 +247,7 @@ const LANGS = {
     locsTitle2:  "Malawi",
     tenantTitle: "Okusunga & Ogula",
     tenantNote:  "✓ Palije akaunti yofunikira",
-    tenantDesc:  "Saka nyumba zose, ona zithunzi, ona mitengo, na kupeza nambala ya mwenye nyumba mwachindunji — mwaulere, palije kulemba.",
+    tenantDesc:  "Saka nyumba zose, ona zithunzi, ona mitengo, na kupeza nambala ya mwenye nyumba mwachindunji — mwaulere.",
     tenantBtn:   "Yambani Kusaka",
     landlordTitle:"Anenye Nyumba & Malo",
     landlordNote: "✓ Lemba kuika nyumba",
@@ -267,7 +261,7 @@ const LANGS = {
     feat2Title:  "WhatsApp Mwachindunji",
     feat2Desc:   "Dinani WhatsApp pa nyumba iliyonse kutuma uthenga kwa mwenye nyumba — palije pakati.",
     feat3Title:  "Nyumba Zayezedwa",
-    feat3Desc:   "Mwenye nyumba uliwonse wayezedwa kaye iye na nyumba yake kuti alinde anthu.",
+    feat3Desc:   "Mwenye nyumba uliwonse wayezedwa kaye iye na nyumba yake.",
     feat4Title:  "Kutha Mikangano",
     feat4Desc:   "Ngati vuto likubwera, tigwira ntchito nga pakati na kutha vutolo mwachilungamo.",
     faqQ1: "Ndingapeze wuli nyumba pa PezaNyumba?",
@@ -277,7 +271,7 @@ const LANGS = {
     faqQ3: "Ndani angapange akaunti pa PezaNyumba?",
     faqA3: "Anenye nyumba na anenye malo yokha. Anthu ofuna nyumba yasakabe — palije kulemba.",
     faqQ4: "PezaNyumba iyeza wuli anenye nyumba?",
-    faqA4: "Mwenye nyumba uliwonse wayezedwa iye na malo ake asanapange nyumba yake kuti alinde anthu.",
+    faqA4: "Mwenye nyumba uliwonse wayezedwa iye na malo ake asanapange nyumba yake.",
     faqQ5: "Ningaike nyumba yane?",
     faqA5: "Inde — ngati ndimwenye nyumba panji mwenye malo. Lembani, uzuzani zambiri, ikani zithunzi, ndipo nyumba imakwera mu maola 24.",
     ctaTitle: "Kodi ndimwenye Nyumba panji Mwenye Malo?",
@@ -292,30 +286,27 @@ const LANGS = {
     drawerPropsIn: "nyumba mu",
     drawerListings:"mauthenga",
     drawerViewAll: "Ona Yose",
-    ptHouse:  "Nyumba",          ptHouseDesc:  "Nyumba za mabanja",
-    ptFlat:   "Flat/Apartment",  ptFlatDesc:   "Ma apartment yamachisanu",
-    ptRoom:   "Chipinda Chimoza",ptRoomDesc:   "Zipinda zotauka mtengo",
-    ptSelf:   "Self-Contained",  ptSelfDesc:   "Khomo lake & bafa",
-    ptPlot:   "Gawo la Malo",    ptPlotDesc:   "Manga lofunira lako",
-    ptComm:   "Malo ya Bizinesi",ptCommDesc:   "Masitolo & maofesi",
-    cardVerified: "Nyumba Zayezedwa",    cardVerifiedSub: "Mauthenga yose yayezedwa",
-    cardPrices:   "Mitengo Yabwino",     cardPricesSub:   "Yoyenera bajeti iliyonse",
-    cardTrusted:  "Anenye Nyumba Oyezedwa", cardTrustedSub: "Anenye oyezedwa",
-    cardDistricts:"Madisitiriki Yose",   cardDistrictsSub:"Madisitiriki 28",
-    cardQuick:    "Funsani Msanga",      cardQuickSub:    "Lumikizani anenye nyumba msanga",
-    cardDispute:  "Thandizo la Mikangano",cardDisputeSub: "Yiitha mavuto mwachilungamo",
-    cardDirect:   "Uthenga Wachindunji",  cardDirectSub:  "Lankhulani na anenye nyumba motetezeka",
-    cardRated:    "Woyezedwa Kwambiri",   cardRatedSub:   "Maganizo ya okusunga weniweni",
+    ptHouse:  "Nyumba",           ptHouseDesc:  "Nyumba za mabanja",
+    ptFlat:   "Flat/Apartment",   ptFlatDesc:   "Ma apartment yamachisanu",
+    ptRoom:   "Chipinda Chimoza", ptRoomDesc:   "Zipinda zotauka mtengo",
+    ptSelf:   "Self-Contained",   ptSelfDesc:   "Khomo lake & bafa",
+    ptPlot:   "Gawo la Malo",     ptPlotDesc:   "Manga lofunira lako",
+    ptComm:   "Malo ya Bizinesi", ptCommDesc:   "Masitolo & maofesi",
+    cardVerified: "Nyumba Zayezedwa",       cardVerifiedSub: "Mauthenga yose yayezedwa",
+    cardPrices:   "Mitengo Yabwino",        cardPricesSub:   "Yoyenera bajeti iliyonse",
+    cardTrusted:  "Anenye Nyumba Oyezedwa", cardTrustedSub:  "Anenye oyezedwa",
+    cardDistricts:"Madisitiriki Yose",      cardDistrictsSub:"Madisitiriki 28",
+    cardQuick:    "Funsani Msanga",         cardQuickSub:    "Lumikizani anenye nyumba msanga",
+    cardDispute:  "Thandizo la Mikangano",  cardDisputeSub:  "Yiitha mavuto mwachilungamo",
+    cardDirect:   "Uthenga Wachindunji",    cardDirectSub:   "Lankhulani na anenye nyumba motetezeka",
+    cardRated:    "Woyezedwa Kwambiri",     cardRatedSub:    "Maganizo ya okusunga weniweni",
     forSale: "Kugulitsa", forRent: "Kukodisha",
     noContact: "Palije nambala",
     waBtn: "WhatsApp", callBtn: "Zimba",
     bed: "chipinda", bath: "bafa", avail: "palipo.",
     priceOnRequest: "Funsani mtengo",
-    navProperties: "Nyumba",
-    navAbout: "Za Ife",
-    navContact: "Lumikizani",
-    navLogin: "Injilani",
-    navRegister: "Lemba Nyumba",
+    lightboxClose: "Tseka",
+    lightboxOf: "pa",
   },
 };
 
@@ -335,291 +326,59 @@ function useLangState() {
 }
 
 /* ═══════════════════════════════════════
-   NAVBAR — top nav with lang switcher
-   (moved away from fixed top-right to
-    avoid clashing with profile menus)
+   LANGUAGE SWITCHER
 ═══════════════════════════════════════ */
-const navStyles = `
-  .ph-navbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 9000;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    background: rgba(10, 35, 25, 0.96);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(77,217,184,0.12);
-    box-shadow: 0 2px 20px rgba(0,0,0,0.35);
-  }
-  .ph-navbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-  }
-  .ph-navbar-logo-mark {
-    width: 34px; height: 34px;
-    border-radius: 9px;
-    background: white;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 900; font-size: 16px;
-    letter-spacing: -1px;
-    border: 1.5px solid rgba(77,217,184,0.3);
-    flex-shrink: 0;
-  }
-  .ph-navbar-brand-text {
-    font-size: 0.98rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: 0.3px;
-    font-family: 'Poppins', sans-serif;
-  }
-  .ph-navbar-brand-text em {
-    color: #4dd9b8;
-    font-style: normal;
-  }
-  .ph-navbar-center {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .ph-nav-link {
-    color: rgba(255,255,255,0.72);
-    font-size: 0.83rem;
-    font-weight: 600;
-    padding: 0.38rem 0.9rem;
-    border-radius: 7px;
-    text-decoration: none;
-    border: 1.5px solid transparent;
-    transition: all 0.18s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-family: 'Manrope', sans-serif;
-    white-space: nowrap;
-  }
-  .ph-nav-link:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.14);
-  }
-  .ph-nav-link.active {
-    color: #4dd9b8;
-    background: rgba(77,217,184,0.08);
-    border-color: rgba(77,217,184,0.2);
-  }
-  .ph-navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .ph-navbar-login {
-    color: rgba(255,255,255,0.8);
-    font-size: 0.83rem;
-    font-weight: 700;
-    padding: 0.38rem 0.9rem;
-    border: 1.5px solid rgba(255,255,255,0.2);
-    border-radius: 7px;
-    background: transparent;
-    text-decoration: none;
-    transition: all 0.18s;
-    font-family: 'Manrope', sans-serif;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .ph-navbar-login:hover {
-    border-color: rgba(255,255,255,0.5);
-    color: #fff;
-  }
-  .ph-navbar-signup {
-    color: #fff;
-    font-size: 0.83rem;
-    font-weight: 700;
-    padding: 0.38rem 1rem;
-    border: none;
-    border-radius: 7px;
-    background: #1a5c52;
-    text-decoration: none;
-    transition: background 0.18s;
-    font-family: 'Manrope', sans-serif;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .ph-navbar-signup:hover { background: #0d4a40; }
-
-  /* ── LANG SWITCHER — in navbar, left of login ── */
-  .ph-lang-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.07);
-    border: 1.5px solid rgba(77,217,184,0.25);
-    border-radius: 999px;
-    padding: 5px 12px 5px 9px;
-    color: rgba(255,255,255,0.85);
-    font-size: 0.79rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all .2s;
-    font-family: 'Manrope', sans-serif;
-    white-space: nowrap;
-  }
-  .ph-lang-pill:hover {
-    background: rgba(77,217,184,0.12);
-    border-color: rgba(77,217,184,.5);
-    color: #fff;
-  }
-  .ph-lang-pill .ph-lp-flag { font-size: 0.95rem; line-height: 1; }
-  .ph-lang-pill .ph-lp-chevron { font-size: .6rem; opacity: .7; transition: transform .2s; }
-  .ph-lang-pill.open .ph-lp-chevron { transform: rotate(180deg); }
-
-  .ph-lang-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    background: white;
-    border: 1.5px solid #e2ede9;
-    border-radius: 14px;
-    box-shadow: 0 16px 48px rgba(0,0,0,.2);
-    overflow: hidden;
-    min-width: 170px;
-    animation: langDrop .18s cubic-bezier(.34,1.56,.64,1);
-    z-index: 9999;
-  }
-  @keyframes langDrop {
-    from { opacity:0; transform:translateY(-8px) scale(.96); }
-    to   { opacity:1; transform:translateY(0)    scale(1);   }
-  }
-  .ph-lang-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 11px 16px;
-    font-size: .85rem;
-    font-weight: 600;
-    color: #111;
-    background: white;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    transition: background .15s;
-    font-family: 'Manrope', sans-serif;
-  }
-  .ph-lang-option:hover  { background: #f0faf7; }
-  .ph-lang-option.active { background: #e8f5f2; color: #0d4a40; }
-  .ph-lang-option .ph-lo-flag  { font-size: 1.1rem; }
-  .ph-lang-option .ph-lo-label { flex: 1; }
-  .ph-lang-option .ph-lo-check { color: #1a5c52; font-size: .8rem; }
-  .ph-lang-divider { height: 1px; background: #e2ede9; }
-  .ph-lang-wrap { position: relative; }
-
-  /* Mobile hamburger */
-  .ph-navbar-hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    padding: 6px;
-    cursor: pointer;
-    background: none;
-    border: none;
-  }
-  .ph-navbar-hamburger span {
-    display: block;
-    width: 22px; height: 2px;
-    background: rgba(255,255,255,0.8);
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-
-  @media(max-width: 900px) {
-    .ph-navbar-center { display: none; }
-    .ph-navbar { padding: 0 1rem; }
-  }
-  @media(max-width: 640px) {
-    .ph-navbar-login { display: none; }
-    .ph-navbar-brand-text { display: none; }
-  }
-  @media(max-width: 400px) {
-    .ph-navbar-signup { display: none; }
-  }
+const langSwitcherStyles = `
+  .ph-lang-switcher { position:fixed; top:14px; right:14px; z-index:9999; }
+  .ph-lang-btn { display:flex; align-items:center; gap:6px; background:rgba(13,74,64,0.92); border:1.5px solid rgba(77,217,184,0.35); border-radius:999px; padding:7px 14px 7px 10px; color:white; font-size:.82rem; font-weight:700; cursor:pointer; backdrop-filter:blur(10px); box-shadow:0 4px 20px rgba(0,0,0,.25); transition:all .2s; font-family:'Manrope',sans-serif; white-space:nowrap; }
+  .ph-lang-btn:hover { background:rgba(13,74,64,1); border-color:rgba(77,217,184,.65); }
+  .ph-lang-btn .ph-lang-flag { font-size:1rem; line-height:1; }
+  .ph-lang-btn .ph-lang-chevron { font-size:.6rem; opacity:.7; transition:transform .2s; }
+  .ph-lang-btn.open .ph-lang-chevron { transform:rotate(180deg); }
+  .ph-lang-dropdown { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1.5px solid #e2ede9; border-radius:14px; box-shadow:0 16px 48px rgba(0,0,0,.16); overflow:hidden; min-width:170px; animation:langDrop .18s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes langDrop { from{opacity:0;transform:translateY(-8px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .ph-lang-option { display:flex; align-items:center; gap:10px; width:100%; padding:11px 16px; font-size:.85rem; font-weight:600; color:#111; background:white; border:none; cursor:pointer; text-align:left; transition:background .15s; font-family:'Manrope',sans-serif; }
+  .ph-lang-option:hover { background:#f0faf7; }
+  .ph-lang-option.active { background:#e8f5f2; color:#0d4a40; }
+  .ph-lang-option .ph-lang-opt-flag { font-size:1.1rem; }
+  .ph-lang-option .ph-lang-opt-label { flex:1; }
+  .ph-lang-option .ph-lang-opt-check { color:#1a5c52; font-size:.8rem; }
+  .ph-lang-divider { height:1px; background:#e2ede9; margin:0; }
+  @media(max-width:480px){ .ph-lang-switcher{top:10px;right:10px} .ph-lang-btn{padding:6px 11px 6px 9px;font-size:.78rem} }
 `;
 
-function Navbar() {
+function LanguageSwitcher() {
   const { lang, setLang, t, langs } = useLang();
-  const [langOpen, setLangOpen] = useState(false);
-  const langRef = useRef(null);
-
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
   useEffect(() => {
-    function handler(e) {
-      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
-    }
+    function handler(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
   const current = LANGS[lang] || LANGS.en;
-
   return (
-   <nav className="ph-navbar">
-  {/* Logo */}
-  <a href="/" className="ph-navbar-logo">
-    
-    <img 
-      src="/PEZ.png" 
-      alt="PezaNyumba Logo" 
-      className="ph-navbar-logo-mark" 
-    />
-
-    <span className="ph-navbar-brand-text">PezaNyumba</span>
-  </a>
-
-
-      {/* Centre nav links */}
-      <div className="ph-navbar-center">
-        <a href="/" className="ph-nav-link active"><i className="fa fa-home" /> Home</a>
-        <a href="/hostels" className="ph-nav-link"><i className="fa fa-building" /> {t.navProperties}</a>
-        <a href="/about"      className="ph-nav-link"><i className="fa fa-info-circle" /> {t.navAbout}</a>
-        <a href="/contact"    className="ph-nav-link"><i className="fa fa-phone" /> {t.navContact}</a>
-      </div>
-
-      {/* Right side: lang + auth */}
-      <div className="ph-navbar-right">
-        {/* Language switcher pill — lives here, NOT fixed top-right */}
-        <div className="ph-lang-wrap" ref={langRef}>
-          <button
-            className={`ph-lang-pill${langOpen ? " open" : ""}`}
-            onClick={() => setLangOpen(o => !o)}
-            aria-label="Switch language"
-          >
-            <span className="ph-lp-flag">{current.flag}</span>
-            <span>{current.label}</span>
-            <span className="ph-lp-chevron">▼</span>
-          </button>
-          {langOpen && (
-            <div className="ph-lang-dropdown">
-              {langs.map((l, i) => (
-                <div key={l.code}>
-                  {i > 0 && <div className="ph-lang-divider" />}
-                  <button
-                    className={`ph-lang-option${lang === l.code ? " active" : ""}`}
-                    onClick={() => { setLang(l.code); setLangOpen(false); }}
-                  >
-                    <span className="ph-lo-flag">{l.flag}</span>
-                    <span className="ph-lo-label">{l.label}</span>
-                    {lang === l.code && <span className="ph-lo-check">✓</span>}
-                  </button>
-                </div>
-              ))}
+    <div className="ph-lang-switcher" ref={ref}>
+      <button className={`ph-lang-btn${open ? " open" : ""}`} onClick={() => setOpen(o => !o)} aria-label="Switch language">
+        <span className="ph-lang-flag">{current.flag}</span>
+        <span>{current.label}</span>
+        <span className="ph-lang-chevron">▼</span>
+      </button>
+      {open && (
+        <div className="ph-lang-dropdown">
+          {langs.map((l, i) => (
+            <div key={l.code}>
+              {i > 0 && <div className="ph-lang-divider" />}
+              <button className={`ph-lang-option${lang === l.code ? " active" : ""}`} onClick={() => { setLang(l.code); setOpen(false); }}>
+                <span className="ph-lang-opt-flag">{l.flag}</span>
+                <span className="ph-lang-opt-label">{l.label}</span>
+                {lang === l.code && <span className="ph-lang-opt-check">✓</span>}
+              </button>
             </div>
-          )}
+          ))}
         </div>
-
-        <a href="/login"    className="ph-navbar-login"><i className="fa fa-sign-in-alt" /> {t.navLogin}</a>
-        <a href="/register" className="ph-navbar-signup"><i className="fa fa-plus" /> {t.navRegister}</a>
-      </div>
-    </nav>
+      )}
+    </div>
   );
 }
 
@@ -636,26 +395,25 @@ function trackWhatsappClick(hostelId) {
   if (!hostelId) return;
   fetch(`${API_URL}/admin/hostels/${hostelId}/whatsapp-click`, { method: "POST" }).catch(() => {});
 }
-
 function normalise(p) {
   return {
-    _id:          p._id || p.id,
-    name:         p.name || p.title || "Unnamed Property",
-    description:  p.description || "",
-    type:         p.type || p.propertyType || p.property_type || "",
-    listingType:  p.listingType || p.listing_type || "For Rent",
-    price:        p.price || 0,
-    district:     p.district || p.location?.formattedAddress?.split(",").pop()?.trim() || "",
-    address:      p.address || p.location?.formattedAddress || "",
-    bedrooms:     p.bedrooms || p.beds || 0,
-    bathrooms:    p.bathrooms || p.baths || 0,
-    availableRooms: p.availableRooms || p.available_rooms || 0,
-    gender:       p.gender || "",
-    amenities:    p.amenities || [],
-    images:       p.images || p.photos || [],
-    contactPhone: p.contactPhone || p.owner?.phone || p.phone || "",
-    whatsapp:     p.whatsapp || p.contactPhone || p.owner?.phone || p.phone || "",
-    ownerName:    p.owner ? `${p.owner.firstName || ""} ${p.owner.lastName || ""}`.trim() : "",
+    _id:           p._id || p.id,
+    name:          p.name || p.title || "Unnamed Property",
+    description:   p.description || "",
+    type:          p.type || p.propertyType || p.property_type || "",
+    listingType:   p.listingType || p.listing_type || "For Rent",
+    price:         p.price || 0,
+    district:      p.district || p.location?.formattedAddress?.split(",").pop()?.trim() || "",
+    address:       p.address || p.location?.formattedAddress || "",
+    bedrooms:      p.bedrooms || p.beds || 0,
+    bathrooms:     p.bathrooms || p.baths || 0,
+    availableRooms:p.availableRooms || p.available_rooms || 0,
+    gender:        p.gender || "",
+    amenities:     p.amenities || [],
+    images:        p.images || p.photos || [],
+    contactPhone:  p.contactPhone || p.owner?.phone || p.phone || "",
+    whatsapp:      p.whatsapp || p.contactPhone || p.owner?.phone || p.phone || "",
+    ownerName:     p.owner ? `${p.owner.firstName || ""} ${p.owner.lastName || ""}`.trim() : "",
   };
 }
 function formatPrice(p, listingType, t) {
@@ -665,11 +423,84 @@ function formatPrice(p, listingType, t) {
 }
 
 /* ═══════════════════════════════════════
+   IMAGE LIGHTBOX
+═══════════════════════════════════════ */
+function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
+  const { t } = useLang();
+  const [idx, setIdx] = useState(startIndex);
+  const touchStartX = useRef(null);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setIdx(i => (i + 1) % images.length);
+      if (e.key === "ArrowLeft")  setIdx(i => (i - 1 + images.length) % images.length);
+    }
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [images.length, onClose]);
+
+  function onTouchStart(e) { touchStartX.current = e.touches[0].clientX; }
+  function onTouchEnd(e) {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) setIdx(i => dx < 0 ? (i + 1) % images.length : (i - 1 + images.length) % images.length);
+    touchStartX.current = null;
+  }
+
+  return (
+    <div className="ph-lightbox-overlay" onClick={e => e.target === e.currentTarget && onClose()} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="ph-lightbox-box">
+        {/* Header */}
+        <div className="ph-lightbox-header">
+          <div className="ph-lightbox-title">
+            <i className="fa fa-images" style={{color:"var(--teal)",marginRight:"8px"}} />
+            <span>{propertyName}</span>
+          </div>
+          <div className="ph-lightbox-counter">{idx + 1} {t.lightboxOf} {images.length}</div>
+          <button className="ph-lightbox-close" onClick={onClose} aria-label="Close"><i className="fa fa-times" /></button>
+        </div>
+
+        {/* Main image */}
+        <div className="ph-lightbox-main">
+          {images.length > 1 && (
+            <button className="ph-lightbox-nav ph-lightbox-prev" onClick={() => setIdx(i => (i - 1 + images.length) % images.length)}>
+              <i className="fa fa-chevron-left" />
+            </button>
+          )}
+          <img src={images[idx]} alt={`${propertyName} — photo ${idx + 1}`} className="ph-lightbox-img" />
+          {images.length > 1 && (
+            <button className="ph-lightbox-nav ph-lightbox-next" onClick={() => setIdx(i => (i + 1) % images.length)}>
+              <i className="fa fa-chevron-right" />
+            </button>
+          )}
+        </div>
+
+        {/* Thumbnails strip */}
+        {images.length > 1 && (
+          <div className="ph-lightbox-thumbs">
+            {images.map((src, i) => (
+              <button key={i} className={`ph-lightbox-thumb${idx === i ? " active" : ""}`} onClick={() => setIdx(i)}>
+                <img src={src} alt={`thumb ${i + 1}`} />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    STYLES
 ═══════════════════════════════════════ */
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
     --teal-dark:#0d4a40; --teal:#1a5c52; --teal-mid:#2d8a72;
     --teal-light:#e8f5f2; --teal-pale:#f0faf7;
@@ -677,22 +508,36 @@ const styles = `
     --dark:#0a0a0a; --mid:#4b5563; --light-border:#e2ede9;
     --radius:14px; --green-check:#22c55e; --wa:#25D366;
   }
-  html { scroll-behavior: smooth; }
-  body { font-family:'Manrope',sans-serif; color:var(--dark); background:#fff; overflow-x:hidden; padding-top:60px; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Manrope',sans-serif; color:var(--dark); background:#fff; overflow-x:hidden; }
   a { text-decoration:none; color:inherit; }
   button { font-family:inherit; cursor:pointer; border:none; background:none; padding:0; }
 
-  .ph-hero {
-    min-height:100vh; width:100%;
-    background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
-    background-size:cover; background-position:center; background-attachment:fixed;
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    text-align:center; padding:6rem 1.2rem 4rem; position:relative; overflow:hidden;
-  }
-  .ph-hero::before {
-    content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
-    background:linear-gradient(160deg,rgba(5,22,10,.78) 0%,rgba(10,40,25,.72) 50%,rgba(5,30,18,.80) 100%);
-  }
+  /* ── LIGHTBOX ── */
+  .ph-lightbox-overlay { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:10000; display:flex; align-items:center; justify-content:center; animation:fadeIn .2s ease; }
+  .ph-lightbox-box { background:#111; border-radius:16px; overflow:hidden; max-width:900px; width:calc(100vw - 2rem); max-height:calc(100vh - 2rem); display:flex; flex-direction:column; box-shadow:0 32px 80px rgba(0,0,0,.6); }
+  .ph-lightbox-header { display:flex; align-items:center; gap:.75rem; padding:.9rem 1.2rem; background:#1a1a1a; border-bottom:1px solid #2a2a2a; flex-shrink:0; }
+  .ph-lightbox-title { flex:1; font-size:.88rem; font-weight:700; color:white; display:flex; align-items:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ph-lightbox-counter { font-size:.78rem; font-weight:600; color:rgba(255,255,255,.45); background:rgba(255,255,255,.08); padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .ph-lightbox-close { width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:rgba(255,255,255,.7); font-size:.9rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; flex-shrink:0; }
+  .ph-lightbox-close:hover { background:#dc2626; color:white; }
+  .ph-lightbox-main { position:relative; flex:1; display:flex; align-items:center; justify-content:center; background:#000; min-height:0; overflow:hidden; }
+  .ph-lightbox-img { max-width:100%; max-height:60vh; object-fit:contain; display:block; }
+  .ph-lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.15); border:none; color:white; font-size:1rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; z-index:2; backdrop-filter:blur(4px); }
+  .ph-lightbox-nav:hover { background:rgba(255,255,255,.3); }
+  .ph-lightbox-prev { left:12px; }
+  .ph-lightbox-next { right:12px; }
+  .ph-lightbox-thumbs { display:flex; gap:6px; padding:.75rem 1rem; background:#1a1a1a; overflow-x:auto; flex-shrink:0; }
+  .ph-lightbox-thumbs::-webkit-scrollbar { height:4px; }
+  .ph-lightbox-thumbs::-webkit-scrollbar-thumb { background:#333; border-radius:2px; }
+  .ph-lightbox-thumb { flex-shrink:0; width:60px; height:44px; border-radius:6px; overflow:hidden; border:2px solid transparent; cursor:pointer; transition:border-color .2s; }
+  .ph-lightbox-thumb.active { border-color:var(--teal-mid); }
+  .ph-lightbox-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  @media(max-width:600px) { .ph-lightbox-img{max-height:50vh} .ph-lightbox-thumb{width:48px;height:36px} }
+
+  /* ── HERO ── */
+  .ph-hero { min-height:100vh; width:100%; background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80'); background-size:cover; background-position:center; background-attachment:fixed; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:6rem 1.2rem 4rem; position:relative; overflow:hidden; }
+  .ph-hero::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(160deg,rgba(5,22,10,.78) 0%,rgba(10,40,25,.72) 50%,rgba(5,30,18,.80) 100%); }
   .ph-hero-wrapper { display:flex; align-items:center; justify-content:center; gap:3rem; width:100%; max-width:1200px; position:relative; z-index:2; }
   .ph-hero > * { position:relative; z-index:2; }
   .ph-hero-left { flex:1; min-width:0; text-align:left; }
@@ -755,16 +600,22 @@ const styles = `
     .ph-btn-primary,.ph-btn-ghost{width:100%;max-width:300px;justify-content:center}
     .ph-hero-stats{gap:1.5rem}
   }
+
+  /* ── TRUST BAR ── */
   .ph-trust-bar { background:var(--cream); border-top:1px solid var(--light-border); border-bottom:1px solid var(--light-border); padding:1.2rem; }
   .ph-trust-bar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:2rem; }
   .ph-trust-item { display:flex; align-items:center; gap:8px; font-size:.84rem; font-weight:600; color:var(--mid); }
   .ph-trust-item i { font-size:1.1rem; color:var(--teal); }
   .ph-trust-divider { width:1px; height:28px; background:var(--light-border); }
   @media(max-width:640px){.ph-trust-divider{display:none}}
+
+  /* ── SECTION HEADERS ── */
   .ph-sec-label { font-size:.73rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--teal-mid); text-align:center; margin-bottom:.5rem; }
   .ph-sec-title { font-family:'Poppins',sans-serif; font-size:clamp(1.6rem,3.5vw,2.3rem); font-weight:800; text-align:center; line-height:1.15; margin-bottom:.6rem; }
   .ph-sec-title em { font-style:normal; color:var(--teal-mid); }
   .ph-sec-sub { text-align:center; font-size:.93rem; line-height:1.8; color:var(--mid); max-width:520px; margin:0 auto 2.5rem; }
+
+  /* ── DISTRICTS ── */
   .ph-dist-sec { background:var(--gray-bg); padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-dist-search { display:flex; gap:.6rem; max-width:640px; margin:0 auto 2.5rem; flex-wrap:wrap; }
   .ph-dist-search input,.ph-dist-search select { flex:1; min-width:160px; padding:.65rem 1rem; border:1.5px solid #d1d5db; border-radius:10px; font-size:.88rem; background:white; color:#111; outline:none; font-family:inherit; transition:border .2s; }
@@ -777,7 +628,11 @@ const styles = `
   .ph-slider-track.no-transition { transition:none !important; }
   .ph-slide-card { flex-shrink:0; width:240px; border-radius:16px; overflow:hidden; background:white; border:1.5px solid var(--light-border); cursor:pointer; text-align:left; padding:0; transition:transform .25s,box-shadow .25s; box-shadow:0 2px 12px rgba(0,0,0,.06); }
   .ph-slide-card:hover { transform:translateY(-6px); box-shadow:0 18px 40px rgba(13,74,64,.18); border-color:var(--teal-mid); }
-  .ph-slide-img { width:100%; height:155px; object-fit:cover; display:block; pointer-events:none; }
+  .ph-slide-img-wrap { position:relative; width:100%; height:155px; overflow:hidden; }
+  .ph-slide-img { width:100%; height:155px; object-fit:cover; display:block; pointer-events:none; transition:transform .35s; }
+  .ph-slide-card:hover .ph-slide-img { transform:scale(1.05); }
+  .ph-slide-img-btn { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,.55); border:none; border-radius:8px; color:white; font-size:.7rem; font-weight:700; padding:4px 9px; display:flex; align-items:center; gap:4px; cursor:pointer; backdrop-filter:blur(4px); transition:background .2s; font-family:'Manrope',sans-serif; z-index:2; }
+  .ph-slide-img-btn:hover { background:rgba(13,74,64,.85); }
   .ph-slide-body { padding:.95rem 1rem; }
   .ph-slide-district { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:1.8px; color:var(--teal-mid); margin-bottom:.3rem; }
   .ph-slide-name { font-size:.93rem; font-weight:800; color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.25rem; }
@@ -792,9 +647,11 @@ const styles = `
   .ph-prop-nav-btn { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--teal); background:white; color:var(--teal); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
   .ph-prop-nav-btn:hover { background:var(--teal); color:white; }
   .ph-prop-empty { text-align:center; padding:2.5rem; color:var(--mid); font-size:.9rem; background:white; border-radius:var(--radius); border:1.5px dashed var(--light-border); }
-  @media(max-width:1100px){ .ph-slide-card{ width: calc((100vw - 3.6rem) / 3) } }
-  @media(max-width:768px)  { .ph-slide-card{ width: calc((100vw - 3rem) / 2) } }
-  @media(max-width:520px)  { .ph-slide-card{ width: calc(100vw - 2.4rem) } }
+  @media(max-width:1100px){ .ph-slide-card{ width:calc((100vw - 3.6rem) / 3) } }
+  @media(max-width:768px)  { .ph-slide-card{ width:calc((100vw - 3rem) / 2) } }
+  @media(max-width:520px)  { .ph-slide-card{ width:calc(100vw - 2.4rem) } }
+
+  /* ── TYPES ── */
   .ph-types-sec { background:white; padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1rem; max-width:1100px; margin:0 auto; }
   .ph-type-card { background:var(--teal-pale); border:1.5px solid var(--light-border); border-radius:var(--radius); padding:1.8rem 1rem; text-align:center; color:var(--dark); transition:all .25s; }
@@ -805,6 +662,8 @@ const styles = `
   .ph-type-card span { font-size:.72rem; color:var(--mid); transition:color .25s; }
   .ph-type-card:hover span { color:rgba(255,255,255,.80); }
   @media(max-width:520px){.ph-types-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ── BROWSE DRAWER ── */
   .ph-browse-overlay { position:fixed; inset:0; background:rgba(5,22,10,.65); z-index:1000; display:flex; align-items:flex-end; justify-content:center; backdrop-filter:blur(4px); animation:fadeIn .25s ease; }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   .ph-browse-drawer { background:white; width:100%; max-width:1100px; max-height:90vh; border-radius:20px 20px 0 0; display:flex; flex-direction:column; animation:slideUp .3s cubic-bezier(.34,1.56,.64,1); overflow:hidden; }
@@ -830,17 +689,20 @@ const styles = `
   .ph-browse-footer strong { color:var(--teal-dark); }
   .ph-browse-see-all { background:var(--teal); color:white; padding:.55rem 1.4rem; border-radius:8px; font-size:.85rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; transition:background .2s; text-decoration:none; border:none; cursor:pointer; font-family:inherit; }
   .ph-browse-see-all:hover{background:var(--teal-dark)}
+
+  /* ── PROPERTY CARD ── */
   .ph-prop-card { border:1.5px solid var(--light-border); border-radius:var(--radius); overflow:hidden; background:white; transition:all .25s; box-shadow:0 2px 8px rgba(0,0,0,.05); display:flex; flex-direction:column; }
   .ph-prop-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(13,74,64,.12); border-color:var(--teal-mid); }
-  .ph-prop-img-wrap { position:relative; height:170px; overflow:hidden; background:var(--teal-light); flex-shrink:0; }
+  .ph-prop-img-wrap { position:relative; height:170px; overflow:hidden; background:var(--teal-light); flex-shrink:0; cursor:pointer; }
   .ph-prop-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s; }
   .ph-prop-card:hover .ph-prop-img-wrap img { transform:scale(1.05); }
   .ph-prop-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:var(--teal-mid); opacity:.4; }
-  .ph-prop-badges { position:absolute; top:10px; left:10px; display:flex; gap:5px; flex-wrap:wrap; }
+  .ph-prop-badges { position:absolute; top:10px; left:10px; display:flex; gap:5px; flex-wrap:wrap; z-index:1; }
   .ph-prop-badge { font-size:.66rem; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.5px; }
   .ph-prop-badge.rent { background:var(--teal); color:white; }
   .ph-prop-badge.sale { background:#0891b2; color:white; }
   .ph-prop-badge.type { background:rgba(255,255,255,.92); color:#374151; }
+  .ph-prop-img-count { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,.55); border-radius:8px; color:white; font-size:.7rem; font-weight:700; padding:4px 9px; display:flex; align-items:center; gap:4px; z-index:1; backdrop-filter:blur(4px); }
   .ph-prop-body { padding:1rem; flex:1; }
   .ph-prop-name { font-size:.95rem; font-weight:800; color:var(--dark); margin-bottom:.3rem; line-height:1.3; }
   .ph-prop-loc  { font-size:.76rem; color:var(--mid); display:flex; align-items:center; gap:4px; margin-bottom:.6rem; }
@@ -854,6 +716,8 @@ const styles = `
   .ph-prop-wa:hover { background:#128c4e; }
   .ph-prop-call { background:var(--teal-light); color:var(--teal); border:1.5px solid var(--light-border); border-radius:8px; padding:.5rem .75rem; font-size:.78rem; font-weight:700; display:flex; align-items:center; gap:5px; text-decoration:none; transition:all .18s; }
   .ph-prop-call:hover { background:var(--teal); color:white; }
+
+  /* ── LOCATIONS ── */
   .ph-locs-sec { background:var(--teal-pale); padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-locs-grid { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:220px 220px; gap:1rem; max-width:1100px; margin:2rem auto 0; }
   .ph-loc-card { border-radius:var(--radius); overflow:hidden; position:relative; border:none; background:transparent; padding:0; cursor:pointer; }
@@ -866,6 +730,8 @@ const styles = `
   .ph-loc-overlay p     { color:rgba(255,255,255,.65); font-size:.8rem; }
   @media(max-width:768px){ .ph-locs-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto} .ph-loc-card.big{grid-row:auto} .ph-loc-card{height:200px} }
   @media(max-width:520px){ .ph-locs-grid{grid-template-columns:1fr} .ph-loc-card{height:180px} }
+
+  /* ── DUAL ── */
   .ph-dual-sec { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:2rem; padding:clamp(3rem,6vw,5.5rem) 1.2rem; max-width:1100px; margin:0 auto; }
   .ph-dual-card { background:white; padding:2.5rem 2rem; border-radius:var(--radius); text-align:center; box-shadow:0 8px 28px rgba(13,74,64,.08); border:1px solid var(--light-border); transition:all .3s; display:flex; flex-direction:column; align-items:center; }
   .ph-dual-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(13,74,64,.14); }
@@ -877,6 +743,8 @@ const styles = `
   .ph-dual-note { font-size:.75rem; color:var(--teal-mid); font-weight:700; background:var(--teal-light); padding:.35rem .9rem; border-radius:20px; margin-bottom:1.2rem; }
   .ph-btn-outline { border:2px solid var(--teal); color:var(--teal); background:transparent; padding:.55rem 1.4rem; border-radius:8px; font-size:.88rem; font-weight:700; transition:all .2s; display:inline-block; text-decoration:none; }
   .ph-btn-outline:hover { background:var(--teal); color:white; }
+
+  /* ── FEATURES ── */
   .ph-features-sec { background:var(--gray-bg); padding:clamp(3rem,6vw,5.5rem) 1.2rem; text-align:center; }
   .ph-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; max-width:1100px; margin:2.5rem auto 0; }
   .ph-feature-card { background:white; padding:2rem; border-radius:var(--radius); box-shadow:0 6px 20px rgba(13,74,64,.07); transition:transform .3s; border:1px solid var(--light-border); }
@@ -884,6 +752,8 @@ const styles = `
   .ph-feature-card i { font-size:2rem; color:var(--teal); display:block; margin-bottom:1rem; }
   .ph-feature-card h4 { font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:.5rem; }
   .ph-feature-card p  { font-size:.85rem; color:var(--mid); line-height:1.6; }
+
+  /* ── FAQ ── */
   .ph-faq { position:relative; padding:clamp(3rem,6vw,5.5rem) 1.2rem clamp(4rem,8vw,6rem); background:var(--teal-pale); text-align:center; overflow:hidden; }
   .ph-faq-qmark { position:absolute; right:4%; top:50%; transform:translateY(-50%); font-size:clamp(8rem,20vw,22rem); font-weight:900; color:rgba(26,92,82,.05); pointer-events:none; z-index:1; font-family:'Poppins',sans-serif; line-height:1; }
   .ph-faq-inner { position:relative; z-index:2; }
@@ -904,12 +774,16 @@ const styles = `
   .ph-acc.open .ph-acc-body { max-height:400px; padding:1.2rem 1.8rem; }
   .ph-acc-body p { font-size:.95rem; line-height:1.8; color:var(--mid); font-family:'Poppins',sans-serif; }
   @media(max-width:520px){ .ph-acc-plus{width:44px} .ph-acc-label{padding:0 1rem;min-height:48px} }
+
+  /* ── CTA ── */
   .ph-cta-sec { background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 100%); color:white; text-align:center; padding:clamp(3rem,6vw,5.5rem) 1.2rem; }
   .ph-cta-sec h2 { font-size:clamp(1.5rem,3vw,2rem); font-weight:800; margin-bottom:.75rem; color:white; }
   .ph-cta-sec p  { color:rgba(255,255,255,.80); margin-bottom:2rem; font-size:1rem; }
   .ph-cta-note { font-size:.8rem; color:rgba(255,255,255,.55); margin-top:1rem; }
   .ph-cta-sec .ph-btn-primary { background:white; color:var(--teal-dark); box-shadow:0 4px 20px rgba(0,0,0,.2); }
   .ph-cta-sec .ph-btn-primary:hover { background:var(--teal-pale); }
+
+  /* ── FOOTER ── */
   .ph-footer { background:#0f1a17; color:rgba(255,255,255,.5); padding:clamp(2rem,5vw,3.5rem) 1.2rem 1.5rem; }
   .ph-footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:2rem; max-width:1100px; margin:0 auto 2rem; }
   .ph-footer-brand strong { display:block; color:white; font-size:1rem; font-weight:800; margin-bottom:.5rem; }
@@ -923,7 +797,7 @@ const styles = `
 `;
 
 /* ═══════════════════════════════════════
-   PROPERTY CARD
+   PROPERTY CARD  (with image lightbox)
 ═══════════════════════════════════════ */
 function PropertyCard({ property }) {
   const { t } = useLang();
@@ -932,10 +806,16 @@ function PropertyCard({ property }) {
   const isForSale = p.listingType.toLowerCase().includes("sale");
   const wa        = waLink(p.whatsapp);
   const call      = p.contactPhone ? `tel:${p.contactPhone}` : null;
+  const [lightbox, setLightbox] = useState(false);
 
   return (
     <div className="ph-prop-card">
-      <div className="ph-prop-img-wrap">
+      {/* ── Image — click opens lightbox ── */}
+      <div
+        className="ph-prop-img-wrap"
+        onClick={() => p.images.length > 0 && setLightbox(true)}
+        title={p.images.length > 0 ? "View all photos" : undefined}
+      >
         {imgSrc
           ? <img src={imgSrc} alt={p.name} loading="lazy" />
           : <div className="ph-prop-no-img"><i className="fa fa-home" /></div>
@@ -946,7 +826,13 @@ function PropertyCard({ property }) {
           </span>
           {p.type && <span className="ph-prop-badge type">{p.type}</span>}
         </div>
+        {p.images.length > 1 && (
+          <div className="ph-prop-img-count">
+            <i className="fa fa-images" /> {p.images.length}
+          </div>
+        )}
       </div>
+
       <div className="ph-prop-body">
         <div className="ph-prop-name">{p.name}</div>
         <div className="ph-prop-loc">
@@ -955,25 +841,34 @@ function PropertyCard({ property }) {
         </div>
         <div className="ph-prop-price">{formatPrice(p.price, p.listingType, t)}</div>
         <div className="ph-prop-meta">
-          {p.bedrooms      > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
-          {p.bathrooms     > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath"      /> {p.bathrooms} {t.bath}</span>}
-          {p.availableRooms> 0 && <span className="ph-prop-meta-item"><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
-          {p.gender              && <span className="ph-prop-meta-item"><i className="fa fa-user"    /> {p.gender}</span>}
+          {p.bedrooms       > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
+          {p.bathrooms      > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath"      /> {p.bathrooms} {t.bath}</span>}
+          {p.availableRooms > 0 && <span className="ph-prop-meta-item"><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
+          {p.gender              && <span className="ph-prop-meta-item"><i className="fa fa-user"     /> {p.gender}</span>}
         </div>
       </div>
+
       <div className="ph-prop-actions">
         {wa   && <a className="ph-prop-wa"   href={wa}   target="_blank" rel="noopener noreferrer" onClick={() => trackWhatsappClick(p._id)}><i className="fab fa-whatsapp" /> {t.waBtn}</a>}
         {call && <a className="ph-prop-call" href={call}><i className="fa fa-phone" /> {t.callBtn}</a>}
         {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
       </div>
+
+      {/* ── Lightbox ── */}
+      {lightbox && p.images.length > 0 && (
+        <ImageLightbox
+          images={p.images}
+          startIndex={0}
+          propertyName={p.name}
+          onClose={() => setLightbox(false)}
+        />
+      )}
     </div>
   );
 }
 
 /* ═══════════════════════════════════════
    BROWSE DRAWER
-   FIX: "View All" now links to
-   /properties?district=X or ?type=X
 ═══════════════════════════════════════ */
 function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties }) {
   const { t } = useLang();
@@ -1003,8 +898,8 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
       .finally(() => setLoading(false));
   }, [filter, filterValue, allProperties]);
 
-  // ✅ Build the correct "View All" URL that goes to /properties
-  const viewAllUrl = filter === "district"
+  /* ── FIX: View All navigates to /properties with correct query params ── */
+  const viewAllHref = filter === "district"
     ? `/properties?district=${encodeURIComponent(filterValue)}`
     : `/properties?type=${encodeURIComponent(filterValue)}`;
 
@@ -1021,6 +916,7 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
           </div>
           <button className="ph-browse-close" onClick={onClose}>✕</button>
         </div>
+
         <div className="ph-browse-body">
           {loading ? (
             <div className="ph-browse-loading"><div className="ph-spinner" /><span>{t.drawerLoading}</span></div>
@@ -1036,6 +932,8 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
             </div>
           )}
         </div>
+
+        {/* ── View All: hard navigation to /properties page ── */}
         {!loading && properties.length > 0 && (
           <div className="ph-browse-footer">
             <p>
@@ -1044,8 +942,7 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
                 ? `${t.drawerPropsIn} ${filterValue}`
                 : `${filterValue} ${t.drawerListings}`}
             </p>
-            {/* ✅ Fixed: points to /properties with correct filter param */}
-            <a href={viewAllUrl} className="ph-browse-see-all">
+            <a href={viewAllHref} className="ph-browse-see-all">
               <i className="fa fa-th" /> {t.drawerViewAll}
             </a>
           </div>
@@ -1091,8 +988,8 @@ function Hero() {
           <h1>{t.heroH1a} <em>{t.heroH1em}</em><br />{t.heroH1b}</h1>
           <p className="ph-hero-sub">{t.heroSub}</p>
           <div className="ph-hero-btns">
-            {/* ✅ Browse button links to properties page */}
-            <a className="ph-btn-primary" href="/properties"><i className="fa fa-search" /> {t.heroBrowse}</a>
+            {/* ── FIX: Browse Properties scrolls to #browse-districts ── */}
+            <a className="ph-btn-primary" href="#browse-districts"><i className="fa fa-search" /> {t.heroBrowse}</a>
             <a className="ph-btn-ghost"   href="/register"><i className="fa fa-building" /> {t.heroList}</a>
           </div>
           <div className="ph-hero-trust">
@@ -1190,6 +1087,7 @@ function DistrictsSection({ allProperties }) {
   const [typeFilter, setTypeFilter] = useState("");
   const [current, setCurrent]       = useState(0);
   const [drawer, setDrawer]         = useState(null);
+  const [lightboxData, setLightboxData] = useState(null); // { images, name }
   const [visCount, setVisCount]     = useState(4);
   const timerRef    = useRef(null);
   const trackRef    = useRef(null);
@@ -1287,6 +1185,7 @@ function DistrictsSection({ allProperties }) {
             <i className="fa fa-search" /> {t.distBtn}
           </button>
         </div>
+
         <div className="ph-slider-viewport"
           onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
@@ -1301,19 +1200,45 @@ function DistrictsSection({ allProperties }) {
               {filtered.map((raw, i) => {
                 const p      = normalise(raw);
                 const imgSrc = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
+                const hasRealImages = p.images.length > 0;
                 return (
-                  <button key={p._id || i} className="ph-slide-card"
-                    onClick={() => { if (!isDragging.current) setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" }); }}
-                    onDragStart={e => e.preventDefault()}>
-                    <img src={imgSrc} alt={p.name} className="ph-slide-img" draggable="false"
-                      onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }} />
+                  <button
+                    key={p._id || i}
+                    className="ph-slide-card"
+                    onClick={() => {
+                      if (!isDragging.current) setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" });
+                    }}
+                    onDragStart={e => e.preventDefault()}
+                  >
+                    {/* ── Slide image with "View photos" overlay button ── */}
+                    <div className="ph-slide-img-wrap">
+                      <img
+                        src={imgSrc}
+                        alt={p.name}
+                        className="ph-slide-img"
+                        draggable="false"
+                        onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }}
+                      />
+                      {hasRealImages && (
+                        <button
+                          className="ph-slide-img-btn"
+                          onClick={e => {
+                            e.stopPropagation(); // don't open district drawer
+                            setLightboxData({ images: p.images, name: p.name });
+                          }}
+                        >
+                          <i className="fa fa-images" />
+                          {p.images.length > 1 ? `${p.images.length} photos` : "View photo"}
+                        </button>
+                      )}
+                    </div>
                     <div className="ph-slide-body">
                       <div className="ph-slide-district">{p.district || "Malawi"}</div>
                       <div className="ph-slide-name">{p.name}</div>
                       <div className="ph-slide-meta">
-                        {p.bedrooms      > 0 && <span><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
-                        {p.bathrooms     > 0 && <span><i className="fa fa-bath"      /> {p.bathrooms}</span>}
-                        {p.availableRooms> 0 && <span><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
+                        {p.bedrooms       > 0 && <span><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
+                        {p.bathrooms      > 0 && <span><i className="fa fa-bath"      /> {p.bathrooms}</span>}
+                        {p.availableRooms > 0 && <span><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
                       </div>
                       {p.type && <span className="ph-slide-badge">{p.type}</span>}
                       <div className="ph-slide-price">{formatPrice(p.price, p.listingType, t)}</div>
@@ -1324,6 +1249,7 @@ function DistrictsSection({ allProperties }) {
             </div>
           )}
         </div>
+
         {filtered.length > visCount && (
           <div className="ph-prop-nav">
             <div className="ph-prop-dots">
@@ -1339,9 +1265,26 @@ function DistrictsSection({ allProperties }) {
           </div>
         )}
       </section>
+
+      {/* District drawer */}
       {drawer && (
-        <BrowseDrawer filter="district" filterValue={drawer.label} filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)} allProperties={allProperties} />
+        <BrowseDrawer
+          filter="district"
+          filterValue={drawer.label}
+          filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)}
+          allProperties={allProperties}
+        />
+      )}
+
+      {/* Slider card image lightbox */}
+      {lightboxData && (
+        <ImageLightbox
+          images={lightboxData.images}
+          startIndex={0}
+          propertyName={lightboxData.name}
+          onClose={() => setLightboxData(null)}
+        />
       )}
     </>
   );
@@ -1376,8 +1319,13 @@ function TypesSection({ allProperties }) {
         </div>
       </section>
       {drawer && (
-        <BrowseDrawer filter="type" filterValue={drawer.label} filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)} allProperties={allProperties} />
+        <BrowseDrawer
+          filter="type"
+          filterValue={drawer.label}
+          filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)}
+          allProperties={allProperties}
+        />
       )}
     </>
   );
@@ -1425,8 +1373,7 @@ function DualSection() {
         <h3>{t.tenantTitle}</h3>
         <div className="ph-dual-note">{t.tenantNote}</div>
         <p>{t.tenantDesc}</p>
-        {/* ✅ Tenant browse links to /properties */}
-        <a href="/properties" className="ph-btn-outline">{t.tenantBtn}</a>
+        <a href="#browse-districts" className="ph-btn-outline">{t.tenantBtn}</a>
       </div>
       <div className="ph-dual-card">
         <div className="ph-dual-icon landlord"><i className="fa fa-building" /></div>
@@ -1511,11 +1458,10 @@ export default function Home() {
   return (
     <LangContext.Provider value={langState}>
       <style>{styles}</style>
-      <style>{navStyles}</style>
+      <style>{langSwitcherStyles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* ── Navbar (includes lang switcher — no longer fixed top-right) ── */}
-      <Navbar />
+      <LanguageSwitcher />
 
       <Hero />
       <TrustBar />
@@ -1532,15 +1478,20 @@ export default function Home() {
         <a href="/register" className="ph-btn-primary">
           <i className="fa fa-user-plus" /> {langState.t.ctaBtn}
         </a>
-        <p className="ph-cta-note">{langState.t.ctaNote}{" "}
+        <p className="ph-cta-note">
+          {langState.t.ctaNote}{" "}
           <a href="/login" style={{color:"#4dd9b8",fontWeight:700}}>{langState.t.ctaLogin}</a>
         </p>
       </section>
 
-
       {locDrawer && (
-        <BrowseDrawer filter="district" filterValue={locDrawer.name} filterIcon={locDrawer.icon}
-          onClose={() => setLocDrawer(null)} allProperties={allProperties} />
+        <BrowseDrawer
+          filter="district"
+          filterValue={locDrawer.name}
+          filterIcon={locDrawer.icon}
+          onClose={() => setLocDrawer(null)}
+          allProperties={allProperties}
+        />
       )}
     </LangContext.Provider>
   );

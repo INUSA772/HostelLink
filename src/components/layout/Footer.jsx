@@ -213,7 +213,7 @@ const Footer = () => {
               <h4>Contact</h4>
               <ul>
                 <li><span>forjiteckco@gmail.com</span></li>
-                <li><span>+265 920 943 91</span></li>
+                <li><span>0982094391/0986584136</span></li>
                 <li><Link to="/contact">WhatsApp</Link></li>
                 <li><span>Blantyre, Malawi</span></li>
               </ul>
