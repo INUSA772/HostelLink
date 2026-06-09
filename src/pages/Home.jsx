@@ -1843,10 +1843,10 @@ function DistrictsSection({ allProperties }) {
     setCurrent(0);
   }
 
-  useEffect(() => {
-    if (allProperties && allProperties.length > 0) applyFilter(allProperties, locSearch, typeFilter);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allProperties]);
+ useEffect(() => {
+  applyFilter(allProperties || [], locSearch, typeFilter);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [allProperties]);
 
   const handleSearch = () => applyFilter(allProperties || [], locSearch, typeFilter);
   const maxIdx = Math.max(0, filtered.length - visCount);
