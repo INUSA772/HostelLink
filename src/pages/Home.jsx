@@ -359,6 +359,9 @@ const styles = `
   button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; }
   img { max-width: 100%; }
 
+  /* ══════════════════════════════
+     NAVBAR — Mobile-first
+  ══════════════════════════════ */
   .pn-nav {
     position: sticky; top: 0; z-index: 900;
     background: #fff;
@@ -384,6 +387,7 @@ const styles = `
   .pn-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
   .pn-logo-text { font-size: 1.1rem; font-weight: 800; color: #0f1923; letter-spacing: -.3px; }
 
+  /* Desktop nav links — hidden on mobile */
   .pn-nav-links {
     display: none;
     align-items: center; gap: .15rem;
@@ -402,8 +406,10 @@ const styles = `
     background: var(--amber); border-radius: 2px;
   }
 
+  /* Right side controls */
   .pn-nav-right { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
 
+  /* Language pill — always visible */
   .pn-lang-pill {
     display: flex; align-items: center; gap: 5px;
     padding: .38rem .7rem;
@@ -416,6 +422,7 @@ const styles = `
   .pn-lang-pill:hover { border-color: #bbb; }
   .pn-lang-pill .chevron { font-size: .55rem; opacity: .6; }
 
+  /* Profile button — desktop only */
   .pn-profile-btn {
     display: none;
     align-items: center; gap: 7px;
@@ -433,6 +440,7 @@ const styles = `
     font-size: .8rem;
   }
 
+  /* Hamburger */
   .pn-hamburger {
     display: flex; flex-direction: column; gap: 5px;
     background: none; border: none; cursor: pointer;
@@ -448,6 +456,7 @@ const styles = `
   .pn-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
   .pn-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+  /* Mobile menu drawer */
   .pn-mobile-menu {
     position: fixed; top: 60px; left: 0; right: 0;
     background: #fff; border-bottom: 1px solid var(--border);
@@ -458,6 +467,7 @@ const styles = `
   .pn-mobile-menu.open { max-height: 600px; }
   .pn-mobile-menu-inner { padding: .75rem 1rem 1.25rem; }
 
+  /* Nav links in mobile menu */
   .pn-mobile-nav-links { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .75rem; }
   .pn-mobile-nav-link {
     display: flex; align-items: center; gap: 12px;
@@ -472,6 +482,7 @@ const styles = `
   .pn-mobile-nav-link.active i { color: var(--amber-dark); }
   .pn-mobile-divider { height: 1px; background: var(--border); margin: .5rem 0; }
 
+  /* Profile in mobile menu */
   .pn-mobile-profile {
     display: flex; align-items: center; gap: 12px;
     padding: .85rem 1rem; border-radius: 10px;
@@ -489,6 +500,7 @@ const styles = `
     font-size: .9rem; flex-shrink: 0;
   }
 
+  /* Desktop breakpoint */
   @media(min-width: 900px) {
     .pn-nav-inner { height: 68px; padding: 0 1.5rem; gap: 2rem; }
     .pn-logo { margin-right: 0; }
@@ -500,6 +512,7 @@ const styles = `
     .pn-mobile-menu { display: none; }
   }
 
+  /* Language dropdown */
   .ph-lang-switcher { position: relative; }
   .ph-lang-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
@@ -523,6 +536,9 @@ const styles = `
   .ph-lang-option .ph-lang-opt-check { color: var(--amber); font-size: .85rem; }
   .ph-lang-divider { height: 1px; background: #f0f0f0; margin: 0; }
 
+  /* ══════════════════════════════
+     LIGHTBOX
+  ══════════════════════════════ */
   .ph-lightbox-overlay { position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:10000; display:flex; align-items:center; justify-content:center; animation:fadeIn .2s ease; padding: .75rem; }
   .ph-lightbox-box { background:#111; border-radius:16px; overflow:hidden; max-width:900px; width:100%; max-height:calc(100vh - 1.5rem); display:flex; flex-direction:column; box-shadow:0 32px 80px rgba(0,0,0,.6); }
   .ph-lightbox-header { display:flex; align-items:center; gap:.75rem; padding:.9rem 1.2rem; background:#1a1a1a; border-bottom:1px solid #2a2a2a; flex-shrink:0; }
@@ -547,6 +563,9 @@ const styles = `
     .ph-lightbox-nav { width:36px; height:36px; }
   }
 
+  /* ══════════════════════════════
+     HERO — mobile-first
+  ══════════════════════════════ */
   .ph-hero {
     width: 100%; background: #fff;
     display: flex; align-items: center; justify-content: center;
@@ -559,6 +578,8 @@ const styles = `
     align-items: stretch; width: 100%; max-width: 1200px;
     gap: 0;
   }
+
+  /* Mobile hero content */
   .ph-hero-left {
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
@@ -638,8 +659,10 @@ const styles = `
   }
   .ph-hero-stat span { font-size: .68rem; color: var(--mid); font-weight: 500; line-height: 1.3; display: block; }
 
+  /* Hero image — hidden mobile, shown tablet+ */
   .ph-hero-right { display: none; }
 
+  /* Tablet */
   @media(min-width: 600px) {
     .ph-hero { padding: 3.5rem 2rem; }
     .ph-hero-btns { flex-direction: row; }
@@ -649,6 +672,7 @@ const styles = `
     .ph-hero-stat span { font-size: .74rem; }
   }
 
+  /* Desktop */
   @media(min-width: 1024px) {
     .ph-hero { padding: 0; min-height: 88vh; }
     .ph-hero-wrapper { flex-direction: row; min-height: 88vh; }
@@ -674,7 +698,10 @@ const styles = `
     }
   }
 
-  .ph-cards-mask { display: none; }
+  /* Animated cards — desktop only */
+  .ph-cards-mask {
+    display: none;
+  }
   @media(min-width: 1024px) {
     .ph-cards-mask {
       display: flex; position: absolute;
@@ -717,6 +744,9 @@ const styles = `
     .ph-anim-card.green  .ph-anim-icon { background: #059669; }
   }
 
+  /* ══════════════════════════════
+     TRUST BAR
+  ══════════════════════════════ */
   .ph-trust-bar { background: var(--navy); padding: 1.5rem 1.25rem; }
   .ph-trust-bar-inner {
     max-width: 1100px; margin: 0 auto;
@@ -738,6 +768,9 @@ const styles = `
     .ph-trust-bar { padding: 1.75rem 1.5rem; }
   }
 
+  /* ══════════════════════════════
+     SECTION HEADER
+  ══════════════════════════════ */
   .ph-sec-label {
     font-size: .7rem; font-weight: 700; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--amber-dark);
@@ -755,6 +788,9 @@ const styles = `
     font-weight: 500;
   }
 
+  /* ══════════════════════════════
+     DISTRICTS SECTION
+  ══════════════════════════════ */
   .ph-dist-sec {
     background: var(--off-white);
     padding: clamp(2.5rem, 6vw, 5rem) 1.25rem;
@@ -865,6 +901,9 @@ const styles = `
     border: 1.5px dashed var(--border);
   }
 
+  /* ══════════════════════════════
+     TYPES SECTION
+  ══════════════════════════════ */
   .ph-types-sec { background: #fff; padding: clamp(2.5rem, 6vw, 5rem) 1.25rem; }
   .ph-types-grid {
     display: grid;
@@ -888,6 +927,9 @@ const styles = `
   @media(min-width: 480px) { .ph-types-grid { grid-template-columns: repeat(3, 1fr); } }
   @media(min-width: 768px) { .ph-types-grid { grid-template-columns: repeat(6, 1fr); gap: 1rem; } .ph-type-card { padding: 1.75rem 1rem; } .ph-type-card i { font-size: 1.65rem; } .ph-type-card h4 { font-size: .93rem; } }
 
+  /* ══════════════════════════════
+     BROWSE DRAWER
+  ══════════════════════════════ */
   .ph-browse-overlay {
     position: fixed; inset: 0; background: rgba(15,25,35,.65); z-index: 1000;
     display: flex; align-items: flex-end; justify-content: center;
@@ -967,6 +1009,9 @@ const styles = `
   }
   .ph-browse-see-all:hover, .ph-browse-see-all:active { background: var(--navy-mid); }
 
+  /* ══════════════════════════════
+     PROPERTY CARD
+  ══════════════════════════════ */
   .ph-prop-card {
     border: 1.5px solid var(--border); border-radius: var(--radius-lg);
     overflow: hidden; background: white; transition: all .25s;
@@ -1001,6 +1046,7 @@ const styles = `
   .ph-prop-meta-item { font-size: .72rem; color: var(--mid); display: flex; align-items: center; gap: 3px; }
   .ph-prop-meta-item i { color: var(--amber-dark); }
   .ph-prop-actions { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; }
+  /* WhatsApp button — green */
   .ph-prop-wa {
     flex: 1; background: var(--wa-green); color: white; border: none;
     border-radius: 8px; padding: .6rem .5rem; font-size: .78rem; font-weight: 700;
@@ -1009,6 +1055,7 @@ const styles = `
     -webkit-tap-highlight-color: transparent;
   }
   .ph-prop-wa:hover, .ph-prop-wa:active { background: var(--wa-green-dark); }
+  /* Call button — also green */
   .ph-prop-call {
     background: var(--wa-green); color: white;
     border: none; border-radius: 8px; padding: .6rem .75rem;
@@ -1019,6 +1066,9 @@ const styles = `
   }
   .ph-prop-call:hover, .ph-prop-call:active { background: var(--wa-green-dark); }
 
+  /* ══════════════════════════════
+     LOCATIONS GRID
+  ══════════════════════════════ */
   .ph-locs-sec { background: var(--off-white); padding: clamp(2.5rem, 6vw, 5rem) 1.25rem; }
   .ph-locs-grid {
     display: grid;
@@ -1047,6 +1097,9 @@ const styles = `
     .ph-loc-card.big { grid-column: 1; grid-row: 1 / 3; height: auto; }
   }
 
+  /* ══════════════════════════════
+     DUAL
+  ══════════════════════════════ */
   .ph-dual-sec {
     display: grid; grid-template-columns: 1fr;
     gap: 1.25rem; padding: clamp(2.5rem, 6vw, 5rem) 1.25rem;
@@ -1075,6 +1128,9 @@ const styles = `
   .ph-btn-outline:hover, .ph-btn-outline:active { background: var(--navy); color: white; }
   @media(min-width: 640px) { .ph-dual-sec { grid-template-columns: repeat(2, 1fr); } }
 
+  /* ══════════════════════════════
+     FEATURES
+  ══════════════════════════════ */
   .ph-features-sec { background: #fff; padding: clamp(2.5rem, 6vw, 5rem) 1.25rem; text-align: center; }
   .ph-features-grid {
     display: grid; grid-template-columns: 1fr 1fr;
@@ -1093,6 +1149,9 @@ const styles = `
   .ph-feature-card p  { font-size: .82rem; color: var(--mid); line-height: 1.65; font-weight: 500; }
   @media(min-width: 640px) { .ph-features-grid { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; } .ph-feature-card { text-align: center; } .ph-feature-card i { font-size: 1.9rem; } }
 
+  /* ══════════════════════════════
+     FAQ
+  ══════════════════════════════ */
   .ph-faq {
     position: relative; padding: clamp(2.5rem, 6vw, 5rem) 1.25rem clamp(3rem, 8vw, 6rem);
     background: var(--navy); text-align: center; overflow: hidden;
@@ -1138,6 +1197,9 @@ const styles = `
   .ph-acc.open .ph-acc-body { max-height: 400px; padding: 1.1rem 1.4rem; }
   .ph-acc-body p { font-size: .88rem; line-height: 1.8; color: rgba(255,255,255,.7); font-family: var(--font); font-weight: 500; }
 
+  /* ══════════════════════════════
+     CTA SECTION
+  ══════════════════════════════ */
   .ph-cta-sec {
     background: var(--navy); color: white; text-align: center;
     padding: clamp(2.5rem, 6vw, 5rem) 1.25rem;
@@ -1189,6 +1251,9 @@ const styles = `
     .ph-cta-actions { align-items: flex-start; }
   }
 
+  /* ══════════════════════════════
+     FOOTER
+  ══════════════════════════════ */
   .ph-footer { background: #0a1118; color: rgba(255,255,255,.45); padding: clamp(2rem, 5vw, 4rem) 1.25rem 1.5rem; }
   .ph-footer-grid {
     display: grid; grid-template-columns: 1fr;
@@ -1344,7 +1409,7 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
 }
 
 /* ═══════════════════════════════════════
-   NAVBAR
+   NAVBAR — fully mobile responsive
 ═══════════════════════════════════════ */
 function Navbar() {
   const { lang, setLang, t, langs } = useLang();
@@ -1353,12 +1418,14 @@ function Navbar() {
   const langRef = useRef(null);
   const current = LANGS[lang] || LANGS.en;
 
+  // Close lang dropdown on outside click
   useEffect(() => {
     function h(e) { if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false); }
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
+  // Lock body scroll when menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -1376,16 +1443,21 @@ function Navbar() {
     <>
       <nav className="pn-nav">
         <div className="pn-nav-inner">
+          {/* Logo */}
           <a href="/" className="pn-logo">
             <div className="pn-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
             <span className="pn-logo-text">PezaNyumba</span>
           </a>
+
+          {/* Desktop nav links */}
           <div className="pn-nav-links">
             {navLinks.map(l => (
               <a key={l.href} href={l.href} className={`pn-nav-link${l.href === "/" ? " active" : ""}`}>{l.label}</a>
             ))}
           </div>
+
           <div className="pn-nav-right">
+            {/* Language — always visible */}
             <div className="ph-lang-switcher" ref={langRef}>
               <button className="pn-lang-pill" onClick={() => setLangOpen(o => !o)} aria-label="Switch language">
                 <img src="/web.png" alt="Language" style={{width:"18px",height:"18px",objectFit:"cover",borderRadius:"50%",verticalAlign:"middle"}} />
@@ -1407,11 +1479,15 @@ function Navbar() {
                 </div>
               )}
             </div>
+
+            {/* Profile — desktop only */}
             <button className="pn-profile-btn">
               <div className="pn-profile-avatar"><i className="fa fa-user" /></div>
               <span>My Profile</span>
               <span style={{fontSize:".6rem",opacity:.7}}>▼</span>
             </button>
+
+            {/* Hamburger — mobile only */}
             <button
               className={`pn-hamburger${menuOpen ? " open" : ""}`}
               onClick={() => setMenuOpen(o => !o)}
@@ -1423,6 +1499,8 @@ function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile menu */}
       <div className={`pn-mobile-menu${menuOpen ? " open" : ""}`} aria-hidden={!menuOpen}>
         <div className="pn-mobile-menu-inner">
           <div className="pn-mobile-nav-links">
@@ -1443,6 +1521,8 @@ function Navbar() {
           </a>
         </div>
       </div>
+
+      {/* Overlay to close menu */}
       {menuOpen && (
         <div
           style={{position:"fixed",inset:0,zIndex:898,background:"transparent"}}
@@ -1511,27 +1591,17 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
 
   useEffect(() => {
     setLoading(true);
-
-    // ── Try local filtering first ──────────────────────────────────────────
-    if (Array.isArray(allProperties) && allProperties.length > 0) {
+    if (allProperties && allProperties.length > 0) {
       const filtered = allProperties.filter(p => {
         const norm = normalise(p);
-        if (filter === "district") {
-          return norm.district.toLowerCase() === filterValue.toLowerCase();
-        }
-        if (filter === "type") {
-          const pt = norm.type.toLowerCase();
-          const fv = filterValue.toLowerCase();
-          return pt.includes(fv) || fv.includes(pt);
-        }
+        if (filter === "district") return norm.district.toLowerCase() === filterValue.toLowerCase();
+        if (filter === "type")     return norm.type.toLowerCase().includes(filterValue.toLowerCase()) || filterValue.toLowerCase().includes(norm.type.toLowerCase());
         return true;
       });
       setProperties(filtered);
       setLoading(false);
       return;
     }
-
-    // ── Fallback: fetch from API ───────────────────────────────────────────
     const param = filter === "district"
       ? `district=${encodeURIComponent(filterValue)}`
       : `type=${encodeURIComponent(filterValue)}`;
@@ -1546,6 +1616,7 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
     ? `/properties?district=${encodeURIComponent(filterValue)}`
     : `/properties?type=${encodeURIComponent(filterValue)}`;
 
+  // Lock scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -1626,6 +1697,7 @@ function Hero() {
     <section className="ph-hero">
       <div className="ph-hero-wrapper">
         <div className="ph-hero-left">
+          {/* Badge — sentence case */}
           <div className="ph-hero-badge">
             <i className="fa fa-home" /> {t.heroBadge}
           </div>
@@ -1652,6 +1724,8 @@ function Hero() {
             <div className="ph-hero-stat"><strong>🛡️</strong><span>{t.heroStat3}</span></div>
           </div>
         </div>
+
+        {/* Right: desktop only */}
         <div className="ph-hero-right">
           <img className="ph-hero-bg"
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85"
@@ -1714,7 +1788,7 @@ function TrustBar() {
 }
 
 /* ═══════════════════════════════════════
-   FALLBACK IMAGES
+   DISTRICTS SLIDER
 ═══════════════════════════════════════ */
 const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop",
@@ -1724,15 +1798,8 @@ const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop",
 ];
 
-/* ═══════════════════════════════════════
-   DISTRICTS SLIDER
-   ── KEY FIX: filtered initialises from
-      allProperties on first render, not
-      only when the prop changes.
-═══════════════════════════════════════ */
 function DistrictsSection({ allProperties }) {
   const { t } = useLang();
-
   const PROPERTY_TYPES_T = [
     { icon:"fa fa-home",        label:t.ptHouse },
     { icon:"fa fa-building",    label:t.ptFlat  },
@@ -1741,52 +1808,19 @@ function DistrictsSection({ allProperties }) {
     { icon:"fa fa-seedling",    label:t.ptPlot  },
     { icon:"fa fa-store",       label:t.ptComm  },
   ];
-
+  const [filtered, setFiltered]         = useState([]);
   const [locSearch, setLocSearch]       = useState("");
   const [typeFilter, setTypeFilter]     = useState("");
   const [current, setCurrent]           = useState(0);
   const [drawer, setDrawer]             = useState(null);
   const [lightboxData, setLightboxData] = useState(null);
   const [visCount, setVisCount]         = useState(1);
-
-  // ── FIXED: derive filtered directly from allProperties + search state ──
-  // This avoids the stale-closure / missed-update problem entirely.
-  const filtered = useCallback(() => {
-    const source = Array.isArray(allProperties) ? allProperties : [];
-    if (!locSearch && !typeFilter) return source;
-    return source.filter(raw => {
-      const p = normalise(raw);
-      const matchLoc  = !locSearch  || p.district.toLowerCase().includes(locSearch.toLowerCase())  || p.name.toLowerCase().includes(locSearch.toLowerCase());
-      const matchType = !typeFilter || p.type.toLowerCase().includes(typeFilter.toLowerCase());
-      return matchLoc && matchType;
-    });
-  }, [allProperties, locSearch, typeFilter])();
-
   const timerRef    = useRef(null);
   const trackRef    = useRef(null);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
   const dragStartX  = useRef(null);
   const isDragging  = useRef(false);
-
-  // Track active search state separately for the search button
-  const [activeSearch, setActiveSearch] = useState({ loc: "", type: "" });
-
-  // Recompute filtered using active search (committed on button click / Enter)
-  const displayList = useCallback(() => {
-    const source = Array.isArray(allProperties) ? allProperties : [];
-    if (!activeSearch.loc && !activeSearch.type) return source;
-    return source.filter(raw => {
-      const p = normalise(raw);
-      const matchLoc  = !activeSearch.loc  || p.district.toLowerCase().includes(activeSearch.loc.toLowerCase())  || p.name.toLowerCase().includes(activeSearch.loc.toLowerCase());
-      const matchType = !activeSearch.type || p.type.toLowerCase().includes(activeSearch.type.toLowerCase());
-      return matchLoc && matchType;
-    });
-  }, [allProperties, activeSearch])();
-
-  useEffect(() => {
-    setCurrent(0);
-  }, [allProperties, activeSearch]);
 
   useEffect(() => {
     function calc() {
@@ -1798,15 +1832,29 @@ function DistrictsSection({ allProperties }) {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
-  const maxIdx = Math.max(0, displayList.length - visCount);
+  function applyFilter(source, loc, type) {
+    const result = source.filter(raw => {
+      const p = normalise(raw);
+      const matchLoc  = !loc  || p.district.toLowerCase().includes(loc.toLowerCase()) || p.name.toLowerCase().includes(loc.toLowerCase());
+      const matchType = !type || p.type.toLowerCase().includes(type.toLowerCase());
+      return matchLoc && matchType;
+    });
+    setFiltered(result);
+    setCurrent(0);
+  }
 
-  const slideTo = useCallback((idx) => {
-    setCurrent(Math.max(0, Math.min(idx, maxIdx)));
-  }, [maxIdx]);
+useEffect(() => {
+  const source = allProperties || [];
+  console.log("[PezaNyumba] DistrictsSection applyFilter — source count:", source.length);
+  applyFilter(source, locSearch, typeFilter);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [allProperties]);
 
-  const next = useCallback(() => {
-    setCurrent(c => (c >= maxIdx ? 0 : c + 1));
-  }, [maxIdx]);
+  const handleSearch = () => applyFilter(allProperties || [], locSearch, typeFilter);
+  const maxIdx = Math.max(0, filtered.length - visCount);
+
+  const slideTo = useCallback((idx) => { setCurrent(Math.max(0, Math.min(idx, maxIdx))); }, [maxIdx]);
+  const next = useCallback(() => setCurrent(c => (c >= maxIdx ? 0 : c + 1)), [maxIdx]);
 
   const resetAuto = useCallback(() => {
     clearInterval(timerRef.current);
@@ -1814,19 +1862,15 @@ function DistrictsSection({ allProperties }) {
   }, [next]);
 
   useEffect(() => {
-    if (displayList.length > visCount) resetAuto();
+    if (filtered.length > visCount) resetAuto();
     return () => clearInterval(timerRef.current);
-  }, [displayList.length, visCount, resetAuto]);
+  }, [filtered, visCount, resetAuto]);
 
   function getCardW() {
     const track = trackRef.current;
     if (!track || !track.children[0]) return 260;
     const gap = parseFloat(getComputedStyle(track).gap) || 16;
     return track.children[0].getBoundingClientRect().width + gap;
-  }
-
-  function handleSearch() {
-    setActiveSearch({ loc: locSearch, type: typeFilter });
   }
 
   function onTouchStart(e) { touchStartX.current = e.touches[0].clientX; touchStartY.current = e.touches[0].clientY; }
@@ -1849,23 +1893,16 @@ function DistrictsSection({ allProperties }) {
   const translateX = current * getCardW();
   const DOT_COUNT  = Math.min(maxIdx + 1, 8);
 
-  const isLoading = !Array.isArray(allProperties);
-
   return (
     <>
       <section className="ph-dist-sec" id="browse-districts">
         <p className="ph-sec-label">{t.distLabel}</p>
         <h2 className="ph-sec-title">{t.distTitle1} <em>{t.distTitle2}</em></h2>
         <p className="ph-sec-sub">{t.distSub}</p>
-
         <div className="ph-dist-search">
-          <input
-            type="text"
-            placeholder={t.distSearch}
-            value={locSearch}
+          <input type="text" placeholder={t.distSearch} value={locSearch}
             onChange={e => setLocSearch(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleSearch()}
-          />
+            onKeyDown={e => e.key === "Enter" && handleSearch()} />
           <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
             <option value="">{t.distAllTypes}</option>
             {PROPERTY_TYPES_T.map(pt => <option key={pt.label} value={pt.label}>{pt.label}</option>)}
@@ -1875,57 +1912,31 @@ function DistrictsSection({ allProperties }) {
           </button>
         </div>
 
-        <div
-          className="ph-slider-viewport"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}
-        >
-          {isLoading || displayList.length === 0 ? (
+        <div className="ph-slider-viewport"
+          onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
+          onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}>
+          {filtered.length === 0 ? (
             <div className="ph-prop-empty">
               <i className="fa fa-search" style={{fontSize:"2rem",opacity:.3,display:"block",marginBottom:".75rem"}} />
-              {isLoading ? t.distLoading : t.distEmpty}
+              {allProperties && allProperties.length === 0 ? t.distLoading : t.distEmpty}
             </div>
           ) : (
-            <div
-              ref={trackRef}
-              className="ph-slider-track"
-              style={{ transform: `translateX(-${translateX}px)` }}
-            >
-              {displayList.map((raw, i) => {
+            <div ref={trackRef} className="ph-slider-track" style={{transform:`translateX(-${translateX}px)`}}>
+              {filtered.map((raw, i) => {
                 const p = normalise(raw);
                 const imgSrc = p.images[0] || FALLBACK_IMGS[i % FALLBACK_IMGS.length];
                 const hasRealImages = p.images.length > 0;
                 return (
-                  <button
-                    key={p._id || i}
-                    className="ph-slide-card"
-                    onClick={() => {
-                      if (!isDragging.current) {
-                        setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" });
-                      }
-                    }}
-                    onDragStart={e => e.preventDefault()}
-                  >
+                  <button key={p._id || i} className="ph-slide-card"
+                    onClick={() => { if (!isDragging.current) setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" }); }}
+                    onDragStart={e => e.preventDefault()}>
                     <div className="ph-slide-img-wrap">
-                      <img
-                        src={imgSrc}
-                        alt={p.name}
-                        className="ph-slide-img"
-                        draggable="false"
-                        onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }}
-                      />
+                      <img src={imgSrc} alt={p.name} className="ph-slide-img" draggable="false"
+                        onError={e => { e.target.src = FALLBACK_IMGS[i % FALLBACK_IMGS.length]; }} />
                       {hasRealImages && (
-                        <button
-                          className="ph-slide-img-btn"
-                          onClick={e => {
-                            e.stopPropagation();
-                            setLightboxData({ images: p.images, name: p.name });
-                          }}
-                        >
+                        <button className="ph-slide-img-btn"
+                          onClick={e => { e.stopPropagation(); setLightboxData({ images: p.images, name: p.name }); }}>
                           <i className="fa fa-images" />
                           {p.images.length > 1 ? `${p.images.length} photos` : "View photo"}
                         </button>
@@ -1949,15 +1960,12 @@ function DistrictsSection({ allProperties }) {
           )}
         </div>
 
-        {displayList.length > visCount && (
+        {filtered.length > visCount && (
           <div className="ph-prop-nav">
             <div className="ph-prop-dots">
               {Array.from({ length: DOT_COUNT }).map((_, i) => (
-                <button
-                  key={i}
-                  className={`ph-prop-dot${current === i ? " active" : ""}`}
-                  onClick={() => { slideTo(i); resetAuto(); }}
-                />
+                <button key={i} className={`ph-prop-dot${current === i ? " active" : ""}`}
+                  onClick={() => { slideTo(i); resetAuto(); }} />
               ))}
             </div>
             <div className="ph-prop-nav-btns">
@@ -1969,21 +1977,12 @@ function DistrictsSection({ allProperties }) {
       </section>
 
       {drawer && (
-        <BrowseDrawer
-          filter="district"
-          filterValue={drawer.label}
-          filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)}
-          allProperties={allProperties}
-        />
+        <BrowseDrawer filter="district" filterValue={drawer.label} filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)} allProperties={allProperties} />
       )}
       {lightboxData && (
-        <ImageLightbox
-          images={lightboxData.images}
-          startIndex={0}
-          propertyName={lightboxData.name}
-          onClose={() => setLightboxData(null)}
-        />
+        <ImageLightbox images={lightboxData.images} startIndex={0} propertyName={lightboxData.name}
+          onClose={() => setLightboxData(null)} />
       )}
     </>
   );
@@ -2018,13 +2017,8 @@ function TypesSection({ allProperties }) {
         </div>
       </section>
       {drawer && (
-        <BrowseDrawer
-          filter="type"
-          filterValue={drawer.label}
-          filterIcon={drawer.icon}
-          onClose={() => setDrawer(null)}
-          allProperties={allProperties}
-        />
+        <BrowseDrawer filter="type" filterValue={drawer.label} filterIcon={drawer.icon}
+          onClose={() => setDrawer(null)} allProperties={allProperties} />
       )}
     </>
   );
@@ -2202,26 +2196,15 @@ function Footer({ t }) {
 ═══════════════════════════════════════ */
 export default function Home() {
   const langState = useLangState();
-
-  // null = loading, [] = loaded but empty, [...] = loaded with data
-  const [allProperties, setAllProperties] = useState(null);
+  const [allProperties, setAllProperties] = useState([]);
   const [locDrawer, setLocDrawer]         = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/properties?limit=500`)
       .then(r => r.json())
-      .then(data => {
-        const props = data.properties || data.data || [];
-        setAllProperties(props);
-      })
-      .catch(() => {
-        // On error still set to empty array so UI shows "no results" not spinner
-        setAllProperties([]);
-      });
+      .then(data => setAllProperties(data.properties || data.data || []))
+      .catch(() => {});
   }, []);
-
-  // Pass empty array while still loading so DistrictsSection shows loading state
-  const propertiesForSections = allProperties ?? [];
 
   return (
     <LangContext.Provider value={langState}>
@@ -2231,8 +2214,8 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
-      <DistrictsSection allProperties={propertiesForSections} />
-      <TypesSection     allProperties={propertiesForSections} />
+      <DistrictsSection allProperties={allProperties} />
+      <TypesSection allProperties={allProperties} />
       <LocationsSection onDistrictClick={l => setLocDrawer(l)} />
       <DualSection />
       <FeaturesSection />
@@ -2271,7 +2254,7 @@ export default function Home() {
           filterValue={locDrawer.name}
           filterIcon={locDrawer.icon}
           onClose={() => setLocDrawer(null)}
-          allProperties={propertiesForSections}
+          allProperties={allProperties}
         />
       )}
     </LangContext.Provider>
