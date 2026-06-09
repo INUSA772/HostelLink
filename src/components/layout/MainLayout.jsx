@@ -26,7 +26,10 @@ const NO_NAVBAR_PAGES = [
   '/',
   '/messages',
   '/hostels/',
+  '/login',
   '/properties',
+  '/login/',
+  '/register',
   '/admin',
 ];
 

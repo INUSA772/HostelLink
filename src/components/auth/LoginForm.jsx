@@ -8,50 +8,59 @@ import { handleApiError } from '../../utils/helpers';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 /* ─────────────────────────────────────────────
-   STYLES — identical to RegisterForm
+   STYLES — identical to RegisterForm (Navy/Amber theme)
 ───────────────────────────────────────────── */
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --teal:        #1a5c52;
-    --teal-dark:   #0d4a40;
-    --teal-mid:    #2d8a72;
-    --teal-light:  #e8f5f2;
+    --navy:        #0f1923;
+    --navy-mid:    #1a2e3d;
+    --amber:       #f5a623;
+    --amber-light: #fef3d8;
+    --amber-dark:  #d4870a;
+    --white:       #fff;
+    --off-white:   #f7f8fa;
+    --border:      #e8eaed;
     --text-dark:   #111827;
-    --text-mid:    #4b5563;
-    --border:      #e2ede9;
+    --text-mid:    #6b7280;
     --radius:      12px;
     --green:       #16a34a;
     --red:         #dc2626;
     --yellow:      #f59e0b;
     --wa:          #25D366;
+    --font:        'Plus Jakarta Sans', sans-serif;
   }
-  html, body, #root { height: 100%; font-family: 'Manrope', sans-serif; }
+  html, body, #root { height: 100%; font-family: var(--font); }
 
-  /* NAV */
+  /* ── NAV ── */
   .rp-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-    height: 58px; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; background: #fff;
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 1px 6px rgba(13,74,64,0.07);
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; background: var(--navy);
+    box-shadow: 0 2px 16px rgba(0,0,0,.25);
   }
-  .rp-bar-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-  .rp-bar-logo-img { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--teal-light); }
+  .rp-bar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .rp-bar-logo-img {
+    width: 36px; height: 36px; border-radius: 9px; overflow: hidden;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
   .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; }
-  .rp-bar-brand strong { display: block; font-size: 0.88rem; font-weight: 800; color: #0d4a40; }
-  .rp-bar-brand span { font-size: 0.56rem; color: #6b7280; letter-spacing: 0.4px; }
+  .rp-bar-brand strong { display: block; font-size: .92rem; font-weight: 800; color: #fff; letter-spacing: -.2px; }
+  .rp-bar-brand span   { font-size: .56rem; color: rgba(255,255,255,.45); letter-spacing: .6px; }
   .rp-bar-login {
-    color: #374151; font-size: 0.8rem; font-weight: 600;
-    border: 1.5px solid #d1d5db; padding: 0.28rem 0.85rem;
-    border-radius: 7px; cursor: pointer; text-decoration: none; transition: all 0.18s;
+    color: rgba(255,255,255,.8); font-size: .8rem; font-weight: 700;
+    border: 1.5px solid rgba(255,255,255,.2); padding: .32rem .9rem;
+    border-radius: 8px; cursor: pointer; text-decoration: none; transition: all .18s;
+    font-family: var(--font);
   }
-  .rp-bar-login:hover { border-color: var(--teal); color: var(--teal); }
+  .rp-bar-login:hover { border-color: var(--amber); color: var(--amber); }
 
-  /* FULL-SCREEN BG */
+  /* ── FULL-SCREEN BG ── */
   .rp-main {
-    position: fixed; top: 58px; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
     display: flex; align-items: center; justify-content: center;
     overflow-y: auto; padding: 1.2rem 1rem;
     background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
@@ -59,115 +68,148 @@ const styles = `
   }
   .rp-main::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(5,30,20,0.78) 0%, rgba(10,50,35,0.72) 100%);
+    background: linear-gradient(135deg, rgba(15,25,35,.88) 0%, rgba(26,46,61,.82) 100%);
     pointer-events: none;
   }
 
-  /* CARD */
+  /* ── CARD ── */
   .rp-card {
     position: relative; z-index: 2;
-    background: #fff; border-radius: 16px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.28);
     padding: 1.8rem 1.8rem 1.4rem;
     width: 400px; max-width: 100%;
   }
 
-  /* HEADER */
+  /* ── HEADER ── */
   .rp-hdr { text-align: center; margin-bottom: 1.2rem; }
-  .rp-hdr h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
-  .rp-hdr p  { font-size: 0.78rem; color: var(--text-mid); margin-top: 0.2rem; }
-  .rp-line   { width: 32px; height: 3px; background: var(--teal); border-radius: 2px; margin: 0.45rem auto 0; }
+  .rp-hdr h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); letter-spacing: -.3px; }
+  .rp-hdr p  { font-size: .78rem; color: var(--text-mid); margin-top: .2rem; }
+  .rp-line   { width: 36px; height: 3px; background: var(--amber); border-radius: 2px; margin: .45rem auto 0; }
 
-  /* ROLE PILLS */
-  .rp-role-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.35rem; }
-  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+  /* ── ROLE PILLS ── */
+  .rp-role-lbl {
+    font-size: .62rem; font-weight: 700; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: .5px;
+    display: block; margin-bottom: .35rem;
+  }
+  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1rem; }
   .rp-role-opt { position: relative; }
   .rp-role-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
   .rp-role-btn {
-    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-    padding: 0.55rem 0.5rem; border: 1.5px solid var(--border);
-    border-radius: 9px; cursor: pointer; font-size: 0.78rem;
-    font-weight: 700; color: var(--text-mid); background: #fafafa; transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
+    padding: .55rem .5rem; border: 1.5px solid var(--border);
+    border-radius: 9px; cursor: pointer; font-size: .78rem;
+    font-weight: 700; color: var(--text-mid); background: var(--off-white);
+    transition: all .18s; font-family: var(--font);
   }
-  .rp-role-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .rp-role-opt input:checked + .rp-role-btn { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+  .rp-role-btn:hover { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); }
+  .rp-role-opt input:checked + .rp-role-btn {
+    border-color: var(--amber); color: var(--amber-dark);
+    background: var(--amber-light);
+    box-shadow: 0 0 0 2px rgba(245,166,35,.2);
+  }
 
-  /* FORM FIELDS */
-  .rp-grp { margin-bottom: 0.75rem; }
+  /* ── FORM FIELDS ── */
+  .rp-grp { margin-bottom: .75rem; }
   .rp-lbl {
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.62rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 0.22rem;
+    font-size: .62rem; font-weight: 700; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: .4px; margin-bottom: .22rem;
   }
   .rp-wrap { position: relative; display: flex; align-items: center; }
-  .rp-ico    { position: absolute; left: 0.7rem; color: var(--teal); font-size: 0.78rem; pointer-events: none; z-index: 1; }
-  .rp-toggle { position: absolute; right: 0.7rem; color: #9ca3af; font-size: 0.78rem; cursor: pointer; z-index: 2; }
-  .rp-toggle:hover { color: var(--teal); }
+  .rp-ico    { position: absolute; left: .7rem; color: var(--amber-dark); font-size: .78rem; pointer-events: none; z-index: 1; }
+  .rp-toggle { position: absolute; right: .7rem; color: #9ca3af; font-size: .78rem; cursor: pointer; z-index: 2; }
+  .rp-toggle:hover { color: var(--amber-dark); }
   .rp-input {
     width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 0.52rem 0.75rem 0.52rem 2.1rem;
-    font-size: 0.8rem; font-family: 'Manrope', sans-serif;
-    color: var(--text-dark); font-weight: 500; background: #fafafa; outline: none;
-    transition: all 0.18s;
+    padding: .52rem .75rem .52rem 2.1rem;
+    font-size: .8rem; font-family: var(--font);
+    color: var(--text-dark); font-weight: 500; background: var(--off-white);
+    outline: none; transition: all .18s;
   }
-  .rp-input:focus { border-color: var(--teal); background: #fff; box-shadow: 0 0 0 3px rgba(26,92,82,0.09); }
-  .rp-input::placeholder { font-size: 0.73rem; color: #cbd5e1; }
+  .rp-input:focus {
+    border-color: var(--amber); background: #fff;
+    box-shadow: 0 0 0 3px rgba(245,166,35,.12);
+  }
+  .rp-input::placeholder { font-size: .73rem; color: #c3c8d0; }
 
-  /* REMEMBER / FORGOT */
-  .rp-row-flex { display: flex; justify-content: space-between; align-items: center; margin: 0.1rem 0 0.75rem; }
-  .rp-checkbox { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: var(--text-mid); cursor: pointer; }
-  .rp-checkbox input { width: 13px; height: 13px; accent-color: var(--teal); }
-  .rp-forgot { font-size: 0.7rem; color: var(--teal); text-decoration: none; font-weight: 700; }
-  .rp-forgot:hover { text-decoration: underline; }
+  /* ── REMEMBER / FORGOT ── */
+  .rp-row-flex {
+    display: flex; justify-content: space-between; align-items: center;
+    margin: .1rem 0 .75rem;
+  }
+  .rp-checkbox {
+    display: flex; align-items: center; gap: .4rem;
+    font-size: .7rem; color: var(--text-mid); cursor: pointer;
+  }
+  .rp-checkbox input { width: 13px; height: 13px; accent-color: var(--navy); }
+  .rp-forgot { font-size: .7rem; color: var(--amber-dark); text-decoration: none; font-weight: 700; }
+  .rp-forgot:hover { color: var(--amber); text-decoration: underline; }
 
-  /* CAPTCHA */
+  /* ── CAPTCHA ── */
   .rp-captcha {
     border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 0.5rem 0.75rem; background: #fafafa;
+    padding: .5rem .75rem; background: var(--off-white);
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 0.75rem; cursor: pointer;
+    margin-bottom: .75rem; cursor: pointer; transition: border-color .2s;
   }
-  .rp-cap-l { display: flex; align-items: center; gap: 0.5rem; }
-  .rp-cap-box { width: 16px; height: 16px; border: 2px solid #9ca3af; border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-  .rp-cap-box.on { background: var(--teal); border-color: var(--teal); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: 0.6rem; font-weight: 700; }
-  .rp-cap-txt { font-size: 0.74rem; font-weight: 600; color: var(--text-dark); }
-  .rp-spin { width: 11px; height: 11px; border: 2px solid #e5e7eb; border-top-color: var(--teal); border-radius: 50%; animation: rpspin 0.7s linear infinite; display: inline-block; }
+  .rp-captcha:hover { border-color: var(--amber); }
+  .rp-cap-l { display: flex; align-items: center; gap: .5rem; }
+  .rp-cap-box {
+    width: 16px; height: 16px; border: 2px solid #9ca3af;
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
+  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .6rem; font-weight: 700; }
+  .rp-cap-txt { font-size: .74rem; font-weight: 600; color: var(--text-dark); }
+  .rp-spin {
+    width: 11px; height: 11px; border: 2px solid #e5e7eb;
+    border-top-color: var(--amber); border-radius: 50%;
+    animation: rpspin .7s linear infinite; display: inline-block;
+  }
   @keyframes rpspin { to { transform: rotate(360deg); } }
-  .rp-cap-note { font-size: 0.48rem; color: #9ca3af; text-align: right; line-height: 1.3; }
+  .rp-cap-note { font-size: .48rem; color: #9ca3af; text-align: right; line-height: 1.3; }
 
-  /* SUBMIT */
+  /* ── SUBMIT ── */
   .rp-submit {
-    width: 100%; background: var(--teal); color: #fff; border: none;
-    cursor: pointer; padding: 0.68rem 1rem; border-radius: 9px;
-    font-size: 0.84rem; font-weight: 700; font-family: 'Manrope', sans-serif;
+    width: 100%; background: var(--navy); color: #fff; border: none;
+    cursor: pointer; padding: .7rem 1rem; border-radius: 9px;
+    font-size: .84rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 3px 12px rgba(26,92,82,0.28);
+    transition: background .2s, transform .15s, box-shadow .2s;
+    box-shadow: 0 4px 16px rgba(15,25,35,.28);
   }
-  .rp-submit:hover:not(:disabled) { background: var(--teal-dark); }
-  .rp-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-  .rp-submit-spin { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: rpspin 0.7s linear infinite; }
+  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,25,35,.35); }
+  .rp-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  .rp-submit-spin {
+    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff; border-radius: 50%; animation: rpspin .7s linear infinite;
+  }
 
-  /* GOOGLE */
-  .or-div { display: flex; align-items: center; gap: 0.6rem; margin: 0.75rem 0 0.55rem; font-size: 0.7rem; color: #9ca3af; }
+  /* ── GOOGLE ── */
+  .or-div {
+    display: flex; align-items: center; gap: .6rem;
+    margin: .75rem 0 .55rem; font-size: .7rem; color: #9ca3af;
+  }
   .or-div::before, .or-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .g-btn {
     width: 100%; background: #fff; color: #3c4043;
     border: 1.5px solid #dadce0; cursor: pointer;
-    padding: 0.6rem 1rem; border-radius: 9px;
-    font-size: 0.8rem; font-weight: 700;
+    padding: .6rem 1rem; border-radius: 9px;
+    font-size: .8rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: all 0.18s;
+    transition: all .18s;
   }
-  .g-btn:hover:not(:disabled) { background: #f8f9fa; border-color: #b0b0b0; }
-  .g-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .g-btn:hover:not(:disabled) { background: var(--off-white); border-color: #b0b0b0; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .g-btn:disabled { opacity: .6; cursor: not-allowed; }
   .g-btn svg { width: 16px; height: 16px; }
 
-  /* SIGN UP LINK */
-  .rp-link { text-align: center; margin-top: 0.9rem; font-size: 0.73rem; color: var(--text-mid); }
-  .rp-link a { color: var(--teal); font-weight: 700; text-decoration: none; }
-  .rp-link a:hover { text-decoration: underline; }
+  /* ── SIGN UP LINK ── */
+  .rp-link { text-align: center; margin-top: .9rem; font-size: .73rem; color: var(--text-mid); }
+  .rp-link a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
+  .rp-link a:hover { color: var(--amber); }
 
   @media (max-width: 480px) {
     .rp-card { padding: 1.4rem 1.1rem; }
@@ -197,7 +239,7 @@ const getRedirectPath = (user, from) => {
    MAIN LOGIN FORM
 ───────────────────────────────────────────── */
 const LoginForm = () => {
-  const [formData, setFormData]             = useState({ phone: '', password: '', role: 'tenant' });
+  const [formData, setFormData]             = useState({ phone: '', password: '', role: 'landlord' });
   const [showPassword, setShowPassword]     = useState(false);
   const [loading, setLoading]               = useState(false);
   const [googleLoading, setGoogleLoading]   = useState(false);
@@ -269,7 +311,6 @@ const LoginForm = () => {
       }
     }
 
-    // Send email or phone depending on what was entered
     const payload = isEmail
       ? { email: formData.phone, password: formData.password }
       : { phone: formData.phone, password: formData.password };
@@ -301,10 +342,11 @@ const LoginForm = () => {
       {/* NAV — identical to RegisterForm */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
+          <div className="rp-bar-logo-img">
+            <img src="/PEZ.png" alt="PezaNyumba" />
+          </div>
           <div className="rp-bar-brand">
             <strong>PezaNyumba</strong>
-            <span>MALAWI'S RENTAL PLATFORM</span>
           </div>
         </Link>
         <Link to="/register" className="rp-bar-login">
@@ -321,12 +363,12 @@ const LoginForm = () => {
             <div className="rp-line" />
           </div>
 
-          {/* Role pills */}
+          {/* Role pills — amber theme, matching register */}
           <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             {[
-              { value: 'land_seller', icon: 'fa-user', label: 'Land Seller' },
-              { value: 'landlord',    icon: 'fa-home', label: 'Landlord'    },
+              { value: 'landlord',    icon: 'fa-home',     label: 'Landlord'    },
+              { value: 'land_seller', icon: 'fa-seedling', label: 'Land Seller' },
             ].map(r => (
               <div className="rp-role-opt" key={r.value}>
                 <input type="radio" id={`role_${r.value}`} name="role"
@@ -387,7 +429,7 @@ const LoginForm = () => {
                 }
               </div>
               <div>
-                <i className="fa fa-shield-alt" style={{ color: 'var(--teal)', fontSize: '1.05rem' }} />
+                <i className="fa fa-shield-alt" style={{ color: 'var(--amber)', fontSize: '1.05rem' }} />
                 <div className="rp-cap-note">Security<br />Check</div>
               </div>
             </div>

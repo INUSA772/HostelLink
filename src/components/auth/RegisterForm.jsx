@@ -11,47 +11,56 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
    STYLES
 ───────────────────────────────────────────── */
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --teal:        #1a5c52;
-    --teal-dark:   #0d4a40;
-    --teal-mid:    #2d8a72;
-    --teal-light:  #e8f5f2;
+    --navy:        #0f1923;
+    --navy-mid:    #1a2e3d;
+    --amber:       #f5a623;
+    --amber-light: #fef3d8;
+    --amber-dark:  #d4870a;
+    --white:       #fff;
+    --off-white:   #f7f8fa;
+    --border:      #e8eaed;
     --text-dark:   #111827;
-    --text-mid:    #4b5563;
-    --border:      #e2ede9;
+    --text-mid:    #6b7280;
     --radius:      12px;
     --green:       #16a34a;
     --red:         #dc2626;
     --yellow:      #f59e0b;
     --wa:          #25D366;
+    --font:        'Plus Jakarta Sans', sans-serif;
   }
-  html, body, #root { height: 100%; font-family: 'Manrope', sans-serif; }
+  html, body, #root { height: 100%; font-family: var(--font); }
 
-  /* NAV */
+  /* ── NAV ── */
   .rp-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-    height: 58px; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; background: #fff;
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 1px 6px rgba(13,74,64,0.07);
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; background: var(--navy);
+    box-shadow: 0 2px 16px rgba(0,0,0,.25);
   }
-  .rp-bar-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
-  .rp-bar-logo-img { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: var(--teal-light); }
+  .rp-bar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .rp-bar-logo-img {
+    width: 36px; height: 36px; border-radius: 9px; overflow: hidden;
+    background: white; 
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
   .rp-bar-logo-img img { width: 100%; height: 100%; object-fit: cover; }
-  .rp-bar-brand strong { display: block; font-size: 0.88rem; font-weight: 800; color: #0d4a40; }
-  .rp-bar-brand span { font-size: 0.56rem; color: #6b7280; letter-spacing: 0.4px; }
+  .rp-bar-brand strong { display: block; font-size: .92rem; font-weight: 800; color: #fff; letter-spacing: -.2px; }
+  .rp-bar-brand span   { font-size: .56rem; color: rgba(255,255,255,.45); letter-spacing: .6px; }
   .rp-bar-login {
-    color: #374151; font-size: 0.8rem; font-weight: 600;
-    border: 1.5px solid #d1d5db; padding: 0.28rem 0.85rem;
-    border-radius: 7px; cursor: pointer; text-decoration: none; transition: all 0.18s;
+    color: rgba(255,255,255,.8); font-size: .8rem; font-weight: 700;
+    border: 1.5px solid rgba(255,255,255,.2); padding: .32rem .9rem;
+    border-radius: 8px; cursor: pointer; text-decoration: none; transition: all .18s;
+    font-family: var(--font);
   }
-  .rp-bar-login:hover { border-color: var(--teal); color: var(--teal); }
+  .rp-bar-login:hover { border-color: var(--amber); color: var(--amber); }
 
-  /* FULL-SCREEN BG */
+  /* ── FULL-SCREEN BG ── */
   .rp-main {
-    position: fixed; top: 58px; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
     display: flex; align-items: center; justify-content: center;
     overflow-y: auto; padding: 1.2rem 1rem;
     background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop&q=80');
@@ -59,155 +68,188 @@ const styles = `
   }
   .rp-main::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(5,30,20,0.78) 0%, rgba(10,50,35,0.72) 100%);
+    background: linear-gradient(135deg, rgba(15,25,35,.88) 0%, rgba(26,46,61,.82) 100%);
     pointer-events: none;
   }
 
-  /* CARD */
+  /* ── CARD ── */
   .rp-card {
     position: relative; z-index: 2;
-    background: #fff; border-radius: 16px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.28);
     padding: 1.8rem 1.8rem 1.4rem;
     width: 400px; max-width: 100%;
   }
 
-  /* HEADER */
+  /* ── HEADER ── */
   .rp-hdr { text-align: center; margin-bottom: 1.2rem; }
-  .rp-hdr h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
-  .rp-hdr p  { font-size: 0.78rem; color: var(--text-mid); margin-top: 0.2rem; }
-  .rp-line   { width: 32px; height: 3px; background: var(--teal); border-radius: 2px; margin: 0.45rem auto 0; }
+  .rp-hdr h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); letter-spacing: -.3px; }
+  .rp-hdr p  { font-size: .78rem; color: var(--text-mid); margin-top: .2rem; }
+  .rp-line   { width: 36px; height: 3px; background: var(--amber); border-radius: 2px; margin: .45rem auto 0; }
 
-  /* ROLE PILLS — 2 roles only */
-  .rp-role-lbl { font-size: 0.62rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.35rem; }
-  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+  /* ── ROLE PILLS ── */
+  .rp-role-lbl {
+    font-size: .62rem; font-weight: 700; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: .5px;
+    display: block; margin-bottom: .35rem;
+  }
+  .rp-role-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1rem; }
   .rp-role-opt { position: relative; }
   .rp-role-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
   .rp-role-btn {
-    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-    padding: 0.55rem 0.5rem; border: 1.5px solid var(--border);
-    border-radius: 9px; cursor: pointer; font-size: 0.78rem;
-    font-weight: 700; color: var(--text-mid); background: #fafafa; transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
+    padding: .55rem .5rem; border: 1.5px solid var(--border);
+    border-radius: 9px; cursor: pointer; font-size: .78rem;
+    font-weight: 700; color: var(--text-mid); background: var(--off-white);
+    transition: all .18s; font-family: var(--font);
   }
-  .rp-role-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .rp-role-opt input:checked + .rp-role-btn { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+  .rp-role-btn:hover { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); }
+  .rp-role-opt input:checked + .rp-role-btn {
+    border-color: var(--amber); color: var(--amber-dark);
+    background: var(--amber-light);
+    box-shadow: 0 0 0 2px rgba(245,166,35,.2);
+  }
 
-  /* NOTICE BANNER */
+  /* ── NOTICE BANNER ── */
   .rp-notice {
-    background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 9px;
-    padding: 0.6rem 0.85rem; margin-bottom: 1rem;
-    display: flex; align-items: flex-start; gap: 0.5rem;
-    font-size: 0.74rem; color: #92400e; line-height: 1.5;
+    background: var(--amber-light); border: 1.5px solid #f0d89a;
+    border-radius: 9px; padding: .6rem .85rem; margin-bottom: 1rem;
+    display: flex; align-items: flex-start; gap: .5rem;
+    font-size: .74rem; color: #7a4f00; line-height: 1.5;
   }
-  .rp-notice i { color: #f59e0b; margin-top: 1px; flex-shrink: 0; }
+  .rp-notice i { color: var(--amber); margin-top: 1px; flex-shrink: 0; }
 
-  /* FORM FIELDS */
-  .rp-grp { margin-bottom: 0.75rem; }
+  /* ── FORM FIELDS ── */
+  .rp-grp { margin-bottom: .75rem; }
   .rp-lbl {
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.62rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 0.22rem;
+    font-size: .62rem; font-weight: 700; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: .4px; margin-bottom: .22rem;
   }
-  .rp-strength { font-size: 0.6rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
+  .rp-strength { font-size: .6rem; text-transform: none; font-weight: 700; letter-spacing: 0; }
   .rp-strength.weak   { color: var(--red); }
   .rp-strength.medium { color: var(--yellow); }
   .rp-strength.strong { color: var(--green); }
   .rp-wrap { position: relative; display: flex; align-items: center; }
-  .rp-ico    { position: absolute; left: 0.7rem; color: var(--teal); font-size: 0.78rem; pointer-events: none; z-index: 1; }
-  .rp-toggle { position: absolute; right: 0.7rem; color: #9ca3af; font-size: 0.78rem; cursor: pointer; z-index: 2; }
-  .rp-toggle:hover { color: var(--teal); }
+  .rp-ico    { position: absolute; left: .7rem; color: var(--amber-dark); font-size: .78rem; pointer-events: none; z-index: 1; }
+  .rp-toggle { position: absolute; right: .7rem; color: #9ca3af; font-size: .78rem; cursor: pointer; z-index: 2; }
+  .rp-toggle:hover { color: var(--amber-dark); }
   .rp-input {
     width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 0.52rem 0.75rem 0.52rem 2.1rem;
-    font-size: 0.8rem; font-family: 'Manrope', sans-serif;
-    color: var(--text-dark); font-weight: 500; background: #fafafa; outline: none;
-    transition: all 0.18s;
+    padding: .52rem .75rem .52rem 2.1rem;
+    font-size: .8rem; font-family: var(--font);
+    color: var(--text-dark); font-weight: 500; background: var(--off-white);
+    outline: none; transition: all .18s;
   }
-  .rp-input:focus { border-color: var(--teal); background: #fff; box-shadow: 0 0 0 3px rgba(26,92,82,0.09); }
-  .rp-input::placeholder { font-size: 0.73rem; color: #cbd5e1; }
+  .rp-input:focus {
+    border-color: var(--amber); background: #fff;
+    box-shadow: 0 0 0 3px rgba(245,166,35,.12);
+  }
+  .rp-input::placeholder { font-size: .73rem; color: #c3c8d0; }
   .rp-input.password-weak   { border-color: var(--red); }
   .rp-input.password-medium { border-color: var(--yellow); }
   .rp-input.password-strong { border-color: var(--green); }
 
-  /* WHATSAPP FIELD SPECIAL */
-  .rp-wa-ico { position: absolute; left: 0.7rem; color: var(--wa); font-size: 0.9rem; pointer-events: none; z-index: 1; }
-  .rp-input.wa-field:focus { border-color: var(--wa); box-shadow: 0 0 0 3px rgba(37,211,102,0.12); }
-  .rp-wa-note { font-size: 0.65rem; color: var(--text-mid); margin-top: 0.18rem; display: flex; align-items: center; gap: 4px; }
+  /* ── WHATSAPP FIELD ── */
+  .rp-wa-ico { position: absolute; left: .7rem; color: var(--wa); font-size: .9rem; pointer-events: none; z-index: 1; }
+  .rp-input.wa-field:focus { border-color: var(--wa); box-shadow: 0 0 0 3px rgba(37,211,102,.12); }
+  .rp-wa-note { font-size: .65rem; color: var(--text-mid); margin-top: .18rem; display: flex; align-items: center; gap: 4px; }
   .rp-wa-note i { color: var(--wa); }
 
-  /* CAPTCHA */
+  /* ── CAPTCHA ── */
   .rp-captcha {
     border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 0.5rem 0.75rem; background: #fafafa;
+    padding: .5rem .75rem; background: var(--off-white);
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 0.75rem; cursor: pointer;
+    margin-bottom: .75rem; cursor: pointer; transition: border-color .2s;
   }
-  .rp-cap-l { display: flex; align-items: center; gap: 0.5rem; }
-  .rp-cap-box { width: 16px; height: 16px; border: 2px solid #9ca3af; border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-  .rp-cap-box.on { background: var(--teal); border-color: var(--teal); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: 0.6rem; font-weight: 700; }
-  .rp-cap-txt { font-size: 0.74rem; font-weight: 600; color: var(--text-dark); }
-  .rp-spin { width: 11px; height: 11px; border: 2px solid #e5e7eb; border-top-color: var(--teal); border-radius: 50%; animation: rpspin 0.7s linear infinite; display: inline-block; }
+  .rp-captcha:hover { border-color: var(--amber); }
+  .rp-cap-l { display: flex; align-items: center; gap: .5rem; }
+  .rp-cap-box {
+    width: 16px; height: 16px; border: 2px solid #9ca3af;
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
+  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .6rem; font-weight: 700; }
+  .rp-cap-txt { font-size: .74rem; font-weight: 600; color: var(--text-dark); }
+  .rp-spin {
+    width: 11px; height: 11px; border: 2px solid #e5e7eb;
+    border-top-color: var(--amber); border-radius: 50%;
+    animation: rpspin .7s linear infinite; display: inline-block;
+  }
   @keyframes rpspin { to { transform: rotate(360deg); } }
-  .rp-cap-note { font-size: 0.48rem; color: #9ca3af; text-align: right; line-height: 1.3; }
+  .rp-cap-note { font-size: .48rem; color: #9ca3af; text-align: right; line-height: 1.3; }
 
-  /* TERMS */
+  /* ── TERMS ── */
   .rp-terms {
-    display: flex; align-items: center; gap: 0.4rem;
-    margin-bottom: 0.85rem; font-size: 0.7rem; color: var(--text-mid); cursor: pointer;
+    display: flex; align-items: center; gap: .4rem;
+    margin-bottom: .85rem; font-size: .7rem; color: var(--text-mid); cursor: pointer;
   }
-  .rp-terms input { width: 13px; height: 13px; cursor: pointer; accent-color: var(--teal); flex-shrink: 0; }
-  .rp-terms a { color: var(--teal); font-weight: 600; text-decoration: none; }
+  .rp-terms input { width: 13px; height: 13px; cursor: pointer; accent-color: var(--navy); flex-shrink: 0; }
+  .rp-terms a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
+  .rp-terms a:hover { color: var(--amber); }
 
-  /* SUBMIT */
+  /* ── SUBMIT ── */
   .rp-submit {
-    width: 100%; background: var(--teal); color: #fff; border: none;
-    cursor: pointer; padding: 0.68rem 1rem; border-radius: 9px;
-    font-size: 0.84rem; font-weight: 700; font-family: 'Manrope', sans-serif;
+    width: 100%; background: var(--navy); color: #fff; border: none;
+    cursor: pointer; padding: .7rem 1rem; border-radius: 9px;
+    font-size: .84rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 3px 12px rgba(26,92,82,0.28);
+    transition: background .2s, transform .15s, box-shadow .2s;
+    box-shadow: 0 4px 16px rgba(15,25,35,.28);
   }
-  .rp-submit:hover:not(:disabled) { background: var(--teal-dark); }
-  .rp-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-  .rp-submit-spin { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: rpspin 0.7s linear infinite; }
+  .rp-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,25,35,.35); }
+  .rp-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  .rp-submit-spin {
+    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff; border-radius: 50%; animation: rpspin .7s linear infinite;
+  }
 
-  /* GOOGLE */
-  .or-div { display: flex; align-items: center; gap: 0.6rem; margin: 0.75rem 0 0.55rem; font-size: 0.7rem; color: #9ca3af; }
+  /* ── GOOGLE ── */
+  .or-div {
+    display: flex; align-items: center; gap: .6rem;
+    margin: .75rem 0 .55rem; font-size: .7rem; color: #9ca3af;
+  }
   .or-div::before, .or-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .g-btn {
     width: 100%; background: #fff; color: #3c4043;
     border: 1.5px solid #dadce0; cursor: pointer;
-    padding: 0.6rem 1rem; border-radius: 9px;
-    font-size: 0.8rem; font-weight: 700;
+    padding: .6rem 1rem; border-radius: 9px;
+    font-size: .8rem; font-weight: 700; font-family: var(--font);
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: all 0.18s;
+    transition: all .18s;
   }
-  .g-btn:hover:not(:disabled) { background: #f8f9fa; border-color: #b0b0b0; }
+  .g-btn:hover:not(:disabled) { background: var(--off-white); border-color: #b0b0b0; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
   .g-btn svg { width: 16px; height: 16px; }
 
-  /* SIGN IN LINK */
-  .rp-link { text-align: center; margin-top: 0.9rem; font-size: 0.73rem; color: var(--text-mid); }
-  .rp-link a { color: var(--teal); font-weight: 700; text-decoration: none; }
+  /* ── SIGN IN LINK ── */
+  .rp-link { text-align: center; margin-top: .9rem; font-size: .73rem; color: var(--text-mid); }
+  .rp-link a { color: var(--amber-dark); font-weight: 700; text-decoration: none; }
+  .rp-link a:hover { color: var(--amber); }
 
-  /* OTP */
+  /* ── OTP ── */
   .otp-wrap { text-align: center; }
   .otp-phone-badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: var(--teal-light); border: 1.5px solid #a7d4cc;
-    border-radius: 9px; padding: 0.4rem 0.85rem;
-    font-size: 0.74rem; font-weight: 700; color: var(--teal); margin-bottom: 1rem;
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--amber-light); border: 1.5px solid #f0d89a;
+    border-radius: 9px; padding: .4rem .85rem;
+    font-size: .74rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 1rem;
   }
-  .otp-inputs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 0.85rem; }
+  .otp-inputs { display: flex; gap: .5rem; justify-content: center; margin-bottom: .85rem; }
   .otp-input {
     width: 42px; height: 48px; border: 2px solid var(--border);
     border-radius: 9px; text-align: center; font-size: 1.15rem;
-    font-weight: 800; font-family: 'Manrope', sans-serif; outline: none; transition: border-color 0.18s;
+    font-weight: 800; font-family: var(--font); outline: none; transition: border-color .18s;
   }
-  .otp-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,92,82,0.09); }
-  .otp-timer { font-size: 0.7rem; color: var(--text-mid); margin-bottom: 0.75rem; }
-  .otp-timer span { color: var(--teal); font-weight: 800; }
-  .otp-resend { background: transparent; border: none; color: var(--teal); font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+  .otp-input:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(245,166,35,.12); }
+  .otp-timer { font-size: .7rem; color: var(--text-mid); margin-bottom: .75rem; }
+  .otp-timer span { color: var(--amber-dark); font-weight: 800; }
+  .otp-resend {
+    background: transparent; border: none; color: var(--amber-dark);
+    font-size: .7rem; font-weight: 700; cursor: pointer; font-family: var(--font);
+  }
+  .otp-resend:hover { color: var(--amber); }
   .otp-resend:disabled { color: #9ca3af; cursor: not-allowed; }
 
   @media (max-width: 480px) {
@@ -229,7 +271,7 @@ const GoogleIcon = () => (
 
 /* ─── OTP Screen ─── */
 const OtpScreen = ({ userId, phone, onSuccess }) => {
-  const [otp, setOtp]       = useState(['', '', '', '', '', '']);
+  const [otp, setOtp]         = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const inputRefs = useRef([]);
@@ -261,10 +303,13 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
     if (code.length !== 6) { toast.error('Enter the complete code'); return; }
     setLoading(true);
     try {
-      const r  = await fetch(`${API_URL}/auth/verify-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, otp: code }) });
-      const d  = await r.json();
+      const r = await fetch(`${API_URL}/auth/verify-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, otp: code }),
+      });
+      const d = await r.json();
       if (d.success) { toast.success('Phone verified!'); setTimeout(() => onSuccess(d), 800); }
-      else           { toast.error(d.message || 'Invalid code'); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); }
+      else { toast.error(d.message || 'Invalid code'); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); }
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
   };
@@ -272,10 +317,13 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   const resend = async () => {
     setLoading(true);
     try {
-      const r = await fetch(`${API_URL}/auth/resend-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) });
+      const r = await fetch(`${API_URL}/auth/resend-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
       const d = await r.json();
       if (d.success) { setTimeLeft(600); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); toast.success('New code sent!'); }
-      else           { toast.error(d.message || 'Could not resend'); }
+      else { toast.error(d.message || 'Could not resend'); }
     } catch { toast.error('Connection error'); }
     finally { setLoading(false); }
   };
@@ -303,10 +351,13 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
         }
       </div>
       <button className="rp-submit" onClick={verify} disabled={loading || otp.join('').length !== 6}>
-        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Continue</>}
+        {loading
+          ? <><div className="rp-submit-spin" /> Verifying...</>
+          : <><i className="fa fa-check" /> Verify & Continue</>
+        }
       </button>
-      <div style={{ marginTop: '0.65rem', textAlign: 'center' }}>
-        <span style={{ fontSize: '0.7rem', color: '#4b5563' }}>Didn't get it? </span>
+      <div style={{ marginTop: '.65rem', textAlign: 'center' }}>
+        <span style={{ fontSize: '.7rem', color: '#6b7280' }}>Didn't get it? </span>
         <button className="otp-resend" onClick={resend} disabled={loading || timeLeft > 550}>
           {loading ? 'Sending…' : 'Resend'}
         </button>
@@ -354,7 +405,6 @@ const RegisterForm = () => {
     }
     setFormData(p => {
       const next = { ...p, [name]: type === 'checkbox' ? checked : value };
-      // Keep whatsapp in sync if sameAsPhone is on
       if (name === 'phone' && p.sameAsPhone) next.whatsapp = value;
       return next;
     });
@@ -372,7 +422,7 @@ const RegisterForm = () => {
     setGoogleLoading(true);
     try {
       const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+        headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
       });
       const googleUserInfo = await infoRes.json();
       const res = await fetch(`${API_URL}/auth/google`, {
@@ -414,10 +464,7 @@ const RegisterForm = () => {
     setAttempts(a => a + 1);
     setLoading(true);
     try {
-      const payload = {
-        ...formData,
-        whatsapp: formData.sameAsPhone ? formData.phone : formData.whatsapp,
-      };
+      const payload = { ...formData, whatsapp: formData.sameAsPhone ? formData.phone : formData.whatsapp };
       const data = await register(payload);
       if (data.requiresOtp) {
         setOtpUserId(data.userId);
@@ -439,15 +486,17 @@ const RegisterForm = () => {
   const Navbar = () => (
     <nav className="rp-bar">
       <Link to="/" className="rp-bar-logo">
-        <div className="rp-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
+        <div className="rp-bar-logo-img">
+          <img src="/PEZ.png" alt="PezaNyumba" />
+        </div>
         <div className="rp-bar-brand">
           <strong>PezaNyumba</strong>
-          <span>MALAWI'S RENTAL PLATFORM</span>
+         
         </div>
       </Link>
-      <div>
-        <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt" /> Login</Link>
-      </div>
+      <Link to="/login" className="rp-bar-login">
+        <i className="fa fa-sign-in-alt" /> Login
+      </Link>
     </nav>
   );
 
@@ -480,19 +529,19 @@ const RegisterForm = () => {
             <div className="rp-line" />
           </div>
 
-          {/* ── Owners-only notice ── */}
+          {/* Owners-only notice 
           <div className="rp-notice">
             <i className="fa fa-info-circle" />
             <span>
               <strong>Landlords &amp; land sellers only.</strong> Tenants and buyers browse freely — no account needed.
             </span>
-          </div>
+          </div>*/}
 
-          {/* ── Role ── */}
+          {/* Role */}
           <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             {[
-              { value: 'landlord',    icon: 'fa-home',    label: 'Landlord' },
+              { value: 'landlord',    icon: 'fa-home',     label: 'Landlord'    },
               { value: 'land_seller', icon: 'fa-seedling', label: 'Land Seller' },
             ].map(r => (
               <div className="rp-role-opt" key={r.value}>
@@ -534,8 +583,9 @@ const RegisterForm = () => {
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="whatsapp">
                 WhatsApp Number
-                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.62rem', fontWeight: 600, textTransform: 'none', cursor: 'pointer', letterSpacing: 0 }}>
-                  <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange} style={{ width: 12, height: 12, accentColor: 'var(--teal)' }} />
+                <label style={{ display:'flex', alignItems:'center', gap:'4px', fontSize:'.62rem', fontWeight:600, textTransform:'none', cursor:'pointer', letterSpacing:0 }}>
+                  <input type="checkbox" name="sameAsPhone" checked={formData.sameAsPhone} onChange={handleChange}
+                    style={{ width:12, height:12, accentColor:'var(--amber)' }} />
                   Same as phone
                 </label>
               </label>
@@ -543,10 +593,9 @@ const RegisterForm = () => {
                 <i className="fab fa-whatsapp rp-wa-ico" />
                 <input id="whatsapp" className="rp-input wa-field" type="tel" name="whatsapp"
                   value={formData.sameAsPhone ? formData.phone : formData.whatsapp}
-                  onChange={handleChange}
-                  placeholder="0888123456"
+                  onChange={handleChange} placeholder="0888123456"
                   disabled={formData.sameAsPhone}
-                  style={{ paddingLeft: '2.1rem', opacity: formData.sameAsPhone ? 0.7 : 1 }} />
+                  style={{ paddingLeft:'2.1rem', opacity: formData.sameAsPhone ? 0.7 : 1 }} />
               </div>
               <div className="rp-wa-note"><i className="fab fa-whatsapp" /> Tenants will WhatsApp you directly on this number</div>
             </div>
@@ -557,7 +606,7 @@ const RegisterForm = () => {
                 Password
                 {pwStrength && (
                   <span className={`rp-strength ${pwStrength}`}>
-                    {pwStrength === 'weak' && '⚠️ Weak'}
+                    {pwStrength === 'weak'   && '⚠️ Weak'}
                     {pwStrength === 'medium' && '⚡ Medium'}
                     {pwStrength === 'strong' && '✅ Strong'}
                   </span>
@@ -599,7 +648,7 @@ const RegisterForm = () => {
                 }
               </div>
               <div>
-                <i className="fa fa-shield-alt" style={{ color: 'var(--teal)', fontSize: '1.05rem' }} />
+                <i className="fa fa-shield-alt" style={{ color:'var(--amber)', fontSize:'1.05rem' }} />
                 <div className="rp-cap-note">Security<br />Check</div>
               </div>
             </div>
@@ -622,7 +671,7 @@ const RegisterForm = () => {
 
             <button type="button" className="g-btn" onClick={() => googleLogin()} disabled={googleLoading}>
               {googleLoading
-                ? <><div className="rp-spin" style={{ borderTopColor: '#4285f4' }} /> Connecting…</>
+                ? <><div className="rp-spin" style={{ borderTopColor:'#4285f4' }} /> Connecting…</>
                 : <><GoogleIcon /> Continue with Google</>
               }
             </button>
@@ -631,6 +680,7 @@ const RegisterForm = () => {
           <p className="rp-link">
             Already have an account? <Link to="/login">Sign in</Link>
           </p>
+
         </div>
       </div>
     </>
