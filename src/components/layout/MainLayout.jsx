@@ -8,6 +8,7 @@ const NO_FOOTER_PAGES = [
   '/',
   '/messages',
   '/dashboard',
+  '/properties',
   '/landlord-dashboard',
   '/profile',
   '/bookings',
@@ -25,6 +26,7 @@ const NO_NAVBAR_PAGES = [
   '/',
   '/messages',
   '/hostels/',
+  '/properties',
   '/admin',
 ];
 
