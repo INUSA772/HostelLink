@@ -13,7 +13,7 @@ const LANGS = {
     heroH1a:     "Find Your",
     heroH1em:    "Perfect Home",
     heroH1b:     "Anywhere in Malawi",
-    heroSub:     "No account needed. Browse verified houses, flats, and plots for rent or sale across all 28 districts — just pick your district and start exploring.",
+    
     heroBrowse:  "Browse Properties",
     heroList:    "List Your Property",
     heroTrust1:  "No account to browse",
@@ -114,7 +114,7 @@ const LANGS = {
     heroH1a:     "Pezani",
     heroH1em:    "Nyumba Yabwino",
     heroH1b:     "Kulikonse ku Malawi",
-    heroSub:     "Palibe akaunti yofunikira. Sakani nyumba zazikulu, nyumba zazing'ono, ndi malo ogulitsa ku maboma onse 28 — sankhani boma lanu ndikuyamba kufufuza.",
+   
     heroBrowse:  "Sakani Nyumba",
     heroList:    "Ikani Nyumba Yanu",
     heroTrust1:  "Simukuyenera akaunti",
@@ -215,7 +215,7 @@ const LANGS = {
     heroH1a:     "Peza",
     heroH1em:    "Nyumba Yabwino",
     heroH1b:     "Kulikonse ku Malawi",
-    heroSub:     "Palije akaunti yofunikira. Saka nyumba, ma flat, na malo mu madisitiriki yose 28 — sankha disitiriki lako unyamuke.",
+    
     heroBrowse:  "Saka Nyumba",
     heroList:    "Lemba Nyumba Yako",
     heroTrust1:  "Palije akaunti yosaka",
