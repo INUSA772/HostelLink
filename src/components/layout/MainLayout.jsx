@@ -5,6 +5,7 @@ import Footer from './Footer';
 import '../../styles/global.css';
 
 const NO_FOOTER_PAGES = [
+  '/',
   '/messages',
   '/dashboard',
   '/landlord-dashboard',
@@ -21,6 +22,7 @@ const NO_FOOTER_PAGES = [
 ];
 
 const NO_NAVBAR_PAGES = [
+  '/',
   '/messages',
   '/hostels/',
   '/admin',
@@ -30,11 +32,15 @@ const MainLayout = ({ children }) => {
   const location = useLocation();
 
   const hideFooter = NO_FOOTER_PAGES.some(path =>
-    location.pathname.startsWith(path)
+    path === '/'
+      ? location.pathname === '/'
+      : location.pathname.startsWith(path)
   );
 
   const hideNavbar = NO_NAVBAR_PAGES.some(path =>
-    location.pathname.startsWith(path)
+    path === '/'
+      ? location.pathname === '/'
+      : location.pathname.startsWith(path)
   );
 
   return (

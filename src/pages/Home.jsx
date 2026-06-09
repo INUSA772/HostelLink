@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 ═══════════════════════════════════════ */
 const LANGS = {
   en: {
-    code: "en", label: "English", flag: "🇬🇧",
+    code: "en", label: "English",
     switchLang: "Language",
     heroBadge:   "Finding homes across Malawi — No sign-up required",
     heroH1a:     "Find Your",
@@ -108,7 +108,7 @@ const LANGS = {
   },
 
   ny: {
-    code: "ny", label: "Chichewa", flag: "🇲🇼",
+    code: "ny", label: "Chichewa",
     switchLang: "Chilankhulo",
     heroBadge:   "Kupeza nyumba ku Malawi konse — Palibe akaunti yofunikira",
     heroH1a:     "Pezani",
@@ -209,7 +209,7 @@ const LANGS = {
   },
 
   tu: {
-    code: "tu", label: "Tumbuka", flag: "🇲🇼",
+    code: "tu", label: "Tumbuka", 
     switchLang: "Chilankhulo",
     heroBadge:   "Kupeza nyumba ku Malawi yose — Palije akaunti yofunikira",
     heroH1a:     "Peza",
@@ -349,7 +349,7 @@ const navStyles = `
   }
   .pn-logo-icon {
     width: 40px; height: 40px;
-    background: #0f1923;
+    background: white;
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     color: #f5a623; font-weight: 900; font-size: .95rem;
@@ -472,7 +472,7 @@ function Navbar() {
       <div className="pn-nav-inner">
         {/* Logo */}
         <a href="/" className="pn-logo">
-          <div className="pn-logo-icon">PeZ</div>
+          <div className="pn-logo-icon" > <img src="/PEZ.png" alt="PezaNyumba Logo" className="pn-logo-image" /></div>
           <span className="pn-logo-text">PezaNyumba</span>
         </a>
 
@@ -494,9 +494,30 @@ function Navbar() {
               onClick={() => setOpen(o => !o)}
               aria-label="Switch language"
             >
-              <span>{current.flag}</span>
-              <span>{current.code.toUpperCase()}</span>
-              <span className="chevron">▼</span>
+              <img
+  src="/web.png"
+  alt="Language Flag"
+  style={{
+    width: "20px",
+    height: "20px",
+    objectFit: "cover",
+    borderRadius: "50%",
+    verticalAlign: "middle",
+    marginRight: "6px"
+  }}
+/>
+
+<span>{current.code.toUpperCase()}</span>
+
+<span
+  className="chevron"
+  style={{
+    marginLeft: "6px",
+    fontSize: "10px"
+  }}
+>
+  ▼
+</span>
             </button>
             {open && (
               <div className="ph-lang-dropdown">
@@ -659,10 +680,10 @@ const styles = `
     --border: #e8eaed;
     --mid: #6b7280;
     --dark: #111827;
-    --wa: #25D366;
+    --wa: #d4870a;
     --radius: 12px;
     --radius-lg: 16px;
-    --green: #16a34a;
+    --green: #d4870a;
     --font: 'Plus Jakarta Sans', 'Nunito Sans', sans-serif;
   }
   html { scroll-behavior: smooth; }
@@ -1448,7 +1469,7 @@ const styles = `
     display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;
   }
   .ph-footer-logo-icon {
-    width: 36px; height: 36px; background: var(--navy-mid);
+    width: 36px; height: 36px; background: white;
     border-radius: 8px; display: flex; align-items: center; justify-content: center;
     color: var(--amber); font-weight: 900; font-size: .85rem;
     border: 1.5px solid var(--amber); letter-spacing: -1px;
@@ -1641,24 +1662,24 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties 
 function Hero() {
   const { t } = useLang();
   const CARDS_COL1 = [
-    { theme:"blue",   icon:"fa fa-shield-alt",    title:t.cardVerified,  sub:t.cardVerifiedSub },
-    { theme:"orange", icon:"fa fa-tag",            title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-    { theme:"green",  icon:"fa fa-check-circle",  title:t.cardTrusted,   sub:t.cardTrustedSub  },
-    { theme:"purple", icon:"fa fa-map-marker-alt",title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
-    { theme:"blue",   icon:"fa fa-shield-alt",    title:t.cardVerified,  sub:t.cardVerifiedSub },
-    { theme:"orange", icon:"fa fa-tag",            title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
-    { theme:"green",  icon:"fa fa-check-circle",  title:t.cardTrusted,   sub:t.cardTrustedSub  },
-    { theme:"purple", icon:"fa fa-map-marker-alt",title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+    {      title:t.cardVerified,  sub:t.cardVerifiedSub },
+    {          title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
+    {   title:t.cardTrusted,   sub:t.cardTrustedSub  },
+    {  title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
+    {     title:t.cardVerified,  sub:t.cardVerifiedSub },
+    {         title:t.cardPrices,    sub:t.cardPricesSub,   image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop" },
+    {    title:t.cardTrusted,   sub:t.cardTrustedSub  },
+    {  title:t.cardDistricts, sub:t.cardDistrictsSub,image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&auto=format&fit=crop" },
   ];
   const CARDS_COL2 = [
-    { theme:"cyan",   icon:"fa fa-bolt",     title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
-    { theme:"yellow", icon:"fa fa-headset",  title:t.cardDispute, sub:t.cardDisputeSub },
-    { theme:"red",    icon:"fa fa-comments", title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
-    { theme:"pink",   icon:"fa fa-star",     title:t.cardRated,   sub:t.cardRatedSub   },
-    { theme:"cyan",   icon:"fa fa-bolt",     title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
-    { theme:"yellow", icon:"fa fa-headset",  title:t.cardDispute, sub:t.cardDisputeSub },
-    { theme:"red",    icon:"fa fa-comments", title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
-    { theme:"pink",   icon:"fa fa-star",     title:t.cardRated,   sub:t.cardRatedSub   },
+    {      title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
+    {   title:t.cardDispute, sub:t.cardDisputeSub },
+    {     title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
+    {      title:t.cardRated,   sub:t.cardRatedSub   },
+    {     title:t.cardQuick,   sub:t.cardQuickSub,   image:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&auto=format&fit=crop" },
+    {   title:t.cardDispute, sub:t.cardDisputeSub },
+    {    title:t.cardDirect,  sub:t.cardDirectSub,  image:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&auto=format&fit=crop" },
+    {     title:t.cardRated,   sub:t.cardRatedSub   },
   ];
 
   return (
@@ -1670,7 +1691,7 @@ function Hero() {
             <i className="fa fa-home" /> {t.heroBadge}
           </div>
           <h1>
-            {t.heroH1a} {t.heroH1em}.<br />
+            {t.heroH1a} {t.heroH1em} 
             <em>{t.heroH1b.split(" ").slice(0,1).join(" ")}</em> {t.heroH1b.split(" ").slice(1).join(" ")}
           </h1>
           <p className="ph-hero-sub">{t.heroSub}</p>
@@ -1679,7 +1700,7 @@ function Hero() {
               {t.heroBrowse} <i className="fa fa-arrow-right" />
             </a>
             <a className="ph-btn-ghost" href="/register">
-              <div className="ph-btn-play"><i className="fa fa-play" /></div>
+             
               <span>{t.heroList}</span>
             </a>
           </div>
@@ -1689,7 +1710,7 @@ function Hero() {
             <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust3}</div>
           </div>
           <div className="ph-hero-stats">
-            <div className="ph-hero-stat"><strong>340+</strong><span>{t.heroStat1}</span></div>
+            <div className="ph-hero-stat"><strong>500+</strong><span>{t.heroStat1}</span></div>
             <div className="ph-hero-stat"><strong>28</strong><span>{t.heroStat2}</span></div>
             <div className="ph-hero-stat"><strong>🛡️</strong><span>{t.heroStat3}</span></div>
           </div>
@@ -2129,7 +2150,7 @@ function Footer({ t }) {
         {/* Brand */}
         <div className="ph-footer-brand">
           <div className="ph-footer-logo">
-            <div className="ph-footer-logo-icon">PeZ</div>
+            <div className="ph-footer-logo-icon"> <img src="/PEZ.png" alt="PezaNyumba Logo" className="pn-logo-image" /></div>
             <span className="ph-footer-logo-text">PezaNyumba</span>
           </div>
           <p>Your trusted platform for finding the best properties in Malawi.</p>
@@ -2170,8 +2191,8 @@ function Footer({ t }) {
       </div>
 
       <div className="ph-footer-bottom">
-        <span>© 2024 PezaNyumba. All rights reserved.</span>
-        <span>Made with ❤️ in Malawi</span>
+        <span>© 2026 PezaNyumba. All rights reserved.</span>
+        <span>Made with love in Malawi</span>
       </div>
     </footer>
   );
