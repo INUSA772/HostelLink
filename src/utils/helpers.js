@@ -155,15 +155,20 @@ export const isAdmin = (user) => {
 
 // Local storage helpers
 export const storage = {
-  get: (key) => {
+ get: (key) => {
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      if (!item) return null;
+      try {
+        return JSON.parse(item);
+      } catch {
+        return item; // return as plain string if not JSON
+      }
     } catch (error) {
       console.error('Error getting from localStorage:', error);
       return null;
     }
-  },
+   },
   set: (key, value) => {
     try {
       localStorage.setItem(key, JSON.stringify(value));

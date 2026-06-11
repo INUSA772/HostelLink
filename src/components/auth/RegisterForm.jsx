@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
+import { storage } from '../../utils/helpers';
 import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -264,23 +265,27 @@ const RegisterForm = () => {
   };
 
   const handleGoogleSuccess = async (tokenResponse) => {
-    setGoogleLoading(true);
-    try {
-      const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } });
-      const googleUserInfo = await infoRes.json();
-      const res = await fetch(`${API_URL}/auth/google`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ googleUserInfo, role: formData.role, phone: formData.phone, whatsapp: formData.whatsapp || formData.phone, fullName: formData.fullName || googleUserInfo.name }) });
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('tokenExpiry', new Date().getTime() + 7*24*60*60*1000);
-        toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
-        setTimeout(() => navigate('/landlord-dashboard'), 500);
-      } else toast.error(data.message || 'Google sign-up failed');
-    } catch { toast.error('Google sign-up failed'); }
-    finally { setGoogleLoading(false); }
-  };
-
+  setGoogleLoading(true);
+  try {
+    const res = await fetch(`${API_URL}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        credential: tokenResponse.access_token,
+        role: formData.role,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      storage.set('token', data.token);
+      storage.set('user', data.user);
+      storage.set('tokenExpiry', new Date().getTime() + 7*24*60*60*1000);
+      toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
+      setTimeout(() => navigate('/landlord-dashboard'), 500);
+    } else toast.error(data.message || 'Google sign-up failed');
+  } catch { toast.error('Google sign-up failed'); }
+  finally { setGoogleLoading(false); }
+};
   const googleLogin = useGoogleLogin({ onSuccess: handleGoogleSuccess, onError: () => toast.error('Google sign-up failed') });
 
   const handleSubmit = async (e) => {

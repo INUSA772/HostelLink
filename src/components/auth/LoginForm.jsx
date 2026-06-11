@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
+import { storage } from '../../utils/helpers';
 import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -265,19 +266,15 @@ const LoginForm = () => {
   const handleGoogleSuccess = async (tokenResponse) => {
     setGoogleLoading(true);
     try {
-      const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-      });
-      const googleUserInfo = await infoRes.json();
       const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ googleUserInfo, role: formData.role }),
+        body: JSON.stringify({ credential: tokenResponse.access_token, role: formData.role }),
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        storage.set('token', data.token);
+        storage.set('user', data.user);
         toast.success(`Welcome back, ${data.user.fullName || data.user.firstName}!`);
         setTimeout(() => navigate(getRedirectPath(data.user, from)), 500);
       } else {

@@ -55,13 +55,16 @@ exports.googleAuth = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Google credential is required' });
     }
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+   const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+  headers: { Authorization: `Bearer ${credential}` },
+});
 
-    const payload = ticket.getPayload();
-    const { email, given_name, family_name, picture, sub: googleId } = payload;
+if (!infoRes.ok) {
+  return res.status(400).json({ success: false, message: 'Invalid Google token' });
+}
+
+const payload = await infoRes.json();
+const { email, given_name, family_name, picture, sub: googleId } = payload;
 
     let user = await User.findOne({ email });
 
