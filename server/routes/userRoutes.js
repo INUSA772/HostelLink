@@ -11,6 +11,7 @@ const {
   getLandlordDashboard,
   getAllUsers,
   deleteAccount,
+  updatePhone,
 } = require('../controllers/userController');
 
 const upload = multer({
@@ -26,6 +27,7 @@ const upload = multer({
 });
 
 router.get('/profile',         protect, getProfile);
+router.patch('/update-phone',  protect, updatePhone);
 router.put('/profile',         protect, updateProfile);
 router.put('/profile/avatar',  protect, upload.single('profilePicture'), updateAvatar);
 router.put('/change-password', protect, changePassword);

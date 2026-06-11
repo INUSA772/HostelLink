@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 import { storage } from '../../utils/helpers';
+import GooglePhoneModal from './GooglePhoneModal';
 import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -246,6 +247,9 @@ const LoginForm = () => {
   const [googleLoading, setGoogleLoading]   = useState(false);
   const [captcha, setCaptcha]               = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [googleUser, setGoogleUser] = useState(null);
+  const [googleToken, setGoogleToken] = useState(null);
   const { login }  = useAuth();
   const navigate   = useNavigate();
   const location   = useLocation();
@@ -273,10 +277,12 @@ const LoginForm = () => {
       });
       const data = await res.json();
       if (data.success) {
-        storage.set('token', data.token);
-        storage.set('user', data.user);
-        toast.success(`Welcome back, ${data.user.fullName || data.user.firstName}!`);
-        setTimeout(() => navigate(getRedirectPath(data.user, from)), 500);
+      storage.set('token', data.token);
+      storage.set('user', data.user);
+      toast.success(`Welcome back, ${data.user.fullName || data.user.firstName}!`);
+      setGoogleUser(data.user);
+      setGoogleToken(data.token);
+      setShowPhoneModal(true);
       } else {
         toast.error(data.message || 'Google login failed');
       }
@@ -335,7 +341,16 @@ const LoginForm = () => {
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
+      {showPhoneModal && (
+  <GooglePhoneModal
+    user={googleUser}
+    token={googleToken}
+    onComplete={(updatedUser) => {
+      setShowPhoneModal(false);
+      navigate(getRedirectPath(updatedUser, from));
+    }}
+  />
+)}
       {/* NAV — identical to RegisterForm */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">

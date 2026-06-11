@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 import { storage } from '../../utils/helpers';
+import GooglePhoneModal from './GooglePhoneModal';
 import { handleApiError } from '../../utils/helpers';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -234,6 +235,9 @@ const RegisterForm = () => {
   const [showOtp, setShowOtp]             = useState(false);
   const [otpUserId, setOtpUserId]         = useState(null);
   const [attempts, setAttempts]           = useState(0);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [googleUser, setGoogleUser] = useState(null);
+  const [googleToken, setGoogleToken] = useState(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -276,13 +280,15 @@ const RegisterForm = () => {
       }),
     });
     const data = await res.json();
-    if (data.success) {
-      storage.set('token', data.token);
-      storage.set('user', data.user);
-      storage.set('tokenExpiry', new Date().getTime() + 7*24*60*60*1000);
-      toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
-      setTimeout(() => navigate('/landlord-dashboard'), 500);
-    } else toast.error(data.message || 'Google sign-up failed');
+  if (data.success) {
+  storage.set('token', data.token);
+  storage.set('user', data.user);
+  storage.set('tokenExpiry', new Date().getTime() + 7*24*60*60*1000);
+  toast.success(`Welcome ${data.user.fullName || data.user.firstName}!`);
+  setGoogleUser(data.user);
+  setGoogleToken(data.token);
+  setShowPhoneModal(true);
+} else toast.error(data.message || 'Google sign-up failed');
   } catch { toast.error('Google sign-up failed'); }
   finally { setGoogleLoading(false); }
 };
@@ -330,10 +336,20 @@ const RegisterForm = () => {
     </>
   );
 
-  return (
+ return (
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      {showPhoneModal && (
+        <GooglePhoneModal
+          user={googleUser}
+          token={googleToken}
+          onComplete={(updatedUser) => {
+            setShowPhoneModal(false);
+            navigate('/landlord-dashboard');
+          }}
+        />
+      )}
       <Navbar />
       <div className="rp-main">
         <div className="rp-card">

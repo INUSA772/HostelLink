@@ -242,3 +242,24 @@ exports.deleteAccount = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+// ── UPDATE PHONE ──────────────────────────────────
+exports.updatePhone = async (req, res) => {
+  try {
+    const { phone, whatsapp } = req.body;
+    if (!phone) {
+      return res.status(400).json({ success: false, message: 'Phone number is required' });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { phone, whatsapp: whatsapp || phone } },
+      { new: true }
+    ).select('-password');
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    res.json({ success: true, user, message: 'Phone number updated successfully' });
+  } catch (error) {
+    console.error('updatePhone error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
