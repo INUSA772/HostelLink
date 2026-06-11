@@ -715,7 +715,7 @@ const CreateProperty = () => {
                   <button type="submit" className="cp-btn-next" disabled={loading}>
                     {loading
                       ? <><div className="cp-spinner" /> Publishing…</>
-                      : <>🎉 Publish Property</>
+                      : <> Publish Property</>
                     }
                   </button>
                 )}
