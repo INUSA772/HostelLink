@@ -2166,9 +2166,9 @@ export default function Home() {
      BrowseDrawer fetches its own filtered results on demand.
      This cuts initial data transfer by ~96% (20 vs 500). */
   useEffect(() => {
-    fetch(`${API_URL}/properties?limit=20`)
+    fetch(`${API_URL}/hostels?limit=20`)
       .then(r => r.json())
-      .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
+      .then(data => setAllProperties(data.hostels || data.properties || data.data || []))
       .catch(() => {});
   }, []);
 
