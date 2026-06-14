@@ -236,15 +236,28 @@ const styles = `
   .a-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
 
   @media(max-width:900px) { .a-grid2 { grid-template-columns: 1fr; } }
-  @media(max-width:768px) {
+@media(max-width:768px) {
     .a-top  { padding: 0 1rem; }
     .a-tabs { padding: 0 1rem; }
     .a-body { padding: 1rem 0.85rem 4rem; }
     .a-stats{ grid-template-columns: 1fr 1fr; gap: 0.65rem; }
     .a-search { min-width: 0; flex: 1; }
     .a-panel-hd { flex-direction: column; align-items: stretch; }
+    .a-tbl th, .a-tbl td { padding: 0.6rem 0.65rem; font-size: 0.72rem; }
+    .a-cell-name { font-size: 0.78rem; }
+    .a-row-actions { flex-direction: column; }
+    .a-btn-sm { font-size: 0.68rem; padding: 0.28rem 0.6rem; }
+    .a-logo-name { display: none; }
+    .a-admin-pill { display: none; }
+    .a-grid2 { grid-template-columns: 1fr; }
   }
-  @media(max-width:480px) { .a-stats { grid-template-columns: 1fr 1fr; } }
+  @media(max-width:480px) { 
+    .a-stats { grid-template-columns: 1fr 1fr; }
+    .a-tbl { min-width: 500px; }
+    .a-tab { padding: 0.65rem 0.75rem; font-size: 0.75rem; }
+    .a-stat-num { font-size: 1.5rem; }
+    .a-panel-tools { flex-direction: column; }
+  }
 `;
 
 /* ─── TOAST ──────────────────────────────────────────────────────────────── */
@@ -871,7 +884,7 @@ export default function AdminDashboard() {
                   ? <div className="a-empty"><div className="a-empty-ico">🏠</div><h4>No properties found</h4></div>
                   : <table className="a-tbl">
                       <thead>
-                        <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>Listed</th><th>Actions</th></tr>
+                          <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>WhatsApp</th><th>Calls</th><th>Listed</th><th>Actions</th></tr>
                       </thead>
                       <tbody>
                         {filteredProps.map((p, i) => {
@@ -906,10 +919,12 @@ export default function AdminDashboard() {
                                     ? <span className="a-badge a-badge-v">✅ Live</span>
                                     : <span className="a-badge a-badge-p">⏳ Pending</span>
                                 }
-                              </td>
-                              <td style={{fontSize:'.8rem'}}>{p.viewCount ?? p.totalViews ?? 0}</td>
-                              <td style={{fontSize:'.72rem',color:'var(--light)'}}>{timeAgo(p.createdAt)}</td>
-                              <td>
+                             </td>
+                                     <td style={{fontSize:'.8rem'}}>{p.viewCount ?? 0}</td>
+                                     <td style={{fontSize:'.8rem',color:'#25D366',fontWeight:700}}>{p.whatsappClicks ?? 0}</td>
+                                     <td style={{fontSize:'.8rem',color:'var(--teal)',fontWeight:700}}>{p.callClicks ?? 0}</td>
+                                     <td style={{fontSize:'.72rem',color:'var(--light)'}}>{timeAgo(p.createdAt)}</td>
+                               <td>
                                 <div className="a-row-actions">
                                   {!p.flagged && (
                                     <button className="a-btn a-btn-amber a-btn-sm"

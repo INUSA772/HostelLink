@@ -264,3 +264,20 @@ exports.getNearbyHostels = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error fetching nearby properties' });
   }
 };
+// @desc  Track WhatsApp/Call clicks
+// @route POST /api/hostels/:id/track-click
+// @access Public
+exports.trackClick = async (req, res) => {
+  try {
+    const { type } = req.body;
+    const update = {};
+    if (type === 'whatsapp') update.whatsappClicks = 1;
+    if (type === 'call')     update.callClicks = 1;
+
+    await Property.findByIdAndUpdate(req.params.id, { $inc: update });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('trackClick error:', error);
+    res.status(500).json({ success: false });
+  }
+};

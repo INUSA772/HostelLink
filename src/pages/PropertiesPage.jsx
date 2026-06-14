@@ -148,10 +148,20 @@ function PropertyCard({ property }) {
       </div>
 
       <div className="pp-card-actions">
-        {wa   && <a className="pp-wa"   href={wa}   target="_blank" rel="noopener noreferrer"><i className="fab fa-whatsapp"/> WhatsApp</a>}
-        {call && <a className="pp-call" href={call}><i className="fa fa-phone"/> Call</a>}
-        {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>}
-      </div>
+  {wa && (
+    <a className="pp-wa" href={wa} target="_blank" rel="noopener noreferrer"
+      onClick={() => fetch(`${API_URL}/hostels/${p._id}/track-click`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'whatsapp' }) })}>
+      <i className="fab fa-whatsapp"/> WhatsApp
+    </a>
+  )}
+  {call && (
+    <a className="pp-call" href={call}
+      onClick={() => fetch(`${API_URL}/hostels/${p._id}/track-click`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'call' }) })}>
+      <i className="fa fa-phone"/> Call
+    </a>
+  )}
+  {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>}
+</div>
 
       {lightbox && p.images.length > 0 && (
         <ImageLightbox images={p.images} startIndex={0} propertyName={p.name} onClose={() => setLightbox(false)}/>

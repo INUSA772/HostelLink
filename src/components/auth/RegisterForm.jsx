@@ -301,7 +301,7 @@ const RegisterForm = () => {
     if (formData.password !== formData.confirmPassword) { toast.error('Passwords do not match'); return; }
     if (formData.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
     if (pwStrength === 'weak') { toast.error('Please use a stronger password'); return; }
-    const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+    const phoneRgx = /^(?:\+265|0)\d{8,9}$/;
     if (!phoneRgx.test(formData.phone)) { toast.error('Enter a valid Malawian number (e.g. 0888123456)'); return; }
     if (!formData.fullName.trim()) { toast.error('Please enter your full name'); return; }
     setAttempts(a => a+1);
