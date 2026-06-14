@@ -497,7 +497,7 @@ const CreateProperty = () => {
   const v2 = () => {
     if (!form.price || !form.contactPhone) { toast.error('Please enter price and contact phone'); return false; }
     if (Number(form.price) <= 0)           { toast.error('Price must be greater than 0'); return false; }
-    const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+    const phoneRgx = /^(?:\+265|0)\d{8,9}$/;
     if (!phoneRgx.test(form.contactPhone)) { toast.error('Enter a valid Malawian phone number'); return false; }
     return true;
   };
