@@ -346,11 +346,6 @@ function useLangState() {
   return { lang, setLang, t, langs: Object.values(LANGS) };
 }
 
-/* ═══════════════════════════════════════
-   ★ FIX 1 — FAVORITES (localStorage)
-   Persists across sessions, no login needed.
-   Returns [Set of IDs, toggle function, isSaved fn]
-═══════════════════════════════════════ */
 function useFavorites() {
   const [favIds, setFavIds] = useState(() => {
     try {
@@ -373,10 +368,6 @@ function useFavorites() {
   return { favIds, toggle, isSaved };
 }
 
-/* ═══════════════════════════════════════
-   ★ FIX 2 — TOAST NOTIFICATION
-   Lightweight, no library needed.
-═══════════════════════════════════════ */
 function useToast() {
   const [toasts, setToasts] = useState([]);
   const show = useCallback((msg, type = "success") => {
@@ -499,7 +490,6 @@ const styles = `
   .pn-lang-pill:hover { border-color: #bbb; }
   .pn-lang-pill .chevron { font-size: .55rem; opacity: .6; }
 
-  /* ★ FIX — Favorites nav button (was broken/missing) */
   .pn-fav-btn {
     display: none;
     align-items: center; gap: 6px;
@@ -518,6 +508,7 @@ const styles = `
     height: 16px; display: flex; align-items: center; justify-content: center;
   }
 
+  /* ═══ FIX 2 — Profile button now navigates to /profile ═══ */
   .pn-profile-btn {
     display: none;
     align-items: center; gap: 7px;
@@ -525,7 +516,7 @@ const styles = `
     background: #0f1923; color: #fff;
     border-radius: 999px; font-size: .82rem; font-weight: 700;
     cursor: pointer; border: none; transition: background .2s;
-    font-family: var(--font);
+    font-family: var(--font); text-decoration: none;
   }
   .pn-profile-btn:hover { background: #1a2e3d; }
   .pn-profile-avatar {
@@ -569,8 +560,6 @@ const styles = `
   .pn-mobile-nav-link.active { background: var(--amber-light); color: var(--amber-dark); }
   .pn-mobile-nav-link i { width: 20px; text-align: center; font-size: .95rem; color: var(--mid); }
   .pn-mobile-nav-link.active i { color: var(--amber-dark); }
-
-  /* ★ FIX — Favorites mobile link actually styled */
   .pn-mobile-nav-link.fav-link { position: relative; }
   .pn-mobile-nav-link.fav-link .mob-fav-count {
     margin-left: auto;
@@ -579,7 +568,6 @@ const styles = `
     border-radius: 999px; padding: 1px 7px;
     min-width: 18px; text-align: center;
   }
-
   .pn-mobile-divider { height: 1px; background: var(--border); margin: .5rem 0; }
   .pn-mobile-profile {
     display: flex; align-items: center; gap: 12px;
@@ -654,6 +642,13 @@ const styles = `
 
   /* ══════════════════════════════
      HERO
+     FIX 3 — Mobile background image:
+     The hero right panel (image) was
+     display:none on mobile. Now we use
+     a pseudo-element on .ph-hero itself
+     to show the BG image on all screen
+     sizes, with a dark overlay so text
+     stays readable on mobile.
   ══════════════════════════════ */
   .ph-hero {
     width: 100%; background: #fff;
@@ -661,15 +656,49 @@ const styles = `
     position: relative; overflow: hidden;
     padding: 2.5rem 1.25rem 2.5rem; min-height: auto;
   }
+
+  /* ═══ FIX 3 — Mobile BG image via pseudo-element ═══ */
+  .ph-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85');
+    background-size: cover;
+    background-position: center;
+    /* Dark overlay so text is readable on mobile */
+    filter: brightness(0.35);
+    z-index: 0;
+  }
+  /* On desktop the right panel image takes over — hide the pseudo BG */
+  @media(min-width: 1024px) {
+    .ph-hero::before { display: none; }
+    .ph-hero { background: #fff; }
+  }
+
   .ph-hero-wrapper {
     display: flex; flex-direction: column;
     align-items: stretch; width: 100%; max-width: 1200px; gap: 0;
+    position: relative; z-index: 1;
   }
   .ph-hero-left {
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
     padding: 0; position: relative; z-index: 2; width: 100%;
   }
+
+  /* ═══ FIX 3 — On mobile, text turns white to be readable over the dark BG ═══ */
+  @media(max-width: 1023px) {
+    .ph-hero-left h1 { color: #fff !important; }
+    .ph-hero-badge { background: rgba(245,166,35,.2) !important; color: #ffd580 !important; border: 1px solid rgba(245,166,35,.4); }
+    .ph-hero-sub { color: rgba(255,255,255,.8) !important; }
+    .ph-hero-trust-item { color: rgba(255,255,255,.85) !important; }
+    .ph-hero-trust-item i { color: #4ade80 !important; }
+    .ph-btn-ghost { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.35) !important; color: white !important; }
+    .ph-btn-ghost:hover { background: rgba(255,255,255,.22) !important; }
+    .ph-hero-stats { border-top-color: rgba(255,255,255,.18) !important; }
+    .ph-hero-stat span { color: rgba(255,255,255,.65) !important; }
+  }
+
   .ph-hero-badge {
     display: inline-flex; align-items: center; gap: 7px;
     background: var(--amber-light); border-radius: 6px;
@@ -840,11 +869,15 @@ const styles = `
   .ph-slide-body { padding: 1rem; }
   .ph-slide-district { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; color: var(--amber-dark); margin-bottom: .3rem; }
   .ph-slide-name { font-size: .92rem; font-weight: 800; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: .25rem; }
+  /* FIX 1 — description snippet on slider card */
+  .ph-slide-desc {
+    font-size: .73rem; color: var(--mid); line-height: 1.5;
+    margin-top: .3rem; margin-bottom: .3rem;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .ph-slide-meta { font-size: .73rem; color: var(--mid); display: flex; gap: .7rem; margin-top: .35rem; flex-wrap: wrap; }
   .ph-slide-badge { display: inline-block; font-size: .63rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: var(--amber-light); color: var(--amber-dark); margin-top: .4rem; }
   .ph-slide-price { font-size: .92rem; font-weight: 800; color: var(--navy); margin-top: .4rem; }
-
-  /* ★ FIX 3 — Verified badge on slide cards */
   .ph-slide-verified {
     display: inline-flex; align-items: center; gap: 4px;
     font-size: .6rem; font-weight: 800; color: #065f46;
@@ -915,8 +948,8 @@ const styles = `
   .ph-browse-see-all:hover, .ph-browse-see-all:active { background: var(--navy-mid); }
 
   /* ══════════════════════════════
-     ★ PROPERTY CARD — all 3 fixes
-     (verified badge + share + save)
+     PROPERTY CARD
+     FIX 1 — description added below price
   ══════════════════════════════ */
   .ph-prop-card { border: 1.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: white; transition: all .25s; box-shadow: 0 2px 10px rgba(0,0,0,.06); display: flex; flex-direction: column; }
   .ph-prop-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(15,25,35,.12); border-color: var(--amber); }
@@ -929,8 +962,6 @@ const styles = `
   .ph-prop-badge.rent { background: var(--navy); color: white; }
   .ph-prop-badge.sale { background: var(--amber); color: var(--navy); }
   .ph-prop-badge.type { background: rgba(255,255,255,.92); color: #374151; }
-
-  /* ★ FIX 3 — Verified badge on property card image */
   .ph-prop-verified-badge {
     position: absolute; top: 10px; right: 10px;
     background: rgba(5,150,105,.9); color: white;
@@ -941,18 +972,20 @@ const styles = `
     letter-spacing: .2px;
   }
   .ph-prop-verified-badge i { font-size: .58rem; }
-
   .ph-prop-img-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.55); border-radius: 8px; color: white; font-size: .7rem; font-weight: 700; padding: 4px 9px; display: flex; align-items: center; gap: 4px; z-index: 1; backdrop-filter: blur(4px); }
   .ph-prop-body { padding: 1rem; flex: 1; }
   .ph-prop-name { font-size: .95rem; font-weight: 800; color: var(--navy); margin-bottom: .3rem; line-height: 1.3; }
   .ph-prop-loc { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }
   .ph-prop-loc i { color: var(--amber-dark); font-size: .72rem; }
   .ph-prop-price { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
+  /* FIX 1 — property description snippet */
+  .ph-prop-desc {
+    font-size: .75rem; color: var(--mid); line-height: 1.55; margin-top: .5rem;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .ph-prop-meta { display: flex; gap: .8rem; margin-top: .5rem; flex-wrap: wrap; }
   .ph-prop-meta-item { font-size: .72rem; color: var(--mid); display: flex; align-items: center; gap: 3px; }
   .ph-prop-meta-item i { color: var(--amber-dark); }
-
-  /* ★ FIX — Action row: WA green, Call green, Save amber, Share outline */
   .ph-prop-actions { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; flex-wrap: wrap; }
   .ph-prop-wa {
     flex: 1; background: var(--wa-green); color: white; border: none;
@@ -969,8 +1002,6 @@ const styles = `
     text-decoration: none; transition: background .18s; -webkit-tap-highlight-color: transparent;
   }
   .ph-prop-call:hover, .ph-prop-call:active { background: var(--wa-green-dark); }
-
-  /* ★ FIX 1 — Save button */
   .ph-prop-save {
     background: var(--off-white); color: var(--mid);
     border: 1.5px solid var(--border); border-radius: 8px;
@@ -982,8 +1013,6 @@ const styles = `
   .ph-prop-save.saved { background: var(--amber-light); border-color: var(--amber); color: var(--amber-dark); }
   .ph-prop-save.saved i { color: var(--amber); }
   .ph-prop-save i { font-size: .85rem; }
-
-  /* ★ FIX 2 — Share button */
   .ph-prop-share {
     background: var(--off-white); color: var(--mid);
     border: 1.5px solid var(--border); border-radius: 8px;
@@ -1112,7 +1141,7 @@ const styles = `
   @media(min-width: 900px) { .ph-footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } .ph-footer-newsletter { grid-column: auto; } }
 
   /* ══════════════════════════════
-     ★ FAVORITES PAGE (inline)
+     FAVORITES PAGE
   ══════════════════════════════ */
   .ph-favpage { padding: clamp(2rem, 5vw, 4rem) 1.25rem; max-width: 1100px; margin: 0 auto; }
   .ph-favpage-head { margin-bottom: 2rem; }
@@ -1157,7 +1186,6 @@ function normalise(p) {
     contactPhone:  p.contactPhone || p.owner?.phone || p.phone || "",
     whatsapp:      p.whatsapp || p.contactPhone || p.owner?.phone || p.phone || "",
     ownerName:     p.owner ? `${p.owner.firstName || ""} ${p.owner.lastName || ""}`.trim() : "",
-    // ★ FIX 3 — carry verified status from API
     verified:      p.verified || p.isVerified || false,
   };
 }
@@ -1167,7 +1195,6 @@ function formatPrice(p, listingType, t) {
   return "MWK " + Number(p).toLocaleString() + suffix;
 }
 
-/* ★ FIX 2 — WhatsApp share message builder */
 function buildShareMessage(p, t) {
   const price = formatPrice(p.price, p.listingType, t);
   const url   = `${window.location.origin}/properties/${p._id}`;
@@ -1232,6 +1259,8 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
 
 /* ═══════════════════════════════════════
    NAVBAR
+   FIX 2 — Profile button is now an <a>
+   that navigates to /profile
 ═══════════════════════════════════════ */
 function Navbar({ favCount }) {
   const { lang, setLang, t, langs } = useLang();
@@ -1275,7 +1304,6 @@ function Navbar({ favCount }) {
           </div>
 
           <div className="pn-nav-right">
-            {/* ★ FIX 1 — Favorites button actually shows count and links */}
             <a href="/favorites" className="pn-fav-btn" aria-label="Saved properties">
               <i className="fa fa-heart" />
               {t.navFavorites}
@@ -1304,11 +1332,12 @@ function Navbar({ favCount }) {
               )}
             </div>
 
-            <button className="pn-profile-btn">
+            {/* ═══ FIX 2 — Profile button is now a proper link to /profile ═══ */}
+            <a href="/profile" className="pn-profile-btn">
               <div className="pn-profile-avatar"><i className="fa fa-user" /></div>
-              <span>My Profile</span>
+              <span>{t.navProfile}</span>
               <span style={{fontSize:".6rem",opacity:.7}}>▼</span>
-            </button>
+            </a>
 
             <button
               className={`pn-hamburger${menuOpen ? " open" : ""}`}
@@ -1331,7 +1360,6 @@ function Navbar({ favCount }) {
                 onClick={() => setMenuOpen(false)}>
                 <i className={l.icon} />
                 {l.label}
-                {/* ★ FIX 1 — show count in mobile menu too */}
                 {l.href === "/favorites" && favCount > 0 && (
                   <span className="mob-fav-count">{favCount}</span>
                 )}
@@ -1358,11 +1386,8 @@ function Navbar({ favCount }) {
 }
 
 /* ═══════════════════════════════════════
-   ★ PROPERTY CARD — all fixes combined
-   1. Save to favorites (localStorage)
-   2. WhatsApp share button
-   3. Verified badge visible on card
-   4. Call button styled green (matches WA)
+   PROPERTY CARD
+   FIX 1 — description snippet added
 ═══════════════════════════════════════ */
 function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
   const { t } = useLang();
@@ -1373,12 +1398,10 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
   const call      = p.contactPhone ? `tel:${p.contactPhone}` : null;
   const [lightbox, setLightbox] = useState(false);
 
-  /* ★ FIX 2 — Share handler: WhatsApp on mobile, clipboard on desktop */
   function handleShare(e) {
     e.stopPropagation();
     const msg  = buildShareMessage(p, t);
     const waUrl = `https://wa.me/?text=${msg}`;
-    // Try native share first (mobile), fall back to WhatsApp web link
     if (navigator.share) {
       navigator.share({
         title: p.name,
@@ -1386,13 +1409,11 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
         url: `${window.location.origin}/properties/${p._id}`,
       }).catch(() => {});
     } else {
-      // Desktop: open WhatsApp web with pre-filled message
       window.open(waUrl, "_blank", "noopener,noreferrer");
     }
     onToast(t.shareCopied);
   }
 
-  /* ★ FIX 1 — Save/unsave */
   function handleSave(e) {
     e.stopPropagation();
     onFavToggle(p._id, p);
@@ -1410,7 +1431,6 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
           <span className={`ph-prop-badge ${isForSale ? "sale" : "rent"}`}>{isForSale ? t.forSale : t.forRent}</span>
           {p.type && <span className="ph-prop-badge type">{p.type}</span>}
         </div>
-        {/* ★ FIX 3 — Verified badge: only shown when property.verified is true */}
         {p.verified && (
           <div className="ph-prop-verified-badge">
             <i className="fa fa-check-circle" /> {t.verifiedBadge}
@@ -1423,6 +1443,10 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
         <div className="ph-prop-name">{p.name}</div>
         <div className="ph-prop-loc"><i className="fa fa-map-marker-alt" />{[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
         <div className="ph-prop-price">{formatPrice(p.price, p.listingType, t)}</div>
+        {/* ═══ FIX 1 — description snippet ═══ */}
+        {p.description && (
+          <div className="ph-prop-desc">{p.description}</div>
+        )}
         <div className="ph-prop-meta">
           {p.bedrooms       > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
           {p.bathrooms      > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath"      /> {p.bathrooms} {t.bath}</span>}
@@ -1444,7 +1468,6 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
         )}
         {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
 
-        {/* ★ FIX 1 — Save button with filled heart when saved */}
         <button
           className={`ph-prop-save${isSaved ? " saved" : ""}`}
           onClick={handleSave}
@@ -1454,7 +1477,6 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
           <i className={isSaved ? "fa fa-heart" : "far fa-heart"} />
         </button>
 
-        {/* ★ FIX 2 — WhatsApp share button */}
         <button
           className="ph-prop-share"
           onClick={handleShare}
@@ -1622,6 +1644,7 @@ function Hero() {
           </div>
         </div>
 
+        {/* Desktop-only right panel with image + animated cards */}
         <div className="ph-hero-right">
           <img className="ph-hero-bg"
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85"
@@ -1685,9 +1708,7 @@ function TrustBar() {
 
 /* ═══════════════════════════════════════
    DISTRICTS SLIDER
-   ★ FIX 4 — No longer fetches 500 records.
-   Uses allProperties passed from root, which
-   itself fetches paginated (limit=20) lazily.
+   FIX 1 — description shown on slider cards
 ═══════════════════════════════════════ */
 const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop",
@@ -1843,6 +1864,10 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                     <div className="ph-slide-body">
                       <div className="ph-slide-district">{p.district || "Malawi"}</div>
                       <div className="ph-slide-name">{p.name}</div>
+                      {/* ═══ FIX 1 — description on slider card ═══ */}
+                      {p.description && (
+                        <div className="ph-slide-desc">{p.description}</div>
+                      )}
                       <div className="ph-slide-meta">
                         {p.bedrooms       > 0 && <span><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
                         {p.bathrooms      > 0 && <span><i className="fa fa-bath"      /> {p.bathrooms}</span>}
@@ -1850,7 +1875,6 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                       </div>
                       {p.type && <span className="ph-slide-badge">{p.type}</span>}
                       <div className="ph-slide-price">{formatPrice(p.price, p.listingType, t)}</div>
-                      {/* ★ FIX 3 — Verified badge on slider card */}
                       {p.verified && (
                         <div className="ph-slide-verified">
                           <i className="fa fa-check-circle" /> {t.verifiedBadge}
@@ -2046,17 +2070,11 @@ function FAQSection() {
 }
 
 /* ═══════════════════════════════════════
-   ★ FAVORITES PAGE
-   Shown inline when user visits /favorites
-   (or when no other content is active).
-   In a real router setup this would be its
-   own route — here it is a conditional render
-   inside the same file for portability.
+   FAVORITES PAGE
 ═══════════════════════════════════════ */
 function FavoritesPage({ favIds, allProperties, onFavToggle, onToast }) {
   const { t } = useLang();
 
-  // Build the saved properties list from allProperties using favIds
   const saved = allProperties
     .map(normalise)
     .filter(p => favIds.has(p._id));
@@ -2147,10 +2165,6 @@ function Footer() {
 
 /* ═══════════════════════════════════════
    ROOT
-   ★ FIX 4 — Fetch is now paginated:
-   - Initial load: limit=20 (hero slider + types)
-   - Drawer opens: fetches filtered on demand
-   - allProperties grows lazily, not 500 at once
 ═══════════════════════════════════════ */
 export default function Home() {
   const langState             = useLangState();
@@ -2159,12 +2173,8 @@ export default function Home() {
   const [allProperties, setAllProperties] = useState([]);
   const [locDrawer, setLocDrawer]         = useState(null);
 
-  // Detect if we're on the /favorites route
   const isFavoritesPage = typeof window !== "undefined" && window.location.pathname === "/favorites";
 
-  /* ★ FIX 4 — Only fetch 20 for the home page slider.
-     BrowseDrawer fetches its own filtered results on demand.
-     This cuts initial data transfer by ~96% (20 vs 500). */
   useEffect(() => {
     fetch(`${API_URL}/hostels?limit=20`)
       .then(r => r.json())
@@ -2172,12 +2182,8 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  /* Prop that carries both favIds Set and the raw data
-     so FavoritesPage can reconstruct saved property objects */
   function handleFavToggle(id, propertyData) {
     toggle(id);
-    // If the property isn't in allProperties yet (came from a drawer),
-    // add it so the favorites page can render it.
     if (propertyData) {
       setAllProperties(prev => {
         if (prev.some(p => (p._id || p.id) === id)) return prev;
@@ -2198,13 +2204,11 @@ export default function Home() {
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      {/* Global toast notifications */}
       <ToastContainer toasts={toasts} />
 
       <Navbar favCount={favIds.size} />
 
       {isFavoritesPage ? (
-        /* ★ FIX 1 — /favorites now actually renders saved properties */
         <FavoritesPage
           favIds={favIds}
           allProperties={allProperties}
