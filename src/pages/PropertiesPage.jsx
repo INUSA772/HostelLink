@@ -30,6 +30,7 @@ function normalise(p) {
   return {
     _id:           p._id || p.id,
     name:          p.name || p.title || "Unnamed Property",
+    description:   p.description || "",
     type:          p.type || p.propertyType || p.property_type || "",
     listingType:   p.listingType || p.listing_type || "For Rent",
     price:         p.price || 0,
@@ -105,13 +106,22 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
 
 /* ═══════════════════════════════════════
    PROPERTY CARD
+   ★ Description with "Show more / Show less"
 ═══════════════════════════════════════ */
 function PropertyCard({ property }) {
   const p = normalise(property);
   const [lightbox, setLightbox] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const isForSale = p.listingType.toLowerCase().includes("sale");
   const wa   = waLink(p.whatsapp);
   const call = p.contactPhone ? `tel:${p.contactPhone}` : null;
+
+  /* ═══ Description truncation logic ═══ */
+  const DESC_LIMIT = 100;
+  const isLong = p.description.length > DESC_LIMIT;
+  const displayDesc = expanded || !isLong
+    ? p.description
+    : p.description.slice(0, DESC_LIMIT).trimEnd() + "…";
 
   return (
     <div className="pp-card">
@@ -140,6 +150,22 @@ function PropertyCard({ property }) {
         <div className="pp-card-name">{p.name}</div>
         <div className="pp-card-loc"><i className="fa fa-map-marker-alt"/> {[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
         <div className="pp-card-price">{formatPrice(p.price, p.listingType)}</div>
+
+        {/* ═══ DESCRIPTION with show more/less ═══ */}
+        {p.description && (
+          <div className="pp-card-desc">
+            {displayDesc}
+            {isLong && (
+              <button
+                className="pp-desc-toggle"
+                onClick={(e) => { e.stopPropagation(); setExpanded(x => !x); }}
+              >
+                {expanded ? " Show less" : " Show more"}
+              </button>
+            )}
+          </div>
+        )}
+
         <div className="pp-card-meta">
           {p.bedrooms  > 0 && <span><i className="fa fa-bed"/>  {p.bedrooms} bed</span>}
           {p.bathrooms > 0 && <span><i className="fa fa-bath"/> {p.bathrooms} bath</span>}
@@ -398,6 +424,20 @@ const styles = `
   .pp-card-loc   { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }
   .pp-card-loc i { color: var(--amber-dark); font-size: .72rem; }
   .pp-card-price { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
+
+  /* ═══ DESCRIPTION with show more/less ═══ */
+  .pp-card-desc {
+    font-size: .78rem; color: var(--mid); line-height: 1.55;
+    margin-top: .5rem;
+  }
+  .pp-desc-toggle {
+    display: inline; background: none; border: none; padding: 0;
+    margin-left: 4px; color: var(--amber-dark); font-weight: 700;
+    font-size: .78rem; cursor: pointer; font-family: inherit;
+    text-decoration: underline;
+  }
+  .pp-desc-toggle:hover { color: var(--navy); }
+
   .pp-card-meta  { display: flex; gap: .8rem; margin-top: .5rem; flex-wrap: wrap; }
   .pp-card-meta span { font-size: .72rem; color: var(--mid); display: flex; align-items: center; gap: 3px; }
   .pp-card-meta i { color: var(--amber-dark); }
