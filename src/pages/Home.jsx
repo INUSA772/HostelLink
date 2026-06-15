@@ -2121,7 +2121,7 @@ function Footer() {
         <div className="ph-footer-brand">
           <div className="ph-footer-logo">
             <div className="ph-footer-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
-            <span className="ph-footer-logo-text">PezaNyumba</span>
+            <span className="ph-footer-logo-text">PezaNyumba Mw</span>
           </div>
           <p>Your trusted platform for finding the best properties in Malawi.</p>
           <div className="ph-footer-socials">
@@ -2175,12 +2175,10 @@ export default function Home() {
 
   const isFavoritesPage = typeof window !== "undefined" && window.location.pathname === "/favorites";
 
-  useEffect(() => {
-    fetch(`${API_URL}/properties?limit=20`)
-      .then(r => r.json())
-      .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
-      .catch(() => {});
-  }, []);
+fetch(`${API_URL}/hostels?limit=20`)
+  .then(r => r.json())
+  .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
+  .catch(() => {});
 
   function handleFavToggle(id, propertyData) {
     toggle(id);
