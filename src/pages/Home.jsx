@@ -2176,9 +2176,9 @@ export default function Home() {
   const isFavoritesPage = typeof window !== "undefined" && window.location.pathname === "/favorites";
 
   useEffect(() => {
-    fetch(`${API_URL}/hostels?limit=20`)
+    fetch(`${API_URL}/properties?limit=20`)
       .then(r => r.json())
-      .then(data => setAllProperties(data.hostels || data.properties || data.data || []))
+      .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
       .catch(() => {});
   }, []);
 
