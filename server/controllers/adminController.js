@@ -1,18 +1,21 @@
-const User = require('../models/User');
-const Hostel = require('../models/Hostel');
+const User    = require('../models/User');
+const Hostel  = require('../models/Hostel');
 const Booking = require('../models/Booking');
+const Visitor = require('../models/Visitor');
 
 // @desc  Get all admin stats
 // @route GET /api/admin/stats
 exports.getAdminStats = async (req, res) => {
   try {
-    const now = new Date();
+    const now          = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
-    const totalUsers      = await User.countDocuments({ role: { $ne: 'admin' } });
-    const totalLandlords  = await User.countDocuments({ role: 'landlord' });
-    const totalLandSellers= await User.countDocuments({ role: 'land_seller' });
-    const newUsersToday   = await User.countDocuments({ createdAt: { $gte: startOfToday } });
+    const totalUsers       = await User.countDocuments({ role: { $ne: 'admin' } });
+    const totalLandlords   = await User.countDocuments({ role: 'landlord' });
+    const totalLandSellers = await User.countDocuments({ role: 'land_seller' });
+    const newUsersToday    = await User.countDocuments({ createdAt: { $gte: startOfToday } });
+
     const totalWhatsappClicks = await Hostel.aggregate([
       { $group: { _id: null, total: { $sum: { $ifNull: ['$whatsappClicks', 0] } } } },
     ]).then(r => r[0]?.total || 0);
@@ -32,6 +35,11 @@ exports.getAdminStats = async (req, res) => {
       { $group: { _id: null, total: { $sum: '$amount' } } },
     ]);
     const totalRevenue = revenueAgg[0]?.total || 0;
+
+    // ── VISITOR STATS ──────────────────────────────────
+    const totalVisitors   = await Visitor.countDocuments();
+    const todayVisitors   = await Visitor.countDocuments({ lastSeen: { $gte: startOfToday } });
+    const onlineNow       = await Visitor.countDocuments({ lastSeen: { $gte: fiveMinutesAgo } });
 
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
@@ -86,9 +94,13 @@ exports.getAdminStats = async (req, res) => {
         cancelledBookings,
         totalRevenue,
         totalWhatsappClicks,
+        // ── visitor stats ──
+        totalVisitors,
+        todayVisitors,
+        onlineNow,
       },
       roleBreakdown: {
-        landlords: totalLandlords,
+        landlords:   totalLandlords,
         landSellers: totalLandSellers,
       },
       registrationsByMonth,
@@ -122,7 +134,7 @@ exports.getUsers = async (req, res) => {
 // @route PATCH /api/admin/users/:id/verify
 exports.verifyUser = async (req, res) => {
   try {
-    const { action } = req.body; // 'approve' or 'reject'
+    const { action } = req.body;
     if (!['approve', 'reject'].includes(action)) {
       return res.status(400).json({ success: false, message: 'Action must be approve or reject' });
     }
@@ -131,7 +143,7 @@ exports.verifyUser = async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     user.verificationStatus = action === 'approve' ? 'verified' : 'rejected';
-    user.verified = action === 'approve';
+    user.verified           = action === 'approve';
     await user.save({ validateBeforeSave: false });
 
     res.json({ success: true, message: action === 'approve' ? 'User verified' : 'User rejected', user });
@@ -161,7 +173,6 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    // Also remove their properties
     await Hostel.deleteMany({ owner: req.params.id });
 
     res.json({ success: true, message: 'User and their properties deleted' });

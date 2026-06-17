@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,8 +11,14 @@ import MainLayout from './components/layout/MainLayout';
 import AppRoutes from './routes/AppRoutes';
 import "./styles/global.css";
 import "./styles/paymentStyles.css";
+import api from './services/api';
 
 function App() {
+  useEffect(() => {
+    // Fire once when anyone opens the site — tracks both tenants and landlords
+    api.post('/admin/track-visit').catch(() => {});
+  }, []);
+
   return (
     <Router>
       <ThemeProvider>

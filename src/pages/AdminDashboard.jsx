@@ -236,7 +236,7 @@ const styles = `
   .a-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
 
   @media(max-width:900px) { .a-grid2 { grid-template-columns: 1fr; } }
-@media(max-width:768px) {
+  @media(max-width:768px) {
     .a-top  { padding: 0 1rem; }
     .a-tabs { padding: 0 1rem; }
     .a-body { padding: 1rem 0.85rem 4rem; }
@@ -251,7 +251,7 @@ const styles = `
     .a-admin-pill { display: none; }
     .a-grid2 { grid-template-columns: 1fr; }
   }
-  @media(max-width:480px) { 
+  @media(max-width:480px) {
     .a-stats { grid-template-columns: 1fr 1fr; }
     .a-tbl { min-width: 500px; }
     .a-tab { padding: 0.65rem 0.75rem; font-size: 0.75rem; }
@@ -307,26 +307,32 @@ export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth();
   const toast = useToast();
 
-  const [tab,        setTab]        = useState('overview');
-  const [data,       setData]       = useState(null);
-  const [users,      setUsers]      = useState([]);
-  const [properties, setProperties] = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [confirm,    setConfirm]    = useState(null);
+  const [tab,            setTab]            = useState('overview');
+  const [data,           setData]           = useState(null);
+  const [users,          setUsers]          = useState([]);
+  const [properties,     setProperties]     = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [refreshing,     setRefreshing]     = useState(false);
+  const [confirm,        setConfirm]        = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [userSearch, setUserSearch] = useState('');
-  const [userFilter, setUserFilter] = useState('all');
-  const [propSearch, setPropSearch] = useState('');
-  const [propFilter, setPropFilter] = useState('all');
+  const [userSearch,     setUserSearch]     = useState('');
+  const [userFilter,     setUserFilter]     = useState('all');
+  const [propSearch,     setPropSearch]     = useState('');
+  const [propFilter,     setPropFilter]     = useState('all');
 
   /* ── auth guard ── */
   useEffect(() => {
     if (authLoading) return;
-    if (!user)                   { navigate('/login'); return; }
-    if (user.role !== 'admin')   { navigate('/');     return; }
+    if (!user)                 { navigate('/login'); return; }
+    if (user.role !== 'admin') { navigate('/');     return; }
     loadAll();
   }, [authLoading, user]);
+
+  /* ── auto-refresh every 30s so "Online Now" stays live ── */
+  useEffect(() => {
+    const interval = setInterval(() => loadAll(true), 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const loadAll = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -407,7 +413,6 @@ export default function AdminDashboard() {
       ));
       toast.warn('Property flagged as scam');
     } catch {
-      // optimistic even if endpoint not ready
       setProperties(prev => prev.map(p => p._id === propId ? { ...p, flagged: true } : p));
       toast.warn('Property flagged (local)');
     } finally {
@@ -432,10 +437,10 @@ export default function AdminDashboard() {
     const q = userSearch.toLowerCase();
     const matchSearch = !q || `${u.firstName} ${u.lastName} ${u.email} ${u.phone}`.toLowerCase().includes(q);
     const matchFilter = userFilter === 'all'
-      || (userFilter === 'pending'  && u.verificationStatus === 'pending')
-      || (userFilter === 'verified' && (u.verified || u.verificationStatus === 'verified'))
-      || (userFilter === 'landlord' && u.role === 'landlord')
-      || (userFilter === 'land_seller' && u.role === 'land_seller');
+      || (userFilter === 'pending'      && u.verificationStatus === 'pending')
+      || (userFilter === 'verified'     && (u.verified || u.verificationStatus === 'verified'))
+      || (userFilter === 'landlord'     && u.role === 'landlord')
+      || (userFilter === 'land_seller'  && u.role === 'land_seller');
     return matchSearch && matchFilter;
   });
 
@@ -443,28 +448,34 @@ export default function AdminDashboard() {
     const q = propSearch.toLowerCase();
     const matchSearch = !q || `${p.name} ${p.address} ${p.district}`.toLowerCase().includes(q);
     const matchFilter = propFilter === 'all'
-      || (propFilter === 'flagged'   && p.flagged)
-      || (propFilter === 'verified'  && p.verified)
-      || (propFilter === 'pending'   && !p.verified);
+      || (propFilter === 'flagged'  && p.flagged)
+      || (propFilter === 'verified' && p.verified)
+      || (propFilter === 'pending'  && !p.verified);
     return matchSearch && matchFilter;
   });
 
-  const pendingVerification = users.filter(u => u.verificationStatus === 'pending' || (!u.verified && (u.role === 'landlord' || u.role === 'land_seller')));
+  const pendingVerification = users.filter(u =>
+    u.verificationStatus === 'pending' ||
+    (!u.verified && (u.role === 'landlord' || u.role === 'land_seller'))
+  );
   const flaggedProps = properties.filter(p => p.flagged);
 
   /* ── stats ── */
   const stats = data?.stats || {};
   const statCards = [
-    { ico: '👥', lbl: 'Total Users',       val: fmt(users.length),                            accent: 'var(--teal)',  ico_bg: 'var(--teal-light)',  badge: `+${stats.newUsersToday || 0} today`, up: true  },
-    { ico: '🏠', lbl: 'Properties Listed', val: fmt(properties.length),                       accent: 'var(--blue)', ico_bg: 'var(--blue-pale)',   badge: `${properties.filter(p=>p.verified).length} verified`, up: false },
-    { ico: '⏳', lbl: 'Pending Verify',    val: fmt(pendingVerification.length),              accent: 'var(--amber)',ico_bg: 'var(--amber-pale)',  badge: 'needs action',          up: false },
-    { ico: '🚩', lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                     accent: 'var(--red)',  ico_bg: 'var(--red-pale)',    badge: 'investigate',           up: false },
-    { ico: '✅', lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),      accent: 'var(--green)',ico_bg: 'var(--green-pale)',  badge: 'approved',              up: true  },
-    { ico: '📋', lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),                accent: '#8b5cf6',    ico_bg: '#ede9fe',            badge: `${stats.pendingBookings||0} pending`, up: false },
+    { ico: '👥', lbl: 'Total Users',       val: fmt(users.length),                          accent: 'var(--teal)',  ico_bg: 'var(--teal-light)', badge: `+${stats.newUsersToday || 0} today`,                        up: true  },
+    { ico: '🏠', lbl: 'Properties Listed', val: fmt(properties.length),                     accent: 'var(--blue)', ico_bg: 'var(--blue-pale)',  badge: `${properties.filter(p=>p.verified).length} verified`,        up: false },
+    { ico: '⏳', lbl: 'Pending Verify',    val: fmt(pendingVerification.length),            accent: 'var(--amber)',ico_bg: 'var(--amber-pale)', badge: 'needs action',                                               up: false },
+    { ico: '🚩', lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                   accent: 'var(--red)',  ico_bg: 'var(--red-pale)',   badge: 'investigate',                                                up: false },
+    { ico: '✅', lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),    accent: 'var(--green)',ico_bg: 'var(--green-pale)', badge: 'approved',                                                   up: true  },
+    { ico: '📋', lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),              accent: '#8b5cf6',    ico_bg: '#ede9fe',           badge: `${stats.pendingBookings || 0} pending`,                      up: false },
+    { ico: '🌐', lbl: 'Total Visitors',    val: fmt(stats.totalVisitors || 0),              accent: '#0ea5e9',    ico_bg: '#e0f2fe',           badge: 'all time',                                                   up: true  },
+    { ico: '📅', lbl: "Today's Visitors",  val: fmt(stats.todayVisitors || 0),              accent: '#6366f1',    ico_bg: '#eef2ff',           badge: 'since midnight',                                             up: false },
+    { ico: '🟢', lbl: 'Online Now',        val: fmt(stats.onlineNow || 0),                  accent: 'var(--green)',ico_bg: 'var(--green-pale)', badge: 'last 5 mins',                                                up: true  },
   ];
 
-  const regByMonth  = data?.registrationsByMonth || [];
-  const maxReg      = Math.max(...regByMonth.map(r => r.count), 1);
+  const regByMonth = data?.registrationsByMonth || [];
+  const maxReg     = Math.max(...regByMonth.map(r => r.count), 1);
 
   /* ── loading screen ── */
   if (authLoading || loading) return (
@@ -479,10 +490,10 @@ export default function AdminDashboard() {
 
   const TABS = [
     { id: 'overview',   label: 'Overview',   icon: 'fa-chart-line' },
-    { id: 'users',      label: 'Users',      icon: 'fa-users',         count: users.length },
-    { id: 'verify',     label: 'Verify',     icon: 'fa-shield-alt',    count: pendingVerification.length, urgent: true },
-    { id: 'properties', label: 'Properties', icon: 'fa-building',      count: properties.length },
-    { id: 'scams',      label: 'Flagged',    icon: 'fa-flag',          count: flaggedProps.length, urgent: flaggedProps.length > 0 },
+    { id: 'users',      label: 'Users',      icon: 'fa-users',      count: users.length },
+    { id: 'verify',     label: 'Verify',     icon: 'fa-shield-alt', count: pendingVerification.length, urgent: true },
+    { id: 'properties', label: 'Properties', icon: 'fa-building',   count: properties.length },
+    { id: 'scams',      label: 'Flagged',    icon: 'fa-flag',       count: flaggedProps.length, urgent: flaggedProps.length > 0 },
   ];
 
   return (
@@ -587,10 +598,10 @@ export default function AdminDashboard() {
                 </div>
                 <div style={{padding:'1.25rem',display:'flex',flexDirection:'column',gap:'0.75rem'}}>
                   {[
-                    { ico: '⏳', label: 'Users pending verification', val: pendingVerification.length, action: () => setTab('verify'), color: 'var(--amber)', btnLabel: 'Review Now', btnClass: 'a-btn-amber' },
-                    { ico: '🚩', label: 'Flagged / scam properties',  val: flaggedProps.length,       action: () => setTab('scams'), color: 'var(--red)',   btnLabel: 'Investigate', btnClass: 'a-btn-red' },
-                    { ico: '🏢', label: 'Unverified properties',       val: properties.filter(p=>!p.verified).length, action: () => setTab('properties'), color: 'var(--blue)', btnLabel: 'Review', btnClass: 'a-btn-outline' },
-                    { ico: '👥', label: 'Total registered owners',     val: users.filter(u=>u.role==='landlord'||u.role==='land_seller').length, action: () => setTab('users'), color: 'var(--teal)', btnLabel: 'View All', btnClass: 'a-btn-teal' },
+                    { ico: '⏳', label: 'Users pending verification', val: pendingVerification.length,                                          action: () => setTab('verify'),     color: 'var(--amber)', btnLabel: 'Review Now',  btnClass: 'a-btn-amber'   },
+                    { ico: '🚩', label: 'Flagged / scam properties',  val: flaggedProps.length,                                                 action: () => setTab('scams'),      color: 'var(--red)',   btnLabel: 'Investigate', btnClass: 'a-btn-red'     },
+                    { ico: '🏢', label: 'Unverified properties',      val: properties.filter(p=>!p.verified).length,                            action: () => setTab('properties'), color: 'var(--blue)', btnLabel: 'Review',      btnClass: 'a-btn-outline' },
+                    { ico: '👥', label: 'Total registered owners',    val: users.filter(u=>u.role==='landlord'||u.role==='land_seller').length,  action: () => setTab('users'),      color: 'var(--teal)', btnLabel: 'View All',    btnClass: 'a-btn-teal'    },
                   ].map((item, i) => (
                     <div key={i} style={{display:'flex',alignItems:'center',gap:'0.75rem',padding:'0.85rem',background:'#fafafa',borderRadius:'10px',border:'1px solid var(--border)'}}>
                       <div style={{fontSize:'1.4rem'}}>{item.ico}</div>
@@ -805,10 +816,10 @@ export default function AdminDashboard() {
                         </div>
                         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:'0.4rem',marginTop:'0.5rem'}}>
                           {[
-                            { ico: 'fa-phone',   val: u.phone || '—' },
+                            { ico: 'fa-phone',        val: u.phone    || '—' },
                             { ico: 'fab fa-whatsapp', val: u.whatsapp || '—', color: '#25D366' },
-                            { ico: 'fa-envelope', val: u.email || '—' },
-                            { ico: 'fa-clock',    val: `Registered ${timeAgo(u.createdAt)}` },
+                            { ico: 'fa-envelope',     val: u.email    || '—' },
+                            { ico: 'fa-clock',        val: `Registered ${timeAgo(u.createdAt)}` },
                           ].map((row, j) => (
                             <div key={j} style={{display:'flex',alignItems:'center',gap:5,fontSize:'.78rem',color:'var(--mid)'}}>
                               <i className={`fa ${row.ico}`} style={{color: row.color || 'var(--teal)',width:14,textAlign:'center'}} />
@@ -816,7 +827,6 @@ export default function AdminDashboard() {
                             </div>
                           ))}
                         </div>
-                        {/* Properties by this user */}
                         {properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length > 0 && (
                           <div style={{marginTop:'0.75rem',padding:'0.65rem 0.85rem',background:'var(--teal-pale)',borderRadius:9,border:'1px solid var(--border)',fontSize:'.78rem',color:'var(--mid)'}}>
                             <strong style={{color:'var(--teal-dark)'}}>
@@ -884,7 +894,7 @@ export default function AdminDashboard() {
                   ? <div className="a-empty"><div className="a-empty-ico">🏠</div><h4>No properties found</h4></div>
                   : <table className="a-tbl">
                       <thead>
-                          <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>WhatsApp</th><th>Calls</th><th>Listed</th><th>Actions</th></tr>
+                        <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>WhatsApp</th><th>Calls</th><th>Listed</th><th>Actions</th></tr>
                       </thead>
                       <tbody>
                         {filteredProps.map((p, i) => {
@@ -919,12 +929,12 @@ export default function AdminDashboard() {
                                     ? <span className="a-badge a-badge-v">✅ Live</span>
                                     : <span className="a-badge a-badge-p">⏳ Pending</span>
                                 }
-                             </td>
-                                     <td style={{fontSize:'.8rem'}}>{p.viewCount ?? 0}</td>
-                                     <td style={{fontSize:'.8rem',color:'#25D366',fontWeight:700}}>{p.whatsappClicks ?? 0}</td>
-                                     <td style={{fontSize:'.8rem',color:'var(--teal)',fontWeight:700}}>{p.callClicks ?? 0}</td>
-                                     <td style={{fontSize:'.72rem',color:'var(--light)'}}>{timeAgo(p.createdAt)}</td>
-                               <td>
+                              </td>
+                              <td style={{fontSize:'.8rem'}}>{p.viewCount ?? 0}</td>
+                              <td style={{fontSize:'.8rem',color:'#25D366',fontWeight:700}}>{p.whatsappClicks ?? 0}</td>
+                              <td style={{fontSize:'.8rem',color:'var(--teal)',fontWeight:700}}>{p.callClicks ?? 0}</td>
+                              <td style={{fontSize:'.72rem',color:'var(--light)'}}>{timeAgo(p.createdAt)}</td>
+                              <td>
                                 <div className="a-row-actions">
                                   {!p.flagged && (
                                     <button className="a-btn a-btn-amber a-btn-sm"

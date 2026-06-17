@@ -1,6 +1,7 @@
-const express = require('express');
-const router  = express.Router();
+const express      = require('express');
+const router       = express.Router();
 const { protect, authorize } = require('../middleware/authMiddleware');
+const trackVisitor = require('../middleware/trackVisitor');
 const {
   getAdminStats,
   getUsers,
@@ -14,6 +15,10 @@ const {
 
 const admin = [protect, authorize('admin')];
 
+// ── public: called once when anyone opens the site ──
+router.post('/track-visit', trackVisitor);
+
+// ── protected admin routes ──
 router.get('/stats',                       ...admin, getAdminStats);
 router.get('/users',                       ...admin, getUsers);
 router.patch('/users/:id/verify',          ...admin, verifyUser);
