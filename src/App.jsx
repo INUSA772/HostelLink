@@ -15,8 +15,14 @@ import api from './services/api';
 
 function App() {
   useEffect(() => {
-    // Fire once when anyone opens the site — tracks both tenants and landlords
-    api.post('/admin/track-visit').catch(() => {});
+    const today = new Date().toDateString();
+    const lastTracked = localStorage.getItem('peza_tracked');
+
+    if (lastTracked !== today) {
+      api.post('/admin/track-visit')
+        .then(() => localStorage.setItem('peza_tracked', today))
+        .catch(() => {});
+    }
   }, []);
 
   return (
