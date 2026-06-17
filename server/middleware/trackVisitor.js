@@ -13,6 +13,18 @@ module.exports = async (req, res) => {
       });
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Only update if this fingerprint hasn't been seen today
+    const existing = await Visitor.findOne({ fingerprint: fp });
+
+    if (existing && existing.lastSeen >= today) {
+      // Already counted today — just update online status silently
+      await Visitor.updateOne({ fingerprint: fp }, { $set: { lastSeen: new Date(), isOnline: true } });
+      return res.json({ success: true, counted: false });
+    }
+
     const userId = req.user?._id || null;
 
     await Visitor.findOneAndUpdate(
@@ -25,7 +37,7 @@ module.exports = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    res.json({ success: true });
+    res.json({ success: true, counted: true });
   } catch (err) {
     res.json({ success: false });
   }
