@@ -1618,7 +1618,7 @@ function Hero() {
       <div className="ph-hero-wrapper">
         <div className="ph-hero-left">
           <div className="ph-hero-badge">
-            <i className="fa fa-home" /> {t.heroBadge}
+             {t.heroBadge}
           </div>
           <h1>
             {t.heroH1a} <em>{t.heroH1em}</em><br />
