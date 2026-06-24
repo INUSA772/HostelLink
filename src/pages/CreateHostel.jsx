@@ -19,7 +19,7 @@ const MALAWI_DISTRICTS = [
 
 const PROPERTY_TYPES = [
   { value: 'House',              label: 'House' },
-  { value: 'Flat/Apartment',   label: 'Flat / Apartment' },
+  { value: 'Flat/Apartment',   label: 'bedsitter' },
   { value: 'Single Room',      label: 'Single Room' },
   { value: 'Self-Contained',   label: 'Self-Contained' },
   { value: 'Plot of Land',      label: 'Plot of Land' },
