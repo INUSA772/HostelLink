@@ -422,8 +422,8 @@ const styles = `
     --border: #e8eaed;
     --mid: #6b7280;
     --dark: #111827;
-    --wa-green: #25D366;
-    --wa-green-dark: #1da851;
+    --wa-green:  #111827;
+    --wa-green-dark:  #111827;
     --radius: 12px;
     --radius-lg: 16px;
     --font: 'Plus Jakarta Sans', 'Nunito Sans', sans-serif;
