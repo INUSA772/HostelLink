@@ -18,12 +18,12 @@ const MALAWI_DISTRICTS = [
 ];
 
 const PROPERTY_TYPES = [
-  { value: 'House',             icon: '🏠', label: 'House' },
-  { value: 'Flat/Apartment',   icon: '🏢', label: 'Flat / Apartment' },
-  { value: 'Single Room',      icon: '🛏️', label: 'Single Room' },
-  { value: 'Self-Contained',   icon: '🚪', label: 'Self-Contained' },
-  { value: 'Plot of Land',     icon: '🌳', label: 'Plot of Land' },
-  { value: 'Commercial Space', icon: '🏪', label: 'Commercial Space' },
+  { value: 'House',              label: 'House' },
+  { value: 'Flat/Apartment',   label: 'Flat / Apartment' },
+  { value: 'Single Room',      label: 'Single Room' },
+  { value: 'Self-Contained',   label: 'Self-Contained' },
+  { value: 'Plot of Land',      label: 'Plot of Land' },
+  { value: 'Commercial Space',  label: 'Commercial Space' },
 ];
 
 const HOUSE_AMENITIES = [
@@ -558,7 +558,7 @@ const CreateProperty = () => {
           {/* ── 4. Price & Availability ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-wallet" /> Price & availability
+              <i className="fa fa-wallet" /> Price 
             </div>
 
             <div className={showRooms ? 'cp-row-3' : 'cp-row-2'}>
