@@ -9,7 +9,7 @@ const LANGS = {
   en: {
     code: "en", label: "English",
     switchLang: "Language",
-    heroBadge:   "Finding homes across Malawi — no sign-up required",
+    heroBadge:   "Finding homes across Malawi. No sign-up required",
     heroH1a:     "Find Your",
     heroH1em:    "Perfect Home",
     heroH1b:     "Anywhere in Malawi",
@@ -117,7 +117,7 @@ const LANGS = {
   ny: {
     code: "ny", label: "Chichewa",
     switchLang: "Chilankhulo",
-    heroBadge:   "Kupeza nyumba ku Malawi konse — simukuyenera kukhala ndi account kuti mupeze nyumba",
+    heroBadge:   "Kupeza nyumba ku Malawi konse. Simukuyenera kukhala ndi account kuti mupeze nyumba",
     heroH1a:     "Pezani",
     heroH1em:    "Nyumba Yabwino",
     heroH1b:     "Kulikonse ku Malawi",
@@ -225,7 +225,7 @@ const LANGS = {
   tu: {
     code: "tu", label: "Tumbuka",
     switchLang: "Chilankhulo",
-    heroBadge:   "Sangani manyumba mu Malawi  — kwambura kujura akaunti",
+    heroBadge:   "Sangani manyumba mu Malawi. Kwambura kujura akaunti",
     heroH1a:     "Penjani",
     heroH1em:    "Nyumba yiweme",
     heroH1b:     "Kulikose ku Malawi",
@@ -1283,7 +1283,7 @@ function Navbar({ favCount }) {
   const navLinks = [
     { href: "/",           label: t.navHome,       icon: "fa fa-home"        },
     { href: "/properties", label: t.navProperties, icon: "fa fa-building"    },
-    { href: "/favorites",  label: t.navFavorites,  icon: "fa fa-heart"       },
+    {/*{ href: "/favorites",  label: t.navFavorites,  icon: "fa fa-heart"       },*/},
     { href: "/about",      label: t.navAbout,      icon: "fa fa-info-circle" },
     { href: "/contact",    label: t.navContact,    icon: "fa fa-envelope"    },
   ];
@@ -1294,7 +1294,7 @@ function Navbar({ favCount }) {
         <div className="pn-nav-inner">
           <a href="/" className="pn-logo">
             <div className="pn-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
-            <span className="pn-logo-text">PezaNyumba</span>
+            <span className="pn-logo-text">PezaNyumba Mw</span>
           </a>
 
           <div className="pn-nav-links">
@@ -1405,7 +1405,7 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
     if (navigator.share) {
       navigator.share({
         title: p.name,
-        text: `Found this on PezaNyumba 🏡 ${p.name} in ${p.district || "Malawi"}`,
+        text: `Found this on PezaNyumba Mw ${p.name} in ${p.district || "Malawi"}`,
         url: `${window.location.origin}/properties/${p._id}`,
       }).catch(() => {});
     } else {
@@ -2089,7 +2089,7 @@ function FavoritesPage({ favIds, allProperties, onFavToggle, onToast }) {
         <div className="ph-favpage-empty">
           <div className="ph-favpage-empty-icon"><i className="fa fa-heart" /></div>
           <h3>No saved properties yet</h3>
-          <p>Tap the heart icon on any listing to save it here — no account needed.</p>
+          <p>Tap the heart icon on any listing to save it here. No account needed.</p>
           <a href="#browse-districts" className="ph-btn-primary" style={{display:"inline-flex",width:"auto",padding:".75rem 1.8rem",borderRadius:"var(--radius)",textDecoration:"none"}}>
             <i className="fa fa-search" /> Browse Properties
           </a>
@@ -2156,8 +2156,8 @@ function Footer() {
         </div>
       </div>
       <div className="ph-footer-bottom">
-        <span>© 2026 PezaNyumba. All rights reserved.</span>
-        <span>Made with love in Malawi 🇲🇼</span>
+        <span>© 2026 PezaNyumbaMw. All rights reserved.</span>
+        <span>Made with love in Malawi </span>
       </div>
     </footer>
   );
