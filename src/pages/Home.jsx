@@ -459,7 +459,7 @@ const styles = `
     width: 36px; height: 36px;
     background: white; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    border: 2px solid var(--amber); overflow: hidden;
+ 
   }
   .pn-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
   .pn-logo-text { font-size: 1.1rem; font-weight: 800; color: #0f1923; letter-spacing: -.3px; }
