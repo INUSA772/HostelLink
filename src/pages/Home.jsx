@@ -700,13 +700,24 @@ const styles = `
   }
 
   .ph-hero-badge {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: var(--amber-light); border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    background: rgba(255, 243, 205, 0.25); /* transparent amber */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 193, 7, 0.25);
+
+    border-radius: 16px;
     padding: .4rem .85rem;
-    font-size: .73rem; font-weight: 700; color: var(--amber-dark);
-    margin-bottom: 1.2rem; letter-spacing: .3px;
-    width: fit-content; line-height: 1.4;
-  }
+    font-size: .73rem;
+    font-weight: 700;
+    color: var(--amber-dark);
+
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
   .ph-hero-left h1 {
     font-family: var(--font);
     font-size: clamp(1.9rem, 8vw, 3.6rem);
