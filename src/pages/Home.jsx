@@ -658,13 +658,15 @@ const styles = `
   }
 
   /* ═══ FIX 3 — Mobile BG image via pseudo-element ═══ */
- .ph-hero::before {
+  .ph-hero::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image: url('https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg');
     background-size: cover;
     background-position: center;
+    /* Dark overlay so text is readable on mobile */
+    filter: brightness(0.35);
     z-index: 0;
   }
   /* On desktop the right panel image takes over — hide the pseudo BG */
