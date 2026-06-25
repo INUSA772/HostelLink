@@ -19,7 +19,7 @@ const MALAWI_DISTRICTS = [
 
 const PROPERTY_TYPES = [
   { value: 'House',              label: 'House' },
-  { value: 'Flat/Apartment',   label: 'bedsitter' },
+  { value: 'Flat/Apartment',   label: 'Bedsitter' },
   { value: 'Single Room',      label: 'Single Room' },
   { value: 'Self-Contained',   label: 'Self-Contained' },
   { value: 'Plot of Land',      label: 'Plot of Land' },
@@ -419,7 +419,7 @@ const CreateProperty = () => {
         units: [],
       };
       await createHostel(payload);
-      toast.success('🎉 Property listed successfully!');
+      toast.success('Property listed successfully!');
       navigate('/landlord-dashboard');
     } catch (err) {
       console.error(err);
@@ -652,7 +652,7 @@ const CreateProperty = () => {
               </div>
               {form.amenities.length > 0 && (
                 <div className="cp-amenity-count">
-                  ✅ {form.amenities.length} feature{form.amenities.length !== 1 ? 's' : ''} selected
+                  {form.amenities.length} feature{form.amenities.length !== 1 ? 's' : ''} selected
                 </div>
               )}
             </div>

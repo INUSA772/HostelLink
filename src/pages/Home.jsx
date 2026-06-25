@@ -1971,11 +1971,11 @@ function TypesSection({ allProperties, favIds, onFavToggle, onToast }) {
 function LocationsSection({ onDistrictClick }) {
   const { t } = useLang();
   const locs = [
-    { img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"       },
-    { img:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop",          count:"9 Properties",   name:"Blantyre", desc:"Commercial Hub",           icon:"fa fa-building"   },
-    { img:"https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&auto=format&fit=crop",          count:"5 Properties",   name:"Zomba",    desc:"University Town",          icon:"fa fa-university" },
-    { img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region Hub",      icon:"fa fa-mountain"   },
-    { img:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&auto=format&fit=crop",          count:"6 Properties",   name:"Mangochi", desc:"Lakeshore Living",         icon:"fa fa-water"      },
+    { img:"https://images.openai.com/static-rsc-4/7GSO5MGOD68caHQdI44Y3hLe4MyxyuQMTUiZUgWmK4NBa7fI2vaAGp7RK3U3lO8e1hLwTx4w7LM5cMn4clIDUd9KH3B9-mOb6jCIZ_Q5LlL5OAv7uUCScacYuWrz7BPiQXmxlBp0STdOhl7a4896qivZSTXavn9Z-6NFCX7tTYQs8Ky-hP98DQ7-uE-w9dS0?purpose=fullsize", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"       },
+    { img:"https://images.openai.com/static-rsc-4/CMD9954ds4_6BOPsvHM844Clq9dykeax-l3-cXWhTJ6ckL7cOflCUZza4w_f7KFSrJi08eoopWewEVWfPPkSvGODEcOPu2LG_CJcbxfN-J1NS9sVi4HS6ulnvDAqXG3FCIR_K0dhPSOBSF36Ev51ksmzT7V21WQN2szPdOyieQ5KkNKJP3fmauDceVJ6TQxi?purpose=fullsize",          count:"9 Properties",   name:"Blantyre", desc:"Commercial Hub",           icon:"fa fa-building"   },
+    { img:"https://images.openai.com/static-rsc-4/_Lh70gzg7xEH5YOvg0AnAhSlPO581JjkelrC0vorj6ALz9B9GPXEfji49zdNynL48g2njFKHACKFqXnMLudLlr2ycoe2Dbo2wiyjw5bLkJvVuXZRCWrRFb7MJg8Ntr6qLZJ_t7D2xPs6MVc3bbTinSEtoXTOvVYoWfWABh_U5BHZI5Yh8cY48GliPd66ID0x?purpose=fullsize",          count:"5 Properties",   name:"Zomba",    desc:"land for sale",          icon:"fa fa-university" },
+    { img:"https://images.openai.com/static-rsc-4/nv_QlhwWZCv955PL3xGwEgfwJDi5j8U1Gi-986mweT31XYLRQ09DqHXzPZUSft9WY0nnOAvUPfDbLOl-brmg3wsNRcjVEDYsm89QSMf_00rp0Xddt5Jo8zGB81BMgvDkwkU-ppX590f8P4vdj4HNIeYTVJ-PlLotWGjgcpxhZvlw5q03MJRl0NqKRJGZkaDP?purpose=fullsize",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region",      icon:"fa fa-mountain"   },
+    { img:"https://images.openai.com/static-rsc-4/Vh-2gQ3WSgCRZ0kspbOnsOpa9fSnFlQvKawKL5fpyloVLCZxufa0na82xBX8m6DSELpxmtFnkygdtlmlbiydqEtSv5XBPrVInCYczRaF5rWTJDSVgb2rlXbNN8N9ckZtEr73GaMJtz8Sa0weJ4_-b7G8OMlnI_AvQ-__jnIhuzZGrVM_ENseGJ2MKiprwCON?purpose=fullsize",          count:"6 Properties",   name:"Mangochi", desc:"Mangochu",         icon:"fa fa-water"      },
   ];
   return (
     <section className="ph-locs-sec">
