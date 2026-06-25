@@ -1658,7 +1658,7 @@ function Hero() {
         {/* Desktop-only right panel with image + animated cards */}
         <div className="ph-hero-right">
           <img className="ph-hero-bg"
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85"
+            src="https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg"
             alt="Property" />
           <div className="ph-cards-mask">
             <div className="ph-cards-col ph-cards-up">
