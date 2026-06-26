@@ -624,7 +624,10 @@ const styles = `
     opacity: 0.5;
     cursor: not-allowed;
   }
-
+@media(min-width: 1024px) {
+    .ph-hero-left h1 { color: var(--navy); text-shadow: none; }
+    .ph-hero-left h1 em { color: var(--amber); }
+  }
   /* ══════════════════════════════════════
      ANIMATIONS
   ══════════════════════════════════════ */
