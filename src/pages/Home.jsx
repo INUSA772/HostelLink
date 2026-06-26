@@ -684,9 +684,7 @@ const styles = `
     position: relative; z-index: 2; width: 100%;
 
     /* True glassmorphism — image shows through clearly */
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(7px);
+    
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
@@ -711,7 +709,7 @@ const styles = `
   .ph-hero-left h1 {
     font-family: var(--font);
     font-size: clamp(1.75rem, 7vw, 3.6rem);
-    font-weight: 900; color: var(--navy);
+    font-weight: 900; color: white;
     line-height: 1.1; margin-bottom: .85rem; letter-spacing: -1px;
   }
   .ph-hero-left h1 em { color: var(--amber); font-style: normal; }
