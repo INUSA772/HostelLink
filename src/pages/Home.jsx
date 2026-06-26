@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -422,8 +423,8 @@ const styles = `
     --border: #e8eaed;
     --mid: #6b7280;
     --dark: #111827;
-    --wa-green:  #111827;
-    --wa-green-dark:  #111827;
+    --wa-green: #111827;
+    --wa-green-dark: #111827;
     --radius: 12px;
     --radius-lg: 16px;
     --font: 'Plus Jakarta Sans', 'Nunito Sans', sans-serif;
@@ -459,7 +460,6 @@ const styles = `
     width: 36px; height: 36px;
     background: white; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
- 
   }
   .pn-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
   .pn-logo-text { font-size: 1.1rem; font-weight: 800; color: #0f1923; letter-spacing: -.3px; }
@@ -508,7 +508,6 @@ const styles = `
     height: 16px; display: flex; align-items: center; justify-content: center;
   }
 
-  /* ═══ FIX 2 — Profile button now navigates to /profile ═══ */
   .pn-profile-btn {
     display: none;
     align-items: center; gap: 7px;
@@ -641,38 +640,39 @@ const styles = `
   .ph-lightbox-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 
   /* ══════════════════════════════
-     HERO
-     FIX 3 — Mobile background image:
-     The hero right panel (image) was
-     display:none on mobile. Now we use
-     a pseudo-element on .ph-hero itself
-     to show the BG image on all screen
-     sizes, with a dark overlay so text
-     stays readable on mobile.
+     HERO — NEW APPROACH
+     Full-bleed background image at
+     full brightness on ALL screens.
+     Content sits in a frosted-glass
+     card on mobile for readability.
   ══════════════════════════════ */
   .ph-hero {
-    width: 100%; background: #fff;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-    padding: 2.5rem 1.25rem 2.5rem; min-height: auto;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    /* Background image fills the whole section on mobile */
+    background-image: url('https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg');
+    background-size: cover;
+    background-position: center top;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem 2rem;
   }
 
-  /* ═══ FIX 3 — Mobile BG image via pseudo-element ═══ */
-  .ph-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85');
-    background-size: cover;
-    background-position: center;
-    /* Dark overlay so text is readable on mobile */
-    filter: brightness(0.35);
-    z-index: 0;
-  }
-  /* On desktop the right panel image takes over — hide the pseudo BG */
+  /* No pseudo overlay — pure image, no filter */
+  .ph-hero::before { display: none; }
+
+  /* On desktop the right panel image takes over — reset bg */
   @media(min-width: 1024px) {
-    .ph-hero::before { display: none; }
-    .ph-hero { background: #fff; }
+    .ph-hero {
+      background-image: none;
+      background: #fff;
+      padding: 0;
+      min-height: 88vh;
+      align-items: stretch;
+    }
   }
 
   .ph-hero-wrapper {
@@ -680,91 +680,107 @@ const styles = `
     align-items: stretch; width: 100%; max-width: 1200px; gap: 0;
     position: relative; z-index: 1;
   }
+
+  /* ═══ MOBILE: frosted glass card around content ═══ */
   .ph-hero-left {
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
-    padding: 0; position: relative; z-index: 2; width: 100%;
+    padding: 1.75rem 1.5rem;
+    position: relative; z-index: 2; width: 100%;
+
+    /* Frosted glass effect on mobile */
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   }
 
-  /* ═══ FIX 3 — On mobile, text turns white to be readable over the dark BG ═══ */
-  @media(max-width: 1023px) {
-    .ph-hero-left h1 { color: #fff !important; }
-    .ph-hero-badge { background: rgba(245,166,35,.2) !important; color: #ffd580 !important; border: 1px solid rgba(245,166,35,.4); }
-    .ph-hero-sub { color: rgba(255,255,255,.8) !important; }
-    .ph-hero-trust-item { color: rgba(255,255,255,.85) !important; }
-    .ph-hero-trust-item i { color: #4ade80 !important; }
-    .ph-btn-ghost { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.35) !important; color: white !important; }
-    .ph-btn-ghost:hover { background: rgba(255,255,255,.22) !important; }
-    .ph-hero-stats { border-top-color: rgba(255,255,255,.18) !important; }
-    .ph-hero-stat span { color: rgba(255,255,255,.65) !important; }
+  @media(min-width: 1024px) {
+    .ph-hero-left {
+      /* Remove glass card on desktop — plain white side */
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      flex: 1;
+      padding: 5rem 4rem 5rem 8%;
+      align-items: flex-start;
+    }
   }
+
+  /* All text colours are navy (dark) — readable on the glass card */
+  .ph-hero-left h1 {
+    font-family: var(--font);
+    font-size: clamp(1.75rem, 7vw, 3.6rem);
+    font-weight: 900; color: var(--navy);
+    line-height: 1.1; margin-bottom: .85rem; letter-spacing: -1px;
+  }
+  .ph-hero-left h1 em { color: var(--amber); font-style: normal; }
 
   .ph-hero-badge {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-
-    background: rgba(255, 243, 205, 0.25); /* transparent amber */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    border: 1px solid rgba(255, 193, 7, 0.25);
-
+    background: var(--amber-light);
+    border: 1px solid rgba(245,166,35,.35);
     border-radius: 16px;
     padding: .4rem .85rem;
     font-size: .73rem;
     font-weight: 700;
     color: var(--amber-dark);
-
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-  .ph-hero-left h1 {
-    font-family: var(--font);
-    font-size: clamp(1.9rem, 8vw, 3.6rem);
-    font-weight: 900; color: var(--navy);
-    line-height: 1.1; margin-bottom: 1rem; letter-spacing: -1px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-  .ph-hero-left h1 em { color: var(--amber); font-style: normal; }
-  .ph-hero-sub { font-size: .9rem; color: var(--mid); max-width: 420px; line-height: 1.75; margin-bottom: 1.75rem; font-weight: 500; }
-  .ph-hero-btns { display: flex; gap: .75rem; flex-direction: column; margin-bottom: 2rem; width: 100%; }
+
+  .ph-hero-sub { font-size: .9rem; color: var(--mid); max-width: 420px; line-height: 1.75; margin-bottom: 1.5rem; font-weight: 500; }
+  .ph-hero-btns { display: flex; gap: .75rem; flex-direction: column; margin-bottom: 1.5rem; width: 100%; }
   .ph-btn-primary {
-    background: var(--navy); color: white; padding: .9rem 1.5rem; border-radius: var(--radius);
-    font-size: .95rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
+    background: var(--navy); color: white; padding: .85rem 1.4rem; border-radius: var(--radius);
+    font-size: .92rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
     gap: 8px; transition: background .2s, transform .15s; text-decoration: none;
     box-shadow: 0 4px 18px rgba(15,25,35,.22); width: 100%; -webkit-tap-highlight-color: transparent;
   }
   .ph-btn-primary:hover { background: var(--navy-mid); transform: translateY(-1px); }
   .ph-btn-ghost {
     background: #fff; color: var(--navy); border: 2px solid var(--border);
-    padding: .9rem 1.5rem; border-radius: var(--radius); font-size: .95rem; font-weight: 700;
+    padding: .85rem 1.4rem; border-radius: var(--radius); font-size: .92rem; font-weight: 700;
     display: inline-flex; align-items: center; justify-content: center;
     gap: 10px; transition: all .2s; text-decoration: none; width: 100%;
     -webkit-tap-highlight-color: transparent;
   }
   .ph-btn-ghost:hover { border-color: var(--navy); background: var(--off-white); }
-  .ph-hero-trust { display: flex; flex-direction: column; gap: .55rem; margin-bottom: 1.75rem; }
+
+  .ph-hero-trust { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.5rem; }
   .ph-hero-trust-item { display: flex; align-items: center; gap: 7px; font-size: .82rem; font-weight: 600; color: var(--mid); }
-  .ph-hero-trust-item i { color: var(--wa-green); font-size: .9rem; flex-shrink: 0; }
+  .ph-hero-trust-item i { color: var(--dark); font-size: .9rem; flex-shrink: 0; }
+
   .ph-hero-stats {
     display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1rem; width: 100%; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    gap: .75rem; width: 100%; margin-top: 1.25rem;
+    padding-top: 1.25rem; border-top: 1px solid rgba(0,0,0,.1);
   }
   .ph-hero-stat { text-align: center; }
-  .ph-hero-stat strong { display: block; font-family: var(--font); font-size: 1.5rem; font-weight: 900; color: var(--amber); letter-spacing: -1px; }
-  .ph-hero-stat span { font-size: .68rem; color: var(--mid); font-weight: 500; line-height: 1.3; display: block; }
+  .ph-hero-stat strong { display: block; font-family: var(--font); font-size: 1.4rem; font-weight: 900; color: var(--amber-dark); letter-spacing: -1px; }
+  .ph-hero-stat span { font-size: .65rem; color: var(--mid); font-weight: 500; line-height: 1.3; display: block; }
+
   .ph-hero-right { display: none; }
+
   @media(min-width: 600px) {
-    .ph-hero { padding: 3.5rem 2rem; }
+    .ph-hero { padding: 2.5rem 2rem; min-height: 90svh; }
+    .ph-hero-left { max-width: 520px; }
     .ph-hero-btns { flex-direction: row; }
     .ph-btn-primary, .ph-btn-ghost { width: auto; flex: 1; }
-    .ph-hero-trust { flex-direction: row; flex-wrap: wrap; gap: 1rem; }
-    .ph-hero-stat strong { font-size: 1.7rem; }
-    .ph-hero-stat span { font-size: .74rem; }
+    .ph-hero-trust { flex-direction: row; flex-wrap: wrap; gap: .75rem; }
+    .ph-hero-stat strong { font-size: 1.6rem; }
+    .ph-hero-stat span { font-size: .72rem; }
   }
+
   @media(min-width: 1024px) {
-    .ph-hero { padding: 0; min-height: 88vh; }
-    .ph-hero-wrapper { flex-direction: row; min-height: 88vh; }
-    .ph-hero-left { flex: 1; padding: 5rem 4rem 5rem 8%; align-items: flex-start; }
+    .ph-hero-wrapper { flex-direction: row; min-height: 88vh; align-items: stretch; }
     .ph-hero-btns { flex-direction: row; width: auto; }
     .ph-btn-primary, .ph-btn-ghost { width: auto; flex: none; }
     .ph-hero-stats { grid-template-columns: repeat(3, auto); width: auto; }
@@ -776,7 +792,10 @@ const styles = `
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(to right, #fff 0%, transparent 15%); pointer-events: none;
     }
+    .ph-hero-stat strong { font-size: 1.7rem; }
+    .ph-hero-stat span { font-size: .74rem; }
   }
+
   .ph-cards-mask { display: none; }
   @media(min-width: 1024px) {
     .ph-cards-mask {
@@ -880,7 +899,6 @@ const styles = `
   .ph-slide-body { padding: 1rem; }
   .ph-slide-district { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; color: var(--amber-dark); margin-bottom: .3rem; }
   .ph-slide-name { font-size: .92rem; font-weight: 800; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: .25rem; }
-  /* FIX 1 — description snippet on slider card */
   .ph-slide-desc {
     font-size: .73rem; color: var(--mid); line-height: 1.5;
     margin-top: .3rem; margin-bottom: .3rem;
@@ -960,7 +978,6 @@ const styles = `
 
   /* ══════════════════════════════
      PROPERTY CARD
-     FIX 1 — description added below price
   ══════════════════════════════ */
   .ph-prop-card { border: 1.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: white; transition: all .25s; box-shadow: 0 2px 10px rgba(0,0,0,.06); display: flex; flex-direction: column; }
   .ph-prop-card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(15,25,35,.12); border-color: var(--amber); }
@@ -989,7 +1006,6 @@ const styles = `
   .ph-prop-loc { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }
   .ph-prop-loc i { color: var(--amber-dark); font-size: .72rem; }
   .ph-prop-price { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
-  /* FIX 1 — property description snippet */
   .ph-prop-desc {
     font-size: .75rem; color: var(--mid); line-height: 1.55; margin-top: .5rem;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -1270,8 +1286,6 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
 
 /* ═══════════════════════════════════════
    NAVBAR
-   FIX 2 — Profile button is now an <a>
-   that navigates to /profile
 ═══════════════════════════════════════ */
 function Navbar({ favCount }) {
   const { lang, setLang, t, langs } = useLang();
@@ -1294,7 +1308,6 @@ function Navbar({ favCount }) {
   const navLinks = [
     { href: "/",           label: t.navHome,       icon: "fa fa-home"        },
     { href: "/properties", label: t.navProperties, icon: "fa fa-building"    },
-    {/*{ href: "/favorites",  label: t.navFavorites,  icon: "fa fa-heart"       },*/},
     { href: "/about",      label: t.navAbout,      icon: "fa fa-info-circle" },
     { href: "/contact",    label: t.navContact,    icon: "fa fa-envelope"    },
   ];
@@ -1343,7 +1356,6 @@ function Navbar({ favCount }) {
               )}
             </div>
 
-            {/* ═══ FIX 2 — Profile button is now a proper link to /profile ═══ */}
             <a href="/profile" className="pn-profile-btn">
               <div className="pn-profile-avatar"><i className="fa fa-user" /></div>
               <span>{t.navProfile}</span>
@@ -1398,7 +1410,6 @@ function Navbar({ favCount }) {
 
 /* ═══════════════════════════════════════
    PROPERTY CARD
-   FIX 1 — description snippet added
 ═══════════════════════════════════════ */
 function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
   const { t } = useLang();
@@ -1454,7 +1465,6 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
         <div className="ph-prop-name">{p.name}</div>
         <div className="ph-prop-loc"><i className="fa fa-map-marker-alt" />{[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
         <div className="ph-prop-price">{formatPrice(p.price, p.listingType, t)}</div>
-        {/* ═══ FIX 1 — description snippet ═══ */}
         {p.description && (
           <div className="ph-prop-desc">{p.description}</div>
         )}
@@ -1627,9 +1637,10 @@ function Hero() {
   return (
     <section className="ph-hero">
       <div className="ph-hero-wrapper">
+        {/* Frosted glass card on mobile, plain on desktop */}
         <div className="ph-hero-left">
           <div className="ph-hero-badge">
-             {t.heroBadge}
+            {t.heroBadge}
           </div>
           <h1>
             {t.heroH1a} <em>{t.heroH1em}</em><br />
@@ -1658,7 +1669,7 @@ function Hero() {
         {/* Desktop-only right panel with image + animated cards */}
         <div className="ph-hero-right">
           <img className="ph-hero-bg"
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85"
+            src="https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg"
             alt="Property" />
           <div className="ph-cards-mask">
             <div className="ph-cards-col ph-cards-up">
@@ -1719,7 +1730,6 @@ function TrustBar() {
 
 /* ═══════════════════════════════════════
    DISTRICTS SLIDER
-   FIX 1 — description shown on slider cards
 ═══════════════════════════════════════ */
 const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format&fit=crop",
@@ -1875,7 +1885,6 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                     <div className="ph-slide-body">
                       <div className="ph-slide-district">{p.district || "Malawi"}</div>
                       <div className="ph-slide-name">{p.name}</div>
-                      {/* ═══ FIX 1 — description on slider card ═══ */}
                       {p.description && (
                         <div className="ph-slide-desc">{p.description}</div>
                       )}
@@ -2186,10 +2195,12 @@ export default function Home() {
 
   const isFavoritesPage = typeof window !== "undefined" && window.location.pathname === "/favorites";
 
-fetch(`${API_URL}/hostels?limit=20`)
-  .then(r => r.json())
-  .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
-  .catch(() => {});
+  useEffect(() => {
+    fetch(`${API_URL}/hostels?limit=20`)
+      .then(r => r.json())
+      .then(data => setAllProperties(data.properties || data.hostels || data.data || []))
+      .catch(() => {});
+  }, []);
 
   function handleFavToggle(id, propertyData) {
     toggle(id);
