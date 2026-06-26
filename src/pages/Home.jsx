@@ -677,19 +677,19 @@ const styles = `
   }
 
   /* ═══ MOBILE: frosted glass card around content ═══ */
-  .ph-hero-left {
+ .ph-hero-left {
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
     padding: 1.75rem 1.5rem;
     position: relative; z-index: 2; width: 100%;
 
-    /* Frosted glass effect on mobile */
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    /* True glassmorphism — image shows through clearly */
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(7px);
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.6);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   }
 
   @media(min-width: 1024px) {
@@ -1161,7 +1161,12 @@ const styles = `
   .ph-footer-bottom { border-top: 1px solid rgba(255,255,255,.06); padding-top: 1.2rem; display: flex; flex-direction: column; align-items: center; gap: .4rem; font-size: .74rem; color: rgba(255,255,255,.25); max-width: 1100px; margin: 0 auto; text-align: center; }
   @media(min-width: 640px) { .ph-footer-grid { grid-template-columns: 1.5fr 1.5fr 1fr; } .ph-footer-links-row { display: contents; } .ph-footer-newsletter { grid-column: 1 / -1; } .ph-footer-bottom { flex-direction: row; justify-content: space-between; } }
   @media(min-width: 900px) { .ph-footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } .ph-footer-newsletter { grid-column: auto; } }
-
+.pn-logo-nyumba {
+    color: var(--amber);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    font-style: italic;
+  }
   /* ══════════════════════════════
      FAVORITES PAGE
   ══════════════════════════════ */
@@ -1221,7 +1226,7 @@ function buildShareMessage(p, t) {
   const price = formatPrice(p.price, p.listingType, t);
   const url   = `${window.location.origin}/properties/${p._id}`;
   return encodeURIComponent(
-    `Found this on PezaNyumba 🏡 ${p.name} in ${p.district || "Malawi"} — ${price}. View: ${url}`
+    `Found this on PezaNyumba  ${p.name} in ${p.district || "Malawi"} — ${price}. View: ${url}`
   );
 }
 
@@ -1313,7 +1318,7 @@ function Navbar({ favCount }) {
         <div className="pn-nav-inner">
           <a href="/" className="pn-logo">
             <div className="pn-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
-            <span className="pn-logo-text">PezaNyumba Mw</span>
+       <span className="ph-footer-logo-tex">Peza<span className="pn-logo-nyumba">Nyumba</span> <span style={{fontSize:".65em",fontWeight:600,opacity:.45,letterSpacing:"1px",verticalAlign:"middle"}}> MW</span></span>
           </a>
 
           <div className="pn-nav-links">
