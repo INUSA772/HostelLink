@@ -16,9 +16,8 @@ const LANGS = {
     heroH1b:     "Anywhere in Malawi",
     heroBrowse:  "Browse Properties",
     heroList:    "List Your Property",
-    heroTrust1:  "No account to browse",
-    heroTrust2:  "WhatsApp landlords directly",
-    heroTrust3:  "List your property for free. No commission",
+  
+
     heroStat1:   "Properties Listed",
     heroStat2:   "Districts Covered",
     heroStat3:   "Dispute Protection",
@@ -124,9 +123,7 @@ const LANGS = {
     heroH1b:     "Kulikonse ku Malawi",
     heroBrowse:  "Sakani Nyumba",
     heroList:    "Ikani Nyumba Yanu",
-    heroTrust1:  "Simukuyenera akaunti",
-    heroTrust2:  "Lumikizanani pa WhatsApp",
-    heroTrust3:  "Kuyika nyumba ndiulele",
+  
     heroStat1:   "Nyumba zomwe zilipo",
     heroStat2:   "Maboma Alipo",
     heroStat3:   "Chitetezo cha Mikangano",
@@ -232,9 +229,7 @@ const LANGS = {
     heroH1b:     "Kulikose ku Malawi",
     heroBrowse:  "Penjani",
     heroList:    "Yikani manyumba yinu",
-    heroTrust1:  "Palije kujura akaunti ",
-    heroTrust2:  "WhatsApp mwene nyumba",
-    heroTrust3:  "Kulemba nyumba mwaulere",
+
     heroStat1:   "Nyumba Zalembiwa",
     heroStat2:   "Madisitirikiti Yalipo",
     heroStat3:   "Chitetezo cha Mikangano",
