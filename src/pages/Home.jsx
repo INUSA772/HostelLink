@@ -1644,11 +1644,7 @@ function Hero() {
             {t.heroH1a} <em>{t.heroH1em}</em><br />
             {t.heroH1b}
           </h1>
-          <div className="ph-hero-trust">
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust1}</div>
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust2}</div>
-            <div className="ph-hero-trust-item"><i className="fa fa-check-circle" /> {t.heroTrust3}</div>
-          </div>
+         
           <div className="ph-hero-btns">
             <a className="ph-btn-primary" href="#browse-districts">
               <i className="fa fa-search" /> {t.heroBrowse}
