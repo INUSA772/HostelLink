@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -635,17 +634,12 @@ const styles = `
   .ph-lightbox-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 
   /* ══════════════════════════════
-     HERO — NEW APPROACH
-     Full-bleed background image at
-     full brightness on ALL screens.
-     Content sits in a frosted-glass
-     card on mobile for readability.
+     HERO
   ══════════════════════════════ */
   .ph-hero {
     width: 100%;
     position: relative;
     overflow: hidden;
-    /* Background image fills the whole section on mobile */
     background-image: url('https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg');
     background-size: cover;
     background-position: center top;
@@ -656,10 +650,8 @@ const styles = `
     padding: 1.5rem 1rem 2rem;
   }
 
-  /* No pseudo overlay — pure image, no filter */
   .ph-hero::before { display: none; }
 
-  /* On desktop the right panel image takes over — reset bg */
   @media(min-width: 1024px) {
     .ph-hero {
       background-image: none;
@@ -676,15 +668,11 @@ const styles = `
     position: relative; z-index: 1;
   }
 
-  /* ═══ MOBILE: frosted glass card around content ═══ */
- .ph-hero-left {
+  .ph-hero-left {
     display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start;
     padding: 1.75rem 1.5rem;
     position: relative; z-index: 2; width: 100%;
-
-    /* True glassmorphism — image shows through clearly */
-    
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
@@ -692,7 +680,6 @@ const styles = `
 
   @media(min-width: 1024px) {
     .ph-hero-left {
-      /* Remove glass card on desktop — plain white side */
       background: transparent;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
@@ -705,14 +692,27 @@ const styles = `
     }
   }
 
-  /* All text colours are navy (dark) — readable on the glass card */
+  /* ── FIX 3: Desktop H1 — "Find Your" and "Anywhere in Malawi" navy, em stays amber ── */
   .ph-hero-left h1 {
     font-family: var(--font);
     font-size: clamp(1.75rem, 7vw, 3.6rem);
-    font-weight: 900; color: white;
-    line-height: 1.1; margin-bottom: .85rem; letter-spacing: -1px;
+    font-weight: 900;
+    /* Mobile: white (sits over dark photo) */
+    color: white;
+    line-height: 1.1;
+    /* FIX 1: push the H1 down from the badge a touch more on mobile */
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
   }
   .ph-hero-left h1 em { color: var(--amber); font-style: normal; }
+
+  /* On desktop switch plain text to navy */
+  @media(min-width: 1024px) {
+    .ph-hero-left h1 {
+      color: var(--navy);
+      margin-bottom: .85rem;
+    }
+  }
 
   .ph-hero-badge {
     display: inline-flex;
@@ -730,7 +730,13 @@ const styles = `
   }
 
   .ph-hero-sub { font-size: .9rem; color: var(--mid); max-width: 420px; line-height: 1.75; margin-bottom: 1.5rem; font-weight: 500; }
-  .ph-hero-btns { display: flex; gap: .75rem; flex-direction: column; margin-bottom: 1.5rem; width: 100%; }
+
+  /* FIX 1: Buttons pushed down with top margin on mobile */
+  .ph-hero-btns {
+    display: flex; gap: .75rem; flex-direction: column;
+    margin-bottom: 1.5rem; width: 100%;
+    margin-top: .5rem;
+  }
   .ph-btn-primary {
     background: var(--navy); color: white; padding: .85rem 1.4rem; border-radius: var(--radius);
     font-size: .92rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
@@ -751,14 +757,41 @@ const styles = `
   .ph-hero-trust-item { display: flex; align-items: center; gap: 7px; font-size: .82rem; font-weight: 600; color: var(--mid); }
   .ph-hero-trust-item i { color: var(--dark); font-size: .9rem; flex-shrink: 0; }
 
+  /* ── FIX 2: Stats — white text on mobile (glass card has semi-dark bg behind it),
+              navy on desktop (white bg) ── */
   .ph-hero-stats {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: .75rem; width: 100%; margin-top: 1.25rem;
-    padding-top: 1.25rem; border-top: 1px solid rgba(0,0,0,.1);
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.25);
   }
   .ph-hero-stat { text-align: center; }
-  .ph-hero-stat strong { display: block; font-family: var(--font); font-size: 1.4rem; font-weight: 900; color: var(--amber-dark); letter-spacing: -1px; }
-  .ph-hero-stat span { font-size: .65rem; color: var(--mid); font-weight: 500; line-height: 1.3; display: block; }
+  /* Mobile: number in amber, label in white for contrast over glass */
+  .ph-hero-stat strong {
+    display: block; font-family: var(--font);
+    font-size: 1.4rem; font-weight: 900;
+    color: var(--amber);
+    letter-spacing: -1px;
+  }
+  .ph-hero-stat span {
+    font-size: .65rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600; line-height: 1.3; display: block;
+  }
+
+  /* Desktop: switch back to navy scheme on white bg */
+  @media(min-width: 1024px) {
+    .ph-hero-stats {
+      border-top: 1px solid rgba(0,0,0,.1);
+    }
+    .ph-hero-stat strong {
+      color: var(--amber-dark);
+    }
+    .ph-hero-stat span {
+      color: var(--mid);
+      font-weight: 500;
+    }
+  }
 
   .ph-hero-right { display: none; }
 
@@ -774,7 +807,7 @@ const styles = `
 
   @media(min-width: 1024px) {
     .ph-hero-wrapper { flex-direction: row; min-height: 88vh; align-items: stretch; }
-    .ph-hero-btns { flex-direction: row; width: auto; }
+    .ph-hero-btns { flex-direction: row; width: auto; margin-top: 0; }
     .ph-btn-primary, .ph-btn-ghost { width: auto; flex: none; }
     .ph-hero-stats { grid-template-columns: repeat(3, auto); width: auto; }
     .ph-hero-right {
@@ -1159,7 +1192,7 @@ const styles = `
   .ph-footer-bottom { border-top: 1px solid rgba(255,255,255,.06); padding-top: 1.2rem; display: flex; flex-direction: column; align-items: center; gap: .4rem; font-size: .74rem; color: rgba(255,255,255,.25); max-width: 1100px; margin: 0 auto; text-align: center; }
   @media(min-width: 640px) { .ph-footer-grid { grid-template-columns: 1.5fr 1.5fr 1fr; } .ph-footer-links-row { display: contents; } .ph-footer-newsletter { grid-column: 1 / -1; } .ph-footer-bottom { flex-direction: row; justify-content: space-between; } }
   @media(min-width: 900px) { .ph-footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; } .ph-footer-newsletter { grid-column: auto; } }
-.pn-logo-nyumba {
+  .pn-logo-nyumba {
     color: var(--amber);
     font-weight: 900;
     letter-spacing: -0.5px;
@@ -1316,7 +1349,7 @@ function Navbar({ favCount }) {
         <div className="pn-nav-inner">
           <a href="/" className="pn-logo">
             <div className="pn-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
-       <span className="ph-footer-logo-tex">Peza<span className="pn-logo-nyumba">Nyumba</span> <span style={{fontSize:".65em",fontWeight:600,opacity:.45,letterSpacing:"1px",verticalAlign:"middle"}}> MW</span></span>
+            <span className="ph-footer-logo-tex">Peza<span className="pn-logo-nyumba">Nyumba</span> <span style={{fontSize:".65em",fontWeight:600,opacity:.45,letterSpacing:"1px",verticalAlign:"middle"}}> MW</span></span>
           </a>
 
           <div className="pn-nav-links">
@@ -1635,7 +1668,6 @@ function Hero() {
   return (
     <section className="ph-hero">
       <div className="ph-hero-wrapper">
-        {/* Frosted glass card on mobile, plain on desktop */}
         <div className="ph-hero-left">
           <div className="ph-hero-badge">
             {t.heroBadge}
@@ -1660,7 +1692,6 @@ function Hero() {
           </div>
         </div>
 
-        {/* Desktop-only right panel with image + animated cards */}
         <div className="ph-hero-right">
           <img className="ph-hero-bg"
             src="https://i.pinimg.com/736x/6a/a1/13/6aa11354cc09a664abe1ecccd5a94020.jpg"
