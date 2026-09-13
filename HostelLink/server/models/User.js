@@ -1,0 +1,107 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'Please add first name'],
+      trim: true
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Please add last name'],
+      trim: true
+    },
+    email: {
+      type: String,
+      required: [true, 'Please add email'],
+      unique: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please add a valid email']
+    },
+    phone: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+      default: ''
+    },
+    password: {
+      type: String,
+      minlength: [8, 'Password must be at least 8 characters'],
+      select: false
+    },
+    // ── Google OAuth ───────────────────────────────────────
+    googleId: {
+      type: String,
+      default: null
+    },
+    role: {
+      type: String,
+      enum: ['landlord', 'land_seller', 'admin'], // tenant removed, land_seller added
+      default: 'landlord'
+    },
+    profilePicture: {
+      type: String,
+      default: ''
+    },
+    verified: {
+      type: Boolean,
+      default: true
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['unverified', 'pending', 'verified', 'rejected'],
+      default: function() {
+        return (this.role === 'landlord' || this.role === 'land_seller') ? 'pending' : 'verified';
+      }
+    },
+    verificationDocuments: [{ type: String }],
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    lastLogin: { type: Date },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+    emailVerificationToken: String,
+    emailVerificationExpire: Date,
+
+    // ── OTP fields ─────────────────────────────────────────
+    otpCode: { type: String, select: false },
+    otpExpire: { type: Date },
+    otpAttempts: { type: Number, default: 0 },
+    otpBlockedUntil: { type: Date },
+    phoneVerified: { type: Boolean, default: true },
+
+    // ── Escrow wallet ──────────────────────────────────────
+    walletBalance: { type: Number, default: 0 },
+    walletTransactions: [
+      {
+        type: { type: String, enum: ['hold', 'release', 'refund', 'withdrawal'] },
+        amount: Number,
+        bookingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' },
+        description: String,
+        status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ]
+  },
+  { timestamps: true }
+);
+
+// Only hash password if it exists and was modified
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+  if (!this.password) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+userSchema.methods.matchPassword = function (enteredPassword) {
+  if (!this.password) return Promise.resolve(false);
+  return bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);

@@ -1,0 +1,40 @@
+/* Full page layout */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--gray-lighter);
+  padding: 1rem;
+}
+
+/* Wrapper to control width */
+.login-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 0.75rem;
+  }
+
+  .login-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+  .login-wrapper {
+    max-width: 450px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1400px) {
+  .login-wrapper {
+    max-width: 500px;
+  }
+}

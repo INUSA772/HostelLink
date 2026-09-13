@@ -28,3 +28,6 @@ dist-ssr
 .env.local
 .env.production
 
+# Backup archives (don't check these into git)
+*.zip
+
