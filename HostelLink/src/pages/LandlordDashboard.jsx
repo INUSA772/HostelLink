@@ -171,7 +171,7 @@ const styles = `
   }
   .ld-banner::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 70% 50%, rgba(245,166,35,0.08) 0%, transparent 60%);
+    background: rgba(245,166,35,0.08);
     pointer-events: none;
   }
   .ld-banner::after {
@@ -274,7 +274,7 @@ const styles = `
 
   /* ── SKELETON ── */
   .ld-skeleton {
-    background: linear-gradient(90deg, #f0f2f5 25%, #e8eaed 50%, #f0f2f5 75%);
+    background: #f0f2f5;
     background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite;
   }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -563,7 +563,7 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
           : <div className="ld-hcard-img-placeholder"><FaBuilding /></div>
         }
         <span className={`ld-hcard-status ${hostel.verified ? 'verified' : 'pending'}`}>
-          {hostel.verified ? <><FaCheckCircle /> Verified</> : '⏳ Pending'}
+          {hostel.verified ? <><FaCheckCircle /> Verified</> : <><i className="fa-solid fa-hourglass-half" /> Pending</>}
         </span>
         <div className="ld-hcard-actions-overlay">
           <button className="ld-hcard-act-btn view" title="View"   onClick={onView}><FaEye /></button>
@@ -746,7 +746,7 @@ const LandlordDashboard = () => {
       <div className={`ld-drawer${drawerOpen ? ' open' : ''}`}>
         <div className="ld-drawer-top">
           <Link to="/" className="ld-logo">
-            <div className="ld-logo-icon"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+            <div className="ld-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <span className="ld-logo-name">PezaNyumba</span>
           </Link>
           <button className="ld-drawer-close" onClick={() => setDrawerOpen(false)}><FaTimes /></button>
@@ -787,7 +787,7 @@ const LandlordDashboard = () => {
         <div className="ld-topbar-left">
           <button className="ld-hamburger" onClick={() => setDrawerOpen(true)}><FaBars /></button>
           <Link to="/" className="ld-logo">
-            <div className="ld-logo-icon"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+            <div className="ld-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <span className="ld-logo-name">PezaNyumba</span>
             <span className="ld-logo-badge">{roleLabel}</span>
           </Link>
@@ -804,7 +804,7 @@ const LandlordDashboard = () => {
           <div className="ld-banner-inner">
             <div>
               <div className="ld-banner-eyebrow">
-                {user?.role === 'land_seller' ? '🌱 Land Seller Portal' : '🏢 Landlord Portal'}
+                {user?.role === 'land_seller' ? <><i className="fa-solid fa-seedling" /> Land Seller Portal</> : <><i className="fa-solid fa-building" /> Landlord Portal</>}
               </div>
               <h1>Welcome back, <em>{user?.firstName}!</em></h1>
               <p>Manage your properties and connect with tenants across Malawi</p>

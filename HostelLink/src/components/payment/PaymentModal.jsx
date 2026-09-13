@@ -29,7 +29,7 @@ const styles = `
 
   /* Header */
   .pm-head {
-    background: linear-gradient(135deg, #0d1b3e, #1a3fa4);
+    background: #0f1923;
     padding: 1.5rem; border-radius: 18px 18px 0 0;
     display: flex; align-items: center; justify-content: space-between;
   }
@@ -157,7 +157,7 @@ const styles = `
   .pm-btn-cancel:hover { background: #e4e6eb; }
   .pm-btn-pay {
     flex: 2; padding: 0.85rem;
-    background: linear-gradient(135deg, #e8501a, #ff6b3d);
+    background: #e8501a;
     border: none; border-radius: 12px;
     font-family: 'Manrope', sans-serif;
     font-size: 0.95rem; font-weight: 800; color: white;
@@ -189,7 +189,7 @@ const styles = `
     border-radius: 4px; margin-top: 1.5rem; overflow: hidden;
   }
   .pm-progress-bar {
-    height: 100%; background: linear-gradient(90deg, #e8501a, #ff6b3d);
+    height: 100%; background: #e8501a;
     border-radius: 4px; animation: pm-progress 1.5s ease-in-out forwards;
   }
   @keyframes pm-progress { from { width: 0; } to { width: 100%; } }
@@ -227,7 +227,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // ✅ FIXED: send mobileNumber not phoneNumber to match backend
+      // send mobileNumber not phoneNumber to match backend
       const response = await paymentService.initiatePayment(
         booking._id,
         paymentMethod,
@@ -264,19 +264,19 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
   const methods = [
     {
       value: 'mobile_money',
-      icon: '📱',
+      icon: 'fa-solid fa-mobile-screen-button',
       name: 'Mobile Money',
       desc: 'TNM Mpamba · Airtel Money',
     },
     {
       value: 'bank_transfer',
-      icon: '🏦',
+      icon: 'fa-solid fa-building-columns',
       name: 'Bank Transfer',
       desc: 'Direct bank transfer via Paychangu',
     },
     {
       value: 'card',
-      icon: '💳',
+      icon: 'fa-solid fa-credit-card',
       name: 'Card Payment',
       desc: 'Visa · Mastercard · Local cards',
     },
@@ -291,14 +291,14 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
           {/* Header */}
           <div className="pm-head">
             <div className="pm-head-left">
-              <div className="pm-head-icon">💳</div>
+              <div className="pm-head-icon"><i className="fa-solid fa-credit-card" /></div>
               <div>
                 <h2>Complete Payment</h2>
                 <p>Secure payment via Paychangu</p>
               </div>
             </div>
             {!redirecting && (
-              <button className="pm-close" onClick={onClose} disabled={loading}>✕</button>
+              <button className="pm-close" onClick={onClose} disabled={loading}><i className="fa fa-xmark" /></button>
             )}
           </div>
 
@@ -307,7 +307,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
             {redirecting ? (
               /* Redirecting state */
               <div className="pm-redirecting">
-                <div className="pm-redirecting-icon">🔄</div>
+                <div className="pm-redirecting-icon"><i className="fa-solid fa-arrows-rotate fa-spin" /></div>
                 <h3>Redirecting to Paychangu...</h3>
                 <p>Please wait while we redirect you to the secure payment page</p>
                 <div className="pm-progress">
@@ -354,7 +354,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
                         <span className="amount">MK {breakdown.totalAmount.toLocaleString()}</span>
                       </div>
                       <p className="pm-fee-note">
-                        💡 The MK 2,000 platform fee protects both students and hostel owners from fraud.
+                        <i className="fa-regular fa-lightbulb" /> The MK 2,000 platform fee protects both students and hostel owners from fraud.
                       </p>
                     </div>
                   </div>
@@ -371,13 +371,13 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
                         onClick={() => setPaymentMethod(m.value)}
                       >
                         <input type="radio" name="method" value={m.value} readOnly checked={paymentMethod === m.value} />
-                        <div className="pm-method-icon">{m.icon}</div>
+                        <div className="pm-method-icon"><i className={m.icon} /></div>
                         <div>
                           <div className="pm-method-name">{m.name}</div>
                           <div className="pm-method-desc">{m.desc}</div>
                         </div>
                         <div className="pm-method-check">
-                          {paymentMethod === m.value && '✓'}
+                          {paymentMethod === m.value && <i className="fa-solid fa-check" />}
                         </div>
                       </label>
                     ))}
@@ -402,7 +402,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
 
                 {/* Security notice */}
                 <div className="pm-security">
-                  <span className="pm-security-icon">🔒</span>
+                  <span className="pm-security-icon"><i className="fa-solid fa-lock" /></span>
                   <span>
                     Your payment is secured by <strong>Paychangu</strong>, Malawi's trusted payment gateway.
                     All transactions are encrypted and verified.

@@ -59,7 +59,7 @@ const hostelService = {
     }
   },
 
-  // ✅ FIXED: correct endpoint
+  // correct endpoint
   getOwnerHostels: async () => {
     try {
       const response = await api.get('/hostels/my-hostels');

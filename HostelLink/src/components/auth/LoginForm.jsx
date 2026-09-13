@@ -70,7 +70,8 @@ const styles = `
   }
   .rp-main::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(15,25,35,.88) 0%, rgba(26,46,61,.82) 100%);
+    background: var(--navy);
+    opacity: .85;
     pointer-events: none;
   }
 
@@ -355,7 +356,7 @@ const LoginForm = () => {
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
           <div className="rp-bar-logo-img">
-            <img src="/PEZ.png" alt="PezaNyumba" />
+            <img src="/pezanyumba2.png" alt="PezaNyumba" />
           </div>
           <div className="rp-bar-brand">
             <strong>PezaNyumba</strong>
@@ -437,7 +438,7 @@ const LoginForm = () => {
                 <div className={`rp-cap-box${captcha ? ' on' : ''}`} />
                 {captchaLoading
                   ? <span className="rp-cap-txt"><div className="rp-spin" /> Verifying…</span>
-                  : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "I'm not a robot"}</span>
+                  : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "I'm not a robot"}</span>
                 }
               </div>
               <div>

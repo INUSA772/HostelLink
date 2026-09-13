@@ -75,7 +75,7 @@ const PaymentConfirmation = () => {
     return (
       <div className="confirmation-container">
         <div className="confirmation-card error">
-          <div className="icon error-icon">❌</div>
+          <div className="icon error-icon"><i className="fa-solid fa-circle-xmark"></i></div>
           <h2>Payment Failed</h2>
           <p className="error-message">{error}</p>
           <div className="transaction-details">
@@ -115,7 +115,7 @@ const PaymentConfirmation = () => {
     return (
       <div className="confirmation-container">
         <div className="confirmation-card success">
-          <div className="icon success-icon">✅</div>
+          <div className="icon success-icon"><i className="fa-solid fa-circle-check"></i></div>
           <h2>Payment Successful!</h2>
           <p>Your booking has been confirmed. Get ready for your new home!</p>
 
@@ -178,7 +178,7 @@ const PaymentConfirmation = () => {
           {/* Download Receipt Option */}
           <div className="receipt-section">
             <button className="btn-receipt">
-              📄 Download Receipt
+              <i className="fa-regular fa-file-lines"></i> Download Receipt
             </button>
           </div>
         </div>
@@ -189,7 +189,7 @@ const PaymentConfirmation = () => {
   return (
     <div className="confirmation-container">
       <div className="confirmation-card pending">
-        <div className="icon pending-icon">⏳</div>
+        <div className="icon pending-icon"><i className="fa-solid fa-hourglass-half"></i></div>
         <h2>Payment Pending</h2>
         <p>Your payment is being processed. This may take a few moments.</p>
         <div className="transaction-details">

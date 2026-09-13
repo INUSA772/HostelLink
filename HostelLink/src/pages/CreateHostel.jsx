@@ -445,7 +445,7 @@ const CreateProperty = () => {
       {/* ══ TOP BAR ══ */}
       <nav className="cp-bar">
         <Link to="/" className="cp-bar-logo">
-          <div className="cp-bar-logo-icon"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+          <div className="cp-bar-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
           <span className="cp-bar-logo-text">PezaNyumba Mw</span>
         </Link>
         <span className="cp-bar-title">List a Property</span>

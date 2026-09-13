@@ -188,10 +188,7 @@ const styles = `
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--teal);
     line-height: 1.2;
   }
 
@@ -929,7 +926,7 @@ export default function PropertiesListing() {
           {/* EMPTY STATE */}
           {!loading && properties.length === 0 && (
             <div className="pz-empty">
-              <div className="pz-empty-icon">🏠</div>
+              <div className="pz-empty-icon"><i className="fa-solid fa-house" /></div>
               <h3>No properties found</h3>
               <p>Try adjusting your filters or search criteria</p>
               <button className="pz-empty-btn" onClick={handleReset}>

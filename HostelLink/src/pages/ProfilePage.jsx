@@ -48,12 +48,12 @@ const styles = `
   /* ══ COVER ══ */
   .prof-cover-wrap {
     position: relative; height: 300px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 50%, #1e3a52 100%);
+    background: var(--navy);
     overflow: hidden;
   }
   .prof-cover-wrap::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 70% 40%, rgba(245,166,35,0.18) 0%, transparent 60%);
+    background: rgba(245,166,35,0.18);
   }
   .prof-cover-wrap::after {
     content: ''; position: absolute; right: -80px; top: -80px;
@@ -90,7 +90,7 @@ const styles = `
   .prof-avatar {
     width: 160px; height: 160px; border-radius: 50%;
     border: 4px solid white;
-    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    background: var(--navy);
     display: flex; align-items: center; justify-content: center;
     font-size: 3.2rem; font-weight: 900; color: white;
     overflow: hidden; box-shadow: 0 6px 24px rgba(15,25,35,0.22);
@@ -233,7 +233,7 @@ const styles = `
   }
   .prof-form-head {
     padding: 1.1rem 1.25rem; border-bottom: 1.5px solid var(--border);
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    background: var(--navy);
     display: flex; align-items: center; gap: 0.75rem;
   }
   .prof-form-head-icon {
@@ -721,7 +721,7 @@ const ProfilePage = () => {
                     bg: displayUser?.verified ? 'rgba(5,150,105,0.1)' : 'rgba(245,158,11,0.1)',
                     color: displayUser?.verified ? '#059669' : '#d97706',
                     label: 'Status',
-                    value: displayUser?.verified ? 'Verified ✓' : 'Pending Verification' },
+                    value: displayUser?.verified ? <>Verified <i className="fa-solid fa-check" /></> : 'Pending Verification' },
                 ].map((item, i) => (
                   <div key={i} className="prof-info-row">
                     <div className="prof-info-icon" style={{ background: item.bg, color: item.color }}>
@@ -787,7 +787,7 @@ const ProfilePage = () => {
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: '1.25rem',
                     marginBottom: '1.5rem', padding: '1.25rem',
-                    background: 'linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%)',
+                    background: 'var(--navy)',
                     borderRadius: 12, position: 'relative', overflow: 'hidden',
                   }}>
                     {/* Amber accent */}
@@ -823,7 +823,7 @@ const ProfilePage = () => {
                           borderRadius: 20, padding: '2px 10px',
                           fontSize: '.7rem', fontWeight: 800,
                         }}>
-                          {isOwner ? '🏠 Property Owner' : '👤 Member'}
+                          {isOwner ? <><i className="fa-solid fa-house" /> Property Owner</> : <><i className="fa-regular fa-user" /> Member</>}
                         </span>
                       </div>
                     </div>
@@ -849,7 +849,7 @@ const ProfilePage = () => {
                       { label: 'Phone',        value: displayUser?.phone || 'Not added'               },
                       { label: 'Role',         value: isOwner ? 'Property Owner' : 'Member'           },
                       { label: 'Member Since', value: joinDate                                        },
-                      { label: 'Status',       value: displayUser?.verified ? '✅ Verified' : '⏳ Pending' },
+                      { label: 'Status',       value: displayUser?.verified ? <><i className="fa-solid fa-circle-check" /> Verified</> : <><i className="fa-solid fa-hourglass-half" /> Pending</> },
                     ].map((item, i) => (
                       <div key={i} style={{
                         background: 'var(--off-white)', borderRadius: 9,
@@ -1028,10 +1028,10 @@ const ProfilePage = () => {
                         </button>
                       </div>
                       {pwdData.confirmPassword && pwdData.newPassword !== pwdData.confirmPassword && (
-                        <p style={{ fontSize: '.75rem', color: 'var(--danger)', marginTop: 4, fontWeight: 700 }}>❌ Passwords do not match</p>
+                        <p style={{ fontSize: '.75rem', color: 'var(--danger)', marginTop: 4, fontWeight: 700 }}><i className="fa-solid fa-circle-xmark" /> Passwords do not match</p>
                       )}
                       {pwdData.confirmPassword && pwdData.newPassword === pwdData.confirmPassword && (
-                        <p style={{ fontSize: '.75rem', color: 'var(--success)', marginTop: 4, fontWeight: 700 }}>✅ Passwords match</p>
+                        <p style={{ fontSize: '.75rem', color: 'var(--success)', marginTop: 4, fontWeight: 700 }}><i className="fa-solid fa-circle-check" /> Passwords match</p>
                       )}
                     </div>
 
@@ -1050,7 +1050,7 @@ const ProfilePage = () => {
                         'Avoid using personal information',
                       ].map((tip, i) => (
                         <div key={i} style={{ fontSize: '.78rem', color: 'var(--mid)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.4rem', marginTop: 4 }}>
-                          <span style={{ color: 'var(--success)', fontSize: '.7rem' }}>✓</span> {tip}
+                          <span style={{ color: 'var(--success)', fontSize: '.7rem' }}><i className="fa-solid fa-check" /></span> {tip}
                         </div>
                       ))}
                     </div>

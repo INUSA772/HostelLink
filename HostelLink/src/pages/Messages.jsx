@@ -175,8 +175,8 @@ const styles = `
     position: relative;
   }
   .wa-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .wa-avatar.owner { background: linear-gradient(135deg, #065f46, #059669); }
-  .wa-avatar.student { background: linear-gradient(135deg, #0d1b3e, #1a3fa4); }
+  .wa-avatar.owner { background: var(--success); }
+  .wa-avatar.student { background: var(--navy); }
   .wa-avatar-online {
     position: absolute; bottom: 2px; right: 2px;
     width: 12px; height: 12px; border-radius: 50%;
@@ -352,8 +352,8 @@ const styles = `
     font-size: 0.65rem; font-weight: 800; color: white;
     flex-shrink: 0; overflow: hidden;
   }
-  .wa-msg-avatar.owner { background: linear-gradient(135deg, #065f46, #059669); }
-  .wa-msg-avatar.student { background: linear-gradient(135deg, #0d1b3e, #1a3fa4); }
+  .wa-msg-avatar.owner { background: var(--success); }
+  .wa-msg-avatar.student { background: var(--navy); }
   .wa-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .wa-msg-avatar.invisible { visibility: hidden; }
 
@@ -753,7 +753,7 @@ const Messages = () => {
               <FaArrowLeft />
             </button>
             <a href="/" className="wa-header-logo">
-              <img src="/PezaHostelLogo.png" alt="PezaHostel" />
+              <img src="/pezanyumba2.png" alt="PezaHostel" />
               <span>PezaHostel</span>
             </a>
             <span className="wa-header-badge">Messages</span>
@@ -767,7 +767,7 @@ const Messages = () => {
           <div className={`wa-left${!showSidebar ? ' hidden' : ''}`}>
             <div className="wa-left-head">
               <div className="wa-left-title">
-                <span>💬 Chats</span>
+                <span><i className="fa-solid fa-comment-dots"></i> Chats</span>
                 {filtered.length > 0 && (
                   <span className="wa-conv-count">{filtered.length}</span>
                 )}
@@ -791,7 +791,7 @@ const Messages = () => {
                 </div>
               ) : filtered.length === 0 ? (
                 <div className="wa-empty">
-                  <div className="wa-empty-ico">💬</div>
+                  <div className="wa-empty-ico"><i className="fa-solid fa-comment-dots"></i></div>
                   <h4>No conversations yet</h4>
                   <p>Browse hostels and tap "Chat with Owner" to start a conversation</p>
                 </div>
@@ -830,7 +830,7 @@ const Messages = () => {
                             {formatConvTime(conv.lastMessage?.createdAt || conv.updatedAt)}
                           </span>
                         </div>
-                        <div className="wa-conv-hostel">🏠 {conv.hostel?.name}</div>
+                        <div className="wa-conv-hostel"><i className="fa-solid fa-house"></i> {conv.hostel?.name}</div>
                         <div className="wa-conv-preview-row">
                           <span className={`wa-conv-preview${unread > 0 ? ' unread' : ''}`}>
                             {conv.lastMessage?.text || 'Tap to start chatting'}
@@ -853,11 +853,11 @@ const Messages = () => {
           <div className="wa-right">
             {!activeConv ? (
               <div className="wa-welcome">
-                <div className="wa-welcome-ico">💬</div>
+                <div className="wa-welcome-ico"><i className="fa-solid fa-comment-dots"></i></div>
                 <h3>PezaHostel Chats</h3>
                 <p>Send and receive messages from hostel owners and students in real time</p>
                 <div className="wa-welcome-hint">
-                  👈 Select a conversation to start chatting
+                  <i className="fa-solid fa-hand-point-left"></i> Select a conversation to start chatting
                 </div>
               </div>
             ) : (
@@ -898,7 +898,7 @@ const Messages = () => {
                             ? <span className="wa-online-text">● Online</span>
                             : <span className="wa-offline-text">● Offline</span>
                           }
-                          <span className="wa-hostel-tag">🏠 {activeConv.hostel?.name}</span>
+                          <span className="wa-hostel-tag"><i className="fa-solid fa-house"></i> {activeConv.hostel?.name}</span>
                         </div>
                       </div>
 
@@ -924,7 +924,7 @@ const Messages = () => {
                     </div>
                   ) : messages.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>👋</div>
+                      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}><i className="fa-regular fa-hand"></i></div>
                       <p style={{ fontWeight: 700, fontSize: '0.9rem', color: '#54656f' }}>
                         Say hi to {getOther(activeConv)?.firstName}!
                       </p>

@@ -218,7 +218,7 @@ const ForgotPassword = () => {
         {/* TOPBAR */}
         <nav className="rp-bar">
           <Link to="/" className="rp-bar-logo">
-            <div className="rp-bar-logo-img"><img src="/logo2.png" alt="HostelLink" /></div>
+            <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="HostelLink" /></div>
             <div className="rp-bar-brand">
               <strong>HOSTELLINK</strong>
               <span>OFF-CAMPUS ACCOMODATION</span>
@@ -233,7 +233,7 @@ const ForgotPassword = () => {
         {/* MAIN CONTENT - CENTERED FORM */}
         <div className="rp-main">
           <div className="rp-card" style={{ textAlign: 'center' }}>
-            <div className="rp-success-icon">✓</div>
+            <div className="rp-success-icon"><i className="fa-solid fa-check" /></div>
             
             <h2 style={{ 
               fontSize: '1.5rem', 
@@ -272,7 +272,7 @@ const ForgotPassword = () => {
       {/* TOPBAR */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/logo2.png" alt="HostelLink" /></div>
+          <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="HostelLink" /></div>
           <div className="rp-bar-brand">
             <strong>HOSTELLINK</strong>
             <span>OFF-CAMPUS ACCOMODATION</span>

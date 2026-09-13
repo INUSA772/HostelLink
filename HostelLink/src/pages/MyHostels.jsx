@@ -79,10 +79,7 @@ const MyHostels = () => {
             <h1 style={{
               fontSize: 'var(--font-size-4xl)',
               marginBottom: '0.5rem',
-              background: 'linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              color: 'var(--primary-color)'
             }}>
               <FaHome style={{ marginRight: '0.5rem' }} />
               My Hostels
@@ -349,7 +346,7 @@ const MyHostels = () => {
           Are you sure you want to delete <strong>{deleteModal.hostelName}</strong>?
         </p>
         <p style={{ color: 'var(--error)' }}>
-          ⚠️ This action cannot be undone. All data including images, reviews, and bookings will be permanently deleted.
+          <i className="fa-solid fa-triangle-exclamation" /> This action cannot be undone. All data including images, reviews, and bookings will be permanently deleted.
         </p>
       </Modal>
     </div>

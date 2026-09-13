@@ -91,7 +91,7 @@ const styles = `
   /* Buttons */
   .pr-btn-primary {
     width: 100%; padding: 0.9rem;
-    background: linear-gradient(135deg, #e8501a, #ff6b3d);
+    background: #f5a623;
     border: none; border-radius: 12px; color: white;
     font-family: 'Manrope', sans-serif; font-size: 0.95rem; font-weight: 800;
     cursor: pointer; transition: all 0.2s; margin-bottom: 0.6rem;
@@ -184,9 +184,9 @@ const PaymentReturn = () => {
           {/* SUCCESS */}
           {status === 'success' && (
             <>
-              <div className="pr-icon-success">✅</div>
+              <div className="pr-icon-success"><i className="fa-solid fa-circle-check"></i></div>
               <span className="pr-badge success">● Payment Confirmed</span>
-              <div className="pr-title success">Booking Confirmed! 🎉</div>
+              <div className="pr-title success">Booking Confirmed! <i className="fa-solid fa-circle-check"></i></div>
               <p className="pr-subtitle">
                 Your payment was successful and your hostel booking is now confirmed.
                 The owner has been notified.
@@ -197,7 +197,7 @@ const PaymentReturn = () => {
                   {[
                     { label: 'Hostel',        value: transaction.hostel?.name },
                     { label: 'Amount Paid',   value: `MK ${transaction.amount?.toLocaleString()}` },
-                    { label: 'Booking Status', value: '✅ Confirmed' },
+                    { label: 'Booking Status', value: <><i className="fa-solid fa-check"></i> Confirmed</> },
                     { label: 'Transaction',   value: transaction.transactionId?.slice(-12) },
                   ].filter(r => r.value).map((row, i) => (
                     <div key={i} className="pr-detail-row">
@@ -220,7 +220,7 @@ const PaymentReturn = () => {
           {/* FAILED */}
           {status === 'failed' && (
             <>
-              <div className="pr-icon-failed">❌</div>
+              <div className="pr-icon-failed"><i className="fa-solid fa-circle-xmark"></i></div>
               <span className="pr-badge failed">● Payment Failed</span>
               <div className="pr-title failed">Payment Failed</div>
               <p className="pr-subtitle">
@@ -250,7 +250,7 @@ const PaymentReturn = () => {
           {/* PENDING */}
           {status === 'pending' && (
             <>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><i className="fa-solid fa-hourglass-half"></i></div>
               <span className="pr-badge pending">● Payment Pending</span>
               <div className="pr-title pending">Payment Processing</div>
               <p className="pr-subtitle">

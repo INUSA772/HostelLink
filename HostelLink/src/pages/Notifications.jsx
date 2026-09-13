@@ -116,7 +116,7 @@ const styles = `
   }
   .notif-item.unread {
     border-left: 3px solid var(--orange);
-    background: linear-gradient(to right, var(--orange-pale), white 40%);
+    background: var(--orange-pale);
   }
   .notif-item.unread::after {
     content: '';
@@ -135,7 +135,7 @@ const styles = `
     width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.05rem; font-weight: 800; color: white;
-    background: linear-gradient(135deg, var(--navy), #1a3fa4);
+    background: var(--navy);
     overflow: hidden; position: relative;
   }
   .notif-sender-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -420,7 +420,7 @@ const Notifications = () => {
             <div className="notif-empty-ico"><FaBellSlash /></div>
             <h3>
               {activeTab === 'unread'
-                ? "You're all caught up! 🎉"
+                ? (<>You're all caught up! <i className="fa-solid fa-circle-check"></i></>)
                 : 'No notifications yet'}
             </h3>
             <p>

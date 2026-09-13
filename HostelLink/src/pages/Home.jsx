@@ -43,11 +43,11 @@ const LANGS = {
     locsTitle1:  "Top Locations Across",
     locsTitle2:  "Malawi",
     tenantTitle: "For Tenants & Buyers",
-    tenantNote:  "✓ No account required",
+    tenantNote:  "No account required",
     tenantDesc:  "Browse all verified properties, view photos, see prices, and get landlord contact info directly — completely free, no sign-up needed.",
     tenantBtn:   "Start Browsing",
     landlordTitle:"For Landlords & Owners",
-    landlordNote: "✓ Register to list properties",
+    landlordNote: "Register to list properties",
     landlordDesc: "Create a landlord account to list your house, flat, room, or plot. Tenants WhatsApp you directly from your listing.",
     landlordBtn:  "Register as Landlord",
     featLabel:   "Why choose us",
@@ -149,11 +149,11 @@ const LANGS = {
     locsTitle1:  "Malalo Okwaniritsa ku",
     locsTitle2:  "Malawi",
     tenantTitle: "Okangomanga & Ogula",
-    tenantNote:  "✓ Palibe akaunti yofunikira",
+    tenantNote:  "Palibe akaunti yofunikira",
     tenantDesc:  "Sakani nyumba zonse, onani zithunzi, onani mitengo, ndikupeza nomboro ya mwini nyumba mwachindunji.",
     tenantBtn:   "Yambani Kusaka",
     landlordTitle:"Eni Nyumba ndi Malo",
-    landlordNote: "✓ Lembelani ndi kuika nyumba",
+    landlordNote: "Lembelani ndi kuika nyumba",
     landlordDesc: "Pangani akaunti ya mwini nyumba kuika nyumba yanu. Anthu ofuna nyumba muzalumikizana pa WhatsApp.",
     landlordBtn:  "Lembeleni ngati Mwini Nyumba",
     featLabel:   "Chifukwa chosankha ife",
@@ -255,11 +255,11 @@ const LANGS = {
     locsTitle1:  "Malo Yakwaniritsa ku",
     locsTitle2:  "Malawi",
     tenantTitle: "Okusunga & Ogula",
-    tenantNote:  "✓ Palije akaunti yakukhumbikwa",
+    tenantNote:  "Palije akaunti yakukhumbikwa",
     tenantDesc:  "Penjani nyumba zose, ona vithuzi, onani mitengo, nakusanga nambala ya mwene nyumba mwaulere.",
     tenantBtn:   "Yambani Kupenja",
     landlordTitle:"Mwene Nyumba & Malo",
-    landlordNote: "✓ Yambani kuika nyumba",
+    landlordNote: "Yambani kuika nyumba",
     landlordDesc: "Pangani akaunti ya mwene nyumba nakuika nyumba yinu. Wanthu wakukhumba nyumba wazam'kulumikizaninamwe pa WhatsApp.",
     landlordBtn:  "Lembani ngati wene nyumba ",
     featLabel:   "Chifukwa chakusankha ise",
@@ -392,7 +392,7 @@ function ToastContainer({ toasts }) {
           display: "flex", alignItems: "center", gap: ".5rem",
           whiteSpace: "nowrap",
         }}>
-          {t.type === "error" ? "✕" : "✓"} {t.msg}
+          {t.type === "error" ? <i className="fa-solid fa-xmark" /> : <i className="fa-solid fa-check" />} {t.msg}
         </div>
       ))}
     </div>
@@ -817,7 +817,7 @@ const styles = `
     .ph-hero-right img.ph-hero-bg { width: 100%; height: 100%; object-fit: cover; display: block; }
     .ph-hero-right::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to right, #fff 0%, transparent 15%); pointer-events: none;
+      background: transparent; pointer-events: none;
     }
     .ph-hero-stat strong { font-size: 1.7rem; }
     .ph-hero-stat span { font-size: .74rem; }
@@ -1086,7 +1086,7 @@ const styles = `
   .ph-loc-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
   .ph-loc-card:hover img { transform: scale(1.06); }
   .ph-loc-card.big { grid-column: 1 / -1; height: 200px; }
-  .ph-loc-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,25,35,.82) 0%, transparent 55%); display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; }
+  .ph-loc-overlay { position: absolute; inset: 0; background: rgba(15,25,35,.55); display: flex; flex-direction: column; justify-content: flex-end; padding: 1rem; }
   .ph-loc-overlay small { color: rgba(255,255,255,.65); font-size: .7rem; font-weight: 600; }
   .ph-loc-overlay h4 { color: white; font-size: .95rem; font-weight: 800; }
   .ph-loc-overlay p  { color: rgba(255,255,255,.6); font-size: .75rem; }
@@ -1374,7 +1374,7 @@ function Navbar({ favCount }) {
                       <button className={`ph-lang-option${lang === l.code ? " active" : ""}`}
                         onClick={() => { setLang(l.code); setLangOpen(false); }}>
                         <span className="ph-lang-opt-label">{l.label}</span>
-                        {lang === l.code && <span className="ph-lang-opt-check">✓</span>}
+                        {lang === l.code && <span className="ph-lang-opt-check"><i className="fa-solid fa-check" /></span>}
                       </button>
                     </div>
                   ))}
@@ -1593,7 +1593,7 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties,
               <p>{loading ? t.drawerLoading : `${properties.length} listing${properties.length !== 1 ? "s" : ""} found`}</p>
             </div>
           </div>
-          <button className="ph-browse-close" onClick={onClose}>✕</button>
+          <button className="ph-browse-close" onClick={onClose}><i className="fa-solid fa-xmark" /></button>
         </div>
         <div className="ph-browse-body">
           {loading ? (
@@ -1683,7 +1683,7 @@ function Hero() {
           <div className="ph-hero-stats">
             <div className="ph-hero-stat"><strong>500+</strong><span>{t.heroStat1}</span></div>
             <div className="ph-hero-stat"><strong>28</strong><span>{t.heroStat2}</span></div>
-            <div className="ph-hero-stat"><strong>🛡️</strong><span>{t.heroStat3}</span></div>
+            <div className="ph-hero-stat"><strong><i className="fa-solid fa-shield-halved" /></strong><span>{t.heroStat3}</span></div>
           </div>
         </div>
 
@@ -2034,14 +2034,14 @@ function DualSection() {
       <div className="ph-dual-card">
         <div className="ph-dual-icon tenant"><i className="fa fa-user" /></div>
         <h3>{t.tenantTitle}</h3>
-        <div className="ph-dual-note">{t.tenantNote}</div>
+        <div className="ph-dual-note"><i className="fa-solid fa-check" /> {t.tenantNote}</div>
         <p>{t.tenantDesc}</p>
         <a href="#browse-districts" className="ph-btn-outline">{t.tenantBtn}</a>
       </div>
       <div className="ph-dual-card">
         <div className="ph-dual-icon landlord"><i className="fa fa-building" /></div>
         <h3>{t.landlordTitle}</h3>
-        <div className="ph-dual-note">{t.landlordNote}</div>
+        <div className="ph-dual-note"><i className="fa-solid fa-check" /> {t.landlordNote}</div>
         <p>{t.landlordDesc}</p>
         <a href="/register" className="ph-btn-outline">{t.landlordBtn}</a>
       </div>
@@ -2160,7 +2160,7 @@ function Footer() {
       <div className="ph-footer-grid">
         <div className="ph-footer-brand">
           <div className="ph-footer-logo">
-            <div className="ph-footer-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
+            <div className="ph-footer-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba Logo" /></div>
             <span className="ph-footer-logo-text">PezaNyumba Mw</span>
           </div>
           <p>Your trusted platform for finding the best properties in Malawi.</p>
@@ -2277,7 +2277,7 @@ export default function Home() {
                 <div className="ph-cta-stat"><strong>500+</strong><span>Listed Properties</span></div>
                 <div className="ph-cta-stat"><strong>10K+</strong><span>Happy Users</span></div>
                 <div className="ph-cta-stat"><strong>28</strong><span>Districts Covered</span></div>
-                <div className="ph-cta-stat"><strong>4.6★</strong><span>Average Rating</span></div>
+                <div className="ph-cta-stat"><strong>4.6 <i className="fa-solid fa-star" /></strong><span>Average Rating</span></div>
               </div>
               <div className="ph-cta-actions">
                 <a href="/register" className="ph-cta-btn-main">

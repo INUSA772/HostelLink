@@ -29,7 +29,7 @@ const styles = `
 
   .bookings-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--gray-bg) 0%, #ffffff 100%);
+    background: var(--gray-bg);
     padding-top: 68px;
   }
 
@@ -71,7 +71,7 @@ const styles = `
 
   /* ── PAGE HEADER ── */
   .bookings-header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    background: var(--navy);
     color: white;
     padding: 2.5rem 1.5rem;
   }
@@ -532,7 +532,7 @@ const MyBookings = () => {
           {/* Bookings List */}
           {filteredBookings.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📭</div>
+              <div className="empty-state-icon"><i className="fa-solid fa-inbox"></i></div>
               <h3>No {filter !== 'all' ? filter : ''} bookings</h3>
               <p>You don't have any {filter !== 'all' ? filter : ''} bookings yet. Start exploring hostels today!</p>
               <button
@@ -623,7 +623,7 @@ const MyBookings = () => {
                             onClick={handleContact}
                             style={{ cursor: 'pointer' }}
                           >
-                            💬 Send Message
+                            <i className="fa-solid fa-comment-dots"></i> Send Message
                           </div>
                         </div>
                       </div>

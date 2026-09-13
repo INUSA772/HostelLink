@@ -98,13 +98,7 @@ const styles = `
   .ab-hero::before {
     content: '';
     position: absolute; inset: 0; z-index: 0;
-    background: repeating-linear-gradient(
-      -55deg,
-      transparent,
-      transparent 60px,
-      rgba(245,166,35,.04) 60px,
-      rgba(245,166,35,.04) 61px
-    );
+    background: rgba(245,166,35,.04);
     pointer-events: none;
   }
   /* Bottom amber accent line */
@@ -112,7 +106,7 @@ const styles = `
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
     height: 3px;
-    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    background: var(--amber);
   }
   .ab-hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
   .ab-hero-badge {
@@ -391,10 +385,7 @@ const styles = `
   .ab-cta::before {
     content: '';
     position: absolute; inset: 0; z-index: 0;
-    background: repeating-linear-gradient(
-      -55deg, transparent, transparent 60px,
-      rgba(245,166,35,.03) 60px, rgba(245,166,35,.03) 61px
-    );
+    background: rgba(245,166,35,.03);
     pointer-events: none;
   }
   .ab-cta-inner {
@@ -457,9 +448,9 @@ const TRUST_ITEMS = [
 ];
 
 const MVV = [
-  { emoji: "🎯", title: "Our Mission",  body: "Simplify property search by giving every Malawian a trusted, transparent way to find safe, verified homes — no account required to browse." },
-  { emoji: "🌟", title: "Our Vision",   body: "Become Malawi's leading property platform — the first name tenants and landlords reach for across all 28 districts." },
-  { emoji: "💡", title: "Our Values",   body: "Transparency, safety, affordability, and community. Every feature we build is guided by what's genuinely best for tenants and landlords alike." },
+  { icon: "fa-solid fa-bullseye", title: "Our Mission",  body: "Simplify property search by giving every Malawian a trusted, transparent way to find safe, verified homes — no account required to browse." },
+  { icon: "fa-solid fa-star", title: "Our Vision",   body: "Become Malawi's leading property platform — the first name tenants and landlords reach for across all 28 districts." },
+  { icon: "fa-regular fa-lightbulb", title: "Our Values",   body: "Transparency, safety, affordability, and community. Every feature we build is guided by what's genuinely best for tenants and landlords alike." },
 ];
 
 const VALUES = [
@@ -504,7 +495,7 @@ const About = () => {
             <i className="fa fa-arrow-left" /> Back
           </button>
           <a href="/" className="ab-logo">
-            <div className="ab-logo-icon"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+            <div className="ab-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <span className="ab-logo-text">PezaNyumba Mw</span>
           </a>
         </div>
@@ -586,7 +577,7 @@ const About = () => {
           <div className="ab-mvv-grid">
             {MVV.map(card => (
               <div className="ab-mvv-card" key={card.title}>
-                <span className="ab-mvv-emoji">{card.emoji}</span>
+                <i className={`ab-mvv-emoji ${card.icon}`}></i>
                 <h3>{card.title}</h3>
                 <p>{card.body}</p>
               </div>

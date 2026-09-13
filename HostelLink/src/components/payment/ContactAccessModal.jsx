@@ -115,7 +115,7 @@ const ContactAccessModal = ({ hostel, fee, isOpen, onClose, onRevealed }) => {
               <h2>Unlock Owner Contact</h2>
               <p>Pay a small fee to see WhatsApp &amp; call details</p>
             </div>
-            {!waiting && <button className="cam-close" onClick={onClose}>✕</button>}
+            {!waiting && <button className="cam-close" onClick={onClose}><i className="fa fa-xmark" /></button>}
           </div>
           <div className="cam-body">
             {waiting ? (

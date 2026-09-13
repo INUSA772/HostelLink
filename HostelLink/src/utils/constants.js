@@ -55,10 +55,10 @@ export const PRICE_RANGES = [
 
 // Payment Methods
 export const PAYMENT_METHODS = [
-  { value: 'airtel_money', label: 'Airtel Money', icon: '📱' },
-  { value: 'tnm_mpamba', label: 'TNM Mpamba', icon: '📱' },
-  { value: 'bank_transfer', label: 'Bank Transfer', icon: '🏦' },
-  { value: 'cash', label: 'Cash Payment', icon: '💵' }
+  { value: 'airtel_money', label: 'Airtel Money', icon: 'fa-solid fa-mobile-screen-button' },
+  { value: 'tnm_mpamba', label: 'TNM Mpamba', icon: 'fa-solid fa-mobile-screen-button' },
+  { value: 'bank_transfer', label: 'Bank Transfer', icon: 'fa-solid fa-building-columns' },
+  { value: 'cash', label: 'Cash Payment', icon: 'fa-solid fa-money-bill-wave' }
 ];
 
 // Booking Status

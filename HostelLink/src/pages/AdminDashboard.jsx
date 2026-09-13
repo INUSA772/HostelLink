@@ -568,7 +568,11 @@ function useToast() {
   return { toasts, success: (m) => add(m, 'success'), error: (m) => add(m, 'error'), warn: (m) => add(m, 'warn') };
 }
 function Toasts({ toasts }) {
-  const icons = { success: '✅', error: '❌', warn: '⚠️' };
+  const icons = {
+    success: <i className="fa-solid fa-circle-check" />,
+    error: <i className="fa-solid fa-circle-xmark" />,
+    warn: <i className="fa-solid fa-triangle-exclamation" />
+  };
   return (
     <div className="a-toast-wrap">
       {toasts.map(t => (
@@ -584,7 +588,7 @@ function ConfirmModal({ config, onConfirm, onCancel, loading }) {
   return (
     <div className="a-modal-bg" onClick={e => e.target === e.currentTarget && !loading && onCancel()}>
       <div className="a-modal">
-        <div className={`a-modal-ico ${config.type || 'danger'}`}>{config.icon || '🗑️'}</div>
+        <div className={`a-modal-ico ${config.type || 'danger'}`}>{config.icon || <i className="fa-solid fa-trash" />}</div>
         <h3>{config.title}</h3>
         <p>{config.message}</p>
         <div className="a-modal-btns">
@@ -781,15 +785,15 @@ export default function AdminDashboard() {
   /* ── stats ── */
   const stats = data?.stats || {};
   const statCards = [
-    { ico: '👥', lbl: 'Total Users',       val: fmt(users.length),                         accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: `+${stats.newUsersToday || 0} today`,             up: true  },
-    { ico: '🏠', lbl: 'Properties Listed', val: fmt(properties.length),                    accent: 'var(--blue)',   ico_bg: 'var(--blue-pale)', badge: `${properties.filter(p=>p.verified).length} verified`, up: false },
-    { ico: '⏳', lbl: 'Pending Verify',    val: fmt(pendingVerification.length),           accent: 'var(--amber)',  ico_bg: 'var(--amber-light)',badge: 'needs action',                                    up: false },
-    { ico: '🚩', lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                  accent: 'var(--red)',    ico_bg: 'var(--red-pale)',   badge: 'investigate',                                    up: false },
-    { ico: '✅', lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),   accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'approved',                                       up: true  },
-    { ico: '📋', lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),             accent: 'var(--purple)', ico_bg: 'var(--purple-pale)',badge: `${stats.pendingBookings || 0} pending`,           up: false },
-    { ico: '🌐', lbl: 'Total Visitors',    val: fmt(stats.totalVisitors || 0),             accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: 'all time',                                       up: true  },
-    { ico: '📅', lbl: "Today's Visitors",  val: fmt(stats.todayVisitors || 0),             accent: '#6366f1',       ico_bg: '#eef2ff',           badge: 'since midnight',                                 up: false },
-    { ico: '🟢', lbl: 'Online Now',        val: fmt(stats.onlineNow || 0),                 accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'last 5 mins',                                    up: true  },
+    { ico: <i className="fa-solid fa-users" />, lbl: 'Total Users',       val: fmt(users.length),                         accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: `+${stats.newUsersToday || 0} today`,             up: true  },
+    { ico: <i className="fa-solid fa-house" />, lbl: 'Properties Listed', val: fmt(properties.length),                    accent: 'var(--blue)',   ico_bg: 'var(--blue-pale)', badge: `${properties.filter(p=>p.verified).length} verified`, up: false },
+    { ico: <i className="fa-solid fa-hourglass-half" />, lbl: 'Pending Verify',    val: fmt(pendingVerification.length),           accent: 'var(--amber)',  ico_bg: 'var(--amber-light)',badge: 'needs action',                                    up: false },
+    { ico: <i className="fa-solid fa-flag" />, lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                  accent: 'var(--red)',    ico_bg: 'var(--red-pale)',   badge: 'investigate',                                    up: false },
+    { ico: <i className="fa-solid fa-circle-check" />, lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),   accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'approved',                                       up: true  },
+    { ico: <i className="fa-solid fa-clipboard" />, lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),             accent: 'var(--purple)', ico_bg: 'var(--purple-pale)',badge: `${stats.pendingBookings || 0} pending`,           up: false },
+    { ico: <i className="fa-solid fa-globe" />, lbl: 'Total Visitors',    val: fmt(stats.totalVisitors || 0),             accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: 'all time',                                       up: true  },
+    { ico: <i className="fa-solid fa-calendar-days" />, lbl: "Today's Visitors",  val: fmt(stats.todayVisitors || 0),             accent: '#6366f1',       ico_bg: '#eef2ff',           badge: 'since midnight',                                 up: false },
+    { ico: <i className="fa-solid fa-circle" />, lbl: 'Online Now',        val: fmt(stats.onlineNow || 0),                 accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'last 5 mins',                                    up: true  },
   ];
 
   const regByMonth = data?.registrationsByMonth || [];
@@ -832,7 +836,7 @@ export default function AdminDashboard() {
       <nav className="a-top">
         <div className="a-top-left">
           <a href="/" className="a-logo">
-            <div className="a-logo-img"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+            <div className="a-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <span className="a-logo-name">PezaNyumba</span>
           </a>
           <span className="a-admin-pill">Admin Panel</span>
@@ -899,14 +903,14 @@ export default function AdminDashboard() {
                 </div>
                 <div style={{ padding: '1.25rem' }}>
                   {regByMonth.length === 0
-                    ? <div className="a-empty"><div className="a-empty-ico">📊</div><h4>No data yet</h4></div>
+                    ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-chart-line" /></div><h4>No data yet</h4></div>
                     : regByMonth.map((r, i) => (
                         <div key={i} className="a-bar-row">
                           <div className="a-bar-label">{r.month}</div>
                           <div className="a-bar-track">
                             <div
                               className="a-bar-fill"
-                              style={{ width: `${(r.count / maxReg) * 100}%`, background: 'linear-gradient(90deg, var(--navy), var(--navy-mid))' }}
+                              style={{ width: `${(r.count / maxReg) * 100}%`, background: 'var(--navy)' }}
                             />
                           </div>
                           <div className="a-bar-val">{r.count}</div>
@@ -923,10 +927,10 @@ export default function AdminDashboard() {
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                   {[
-                    { ico: '⏳', label: 'Users pending verification', val: pendingVerification.length, valColor: 'var(--amber-dark)', action: () => setTab('verify'),     btnLabel: 'Review Now',  btnClass: 'a-btn-amber'   },
-                    { ico: '🚩', label: 'Flagged / scam properties',  val: flaggedProps.length,        valColor: 'var(--red)',        action: () => setTab('scams'),      btnLabel: 'Investigate', btnClass: 'a-btn-red'     },
-                    { ico: '🏢', label: 'Unverified properties',      val: properties.filter(p => !p.verified).length, valColor: 'var(--blue)', action: () => setTab('properties'), btnLabel: 'Review', btnClass: 'a-btn-outline' },
-                    { ico: '👥', label: 'Total registered owners',    val: users.filter(u => u.role === 'landlord' || u.role === 'land_seller').length, valColor: 'var(--navy)', action: () => setTab('users'), btnLabel: 'View All', btnClass: 'a-btn-teal' },
+                    { ico: <i className="fa-solid fa-hourglass-half" />, label: 'Users pending verification', val: pendingVerification.length, valColor: 'var(--amber-dark)', action: () => setTab('verify'),     btnLabel: 'Review Now',  btnClass: 'a-btn-amber'   },
+                    { ico: <i className="fa-solid fa-flag" />, label: 'Flagged / scam properties',  val: flaggedProps.length,        valColor: 'var(--red)',        action: () => setTab('scams'),      btnLabel: 'Investigate', btnClass: 'a-btn-red'     },
+                    { ico: <i className="fa-solid fa-building" />, label: 'Unverified properties',      val: properties.filter(p => !p.verified).length, valColor: 'var(--blue)', action: () => setTab('properties'), btnLabel: 'Review', btnClass: 'a-btn-outline' },
+                    { ico: <i className="fa-solid fa-users" />, label: 'Total registered owners',    val: users.filter(u => u.role === 'landlord' || u.role === 'land_seller').length, valColor: 'var(--navy)', action: () => setTab('users'), btnLabel: 'View All', btnClass: 'a-btn-teal' },
                   ].map((item, i) => (
                     <div key={i} className="a-qa-row">
                       <div className="a-qa-icon">{item.ico}</div>
@@ -969,10 +973,10 @@ export default function AdminDashboard() {
                         <td style={{ fontSize: '.78rem', color: 'var(--mid)' }}>{u.phone || '—'}</td>
                         <td>
                           {u.verified || u.verificationStatus === 'verified'
-                            ? <span className="a-badge a-badge-v">✅ Verified</span>
+                            ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Verified</span>
                             : u.verificationStatus === 'rejected'
-                              ? <span className="a-badge a-badge-r">❌ Rejected</span>
-                              : <span className="a-badge a-badge-p">⏳ Pending</span>
+                              ? <span className="a-badge a-badge-r"><i className="fa-solid fa-circle-xmark" /> Rejected</span>
+                              : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
                           }
                         </td>
                         <td style={{ fontSize: '.75rem', color: 'var(--mid)' }}>{timeAgo(u.createdAt)}</td>
@@ -980,7 +984,7 @@ export default function AdminDashboard() {
                           {!u.verified && u.verificationStatus !== 'rejected' && (
                             <button className="a-btn a-btn-green a-btn-sm"
                               onClick={() => setConfirm({
-                                icon: '✅', type: 'success', title: 'Verify User',
+                                icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify User',
                                 message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}?`,
                                 confirmLabel: 'Verify', btnClass: 'green',
                                 onConfirm: () => verifyUser(u._id, 'approve'),
@@ -1027,7 +1031,7 @@ export default function AdminDashboard() {
               </div>
               <div className="a-tbl-wrap">
                 {filteredUsers.length === 0
-                  ? <div className="a-empty"><div className="a-empty-ico">👥</div><h4>No users found</h4><p>Try adjusting your search or filter</p></div>
+                  ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-users" /></div><h4>No users found</h4><p>Try adjusting your search or filter</p></div>
                   : <table className="a-tbl">
                       <thead>
                         <tr><th>User</th><th>Role</th><th>Phone</th><th>WhatsApp</th><th>Verification</th><th>Active</th><th>Joined</th><th>Actions</th></tr>
@@ -1057,10 +1061,10 @@ export default function AdminDashboard() {
                             </td>
                             <td>
                               {u.verified || u.verificationStatus === 'verified'
-                                ? <span className="a-badge a-badge-v">✅ Verified</span>
+                                ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Verified</span>
                                 : u.verificationStatus === 'rejected'
-                                  ? <span className="a-badge a-badge-r">❌ Rejected</span>
-                                  : <span className="a-badge a-badge-p">⏳ Pending</span>
+                                  ? <span className="a-badge a-badge-r"><i className="fa-solid fa-circle-xmark" /> Rejected</span>
+                                  : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
                               }
                             </td>
                             <td>
@@ -1076,7 +1080,7 @@ export default function AdminDashboard() {
                                 {!u.verified && u.verificationStatus !== 'rejected' && (
                                   <button className="a-btn a-btn-green a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: '✅', type: 'success', title: 'Verify User',
+                                      icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify User',
                                       message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}?`,
                                       confirmLabel: 'Verify', btnClass: 'green',
                                       onConfirm: () => verifyUser(u._id, 'approve'),
@@ -1087,7 +1091,7 @@ export default function AdminDashboard() {
                                 {u.verificationStatus !== 'rejected' && !u.verified && (
                                   <button className="a-btn a-btn-amber a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: '⚠️', type: 'warn', title: 'Reject User',
+                                      icon: <i className="fa-solid fa-triangle-exclamation" />, type: 'warn', title: 'Reject User',
                                       message: `Reject ${u.firstName}'s verification? They will be notified.`,
                                       confirmLabel: 'Reject', btnClass: 'amber',
                                       onConfirm: () => verifyUser(u._id, 'reject'),
@@ -1097,7 +1101,7 @@ export default function AdminDashboard() {
                                 )}
                                 <button className="a-btn a-btn-red a-btn-sm"
                                   onClick={() => setConfirm({
-                                    icon: '🗑️', type: 'danger', title: 'Delete User',
+                                    icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete User',
                                     message: `Permanently delete ${u.firstName} ${u.lastName}? All their properties will also be removed.`,
                                     confirmLabel: 'Delete', btnClass: 'red',
                                     onConfirm: () => deleteUser(u._id),
@@ -1126,7 +1130,7 @@ export default function AdminDashboard() {
             {pendingVerification.length === 0 ? (
               <div className="a-panel">
                 <div className="a-empty" style={{ padding: '4rem' }}>
-                  <div className="a-empty-ico">✅</div>
+                  <div className="a-empty-ico"><i className="fa-solid fa-circle-check" /></div>
                   <h4>All clear!</h4>
                   <p>No accounts pending verification right now.</p>
                 </div>
@@ -1143,7 +1147,7 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.3rem', flexWrap: 'wrap' }}>
                           <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--dark)' }}>{u.firstName} {u.lastName}</span>
                           <span className={`a-badge a-badge-${u.role}`}>{u.role?.replace('_', ' ')}</span>
-                          <span className="a-badge a-badge-p">⏳ Pending</span>
+                          <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
                         </div>
                         <div className="a-verify-detail">
                           {[
@@ -1168,21 +1172,21 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', gap: '.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
                         <button className="a-btn a-btn-green"
                           onClick={() => setConfirm({
-                            icon: '✅', type: 'success', title: 'Verify Account',
+                            icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify Account',
                             message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}? Their listings will go live.`,
-                            confirmLabel: '✅ Verify', btnClass: 'green',
+                            confirmLabel: <><i className="fa-solid fa-check" /> Verify</>, btnClass: 'green',
                             onConfirm: () => verifyUser(u._id, 'approve'),
                           })}>
-                          ✅ Approve
+                          <i className="fa-solid fa-check" /> Approve
                         </button>
                         <button className="a-btn a-btn-red"
                           onClick={() => setConfirm({
-                            icon: '❌', type: 'danger', title: 'Reject Account',
+                            icon: <i className="fa-solid fa-circle-xmark" />, type: 'danger', title: 'Reject Account',
                             message: `Reject ${u.firstName}'s verification request? They will be notified and cannot list properties.`,
-                            confirmLabel: '❌ Reject', btnClass: 'red',
+                            confirmLabel: <><i className="fa-solid fa-circle-xmark" /> Reject</>, btnClass: 'red',
                             onConfirm: () => verifyUser(u._id, 'reject'),
                           })}>
-                          ❌ Reject
+                          <i className="fa-solid fa-circle-xmark" /> Reject
                         </button>
                       </div>
                     </div>
@@ -1221,7 +1225,7 @@ export default function AdminDashboard() {
               </div>
               <div className="a-tbl-wrap">
                 {filteredProps.length === 0
-                  ? <div className="a-empty"><div className="a-empty-ico">🏠</div><h4>No properties found</h4></div>
+                  ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-house" /></div><h4>No properties found</h4></div>
                   : <table className="a-tbl">
                       <thead>
                         <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>WhatsApp</th><th>Calls</th><th>Listed</th><th>Actions</th></tr>
@@ -1256,8 +1260,8 @@ export default function AdminDashboard() {
                                 {p.flagged
                                   ? <div className="a-scam-flag"><i className="fa fa-flag" /> Scam</div>
                                   : p.verified
-                                    ? <span className="a-badge a-badge-v">✅ Live</span>
-                                    : <span className="a-badge a-badge-p">⏳ Pending</span>
+                                    ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Live</span>
+                                    : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
                                 }
                               </td>
                               <td style={{ fontSize: '.8rem' }}>{p.viewCount ?? 0}</td>
@@ -1269,17 +1273,17 @@ export default function AdminDashboard() {
                                   {!p.flagged && (
                                     <button className="a-btn a-btn-amber a-btn-sm"
                                       onClick={() => setConfirm({
-                                        icon: '🚩', type: 'warn', title: 'Flag as Scam',
+                                        icon: <i className="fa-solid fa-flag" />, type: 'warn', title: 'Flag as Scam',
                                         message: `Flag "${p.name}" as a scam listing? It will be hidden from public view immediately.`,
-                                        confirmLabel: '🚩 Flag Scam', btnClass: 'amber',
+                                        confirmLabel: <><i className="fa-solid fa-flag" /> Flag Scam</>, btnClass: 'amber',
                                         onConfirm: () => flagScam(p._id),
                                       })}>
-                                      🚩 Flag
+                                      <i className="fa-solid fa-flag" /> Flag
                                     </button>
                                   )}
                                   <button className="a-btn a-btn-red a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: '🗑️', type: 'danger', title: 'Delete Property',
+                                      icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete Property',
                                       message: `Permanently remove "${p.name}"? The owner will be notified.`,
                                       confirmLabel: 'Delete', btnClass: 'red',
                                       onConfirm: () => deleteProperty(p._id),
@@ -1309,7 +1313,7 @@ export default function AdminDashboard() {
             {flaggedProps.length === 0 ? (
               <div className="a-panel">
                 <div className="a-empty" style={{ padding: '4rem' }}>
-                  <div className="a-empty-ico">🛡️</div>
+                  <div className="a-empty-ico"><i className="fa-solid fa-shield-halved" /></div>
                   <h4>All clear!</h4>
                   <p>No flagged listings at the moment. The platform is clean.</p>
                 </div>
@@ -1353,7 +1357,7 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', gap: '.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
                           <button className="a-btn a-btn-outline"
                             onClick={() => setConfirm({
-                              icon: '✅', type: 'success', title: 'Unflag Listing',
+                              icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Unflag Listing',
                               message: `Remove the scam flag from "${p.name}" and make it live again?`,
                               confirmLabel: 'Unflag', btnClass: 'green',
                               onConfirm: async () => {
@@ -1367,16 +1371,16 @@ export default function AdminDashboard() {
                                 } finally { setConfirmLoading(false); setConfirm(null); }
                               },
                             })}>
-                            ✅ Unflag
+                            <i className="fa-solid fa-check" /> Unflag
                           </button>
                           <button className="a-btn a-btn-red"
                             onClick={() => setConfirm({
-                              icon: '🗑️', type: 'danger', title: 'Delete Scam Listing',
+                              icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete Scam Listing',
                               message: `Permanently delete "${p.name}" from the platform? This cannot be undone.`,
-                              confirmLabel: '🗑️ Delete', btnClass: 'red',
+                              confirmLabel: <><i className="fa-solid fa-trash" /> Delete</>, btnClass: 'red',
                               onConfirm: () => deleteProperty(p._id),
                             })}>
-                            🗑️ Delete
+                            <i className="fa-solid fa-trash" /> Delete
                           </button>
                         </div>
                       </div>

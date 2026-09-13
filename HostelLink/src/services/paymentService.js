@@ -1,13 +1,13 @@
 import api from './api';
 
 const paymentService = {
-  // ✅ FIXED: send mobileNumber to match backend
+  // send mobileNumber to match backend
   initiatePayment: async (bookingId, paymentMethod, mobileNumber = null) => {
     try {
       const response = await api.post('/payments/initiate', {
         bookingId,
         paymentMethod,
-        mobileNumber,   // ✅ backend expects mobileNumber not phoneNumber
+        mobileNumber,   // backend expects mobileNumber not phoneNumber
       });
       return response.data;
     } catch (error) {

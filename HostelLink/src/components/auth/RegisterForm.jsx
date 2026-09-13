@@ -43,7 +43,8 @@ const styles = `
   }
   .rp-main::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(15,25,35,.9) 0%, rgba(26,46,61,.85) 100%);
+    background: var(--navy);
+    opacity: .9;
   }
 
   .rp-card {
@@ -320,7 +321,7 @@ const RegisterForm = () => {
   const Navbar = () => (
     <nav className="rp-bar">
       <Link to="/" className="rp-bar-logo">
-        <div className="rp-bar-logo-img"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+        <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
         <div className="rp-bar-brand"><strong>PezaNyumba</strong></div>
       </Link>
       <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt" /> Login</Link>
@@ -412,7 +413,7 @@ const RegisterForm = () => {
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="password">
                   Password
-                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength==='weak'?'⚠ Weak':pwStrength==='medium'?'⚡ Ok':'✓ Strong'}</span>}
+                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength==='weak'?<><i className="fa-solid fa-triangle-exclamation" /> Weak</>:pwStrength==='medium'?<><i className="fa-solid fa-bolt" /> Ok</>:<><i className="fa-solid fa-check" /> Strong</>}</span>}
                 </label>
                 <div className="rp-wrap">
                   <i className="fa fa-lock rp-ico" />
@@ -442,7 +443,7 @@ const RegisterForm = () => {
                   <div className={`rp-cap-box${captcha?' on':''}`} />
                   {captchaLoading
                     ? <span className="rp-cap-txt"><div className="rp-spin" /> Checking…</span>
-                    : <span className="rp-cap-txt">{captcha ? 'Verified ✓' : "Not a robot"}</span>
+                    : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "Not a robot"}</span>
                   }
                 </div>
                 <div><i className="fa fa-shield-alt" style={{color:'var(--amber)',fontSize:'.95rem'}} /><div className="rp-cap-note">Security<br/>Check</div></div>

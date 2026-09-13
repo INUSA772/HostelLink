@@ -11,15 +11,15 @@ const ImageUpload = ({ images, onImagesChange, maxImages = 10 }) => {
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-    console.log('🔍 Cloud Name:', cloudName);
-    console.log('🔍 Upload Preset:', uploadPreset);
+    console.log('Cloud Name:', cloudName);
+    console.log('Upload Preset:', uploadPreset);
 
     if (!cloudName || !uploadPreset) {
       toast.error('Cloudinary not configured. Please check .env file');
       return null;
     }
 
-    console.log('📤 Uploading to Cloudinary...');
+    console.log('Uploading to Cloudinary...');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -42,7 +42,7 @@ const ImageUpload = ({ images, onImagesChange, maxImages = 10 }) => {
       throw new Error(data.error?.message || 'Upload failed');
     }
 
-    console.log('✅ Upload successful:', data.secure_url);
+    console.log('Upload successful:', data.secure_url);
     return data.secure_url;
   };
 

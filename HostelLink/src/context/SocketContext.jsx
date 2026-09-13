@@ -40,7 +40,7 @@ export const SocketProvider = ({ children }) => {
       setOnlineUsers(users);
     });
 
-    // ✅ Real-time notification
+    // Real-time notification
     socket.on('notification:new', (notification) => {
       setNotifications((prev) => [notification, ...prev]);
       setUnreadNotifCount((prev) => prev + 1);
@@ -50,7 +50,7 @@ export const SocketProvider = ({ children }) => {
         if (window.Notification.permission === 'granted') {
           new window.Notification(notification.title, {
             body: notification.body,
-            icon: '/PezaHostelLogo.png',
+            icon: '/pezanyumba2.png',
           });
         }
       }

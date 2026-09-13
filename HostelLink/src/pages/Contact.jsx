@@ -26,7 +26,7 @@ const styles = `
 
   .contact-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--gray-bg) 0%, #ffffff 100%);
+    background: var(--gray-bg);
     padding-top: 68px;
   }
 
@@ -125,7 +125,7 @@ const styles = `
     width: 60px;
     height: 60px;
     margin: 0 auto 1.5rem;
-    background: linear-gradient(135deg, var(--orange), #ff6b35);
+    background: var(--orange);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -224,7 +224,7 @@ const styles = `
   .form-btn {
     width: 100%;
     padding: 0.9rem 1.5rem;
-    background: linear-gradient(135deg, var(--orange), #ff6b35);
+    background: var(--orange);
     color: white;
     border: none;
     border-radius: 8px;

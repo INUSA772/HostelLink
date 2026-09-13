@@ -26,9 +26,9 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
         <div style="background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 24px rgba(13,27,62,0.10);">
           
           <!-- Header -->
-          <div style="background: linear-gradient(135deg, #0d1b3e 0%, #112255 100%); padding: 32px 32px 24px; text-align: center;">
+          <div style="background: #0f1923; padding: 32px 32px 24px; text-align: center;">
             <div style="display: inline-block; background: #e8501a; border-radius: 10px; padding: 10px 18px; margin-bottom: 12px;">
-              <span style="color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">🏠 HostelLink</span>
+              <span style="color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">HostelLink</span>
             </div>
             <h1 style="color: #fff; font-size: 1.3rem; font-weight: 700; margin: 0;">Password Reset Request</h1>
           </div>

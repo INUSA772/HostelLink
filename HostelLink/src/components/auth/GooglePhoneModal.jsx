@@ -108,7 +108,7 @@ const GooglePhoneModal = ({ user, token, onComplete }) => {
       <div className="gpm-overlay">
         <div className="gpm-card">
           <div className="gpm-hdr">
-            <h2>One Last Step 📱</h2>
+            <h2>One Last Step <i className="fa-solid fa-mobile-screen-button" /></h2>
             <p>Add your phone number so buyers and tenants can contact you via WhatsApp or call.</p>
             <div className="gpm-line" />
           </div>

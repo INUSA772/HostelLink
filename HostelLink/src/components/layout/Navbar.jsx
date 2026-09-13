@@ -89,12 +89,7 @@ const Navbar = () => {
           font-family: 'Righteous', cursive;
           font-size: 1.05rem;
           letter-spacing: 3px;
-          background: linear-gradient(90deg, #0d6e5e 0%, #1a5c52 40%, #2d8a72 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          background-size: 200% auto;
-          animation: navShine 4s linear infinite;
+          color: #1a5c52;
           cursor: default;
         }
 
@@ -102,14 +97,9 @@ const Navbar = () => {
           content: '⬡';
           font-size: 0.6rem;
           margin-right: 5px;
-          -webkit-text-fill-color: #0d6e5e;
+          color: #0d6e5e;
           animation: navHex 6s linear infinite;
           display: inline-block;
-        }
-
-        @keyframes navShine {
-          0%   { background-position: 0% center; }
-          100% { background-position: 200% center; }
         }
 
         @keyframes navHex {
@@ -338,7 +328,7 @@ const Navbar = () => {
         <Link to="/" className="pn-logo">
           <div className="pn-logo-icon">
 
-            <img src="/PEZ.png" alt="PezaNyumba" />
+            <img src="/pezanyumba2.png" alt="PezaNyumba" />
 
           </div>
           <div className="pn-logo-text">

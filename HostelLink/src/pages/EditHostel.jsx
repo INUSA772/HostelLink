@@ -90,7 +90,7 @@ const styles = `
   }
   .eh-banner::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 70% 50%, rgba(245,166,35,0.08) 0%, transparent 60%);
+    background: rgba(245,166,35,0.08);
     pointer-events: none;
   }
   .eh-banner::after {
@@ -430,7 +430,7 @@ const EditHostel = () => {
         <nav className="eh-topnav">
           <div className="eh-topnav-left">
             <a href="/" className="eh-logo">
-              <div className="eh-logo-icon"><img src="/PEZ.png" alt="PezaNyumba" /></div>
+              <div className="eh-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
               <span className="eh-logo-name">PezaNyumba</span>
             </a>
             <button className="eh-back-btn" onClick={() => navigate(-1)}>
@@ -447,7 +447,7 @@ const EditHostel = () => {
         {/* ── BANNER ── */}
         <section className="eh-banner">
           <div className="eh-banner-inner">
-            <div className="eh-banner-eyebrow">✏️ Edit Property</div>
+            <div className="eh-banner-eyebrow"><i className="fa-solid fa-pen" /> Edit Property</div>
             <h1>Update <em>Your Listing</em></h1>
             <p>Edit your property details, pricing, amenities, and photos</p>
           </div>
@@ -466,7 +466,7 @@ const EditHostel = () => {
             {/* ── BASIC INFORMATION ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon">📋</div>
+                <div className="eh-section-icon"><i className="fa-solid fa-clipboard" /></div>
                 <h2>Basic Information</h2>
               </div>
               <div className="eh-section-body">
@@ -529,7 +529,7 @@ const EditHostel = () => {
             {/* ── PRICING & CONTRACT ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon">💰</div>
+                <div className="eh-section-icon"><i className="fa-solid fa-sack-dollar" /></div>
                 <h2>Pricing &amp; Contract</h2>
               </div>
               <div className="eh-section-body">
@@ -557,7 +557,7 @@ const EditHostel = () => {
             {/* ── AMENITIES ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon">✨</div>
+                <div className="eh-section-icon"><i className="fa-solid fa-wand-magic-sparkles" /></div>
                 <h2>Amenities</h2>
               </div>
               <div className="eh-section-body">
@@ -581,7 +581,7 @@ const EditHostel = () => {
             {/* ── PHOTOS ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon">📸</div>
+                <div className="eh-section-icon"><i className="fa-solid fa-camera" /></div>
                 <h2>Photos</h2>
               </div>
               <div className="eh-section-body">

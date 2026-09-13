@@ -85,7 +85,7 @@ const styles = `
   .td-sidebar::-webkit-scrollbar-thumb { background: var(--light-border); border-radius: 4px; }
 
   .td-sidebar-user { padding: 0 1.25rem 1.25rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--light-border); }
-  .td-sidebar-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-dark), var(--teal-mid)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; margin-bottom: 0.75rem; }
+  .td-sidebar-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--teal-dark); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; margin-bottom: 0.75rem; }
   .td-sidebar-name { font-size: 0.95rem; font-weight: 800; color: var(--dark); line-height: 1.2; }
   .td-sidebar-role { font-size: 0.72rem; font-weight: 700; color: var(--teal-mid); background: var(--teal-light); display: inline-block; padding: 2px 8px; border-radius: 10px; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -105,7 +105,7 @@ const styles = `
 
   /* ── BANNER ── */
   .td-banner {
-    background: linear-gradient(135deg, #05201a 0%, var(--teal-dark) 50%, var(--teal) 100%);
+    background: var(--teal-dark);
     border-radius: var(--card-radius); padding: 2rem 2.5rem; margin-bottom: 2rem;
     position: relative; overflow: hidden;
   }
@@ -178,7 +178,7 @@ const styles = `
   .td-call-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
 
   /* ── SKELETON ── */
-  .td-skeleton { background: linear-gradient(90deg, #f0f4f2 25%, #e4ece8 50%, #f0f4f2 75%); background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
+  .td-skeleton { background: #f0f4f2; background-size: 200% 100%; border-radius: 8px; animation: shimmer 1.4s infinite; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .td-card-skeleton { background: var(--white); border: 1.5px solid var(--light-border); border-radius: var(--card-radius); overflow: hidden; }
 
@@ -320,7 +320,7 @@ const StudentDashboard = () => {
             : <div className="td-prop-no-img"><FaHome /></div>
           }
           <div className="td-prop-badges">
-            {hostel.verified && <span className="td-prop-badge td-badge-verified">✓ Verified</span>}
+            {hostel.verified && <span className="td-prop-badge td-badge-verified"><i className="fa-solid fa-check" /> Verified</span>}
             {hostel.availableRooms > 0 && <span className="td-prop-badge td-badge-rooms">{hostel.availableRooms} free</span>}
           </div>
         </div>
@@ -380,7 +380,7 @@ const StudentDashboard = () => {
             {sidebarOpen ? <FaTimes /> : <FaBars />}
           </button>
           <Link to="/" className="td-logo">
-            <div className="td-logo-icon"><img src="/PezaHostelLogo.png" alt="PezaNyumba" /></div>
+            <div className="td-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <span className="td-logo-name">PezaNyumba</span>
           </Link>
         </div>
@@ -431,7 +431,7 @@ const StudentDashboard = () => {
           <div className="td-banner">
             <div className="td-banner-inner">
               <div className="td-banner-left">
-                <h1>Welcome back, {user?.firstName}! 🏠</h1>
+                <h1>Welcome back, {user?.firstName}! <i className="fa-solid fa-house" /></h1>
                 <p>Discover your perfect home across Malawi</p>
               </div>
               <div className="td-banner-actions">

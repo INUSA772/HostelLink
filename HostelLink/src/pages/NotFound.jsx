@@ -85,7 +85,7 @@ const styles = `
   }
   .rp-main-content::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(15,25,35,.90) 0%, rgba(26,46,61,.85) 100%);
+    background: rgba(15,25,35,.88);
     pointer-events: none;
   }
 
@@ -185,7 +185,7 @@ const NotFound = () => {
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
           <div className="rp-bar-logo-img">
-            <img src="/PEZ.png" alt="PezaNyumba" />
+            <img src="/pezanyumba2.png" alt="PezaNyumba" />
           </div>
           <div className="rp-bar-brand">
             <strong>PezaNyumba</strong>

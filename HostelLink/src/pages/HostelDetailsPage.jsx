@@ -114,7 +114,7 @@ const styles = `
   .sidebar { position: sticky; top: 72px; height: fit-content; display: flex; flex-direction: column; gap: 1rem; }
   .owner-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
   .owner-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--gray-light); }
-  .owner-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-dark), var(--teal-mid)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--white); flex-shrink: 0; }
+  .owner-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--white); flex-shrink: 0; }
   .owner-info-name { font-size: 1rem; font-weight: 800; color: var(--text-dark); }
   .owner-info-role { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 0.2rem; }
   .owner-online { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--success); font-weight: 600; }
@@ -201,8 +201,8 @@ function BedspaceModal({ room, hostelPrice, onBook, onClose }) {
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,74,64,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', width: '100%', maxWidth: 420, boxShadow: '0 24px 60px rgba(13,74,64,0.25)', maxHeight: '90vh', overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0d4a40' }}>🚪 {room.roomNumber} — Choose Bedspace</h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#4b5563' }}>✕</button>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0d4a40' }}><i className="fa-solid fa-door-open" /> {room.roomNumber} — Choose Bedspace</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#4b5563' }}><i className="fa-solid fa-xmark" /></button>
         </div>
 
         <p style={{ fontSize: '0.8rem', color: '#4b5563', marginBottom: '1rem' }}>
@@ -230,7 +230,7 @@ function BedspaceModal({ room, hostelPrice, onBook, onClose }) {
                   transition: 'all 0.2s'
                 }}
               >
-                <span style={{ fontSize: '1.1rem' }}>{isBooked ? '🔴' : isSelected ? '✅' : '🛏️'}</span>
+                <span style={{ fontSize: '1.1rem' }}>{isBooked ? <i className="fa-solid fa-circle" style={{ color: '#dc2626' }} /> : isSelected ? <i className="fa-solid fa-circle-check" /> : <i className="fa-solid fa-bed" />}</span>
                 <span>Bed {bedNum}</span>
                 <span style={{ fontSize: '0.62rem', fontWeight: 600, color: isBooked ? '#9ca3af' : '#4b5563' }}>
                   {isBooked ? 'Taken' : 'Free'}
@@ -242,7 +242,7 @@ function BedspaceModal({ room, hostelPrice, onBook, onClose }) {
 
         {selectedBed && (
           <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 8, padding: '0.75rem', marginBottom: '1rem', fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
-            ✅ Selected: Bed {selectedBed} in {room.roomNumber} · MK {price.toLocaleString()}/month
+            <i className="fa-solid fa-circle-check" /> Selected: Bed {selectedBed} in {room.roomNumber} · MK {price.toLocaleString()}/month
           </div>
         )}
 
@@ -296,7 +296,7 @@ function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRo
 
       <div className="room-card-body">
         <div className="room-card-header">
-          <span className="room-card-name">🚪 {room.roomNumber}</span>
+          <span className="room-card-name"><i className="fa-solid fa-door-open" /> {room.roomNumber}</span>
           <span className={`room-avail-badge ${isAvailable ? 'available' : 'full'}`}>
             {isAvailable ? `${room.availableBedspaces} free` : 'Full'}
           </span>
@@ -322,7 +322,7 @@ function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRo
         {/* Bedspace visual */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.75rem' }}>
           {Array.from({ length: room.totalBedspaces }).map((_, i) => (
-            <span key={i} style={{ fontSize: '1.1rem', opacity: i < bookedBeds ? 0.3 : 1 }} title={i < bookedBeds ? 'Occupied' : 'Available'}>🛏️</span>
+            <span key={i} style={{ fontSize: '1.1rem', opacity: i < bookedBeds ? 0.3 : 1 }} title={i < bookedBeds ? 'Occupied' : 'Available'}><i className="fa-solid fa-bed" /></span>
           ))}
         </div>
 
@@ -346,7 +346,7 @@ function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRo
         )}
         {!isAvailable && (
           <div style={{ fontSize: '0.75rem', color: '#dc2626', textAlign: 'center', padding: '0.4rem', background: '#fef2f2', borderRadius: 6, fontWeight: 700 }}>
-            🔴 This room is fully occupied
+<i className="fa-solid fa-ban" /> This room is fully occupied
           </div>
         )}
       </div>
@@ -379,7 +379,7 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
         <div />
       </nav>
       <div className="hd-center"><div className="hd-spinner" /><p style={{ color: '#4b5563' }}>Loading...</p></div>
@@ -391,11 +391,11 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
         <div />
       </nav>
       <div className="hd-center">
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏠</div>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><i className="fa-solid fa-house" /></div>
         <p className="hd-error">Hostel not found.</p>
         <button className="hd-bar-btn hd-bar-btn-solid" style={{ margin: '0 auto', display: 'inline-flex' }} onClick={() => navigate('/hostels')}>Browse All Hostels</button>
       </div>
@@ -450,7 +450,7 @@ export default function HostelDetailsPage() {
       const response = await bookingService.createBooking({ hostelId: id, checkInDate: normalizedDate, duration: dur, studentId: user._id });
       if (response?.booking) {
         setBooking(response.booking);
-        setBookingSuccess('✓ Booking created! Proceeding to payment...');
+        setBookingSuccess('Booking created! Proceeding to payment...');
         setShowBookingForm(false);
         setTimeout(() => setShowPaymentModal(true), 800);
       } else { setBookingError('Failed to create booking. Please try again.'); }
@@ -474,7 +474,7 @@ export default function HostelDetailsPage() {
       });
       if (response?.booking) {
         setBooking(response.booking);
-        toast.success(`✅ Bed ${bedspaceNumber} in ${roomNumber} reserved! Proceed to payment.`);
+        toast.success(<span><i className="fa-solid fa-circle-check" /> Bed {bedspaceNumber} in {roomNumber} reserved! Proceed to payment.</span>);
         setTimeout(() => setShowPaymentModal(true), 500);
         fetchHostelById(id);
       }
@@ -487,7 +487,7 @@ export default function HostelDetailsPage() {
     setShowPaymentModal(false); setShowBookingForm(false);
     setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
     setBooking(null);
-    toast.success('🎉 Payment successful! Booking confirmed.');
+    toast.success(<span><i className="fa-solid fa-circle-check" /> Payment successful! Booking confirmed.</span>);
     setTimeout(() => navigate('/bookings'), 1500);
   };
 
@@ -509,7 +509,7 @@ export default function HostelDetailsPage() {
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
         <Link to="/" className="hd-bar-logo">
-          <div className="hd-bar-logo-img"><img src="/PezaHostelLogo.png" alt="PezaHostel" /></div>
+          <div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div>
           <span className="hd-bar-logo-text">PezaHostel</span>
         </Link>
         <div className="hd-bar-right">
@@ -710,13 +710,13 @@ export default function HostelDetailsPage() {
             <div className="book-info-row">
               <span>Status</span>
               <strong style={{ color: currentHostel.verified ? '#22c55e' : '#6b7280' }}>
-                {currentHostel.verified ? '✓ Verified' : 'Unverified'}
+                {currentHostel.verified ? <><i className="fa-solid fa-check" /> Verified</> : 'Unverified'}
               </strong>
             </div>
           </div>
 
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
-            <h3>📅 Book This Hostel</h3>
+            <h3><i className="fa-solid fa-calendar-check" /> Book This Hostel</h3>
             {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
             {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
             <div className="form-group">
@@ -755,7 +755,7 @@ export default function HostelDetailsPage() {
 
           <div className="owner-card">
             <div className="owner-top">
-              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || '👤'}</div>
+              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || <i className="fa-regular fa-user" />}</div>
               <div>
                 <div className="owner-info-role">Listed by</div>
                 <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
