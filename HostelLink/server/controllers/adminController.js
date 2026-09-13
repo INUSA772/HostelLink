@@ -158,7 +158,16 @@ exports.verifyUser = async (req, res) => {
 // @route PATCH /api/admin/users/:id
 exports.updateUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
+    // Whitelist only the fields an admin is meant to change here — never pass
+    // raw req.body through (it could otherwise carry a plaintext `password`
+    // that bypasses the bcrypt pre-save hook, or an unintended `role` change).
+    const allowed = ['isActive', 'verificationStatus', 'verified'];
+    const updates = {};
+    for (const field of allowed) {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     res.json({ success: true, user });
   } catch (error) {

@@ -19,6 +19,20 @@ async function redactContactIfGated(docOrDocs) {
   return Array.isArray(docOrDocs) ? docOrDocs.map(strip) : strip(docOrDocs);
 }
 
+// Fields only an admin (or the server itself) may set — never trust these from
+// a landlord's create/update request body (mass-assignment protection).
+const ADMIN_ONLY_FIELDS = [
+  'verified', 'featured', 'isActive',
+  'averageRating', 'reviewCount', 'viewCount', 'whatsappClicks', 'callClicks',
+  'owner',
+];
+function stripPrivilegedFields(body, isAdmin) {
+  if (isAdmin) return body;
+  const clean = { ...body };
+  for (const field of ADMIN_ONLY_FIELDS) delete clean[field];
+  return clean;
+}
+
 // @desc  Get all properties with filters
 // @route GET /api/hostels
 // @access Public
@@ -114,6 +128,7 @@ exports.getHostel = async (req, res) => {
 // @access Private (owner/admin)
 exports.createHostel = async (req, res) => {
   try {
+    req.body = stripPrivilegedFields(req.body, req.user.role === 'admin');
     req.body.owner = req.user._id;
 
     // Build a valid location object, using real coordinates when the client picked one
@@ -160,6 +175,8 @@ exports.updateHostel = async (req, res) => {
     ) {
       return res.status(403).json({ success: false, message: 'Not authorized to update this property' });
     }
+
+    req.body = stripPrivilegedFields(req.body, req.user.role === 'admin');
 
     if (req.body.location && req.body.location.lat !== undefined) {
       req.body.location = {

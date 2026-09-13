@@ -817,7 +817,8 @@ const styles = `
     .ph-hero-right img.ph-hero-bg { width: 100%; height: 100%; object-fit: cover; display: block; }
     .ph-hero-right::after {
       content: ''; position: absolute; inset: 0;
-      background: transparent; pointer-events: none;
+      background: linear-gradient(to right, #fff 0%, transparent 15%);
+      pointer-events: none;
     }
     .ph-hero-stat strong { font-size: 1.7rem; }
     .ph-hero-stat span { font-size: .74rem; }

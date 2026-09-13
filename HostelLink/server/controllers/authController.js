@@ -163,18 +163,21 @@ exports.register = async (req, res) => {
       });
     }
     
-    // Create user with phone as primary identifier - NO role conversion
+    // Create user with phone as primary identifier.
+    // Never trust a client-supplied role for privileged values (e.g. 'admin') —
+    // whitelist to the only roles this endpoint is allowed to create.
+    const safeRole = ['landlord', 'land_seller'].includes(role) ? role : 'landlord';
     const user = await User.create({
       firstName,
       lastName,
       email: `${phone}@temp.com`, // Temporary email - user can add later
       phone,
       password,
-      role: role, // Direct mapping: 'tenant' or 'landlord'
+      role: safeRole,
       phoneVerified: true,
       isActive: true,
       verified: true,
-      verificationStatus: role === 'landlord' ? 'pending' : 'verified'
+      verificationStatus: safeRole === 'landlord' ? 'pending' : 'verified'
     });
     
     return res.status(201).json({
