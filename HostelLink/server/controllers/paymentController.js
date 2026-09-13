@@ -9,6 +9,26 @@ const PLATFORM_FEE = 2000;
 
 const formatCurrency = (amount) => `MK ${Number(amount).toLocaleString()}`;
 
+// Atomically flips a still-pending booking to confirmed and decrements room
+// availability exactly once, even if called twice concurrently for the same
+// transaction (duplicate webhook delivery, or webhook + verify racing).
+async function confirmBookingOnce(transactionId) {
+  const transaction = await Transaction.findById(transactionId);
+  if (!transaction) return;
+
+  const booking = await Booking.findOneAndUpdate(
+    { _id: transaction.booking, status: 'payment_pending' },
+    { status: 'confirmed', paymentStatus: 'paid' },
+    { new: false } // returns the PRE-update doc only if it matched; null otherwise
+  );
+  if (!booking) return; // already confirmed by a concurrent call, or not pending
+
+  await Hostel.findOneAndUpdate(
+    { _id: booking.hostel, availableRooms: { $gt: 0 } },
+    { $inc: { availableRooms: -1 } }
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payments/initiate
 // ─────────────────────────────────────────────────────────────────────────────
@@ -157,15 +177,18 @@ exports.initiatePayment = async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payments/webhook
+// SECURITY: this endpoint has no auth and no caller-identity check — it is
+// reachable by anyone who knows the URL, not just PayChangu. Never trust
+// req.body.status. Treat the webhook only as a signal to re-check the real
+// status directly with PayChangu using our secret key, and act solely on
+// that verified response.
 // ─────────────────────────────────────────────────────────────────────────────
 exports.handleWebhook = async (req, res) => {
   try {
-    console.log('[WEBHOOK]', req.body);
+    const { tx_ref } = req.body;
 
-    const { tx_ref, status, amount } = req.body;
-
-    if (!tx_ref || !status) {
-      return res.status(400).json({ success: false, message: 'Missing tx_ref or status' });
+    if (!tx_ref) {
+      return res.status(400).json({ success: false, message: 'Missing tx_ref' });
     }
 
     const transaction = await Transaction.findOne({ transactionId: tx_ref });
@@ -173,45 +196,40 @@ exports.handleWebhook = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
 
-    if (['successful', 'success', 'completed'].includes(status)) {
-      transaction.status = 'completed';
-      transaction.paychanguStatus = status;
-      transaction.paymentDetails.completedAt = new Date();
-      await transaction.save();
-
-      const booking = await Booking.findById(transaction.booking);
-      if (booking && booking.status === 'payment_pending') {
-        booking.status = 'confirmed';
-        booking.paymentStatus = 'paid';
-        await booking.save();
-
-        const hostel = await Hostel.findById(booking.hostel);
-        if (hostel && hostel.availableRooms > 0) {
-          hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
-          await hostel.save();
-        }
-      }
-
-      return res.json({ status: 'ok', message: 'Payment successful' });
-
-    } else if (['failed', 'declined'].includes(status)) {
-      transaction.status = 'failed';
-      transaction.paychanguStatus = status;
-      await transaction.save();
-
-      const booking = await Booking.findById(transaction.booking);
-      if (booking) {
-        booking.paymentStatus = 'failed';
-        await booking.save();
-      }
-
-      return res.json({ status: 'ok', message: 'Payment failed' });
-
-    } else {
-      transaction.paychanguStatus = status;
-      await transaction.save();
-      return res.json({ status: 'ok' });
+    if (transaction.status === 'completed') {
+      return res.json({ status: 'ok', message: 'Already processed' });
     }
+
+    let verifiedStatus;
+    try {
+      const verifyResponse = await axios.get(
+        `${PAYCHANGU_API}/verify/${transaction.paychanguReference || transaction.transactionId}`,
+        {
+          headers: { Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}` },
+          timeout: 10000,
+        }
+      );
+      verifiedStatus = verifyResponse.data?.data?.status;
+    } catch (verifyError) {
+      console.error('[WEBHOOK VERIFY ERROR]', verifyError.message);
+      return res.status(502).json({ success: false, message: 'Could not verify payment with gateway' });
+    }
+
+    if (['successful', 'success'].includes(verifiedStatus)) {
+      await Transaction.findOneAndUpdate(
+        { _id: transaction._id, status: { $ne: 'completed' } },
+        { status: 'completed', paychanguStatus: verifiedStatus, 'paymentDetails.completedAt': new Date() }
+      );
+      await confirmBookingOnce(transaction._id);
+      return res.json({ status: 'ok', message: 'Payment successful' });
+    } else if (['failed', 'declined'].includes(verifiedStatus)) {
+      await Transaction.findByIdAndUpdate(transaction._id, { status: 'failed', paychanguStatus: verifiedStatus });
+      await Booking.findByIdAndUpdate(transaction.booking, { paymentStatus: 'failed' });
+      return res.json({ status: 'ok', message: 'Payment failed' });
+    }
+
+    await Transaction.findByIdAndUpdate(transaction._id, { paychanguStatus: verifiedStatus });
+    return res.json({ status: 'ok' });
 
   } catch (error) {
     console.error('[WEBHOOK ERROR]', error);
@@ -253,23 +271,13 @@ exports.verifyPayment = async (req, res) => {
 
         const paychanguStatus = verifyResponse.data?.data?.status;
         if (['successful', 'success'].includes(paychanguStatus)) {
+          await Transaction.findOneAndUpdate(
+            { _id: transaction._id, status: { $ne: 'completed' } },
+            { status: 'completed', paychanguStatus, 'paymentDetails.completedAt': new Date() }
+          );
+          await confirmBookingOnce(transaction._id);
           transaction.status = 'completed';
           transaction.paychanguStatus = paychanguStatus;
-          transaction.paymentDetails.completedAt = new Date();
-          await transaction.save();
-
-          const booking = await Booking.findById(transaction.booking);
-          if (booking && booking.status === 'payment_pending') {
-            booking.status = 'confirmed';
-            booking.paymentStatus = 'paid';
-            await booking.save();
-
-            const hostel = await Hostel.findById(booking.hostel);
-            if (hostel && hostel.availableRooms > 0) {
-              hostel.availableRooms = Math.max(0, hostel.availableRooms - 1);
-              await hostel.save();
-            }
-          }
         }
       } catch (verifyError) {
         console.warn('[VERIFY ERROR]', verifyError.message);

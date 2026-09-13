@@ -121,14 +121,17 @@ exports.initiate = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/contact-access/webhook — public, PayChangu calls this
+// POST /api/contact-access/webhook — public, PayChangu calls this.
+// SECURITY: never trust req.body.status — anyone can POST here. Treat the
+// webhook only as a signal to re-check the real status directly with
+// PayChangu using our secret key, and act solely on that verified response.
 // ─────────────────────────────────────────────────────────────────────────────
 exports.handleWebhook = async (req, res) => {
   try {
-    const { tx_ref, status } = req.body;
+    const { tx_ref } = req.body;
 
-    if (!tx_ref || !status) {
-      return res.status(400).json({ success: false, message: 'Missing tx_ref or status' });
+    if (!tx_ref) {
+      return res.status(400).json({ success: false, message: 'Missing tx_ref' });
     }
 
     const contactAccess = await ContactAccess.findOne({ transactionId: tx_ref });
@@ -136,22 +139,36 @@ exports.handleWebhook = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
 
-    if (['successful', 'success', 'completed'].includes(status)) {
-      contactAccess.status = 'completed';
-      contactAccess.paychanguStatus = status;
-      contactAccess.completedAt = new Date();
-      await contactAccess.save();
-      return res.json({ status: 'ok', message: 'Payment successful' });
-    } else if (['failed', 'declined'].includes(status)) {
-      contactAccess.status = 'failed';
-      contactAccess.paychanguStatus = status;
-      await contactAccess.save();
-      return res.json({ status: 'ok', message: 'Payment failed' });
+    if (contactAccess.status === 'completed') {
+      return res.json({ status: 'ok', message: 'Already processed' });
     }
 
-    contactAccess.paychanguStatus = status;
-    await contactAccess.save();
-    return res.json({ status: 'ok' });
+    let verifiedStatus;
+    try {
+      const verifyResponse = await axios.get(
+        `${PAYCHANGU_API}/verify/${contactAccess.paychanguReference || contactAccess.transactionId}`,
+        {
+          headers: { Authorization: `Bearer ${process.env.PAYCHANGU_SECRET_KEY}` },
+          timeout: 10000,
+        }
+      );
+      verifiedStatus = verifyResponse.data?.data?.status;
+    } catch (verifyError) {
+      console.error('[CONTACT ACCESS WEBHOOK VERIFY ERROR]', verifyError.message);
+      return res.status(502).json({ success: false, message: 'Could not verify payment with gateway' });
+    }
+
+    const result = await ContactAccess.findOneAndUpdate(
+      { _id: contactAccess._id, status: { $ne: 'completed' } },
+      ['successful', 'success'].includes(verifiedStatus)
+        ? { status: 'completed', paychanguStatus: verifiedStatus, completedAt: new Date() }
+        : ['failed', 'declined'].includes(verifiedStatus)
+          ? { status: 'failed', paychanguStatus: verifiedStatus }
+          : { paychanguStatus: verifiedStatus },
+      { new: true }
+    );
+
+    return res.json({ status: 'ok', verifiedStatus, updated: !!result });
   } catch (error) {
     console.error('[CONTACT ACCESS WEBHOOK ERROR]', error);
     res.status(500).json({ message: 'Webhook error' });

@@ -103,8 +103,8 @@ const { email, given_name, family_name, picture, sub: googleId } = payload;
       });
     }
 
-    // New user
-    const userRole = role || 'tenant';
+    // New user — never trust a client-supplied 'admin' (or any other) role value
+    const userRole = ['landlord', 'land_seller'].includes(role) ? role : 'landlord';
     user = await User.create({
       firstName: given_name || 'User',
       lastName: family_name || '',
