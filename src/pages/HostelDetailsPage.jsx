@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import PaymentModal from '../components/payment/PaymentModal';
 import bookingService from '../services/bookingService';
+import PropertyMap from '../components/common/PropertyMap';
+import ContactButtons from '../components/payment/ContactButtons';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -608,6 +610,17 @@ export default function HostelDetailsPage() {
                 </div>
               </>
             )}
+            {currentHostel.location?.coordinates && (
+              <>
+                <p className="section-heading">Location</p>
+                <PropertyMap
+                  lat={currentHostel.location.coordinates[1]}
+                  lng={currentHostel.location.coordinates[0]}
+                  name={currentHostel.name}
+                  address={currentHostel.address}
+                />
+              </>
+            )}
           </div>
 
           {/* ROOMS SECTION */}
@@ -751,9 +764,19 @@ export default function HostelDetailsPage() {
             </div>
             <div className="owner-btns">
               <button className="owner-btn owner-btn-blue" onClick={handleMessage}><i className="fa fa-comment-dots" /> Message Owner</button>
-              <a href={`tel:${currentHostel.contactPhone}`} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
-                <i className="fa fa-phone" /> Call: {currentHostel.contactPhone}
-              </a>
+              <ContactButtons
+                hostel={currentHostel}
+                renderWhatsapp={({ href, onClick }) => (
+                  <a href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
+                    <i className="fab fa-whatsapp" /> WhatsApp
+                  </a>
+                )}
+                renderCall={({ href, onClick }) => (
+                  <a href={href} onClick={onClick} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
+                    <i className="fa fa-phone" /> Call{href.startsWith('tel:') ? `: ${href.slice(4)}` : ''}
+                  </a>
+                )}
+              />
               {currentHostel.owner?.email && (
                 <a href={`mailto:${currentHostel.owner.email}`} className="owner-btn owner-btn-ghost" style={{ textDecoration: 'none' }}>
                   <i className="fa fa-envelope" /> Email Owner

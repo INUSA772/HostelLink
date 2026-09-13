@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FaHome, FaMapMarkerAlt, FaDollarSign, FaBed, FaCheckCircle, FaPlus, FaTrash, FaCamera, FaTimes, FaWhatsapp } from 'react-icons/fa';
 import ImageUpload from '../components/common/ImageUpload';
+import LocationPicker from '../components/common/LocationPicker';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -238,6 +239,8 @@ const CreateProperty = () => {
     listingType: 'For Rent',
     district: '',
     address: '',
+    lat: null,
+    lng: null,
     // Step 2 — pricing & contact
     price: '',
     contactPhone: user?.phone || '',
@@ -352,7 +355,10 @@ const CreateProperty = () => {
         totalRooms:     Number(form.totalRooms) || 0,
         availableRooms: Number(form.availableRooms) || 0,
         whatsapp:       form.sameAsContact ? form.contactPhone : form.whatsapp,
-        location:       { formattedAddress: `${form.address}, ${form.district}` },
+        location:       {
+          formattedAddress: `${form.address}, ${form.district}`,
+          ...(form.lat != null && form.lng != null ? { lat: form.lat, lng: form.lng } : {}),
+        },
         units: form.units.map(u => ({
           unitNumber:      u.unitNumber,
           totalSpaces:     Number(u.totalSpaces),
@@ -487,6 +493,16 @@ const CreateProperty = () => {
                       <input className="cp-input" name="address" value={form.address} onChange={handleChange}
                         placeholder="e.g., Area 25, Chinsapo" />
                     </div>
+                  </div>
+
+                  <div className="cp-grp">
+                    <label className="cp-lbl">Pin Location on Map</label>
+                    <LocationPicker
+                      lat={form.lat}
+                      lng={form.lng}
+                      onChange={(lat, lng) => setForm(p => ({ ...p, lat, lng }))}
+                    />
+                    <p className="cp-tip">Optional, but tenants will see this on a map on your listing</p>
                   </div>
                 </>
               )}

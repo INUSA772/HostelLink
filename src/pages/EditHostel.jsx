@@ -4,6 +4,7 @@ import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FaArrowLeft, FaSave, FaSpinner, FaCheckCircle, FaTrash, FaUpload } from 'react-icons/fa';
+import LocationPicker from '../components/common/LocationPicker';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
@@ -304,6 +305,8 @@ const EditHostel = () => {
     description: '',
     address:     '',
     district:    '',
+    lat:         null,
+    lng:         null,
     type:        '',
     price:       '',
     contractType:'rent',
@@ -317,11 +320,14 @@ const EditHostel = () => {
 
   useEffect(() => {
     if (currentHostel) {
+      const [lng, lat] = currentHostel.location?.coordinates || [0, 0];
       setFormData({
         name:         currentHostel.name        || '',
         description:  currentHostel.description || '',
         address:      currentHostel.address     || '',
         district:     currentHostel.district    || '',
+        lat:          (lat === 0 && lng === 0) ? null : lat,
+        lng:          (lat === 0 && lng === 0) ? null : lng,
         type:         currentHostel.type        || '',
         price:        currentHostel.price       || '',
         contractType: currentHostel.contractType || currentHostel.listingType || 'rent',
@@ -366,7 +372,12 @@ const EditHostel = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      await updateHostel(id, formData);
+      const { lat, lng, ...rest } = formData;
+      const payload = {
+        ...rest,
+        ...(lat != null && lng != null ? { location: { lat, lng, address: formData.address } } : {}),
+      };
+      await updateHostel(id, payload);
       toast.success('Property updated successfully!');
       setSaved(true);
       setTimeout(() => setSaved(false), 3500);
@@ -494,6 +505,16 @@ const EditHostel = () => {
                         {['Balaka','Blantyre','Chikwawa','Chiradzulu','Machinga','Mangochi','Mulanje','Mwanza','Neno','Nsanje','Thyolo','Phalombe','Zomba','Chiradzulu'].map(d => <option key={d}>{d}</option>)}
                       </optgroup>
                     </select>
+                  </div>
+                </div>
+                <div className="eh-grid full" style={{ marginTop: '1.25rem' }}>
+                  <div className="eh-group">
+                    <label className="eh-label">Pin Location on Map</label>
+                    <LocationPicker
+                      lat={formData.lat}
+                      lng={formData.lng}
+                      onChange={(lat, lng) => setFormData(p => ({ ...p, lat, lng }))}
+                    />
                   </div>
                 </div>
                 <div className="eh-grid full" style={{ marginTop: '1.25rem' }}>

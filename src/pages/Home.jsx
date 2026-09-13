@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
+import ContactButtons from "../components/payment/ContactButtons";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -1317,12 +1318,6 @@ const styles = `
 /* ═══════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════ */
-function waLink(num) {
-  if (!num) return null;
-  const clean = num.toString().replace(/\D/g, "");
-  const intl  = clean.startsWith("0") ? "265" + clean.slice(1) : clean;
-  return `https://wa.me/${intl}`;
-}
 function trackWhatsappClick(propertyId) {
   if (!propertyId) return;
   fetch(`${API_URL}/admin/properties/${propertyId}/whatsapp-click`, { method: "POST" }).catch(() => {});
@@ -1541,8 +1536,6 @@ function PropertyCard({ property }) {
   const p         = normalise(property);
   const imgSrc    = p.images[0] || null;
   const isForSale = p.listingType.toLowerCase().includes("sale");
-  const wa        = waLink(p.whatsapp);
-  const call      = p.contactPhone ? `tel:${p.contactPhone}` : null;
   const [lightbox, setLightbox] = useState(false);
 
   return (
@@ -1570,9 +1563,19 @@ function PropertyCard({ property }) {
         </div>
       </div>
       <div className="ph-prop-actions">
-        {wa   && <a className="ph-prop-wa"   href={wa}   target="_blank" rel="noopener noreferrer" onClick={() => trackWhatsappClick(p._id)}><i className="fab fa-whatsapp" /> {t.waBtn}</a>}
-        {call && <a className="ph-prop-call" href={call}><i className="fa fa-phone" /> {t.callBtn}</a>}
-        {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
+        <ContactButtons
+          hostel={p}
+          onWhatsappClick={() => trackWhatsappClick(p._id)}
+          renderWhatsapp={({ href, onClick }) => (
+            <a className="ph-prop-wa" href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick}>
+              <i className="fab fa-whatsapp" /> {t.waBtn}
+            </a>
+          )}
+          renderCall={({ href, onClick }) => (
+            <a className="ph-prop-call" href={href} onClick={onClick}><i className="fa fa-phone" /> {t.callBtn}</a>
+          )}
+          renderEmpty={() => <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
+        />
       </div>
       {lightbox && p.images.length > 0 && (
         <ImageLightbox images={p.images} startIndex={0} propertyName={p.name} onClose={() => setLightbox(false)} />

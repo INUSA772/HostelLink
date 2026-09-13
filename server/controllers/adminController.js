@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Hostel = require('../models/Hostel');
 const Booking = require('../models/Booking');
+const Settings = require('../models/Settings');
 
 // @desc  Get all admin stats
 // @route GET /api/admin/stats
@@ -211,5 +212,54 @@ exports.trackWhatsappClick = async (req, res) => {
   } catch (error) {
     console.error('trackWhatsappClick error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc  Get platform settings (contact-access payment toggle + fee)
+// @route GET /api/admin/settings
+exports.getSettings = async (req, res) => {
+  try {
+    const settings = await Settings.getSingleton();
+    res.json({
+      success: true,
+      data: {
+        contactAccessPaymentEnabled: settings.contactAccessPaymentEnabled,
+        contactAccessFee: settings.contactAccessFee,
+      },
+    });
+  } catch (error) {
+    console.error('getSettings error:', error);
+    res.status(500).json({ success: false, message: 'Server error fetching settings' });
+  }
+};
+
+// @desc  Update platform settings
+// @route PATCH /api/admin/settings
+exports.updateSettings = async (req, res) => {
+  try {
+    const { contactAccessPaymentEnabled, contactAccessFee } = req.body;
+    const settings = await Settings.getSingleton();
+
+    if (contactAccessPaymentEnabled !== undefined) {
+      settings.contactAccessPaymentEnabled = !!contactAccessPaymentEnabled;
+    }
+    if (contactAccessFee !== undefined) {
+      if (Number(contactAccessFee) < 0) {
+        return res.status(400).json({ success: false, message: 'Fee cannot be negative' });
+      }
+      settings.contactAccessFee = Number(contactAccessFee);
+    }
+
+    await settings.save();
+    res.json({
+      success: true,
+      data: {
+        contactAccessPaymentEnabled: settings.contactAccessPaymentEnabled,
+        contactAccessFee: settings.contactAccessFee,
+      },
+    });
+  } catch (error) {
+    console.error('updateSettings error:', error);
+    res.status(500).json({ success: false, message: 'Server error updating settings' });
   }
 };

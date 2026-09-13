@@ -1,5 +1,23 @@
 const Property = require('../models/Hostel'); // points to Hostel.js which now has the updated schema
 const Booking = require('../models/Booking');
+const Settings = require('../models/Settings');
+
+// When the admin has turned on the contact-access paywall, strip the phone/WhatsApp
+// fields out of public responses entirely — the frontend must call the
+// /api/contact-access/reveal endpoint (which verifies a completed payment) to get them.
+async function redactContactIfGated(docOrDocs) {
+  const settings = await Settings.getSingleton();
+  if (!settings.contactAccessPaymentEnabled) return docOrDocs;
+
+  const strip = (doc) => {
+    const obj = doc.toObject ? doc.toObject() : doc;
+    delete obj.contactPhone;
+    delete obj.whatsapp;
+    return obj;
+  };
+
+  return Array.isArray(docOrDocs) ? docOrDocs.map(strip) : strip(docOrDocs);
+}
 
 // @desc  Get all properties with filters
 // @route GET /api/hostels
@@ -50,14 +68,16 @@ exports.getHostels = async (req, res) => {
       .skip(skip)
       .limit(Number(limit));
 
+    const safeProperties = await redactContactIfGated(properties);
+
     res.json({
       success: true,
       count: properties.length,
       total,
       pages: Math.ceil(total / Number(limit)),
       currentPage: Number(page),
-      hostels: properties,
-      data:    properties,
+      hostels: safeProperties,
+      data:    safeProperties,
     });
   } catch (error) {
     console.error('getProperties error:', error);
@@ -80,7 +100,9 @@ exports.getHostel = async (req, res) => {
     property.viewCount = (property.viewCount || 0) + 1;
     await property.save();
 
-    res.json({ success: true, data: property, hostel: property });
+    const safeProperty = await redactContactIfGated(property);
+
+    res.json({ success: true, data: safeProperty, hostel: safeProperty });
   } catch (error) {
     console.error('getProperty error:', error);
     res.status(500).json({ success: false, message: 'Server error fetching property' });
@@ -94,10 +116,12 @@ exports.createHostel = async (req, res) => {
   try {
     req.body.owner = req.user._id;
 
-    // Always build a valid location object
+    // Build a valid location object, using real coordinates when the client picked one
+    const lat = req.body.location?.lat;
+    const lng = req.body.location?.lng;
     req.body.location = {
       type: 'Point',
-      coordinates: [0, 0],
+      coordinates: (lat !== undefined && lng !== undefined) ? [Number(lng), Number(lat)] : [0, 0],
       formattedAddress: req.body.location?.formattedAddress || req.body.address || '',
     };
 

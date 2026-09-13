@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import ContactButtons from "../components/payment/ContactButtons";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -20,12 +21,6 @@ const PROPERTY_TYPES = [
 /* ═══════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════ */
-function waLink(num) {
-  if (!num) return null;
-  const clean = num.toString().replace(/\D/g, "");
-  const intl  = clean.startsWith("0") ? "265" + clean.slice(1) : clean;
-  return `https://wa.me/${intl}`;
-}
 function normalise(p) {
   return {
     _id:           p._id || p.id,
@@ -110,8 +105,6 @@ function PropertyCard({ property }) {
   const p = normalise(property);
   const [lightbox, setLightbox] = useState(false);
   const isForSale = p.listingType.toLowerCase().includes("sale");
-  const wa   = waLink(p.whatsapp);
-  const call = p.contactPhone ? `tel:${p.contactPhone}` : null;
 
   return (
     <div className="pp-card">
@@ -148,9 +141,18 @@ function PropertyCard({ property }) {
       </div>
 
       <div className="pp-card-actions">
-        {wa   && <a className="pp-wa"   href={wa}   target="_blank" rel="noopener noreferrer"><i className="fab fa-whatsapp"/> WhatsApp</a>}
-        {call && <a className="pp-call" href={call}><i className="fa fa-phone"/> Call</a>}
-        {!wa && !call && <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>}
+        <ContactButtons
+          hostel={p}
+          renderWhatsapp={({ href, onClick }) => (
+            <a className="pp-wa" href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick}>
+              <i className="fab fa-whatsapp"/> WhatsApp
+            </a>
+          )}
+          renderCall={({ href, onClick }) => (
+            <a className="pp-call" href={href} onClick={onClick}><i className="fa fa-phone"/> Call</a>
+          )}
+          renderEmpty={() => <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>}
+        />
       </div>
 
       {lightbox && p.images.length > 0 && (

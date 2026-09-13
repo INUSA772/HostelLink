@@ -1,6 +1,7 @@
 // frontend/src/pages/PropertiesListing.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ContactButtons from '../components/payment/ContactButtons';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -981,21 +982,25 @@ export default function PropertiesListing() {
                   </div>
 
                   <div className="pz-property-actions">
-                    {property.whatsapp && (
-                      <a
-                        className="pz-btn-whatsapp"
-                        href={`https://wa.me/${property.whatsapp.replace(/\D/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i className="fab fa-whatsapp"></i> WhatsApp
-                      </a>
-                    )}
-                    {property.phone && (
-                      <a className="pz-btn-call" href={`tel:${property.phone}`}>
-                        <i className="fa fa-phone"></i> Call
-                      </a>
-                    )}
+                    <ContactButtons
+                      hostel={property}
+                      renderWhatsapp={({ href, onClick }) => (
+                        <a
+                          className="pz-btn-whatsapp"
+                          href={href}
+                          target={href === '#' ? undefined : '_blank'}
+                          rel="noopener noreferrer"
+                          onClick={onClick}
+                        >
+                          <i className="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                      )}
+                      renderCall={({ href, onClick }) => (
+                        <a className="pz-btn-call" href={href} onClick={onClick}>
+                          <i className="fa fa-phone"></i> Call
+                        </a>
+                      )}
+                    />
                   </div>
                 </div>
               ))}

@@ -306,6 +306,8 @@ export default function AdminDashboard() {
   const [userFilter, setUserFilter] = useState('all');
   const [propSearch, setPropSearch] = useState('');
   const [propFilter, setPropFilter] = useState('all');
+  const [settings,   setSettings]   = useState({ contactAccessPaymentEnabled: false, contactAccessFee: 500 });
+  const [savingSettings, setSavingSettings] = useState(false);
 
   /* ── auth guard ── */
   useEffect(() => {
@@ -319,14 +321,16 @@ export default function AdminDashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const [statsRes, usersRes, propsRes] = await Promise.all([
+      const [statsRes, usersRes, propsRes, settingsRes] = await Promise.all([
         api.get('/admin/stats').catch(() => ({ data: {} })),
         api.get('/admin/users?limit=200').catch(() => ({ data: { users: [] } })),
         api.get('/hostels?limit=200').catch(() => ({ data: { hostels: [] } })),
+        api.get('/admin/settings').catch(() => ({ data: { data: null } })),
       ]);
       setData(statsRes.data);
       setUsers(usersRes.data.users || usersRes.data.data || []);
       setProperties(propsRes.data.hostels || propsRes.data.data || []);
+      if (settingsRes.data?.data) setSettings(settingsRes.data.data);
     } catch (err) {
       toast.error('Failed to load data');
     } finally {
@@ -403,6 +407,23 @@ export default function AdminDashboard() {
     }
   };
 
+  /* ── save platform settings ── */
+  const saveSettings = async (next) => {
+    setSavingSettings(true);
+    const prev = settings;
+    setSettings(next);
+    try {
+      const res = await api.patch('/admin/settings', next);
+      setSettings(res.data.data);
+      toast.success('Settings updated');
+    } catch {
+      setSettings(prev);
+      toast.error('Failed to update settings');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   /* ── toggle user active ── */
   const toggleActive = async (userId, isActive) => {
     try {
@@ -470,6 +491,7 @@ export default function AdminDashboard() {
     { id: 'verify',     label: 'Verify',     icon: 'fa-shield-alt',    count: pendingVerification.length, urgent: true },
     { id: 'properties', label: 'Properties', icon: 'fa-building',      count: properties.length },
     { id: 'scams',      label: 'Flagged',    icon: 'fa-flag',          count: flaggedProps.length, urgent: flaggedProps.length > 0 },
+    { id: 'settings',   label: 'Payment Settings', icon: 'fa-sliders-h' },
   ];
 
   return (
@@ -1030,6 +1052,71 @@ export default function AdminDashboard() {
                 })}
               </div>
             )}
+          </>
+        )}
+
+        {tab === 'settings' && (
+          <>
+            <div className="a-page-hd">
+              <h1>Payment <em>Settings</em></h1>
+              <p>Control whether tenants must pay to unlock a landlord's WhatsApp &amp; call details</p>
+            </div>
+            <div className="a-panel" style={{ padding: '1.5rem', maxWidth: 480 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--dark)' }}>Contact Access Payment</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--mid)', marginTop: 2 }}>
+                    {settings.contactAccessPaymentEnabled
+                      ? 'Enabled — tenants must pay before seeing WhatsApp/Call details'
+                      : 'Disabled — WhatsApp/Call details are free and instant'}
+                  </div>
+                </div>
+                <label style={{ position: 'relative', display: 'inline-block', width: 46, height: 26, flexShrink: 0, cursor: savingSettings ? 'not-allowed' : 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={settings.contactAccessPaymentEnabled}
+                    disabled={savingSettings}
+                    onChange={(e) => saveSettings({ ...settings, contactAccessPaymentEnabled: e.target.checked })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: 'absolute', inset: 0, borderRadius: 999,
+                    background: settings.contactAccessPaymentEnabled ? '#22c55e' : '#d1d5db',
+                    transition: 'background .2s',
+                  }} />
+                  <span style={{
+                    position: 'absolute', top: 3, left: settings.contactAccessPaymentEnabled ? 23 : 3,
+                    width: 20, height: 20, borderRadius: '50%', background: 'white',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.3)', transition: 'left .2s',
+                  }} />
+                </label>
+              </div>
+
+              <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--navy)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, display: 'block' }}>
+                Contact Access Fee (MWK)
+              </label>
+              <div style={{ display: 'flex', gap: '0.6rem' }}>
+                <input
+                  type="number"
+                  min="0"
+                  value={settings.contactAccessFee}
+                  onChange={(e) => setSettings(s => ({ ...s, contactAccessFee: Number(e.target.value) }))}
+                  style={{ flex: 1, padding: '0.65rem 0.9rem', border: '1.5px solid var(--border, #e8eaed)', borderRadius: 9, fontSize: '0.9rem' }}
+                />
+                <button
+                  className="a-btn a-btn-green"
+                  disabled={savingSettings}
+                  onClick={() => saveSettings(settings)}
+                >
+                  {savingSettings ? 'Saving…' : 'Save Fee'}
+                </button>
+              </div>
+              <p style={{ fontSize: '0.72rem', color: 'var(--mid)', marginTop: 10, lineHeight: 1.6 }}>
+                This fee is charged once per listing via PayChangu before a tenant can see that landlord's
+                WhatsApp number or phone number. Toggling this off immediately restores free, direct contact
+                everywhere on the site.
+              </p>
+            </div>
           </>
         )}
 

@@ -60,6 +60,7 @@ const userRoutes         = require('./routes/userRoutes');
 const messageRoutes      = require('./routes/messageRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes        = require('./routes/adminRoutes');
+const contactAccessRoutes = require('./routes/contactAccessRoutes');
 
 app.use('/api/auth',          authRoutes);
 app.use('/api/hostels',       hostelRoutes);
@@ -70,6 +71,7 @@ app.use('/api/users',         userRoutes);
 app.use('/api/messages',      messageRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin',         adminRoutes);
+app.use('/api/contact-access', contactAccessRoutes);
 
 // ── GLOBAL ERROR HANDLER ──────────────────────────
 app.use((err, req, res, next) => {

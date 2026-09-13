@@ -10,6 +10,8 @@ const {
   deleteHostel,
   flagHostel,
   trackWhatsappClick,
+  getSettings,
+  updateSettings,
 } = require('../controllers/adminController');
 
 const admin = [protect, authorize('admin')];
@@ -21,6 +23,9 @@ router.patch('/users/:id',                 ...admin, updateUser);
 router.delete('/users/:id',                ...admin, deleteUser);
 router.delete('/hostels/:id',              ...admin, deleteHostel);
 router.patch('/hostels/:id/flag',          ...admin, flagHostel);
-router.post('/hostels/:id/whatsapp-click', protect,  trackWhatsappClick);
+// Public — fired from anonymous browsing, it's just a click counter
+router.post('/properties/:id/whatsapp-click', trackWhatsappClick);
+router.get('/settings',                    ...admin, getSettings);
+router.patch('/settings',                  ...admin, updateSettings);
 
 module.exports = router;
