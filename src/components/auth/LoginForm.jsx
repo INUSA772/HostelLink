@@ -307,7 +307,7 @@ const LoginForm = () => {
     const isEmail = formData.phone.includes('@');
 
     if (!isEmail) {
-      const phoneRgx = /^(?:\+265|0)(?:88|99|98|66)\d{7}$/;
+      const phoneRgx = /^(?:\+265|0)\d{8,9}$/;
       if (!phoneRgx.test(formData.phone)) {
         toast.error('Enter a valid Malawian number (e.g. 0888123456)');
         return;

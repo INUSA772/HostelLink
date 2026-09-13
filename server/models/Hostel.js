@@ -108,12 +108,14 @@ const hostelSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  verified:      { type: Boolean, default: false },
+verified:      { type: Boolean, default: false },
   featured:      { type: Boolean, default: false },
   isActive:      { type: Boolean, default: true },
   averageRating: { type: Number, default: 0, min: 0, max: 5 },
   reviewCount:   { type: Number, default: 0 },
-  viewCount:     { type: Number, default: 0 }
+  viewCount:     { type: Number, default: 0 },
+  whatsappClicks: { type: Number, default: 0 },
+  callClicks:     { type: Number, default: 0 }
 }, { timestamps: true });
 
 hostelSchema.index({ location: '2dsphere' });

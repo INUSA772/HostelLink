@@ -21,7 +21,8 @@ router.get('/nearby', hostelController.getNearbyHostels);
 
 // Get hostel availability — before /:id
 router.get('/:id/availability', hostelController.getHostelAvailability);
-
+// Track WhatsApp/Call clicks
+router.post('/:id/track-click', hostelController.trackClick);
 // Get single hostel by ID — LAST among GET routes
 router.get('/:id', hostelController.getHostel);
 

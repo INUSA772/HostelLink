@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,8 +11,20 @@ import MainLayout from './components/layout/MainLayout';
 import AppRoutes from './routes/AppRoutes';
 import "./styles/global.css";
 import "./styles/paymentStyles.css";
+import api from './services/api';
 
 function App() {
+  useEffect(() => {
+    const today = new Date().toDateString();
+    const lastTracked = localStorage.getItem('peza_tracked');
+
+    if (lastTracked !== today) {
+      api.post('/admin/track-visit')
+        .then(() => localStorage.setItem('peza_tracked', today))
+        .catch(() => {});
+    }
+  }, []);
+
   return (
     <Router>
       <ThemeProvider>

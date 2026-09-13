@@ -34,7 +34,7 @@ function writeCache(hostelId, data) {
  * this component only decides whether a click should go straight to wa.me/tel: or open
  * the paywall modal first.
  */
-export default function ContactButtons({ hostel, renderWhatsapp, renderCall, renderEmpty, onWhatsappClick }) {
+export default function ContactButtons({ hostel, renderWhatsapp, renderCall, renderEmpty, onWhatsappClick, onCallClick }) {
   const { enabled, fee } = useContactSettings();
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null); // 'whatsapp' | 'call'
@@ -62,6 +62,7 @@ export default function ContactButtons({ hostel, renderWhatsapp, renderCall, ren
       onWhatsappClick?.();
       window.open(waLink(data.whatsapp), '_blank', 'noopener,noreferrer');
     } else if (pendingAction === 'call' && data.contactPhone) {
+      onCallClick?.();
       window.location.href = `tel:${data.contactPhone}`;
     }
     setPendingAction(null);
@@ -76,7 +77,7 @@ export default function ContactButtons({ hostel, renderWhatsapp, renderCall, ren
   const callProps = hasCall
     ? isLocked
       ? { href: '#', locked: true, onClick: (e) => { e.preventDefault(); openGate('call'); } }
-      : { href: `tel:${contactPhone}`, locked: false, onClick: undefined }
+      : { href: `tel:${contactPhone}`, locked: false, onClick: () => onCallClick?.() }
     : null;
 
   return (
