@@ -1348,7 +1348,7 @@ function Navbar({ favCount }) {
       <nav className="pn-nav">
         <div className="pn-nav-inner">
           <a href="/" className="pn-logo">
-            <div className="pn-logo-icon"><img src="/PEZ.png" alt="PezaNyumba Logo" /></div>
+            <div className="pn-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba Logo" /></div>
             <span className="ph-footer-logo-tex">Peza<span className="pn-logo-nyumba">Nyumba</span> <span style={{fontSize:".65em",fontWeight:600,opacity:.45,letterSpacing:"1px",verticalAlign:"middle"}}> MW</span></span>
           </a>
 
