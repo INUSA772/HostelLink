@@ -3,8 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import PaymentModal from '../components/payment/PaymentModal';
-import bookingService from '../services/bookingService';
 import PropertyMap from '../components/common/PropertyMap';
 import ContactButtons from '../components/payment/ContactButtons';
 
@@ -175,98 +173,9 @@ const AMENITY_ICONS = {
   'Air Conditioning': 'fa-wind', 'Hot Shower': 'fa-shower',
 };
 
-const getTodayStr = () => new Date().toISOString().split('T')[0];
-const getTomorrowStr = () => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; };
-const parseDate = (str) => {
-  if (!str) return null;
-  const s = str.trim();
-  if (!s) return null;
-  if (s.includes('/')) {
-    const parts = s.split('/');
-    if (parts.length === 3) {
-      const [month, day, year] = parts;
-      return new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`);
-    }
-  }
-  return new Date(s);
-};
-
-// ── Bedspace Selection Modal ───────────────────────────────────────────────
-function BedspaceModal({ room, hostelPrice, onBook, onClose }) {
-  const [selectedBed, setSelectedBed] = useState(null);
-  const price = room.price > 0 ? room.price : hostelPrice;
-  const bookedBeds = room.totalBedspaces - room.availableBedspaces;
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,74,64,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', width: '100%', maxWidth: 420, boxShadow: '0 24px 60px rgba(13,74,64,0.25)', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0d4a40' }}><i className="fa-solid fa-door-open" /> {room.roomNumber} — Choose Bedspace</h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#4b5563' }}><i className="fa-solid fa-xmark" /></button>
-        </div>
-
-        <p style={{ fontSize: '0.8rem', color: '#4b5563', marginBottom: '1rem' }}>
-          {room.availableBedspaces} of {room.totalBedspaces} bedspaces available · MK {price.toLocaleString()}/month
-        </p>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.6rem', marginBottom: '1.25rem' }}>
-          {Array.from({ length: room.totalBedspaces }).map((_, i) => {
-            const bedNum = i + 1;
-            const isBooked = bedNum <= bookedBeds;
-            const isSelected = selectedBed === bedNum;
-            return (
-              <button
-                key={bedNum}
-                disabled={isBooked}
-                onClick={() => setSelectedBed(bedNum)}
-                style={{
-                  padding: '0.75rem 0.5rem', borderRadius: 10,
-                  border: isSelected ? '2.5px solid #1a5c52' : '1.5px solid #e2ede9',
-                  background: isBooked ? '#f3f4f6' : isSelected ? '#e8f5f2' : 'white',
-                  cursor: isBooked ? 'not-allowed' : 'pointer',
-                  fontWeight: 800, fontSize: '0.82rem', fontFamily: 'Manrope, sans-serif',
-                  color: isBooked ? '#9ca3af' : isSelected ? '#1a5c52' : '#0d4a40',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <span style={{ fontSize: '1.1rem' }}>{isBooked ? <i className="fa-solid fa-circle" style={{ color: '#dc2626' }} /> : isSelected ? <i className="fa-solid fa-circle-check" /> : <i className="fa-solid fa-bed" />}</span>
-                <span>Bed {bedNum}</span>
-                <span style={{ fontSize: '0.62rem', fontWeight: 600, color: isBooked ? '#9ca3af' : '#4b5563' }}>
-                  {isBooked ? 'Taken' : 'Free'}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {selectedBed && (
-          <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 8, padding: '0.75rem', marginBottom: '1rem', fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
-            <i className="fa-solid fa-circle-check" /> Selected: Bed {selectedBed} in {room.roomNumber} · MK {price.toLocaleString()}/month
-          </div>
-        )}
-
-        <button
-          disabled={!selectedBed}
-          onClick={() => onBook({ roomId: room._id, roomNumber: room.roomNumber, bedspaceNumber: selectedBed, price })}
-          style={{
-            width: '100%', padding: '0.85rem',
-            background: selectedBed ? '#1a5c52' : '#e2ede9',
-            color: selectedBed ? 'white' : '#9ca3af',
-            border: 'none', borderRadius: 8, fontWeight: 800, fontSize: '0.95rem',
-            cursor: selectedBed ? 'pointer' : 'not-allowed',
-            fontFamily: 'Manrope, sans-serif', transition: 'all 0.2s'
-          }}
-        >
-          {selectedBed ? `Book Bed ${selectedBed} →` : 'Select a bedspace first'}
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ── Room Card ─────────────────────────────────────────────────────────────
-function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRole }) {
+function RoomCard({ room, hostelPrice }) {
   const [imgIdx, setImgIdx] = useState(0);
   const images = room.images || [];
   const isAvailable = room.availableBedspaces > 0;
@@ -326,24 +235,6 @@ function RoomCard({ room, hostelPrice, onSelectBedspace, isAuthenticated, userRo
           ))}
         </div>
 
-        {isAuthenticated && userRole === 'student' && isAvailable && (
-          <button
-            onClick={() => onSelectBedspace(room)}
-            style={{ width: '100%', padding: '0.6rem', background: '#1a5c52', color: 'white', border: 'none', borderRadius: 7, fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'Manrope, sans-serif', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
-          >
-            <i className="fa fa-bed" /> Select Bedspace
-          </button>
-        )}
-        {!isAuthenticated && (
-          <div style={{ fontSize: '0.75rem', color: '#4b5563', textAlign: 'center', padding: '0.4rem', background: '#f0faf7', borderRadius: 6, fontWeight: 600 }}>
-            Login to book a bedspace
-          </div>
-        )}
-        {isAuthenticated && userRole !== 'student' && (
-          <div style={{ fontSize: '0.75rem', color: '#4b5563', textAlign: 'center', padding: '0.4rem', background: '#f0faf7', borderRadius: 6, fontWeight: 600 }}>
-            Only students can book
-          </div>
-        )}
         {!isAvailable && (
           <div style={{ fontSize: '0.75rem', color: '#dc2626', textAlign: 'center', padding: '0.4rem', background: '#fef2f2', borderRadius: 6, fontWeight: 700 }}>
 <i className="fa-solid fa-ban" /> This room is fully occupied
@@ -359,18 +250,10 @@ export default function HostelDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentHostel, loading, fetchHostelById } = useHostel();
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [imgIndex, setImgIndex] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [booking, setBooking] = useState(null);
-  const [bookingData, setBookingData] = useState({ checkInDate: getTomorrowStr(), duration: 1 });
-  const [bookingLoading, setBookingLoading] = useState(false);
-  const [bookingError, setBookingError] = useState('');
-  const [bookingSuccess, setBookingSuccess] = useState('');
-  const [selectedRoom, setSelectedRoom] = useState(null);
 
   useEffect(() => { fetchHostelById(id); window.scrollTo(0, 0); }, [id]);
 
@@ -423,89 +306,10 @@ export default function HostelDetailsPage() {
     else { navigator.clipboard.writeText(window.location.href); toast.success('Link copied!'); }
   };
 
-  const calculatePrice = () => {
-    const dur = parseInt(bookingData.duration) || 1;
-    if (dur > 0) { const roomCost = currentHostel.price * dur; return { roomCost, platformFee: 2000, totalAmount: roomCost + 2000 }; }
-    return null;
-  };
-  const priceBreakdown = calculatePrice();
-
-  const handleCreateBooking = async (e) => {
-    e.preventDefault();
-    setBookingError(''); setBookingSuccess('');
-    if (!isAuthenticated) { setBookingError('Please login to book'); setTimeout(() => navigate('/login'), 500); return; }
-    const rawDate = bookingData.checkInDate;
-    if (!rawDate?.trim()) { setBookingError('Please select a check-in date'); return; }
-    const selectedDate = parseDate(rawDate);
-    if (!selectedDate || isNaN(selectedDate.getTime())) { setBookingError('Please enter a valid check-in date'); return; }
-    const today = new Date(); today.setHours(0,0,0,0);
-    if (selectedDate < today) { setBookingError('Check-in date cannot be in the past'); return; }
-    const month = String(selectedDate.getMonth()+1).padStart(2,'0');
-    const day = String(selectedDate.getDate()).padStart(2,'0');
-    const normalizedDate = `${selectedDate.getFullYear()}-${month}-${day}`;
-    const dur = parseInt(bookingData.duration);
-    if (!dur || dur < 1) { setBookingError('Duration must be at least 1 month'); return; }
-    if (user?.role !== 'student') { setBookingError('Only students can make bookings'); return; }
-    setBookingLoading(true);
-    try {
-      const response = await bookingService.createBooking({ hostelId: id, checkInDate: normalizedDate, duration: dur, studentId: user._id });
-      if (response?.booking) {
-        setBooking(response.booking);
-        setBookingSuccess('Booking created! Proceeding to payment...');
-        setShowBookingForm(false);
-        setTimeout(() => setShowPaymentModal(true), 800);
-      } else { setBookingError('Failed to create booking. Please try again.'); }
-    } catch (error) {
-      setBookingError(error.response?.data?.message || 'Failed to create booking. Please try again.');
-    } finally { setBookingLoading(false); }
-  };
-
-  const handleBedspaceBook = async ({ roomId, roomNumber, bedspaceNumber, price }) => {
-    if (!isAuthenticated) { toast.error('Please login to book'); navigate('/login'); return; }
-    setSelectedRoom(null);
-    setBookingLoading(true);
-    try {
-      const response = await bookingService.createBooking({
-        hostelId: id,
-        checkInDate: getTomorrowStr(),
-        duration: 1,
-        studentId: user._id,
-        roomId,
-        bedspaceNumber,
-      });
-      if (response?.booking) {
-        setBooking(response.booking);
-        toast.success(<span><i className="fa-solid fa-circle-check" /> Bed {bedspaceNumber} in {roomNumber} reserved! Proceed to payment.</span>);
-        setTimeout(() => setShowPaymentModal(true), 500);
-        fetchHostelById(id);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to book bedspace. Please try again.');
-    } finally { setBookingLoading(false); }
-  };
-
-  const handlePaymentSuccess = () => {
-    setShowPaymentModal(false); setShowBookingForm(false);
-    setBookingData({ checkInDate: getTomorrowStr(), duration: 1 });
-    setBooking(null);
-    toast.success(<span><i className="fa-solid fa-circle-check" /> Payment successful! Booking confirmed.</span>);
-    setTimeout(() => navigate('/bookings'), 1500);
-  };
-
   return (
     <>
       <style>{styles}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-      {/* Bedspace Modal */}
-      {selectedRoom && (
-        <BedspaceModal
-          room={selectedRoom}
-          hostelPrice={currentHostel.price}
-          onClose={() => setSelectedRoom(null)}
-          onBook={handleBedspaceBook}
-        />
-      )}
 
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
@@ -656,9 +460,6 @@ export default function HostelDetailsPage() {
                     key={room._id || i}
                     room={room}
                     hostelPrice={currentHostel.price}
-                    onSelectBedspace={setSelectedRoom}
-                    isAuthenticated={isAuthenticated}
-                    userRole={user?.role}
                   />
                 ))}
               </div>
@@ -684,24 +485,6 @@ export default function HostelDetailsPage() {
               </div>
               <div className="book-rooms-badge">{currentHostel.availableRooms} rooms free</div>
             </div>
-            {!isAuthenticated && (
-              <button className="book-btn" onClick={() => navigate('/login')}><i className="fa fa-sign-in-alt" /> Login to Book</button>
-            )}
-            {isAuthenticated && user?.role === 'owner' && (
-              <div style={{ background: 'var(--teal-pale)', borderRadius: 8, padding: '0.75rem', textAlign: 'center', fontSize: '0.85rem', color: '#4b5563', fontWeight: 600 }}>
-                Only students can book properties
-              </div>
-            )}
-            {isAuthenticated && user?.role === 'student' && (
-              <button
-                className="book-btn"
-                onClick={() => { setShowBookingForm(!showBookingForm); setBookingError(''); setBookingSuccess(''); }}
-                disabled={currentHostel.availableRooms === 0}
-              >
-                <i className="fa fa-calendar-check" />
-                {currentHostel.availableRooms === 0 ? ' No Rooms Available' : showBookingForm ? ' Hide Form' : ' Book Whole Room'}
-              </button>
-            )}
             <hr className="book-divider" />
             <div className="book-info-row"><span>Room Type</span><strong>{currentHostel.type}</strong></div>
             <div className="book-info-row"><span>Gender</span><strong>{currentHostel.gender}</strong></div>
@@ -719,44 +502,6 @@ export default function HostelDetailsPage() {
               </strong>
             </div>
           </div>
-
-          <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
-            <h3><i className="fa-solid fa-calendar-check" /> Book This Property</h3>
-            {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
-            {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
-            <div className="form-group">
-              <label>Check-in Date *</label>
-              <input type="date" value={bookingData.checkInDate} min={getTodayStr()}
-                onChange={e => { setBookingData(prev => ({ ...prev, checkInDate: e.target.value })); setBookingError(''); }} />
-            </div>
-            <div className="form-group">
-              <label>Duration (months) *</label>
-              <input type="number" min="1" max="12" value={bookingData.duration}
-                onChange={e => { setBookingData(prev => ({ ...prev, duration: parseInt(e.target.value) || 1 })); setBookingError(''); }} />
-            </div>
-            {priceBreakdown && (
-              <div className="price-breakdown">
-                <div className="price-row"><span>Room Rent ({bookingData.duration}m):</span><strong>MK {priceBreakdown.roomCost.toLocaleString()}</strong></div>
-                <div className="price-row"><span>Platform Fee:</span><strong>MK 2,000</strong></div>
-                <div className="price-row total"><span>Total to Pay:</span><strong>MK {priceBreakdown.totalAmount.toLocaleString()}</strong></div>
-              </div>
-            )}
-            <button type="submit" className="book-btn" disabled={bookingLoading} style={{ marginTop: '0.5rem' }}>
-              {bookingLoading
-                ? <><i className="fa fa-spinner fa-spin" /> Creating Booking...</>
-                : <><i className="fa fa-arrow-right" /> Continue to Payment</>}
-            </button>
-          </form>
-
-          {booking && (
-            <PaymentModal
-              booking={booking}
-              hostel={currentHostel}
-              isOpen={showPaymentModal}
-              onClose={() => { setShowPaymentModal(false); setShowBookingForm(false); setBookingData({ checkInDate: getTomorrowStr(), duration: 1 }); }}
-              onSuccess={handlePaymentSuccess}
-            />
-          )}
 
           <div className="owner-card">
             <div className="owner-top">

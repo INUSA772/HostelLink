@@ -58,7 +58,6 @@ app.get('/api/test', (req, res) => {
 const authRoutes         = require('./routes/authRoutes');
 const hostelRoutes       = require('./routes/hostelRoutes');
 const bookingRoutes      = require('./routes/bookingRoutes');
-const paymentRoutes      = require('./routes/paymentRoutes');
 const reviewRoutes       = require('./routes/reviewRoutes');
 const userRoutes         = require('./routes/userRoutes');
 const messageRoutes      = require('./routes/messageRoutes');
@@ -69,7 +68,6 @@ const contactAccessRoutes = require('./routes/contactAccessRoutes');
 app.use('/api/auth',          authRoutes);
 app.use('/api/hostels',       hostelRoutes);
 app.use('/api/bookings',      bookingRoutes);
-app.use('/api/payments',      paymentRoutes);
 app.use('/api/reviews',       reviewRoutes);
 app.use('/api/users',         userRoutes);
 app.use('/api/messages',      messageRoutes);

@@ -25,7 +25,6 @@ import Favorites          from '../pages/Favorites';
 import MyHostels          from '../pages/MyHostels';
 import CreateHostel       from '../pages/CreateHostel';
 import EditHostel         from '../pages/EditHostel';
-import PaymentReturn      from '../pages/PaymentReturn';
 import AdminDashboard     from '../pages/AdminDashboard';
 
 const AppRoutes = () => {
@@ -42,16 +41,6 @@ const AppRoutes = () => {
       <Route path="/contact"         element={<Contact />} />
       <Route path="/properties" element={<PropertiesPage />} />
       
-
-      {/* ── PAYMENT RETURN ── */}
-      <Route
-        path="/payment/confirm/:transactionRef"
-        element={
-          <ProtectedRoute allowedRoles={['tenant']}>
-            <PaymentReturn />
-          </ProtectedRoute>
-        }
-      />
 
       {/* ── ADMIN DASHBOARD ── */}
       <Route
