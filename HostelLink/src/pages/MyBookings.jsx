@@ -452,7 +452,7 @@ const MyBookings = () => {
     },
     {
       id: 'BK002',
-      hostelName: 'Queens Campus Hostel',
+      hostelName: 'Queens Campus Residence',
       address: 'Queens, Walking Distance',
       checkInDate: '2025-05-15',
       checkOutDate: '2025-09-15',
@@ -496,7 +496,7 @@ const MyBookings = () => {
         {/* Header */}
         <section className="bookings-header">
           <h1>My Bookings</h1>
-          <p>Manage your hostel reservations and bookings</p>
+          <p>Manage your property reservations and bookings</p>
         </section>
 
         {/* Content */}
@@ -534,12 +534,12 @@ const MyBookings = () => {
             <div className="empty-state">
               <div className="empty-state-icon"><i className="fa-solid fa-inbox"></i></div>
               <h3>No {filter !== 'all' ? filter : ''} bookings</h3>
-              <p>You don't have any {filter !== 'all' ? filter : ''} bookings yet. Start exploring hostels today!</p>
+              <p>You don't have any {filter !== 'all' ? filter : ''} bookings yet. Start exploring properties today!</p>
               <button
                 className="empty-state-btn"
-                onClick={() => navigate('/hostels')}
+                onClick={() => navigate('/properties')}
               >
-                Browse Hostels
+                Browse Properties
               </button>
             </div>
           ) : (

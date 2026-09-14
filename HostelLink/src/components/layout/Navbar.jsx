@@ -93,19 +93,6 @@ const Navbar = () => {
           cursor: default;
         }
 
-        .pn-center-brand::before {
-          content: '⬡';
-          font-size: 0.6rem;
-          margin-right: 5px;
-          color: #0d6e5e;
-          animation: navHex 6s linear infinite;
-          display: inline-block;
-        }
-
-        @keyframes navHex {
-          0%   { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
 
         .pn-center-dot {
           width: 3px; height: 3px;

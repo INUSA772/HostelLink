@@ -121,7 +121,7 @@ const PaymentConfirmation = () => {
 
           <div className="transaction-details">
             <div className="detail-row">
-              <span>Hostel:</span>
+              <span>Property:</span>
               <strong>{transaction.hostel}</strong>
             </div>
             <div className="detail-row">
@@ -155,7 +155,7 @@ const PaymentConfirmation = () => {
             <h3>Next Steps:</h3>
             <ol>
               <li>Check your email for booking confirmation details</li>
-              <li>The hostel owner will contact you to arrange move-in</li>
+              <li>The property owner will contact you to arrange move-in</li>
               <li>You can view all your bookings in your dashboard</li>
             </ol>
           </div>

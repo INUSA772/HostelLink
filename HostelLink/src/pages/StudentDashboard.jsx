@@ -294,7 +294,7 @@ const StudentDashboard = () => {
   ];
 
   const navLinks = [
-    { icon: <FaHome />,       label: 'Browse Properties', path: '/hostels'        },
+    { icon: <FaHome />,       label: 'Browse Properties', path: '/properties'        },
     { icon: <FaBookmark />,   label: 'My Bookings',       path: '/bookings'       },
     { icon: <FaEnvelope />,   label: 'Messages',          path: '/messages',      badge: statsData.messages > 0 ? statsData.messages : null },
     { icon: <FaBell />,       label: 'Notifications',     path: '/notifications', badge: statsData.notifications > 0 ? statsData.notifications : null },
@@ -304,7 +304,7 @@ const StudentDashboard = () => {
   ];
 
   const quickActions = [
-    { icon: <FaHome />,     title: 'Browse All',   sub: 'Find your next home',   path: '/hostels'    },
+    { icon: <FaHome />,     title: 'Browse All',   sub: 'Find your next home',   path: '/properties'    },
     { icon: <FaBookmark />, title: 'My Bookings',  sub: 'View your bookings',    path: '/bookings'   },
     { icon: <FaEnvelope />, title: 'Messages',     sub: statsData.messages > 0 ? `${statsData.messages} unread` : 'No new messages', path: '/messages' },
   ];
@@ -435,7 +435,7 @@ const StudentDashboard = () => {
                 <p>Discover your perfect home across Malawi</p>
               </div>
               <div className="td-banner-actions">
-                <Link to="/hostels" className="td-btn-primary"><FaSearch /> Browse Properties</Link>
+                <Link to="/properties" className="td-btn-primary"><FaSearch /> Browse Properties</Link>
                 <Link to="/messages" className="td-btn-ghost"><FaEnvelope /> Messages {statsData.messages > 0 && `(${statsData.messages})`}</Link>
               </div>
             </div>

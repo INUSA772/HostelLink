@@ -66,7 +66,7 @@ export const HostelProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await hostelService.createHostel(hostelData);
-      toast.success('Hostel created successfully!');
+      toast.success('Property created successfully!');
       return data.hostel;
     } catch (error) {
       toast.error(handleApiError(error));
@@ -81,7 +81,7 @@ export const HostelProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await hostelService.updateHostel(id, hostelData);
-      toast.success('Hostel updated successfully!');
+      toast.success('Property updated successfully!');
       setCurrentHostel(data.hostel);
       return data.hostel;
     } catch (error) {
@@ -97,7 +97,7 @@ export const HostelProvider = ({ children }) => {
     setLoading(true);
     try {
       await hostelService.deleteHostel(id);
-      toast.success('Hostel deleted successfully!');
+      toast.success('Property deleted successfully!');
       setHostels(hostels.filter(h => h._id !== id));
     } catch (error) {
       toast.error(handleApiError(error));

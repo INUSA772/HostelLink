@@ -753,8 +753,8 @@ const Messages = () => {
               <FaArrowLeft />
             </button>
             <a href="/" className="wa-header-logo">
-              <img src="/pezanyumba2.png" alt="PezaHostel" />
-              <span>PezaHostel</span>
+              <img src="/pezanyumba2.png" alt="PezaNyumba" />
+              <span>PezaNyumba</span>
             </a>
             <span className="wa-header-badge">Messages</span>
           </div>
@@ -793,7 +793,7 @@ const Messages = () => {
                 <div className="wa-empty">
                   <div className="wa-empty-ico"><i className="fa-solid fa-comment-dots"></i></div>
                   <h4>No conversations yet</h4>
-                  <p>Browse hostels and tap "Chat with Owner" to start a conversation</p>
+                  <p>Browse properties and tap "Chat with Owner" to start a conversation</p>
                 </div>
               ) : (
                 filtered.map((conv) => {
@@ -854,8 +854,8 @@ const Messages = () => {
             {!activeConv ? (
               <div className="wa-welcome">
                 <div className="wa-welcome-ico"><i className="fa-solid fa-comment-dots"></i></div>
-                <h3>PezaHostel Chats</h3>
-                <p>Send and receive messages from hostel owners and students in real time</p>
+                <h3>PezaNyumba Chats</h3>
+                <p>Send and receive messages from property owners and students in real time</p>
                 <div className="wa-welcome-hint">
                   <i className="fa-solid fa-hand-point-left"></i> Select a conversation to start chatting
                 </div>

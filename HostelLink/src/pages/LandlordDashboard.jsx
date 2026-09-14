@@ -699,7 +699,7 @@ const LandlordDashboard = () => {
   const quickActions = [
     { icon: <FaPlus />,     title: 'List Property', sub: 'Add new property',   action: () => navigate('/hostels/create') },
     { icon: <FaUser />,     title: 'My Profile',    sub: 'Account settings',   action: () => navigate('/profile')   },
-    { icon: <FaHome />,     title: 'Browse',        sub: 'See all properties', action: () => navigate('/hostels')   },
+    { icon: <FaHome />,     title: 'Browse',        sub: 'See all properties', action: () => navigate('/properties')   },
   ];
 
   const navLinks = [

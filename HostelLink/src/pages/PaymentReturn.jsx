@@ -188,14 +188,14 @@ const PaymentReturn = () => {
               <span className="pr-badge success">● Payment Confirmed</span>
               <div className="pr-title success">Booking Confirmed! <i className="fa-solid fa-circle-check"></i></div>
               <p className="pr-subtitle">
-                Your payment was successful and your hostel booking is now confirmed.
+                Your payment was successful and your property booking is now confirmed.
                 The owner has been notified.
               </p>
 
               {transaction && (
                 <div className="pr-details">
                   {[
-                    { label: 'Hostel',        value: transaction.hostel?.name },
+                    { label: 'Property',      value: transaction.hostel?.name },
                     { label: 'Amount Paid',   value: `MK ${transaction.amount?.toLocaleString()}` },
                     { label: 'Booking Status', value: <><i className="fa-solid fa-check"></i> Confirmed</> },
                     { label: 'Transaction',   value: transaction.transactionId?.slice(-12) },
@@ -235,7 +235,7 @@ const PaymentReturn = () => {
                   if (bookingId) {
                     navigate('/bookings');
                   } else {
-                    navigate('/hostels');
+                    navigate('/properties');
                   }
                 }}
               >

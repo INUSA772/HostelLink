@@ -18,9 +18,9 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
   const mailOptions = {
-    from: `"HostelLink" <${process.env.SMTP_FROM}>`,
+    from: `"PezaNyumba" <${process.env.SMTP_FROM}>`,
     to: toEmail,
-    subject: 'Reset Your HostelLink Password',
+    subject: 'Reset Your PezaNyumba Password',
     html: `
       <div style="font-family: 'Manrope', Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #f4f6fa; padding: 32px 16px;">
         <div style="background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 24px rgba(13,27,62,0.10);">
@@ -28,7 +28,7 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
           <!-- Header -->
           <div style="background: #0f1923; padding: 32px 32px 24px; text-align: center;">
             <div style="display: inline-block; background: #e8501a; border-radius: 10px; padding: 10px 18px; margin-bottom: 12px;">
-              <span style="color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">HostelLink</span>
+              <span style="color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;">PezaNyumba</span>
             </div>
             <h1 style="color: #fff; font-size: 1.3rem; font-weight: 700; margin: 0;">Password Reset Request</h1>
           </div>
@@ -37,7 +37,7 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
           <div style="padding: 32px;">
             <p style="color: #111827; font-size: 0.95rem; margin-bottom: 8px;">Hi <strong>${firstName}</strong>,</p>
             <p style="color: #4b5563; font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px;">
-              We received a request to reset your HostelLink password. Click the button below to create a new password. This link will expire in <strong>1 hour</strong>.
+              We received a request to reset your PezaNyumba password. Click the button below to create a new password. This link will expire in <strong>1 hour</strong>.
             </p>
 
             <!-- Button -->
@@ -64,7 +64,7 @@ const sendPasswordResetEmail = async (toEmail, resetToken, firstName) => {
           <!-- Footer -->
           <div style="background: #f4f6fa; padding: 16px 32px; text-align: center;">
             <p style="color: #9ca3af; font-size: 0.72rem; margin: 0;">
-              © ${new Date().getFullYear()} HostelLink · Off-Campus Accommodation · Blantyre, Malawi
+              © ${new Date().getFullYear()} PezaNyumba · Off-Campus Accommodation · Blantyre, Malawi
             </p>
           </div>
         </div>

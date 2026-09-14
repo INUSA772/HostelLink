@@ -99,12 +99,12 @@ const styles = `
   .rp-wa-same input { width: 10px; height: 10px; accent-color: var(--amber); cursor: pointer; }
 
   .rp-footer-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; align-items: center; margin-bottom: .6rem; margin-top: .25rem; }
-  .rp-captcha { border: 1.5px solid var(--border); border-radius: 8px; padding: .38rem .55rem; background: var(--off-white); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color .2s; }
+  .rp-captcha { width: 100%; font: inherit; text-align: left; color: inherit; border: 1.5px solid var(--border); border-radius: 8px; padding: .38rem .55rem; background: var(--off-white); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color .2s; }
   .rp-captcha:hover { border-color: var(--amber); }
   .rp-cap-l { display: flex; align-items: center; gap: .35rem; }
   .rp-cap-box { width: 14px; height: 14px; border: 2px solid #9ca3af; border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all .2s; flex-shrink: 0; }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .52rem; font-weight: 700; }
+  .rp-cap-box i { color: #fff; font-size: .52rem; }
   .rp-cap-txt { font-size: .65rem; font-weight: 600; color: var(--text-dark); }
   .rp-cap-note { font-size: .42rem; color: #9ca3af; text-align: right; line-height: 1.3; }
   .rp-spin { width: 10px; height: 10px; border: 2px solid #e5e7eb; border-top-color: var(--amber); border-radius: 50%; animation: rpspin .7s linear infinite; display: inline-block; }
@@ -438,16 +438,16 @@ const RegisterForm = () => {
 
             {/* Captcha + Terms */}
             <div className="rp-footer-row">
-              <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
+              <button type="button" className="rp-captcha" onClick={handleCaptcha}>
                 <div className="rp-cap-l">
-                  <div className={`rp-cap-box${captcha?' on':''}`} />
+                  <div className={`rp-cap-box${captcha?' on':''}`}>{captcha && <i className="fa-solid fa-check" />}</div>
                   {captchaLoading
                     ? <span className="rp-cap-txt"><div className="rp-spin" /> Checking…</span>
                     : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "Not a robot"}</span>
                   }
                 </div>
                 <div><i className="fa fa-shield-alt" style={{color:'var(--amber)',fontSize:'.95rem'}} /><div className="rp-cap-note">Security<br/>Check</div></div>
-              </div>
+              </button>
               <label className="rp-terms">
                 <input type="checkbox" required />
                 <span>I agree to the <Link to="/terms">Terms</Link> &amp; <Link to="/privacy">Privacy Policy</Link></span>

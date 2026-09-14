@@ -152,6 +152,7 @@ const styles = `
 
   /* ── CAPTCHA ── */
   .rp-captcha {
+    width: 100%; font: inherit; text-align: left; color: inherit;
     border: 1.5px solid var(--border); border-radius: 9px;
     padding: .5rem .75rem; background: var(--off-white);
     display: flex; align-items: center; justify-content: space-between;
@@ -165,7 +166,7 @@ const styles = `
     transition: all .2s;
   }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box.on::after { content: '✓'; color: #fff; font-size: .6rem; font-weight: 700; }
+  .rp-cap-box i { color: #fff; font-size: .6rem; }
   .rp-cap-txt { font-size: .74rem; font-weight: 600; color: var(--text-dark); }
   .rp-spin {
     width: 11px; height: 11px; border: 2px solid #e5e7eb;
@@ -433,9 +434,9 @@ const LoginForm = () => {
             </div>
 
             {/* Captcha */}
-            <div className="rp-captcha" onClick={handleCaptcha} role="button" tabIndex={0}>
+            <button type="button" className="rp-captcha" onClick={handleCaptcha}>
               <div className="rp-cap-l">
-                <div className={`rp-cap-box${captcha ? ' on' : ''}`} />
+                <div className={`rp-cap-box${captcha ? ' on' : ''}`}>{captcha && <i className="fa-solid fa-check" />}</div>
                 {captchaLoading
                   ? <span className="rp-cap-txt"><div className="rp-spin" /> Verifying…</span>
                   : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "I'm not a robot"}</span>
@@ -445,7 +446,7 @@ const LoginForm = () => {
                 <i className="fa fa-shield-alt" style={{ color: 'var(--amber)', fontSize: '1.05rem' }} />
                 <div className="rp-cap-note">Security<br />Check</div>
               </div>
-            </div>
+            </button>
 
             {/* Submit */}
             <button type="submit" className="rp-submit" disabled={loading}>

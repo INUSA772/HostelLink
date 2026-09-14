@@ -7,7 +7,6 @@ import PropertiesPage from '../pages/PropertiesPage';
 import Home               from '../pages/Home';
 import LoginForm          from '../components/auth/LoginForm';
 import RegisterForm       from '../components/auth/RegisterForm';
-import HostelListPage     from '../pages/HostelListPage';
 import HostelDetailsPage  from '../pages/HostelDetailsPage';
 
 import About              from '../pages/About';
@@ -38,7 +37,6 @@ const AppRoutes = () => {
       <Route path="/login"           element={<LoginForm />} />
       <Route path="/register"        element={<RegisterForm />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/hostels"         element={<HostelListPage />} />
       <Route path="/hostels/:id"     element={<HostelDetailsPage />} />
       <Route path="/about"           element={<About />} />
       <Route path="/contact"         element={<Contact />} />

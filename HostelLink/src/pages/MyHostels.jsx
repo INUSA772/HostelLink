@@ -45,7 +45,7 @@ const MyHostels = () => {
     setDeleting(true);
     try {
       await hostelService.deleteHostel(deleteModal.hostelId);
-      toast.success('Hostel deleted successfully!');
+      toast.success('Property deleted successfully!');
       setHostels(hostels.filter(h => h._id !== deleteModal.hostelId));
       setDeleteModal({ isOpen: false, hostelId: null, hostelName: '' });
     } catch (error) {
@@ -56,7 +56,7 @@ const MyHostels = () => {
   };
 
   if (loading) {
-    return <Loader fullScreen text="Loading your hostels..." />;
+    return <Loader fullScreen text="Loading your properties..." />;
   }
 
   return (
@@ -82,17 +82,17 @@ const MyHostels = () => {
               color: 'var(--primary-color)'
             }}>
               <FaHome style={{ marginRight: '0.5rem' }} />
-              My Hostels
+              My Properties
             </h1>
             <p style={{ color: 'var(--gray)', fontSize: 'var(--font-size-lg)' }}>
-              Manage your {hostels.length} hostel listing{hostels.length !== 1 ? 's' : ''}
+              Manage your {hostels.length} property listing{hostels.length !== 1 ? 's' : ''}
             </p>
           </div>
 
           <Link to="/hostels/create">
             <Button variant="primary" size="lg">
               <FaPlus style={{ marginRight: '0.5rem' }} />
-              Add New Hostel
+              Add New Property
             </Button>
           </Link>
         </div>
@@ -109,7 +109,7 @@ const MyHostels = () => {
               <h3 style={{ fontSize: 'var(--font-size-3xl)', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
                 {hostels.length}
               </h3>
-              <p style={{ color: 'var(--gray)', margin: 0 }}>Total Hostels</p>
+              <p style={{ color: 'var(--gray)', margin: 0 }}>Total Properties</p>
             </div>
 
             <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
@@ -135,13 +135,13 @@ const MyHostels = () => {
           </div>
         )}
 
-        {/* Hostels List */}
+        {/* Properties List */}
         {hostels.length === 0 ? (
           <EmptyState
             icon={<FaHome />}
-            title="No Hostels Yet"
-            message="You haven't listed any hostels yet. Start by adding your first hostel property."
-            actionText="Add Your First Hostel"
+            title="No Properties Yet"
+            message="You haven't listed any properties yet. Start by adding your first property."
+            actionText="Add Your First Property"
             actionLink="/hostels/create"
           />
         ) : (
@@ -318,7 +318,7 @@ const MyHostels = () => {
       <Modal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, hostelId: null, hostelName: '' })}
-        title="Delete Hostel"
+        title="Delete Property"
         footer={
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
             <Button

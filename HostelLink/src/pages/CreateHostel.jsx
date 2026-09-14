@@ -19,12 +19,12 @@ const MALAWI_DISTRICTS = [
 ];
 
 const PROPERTY_TYPES = [
-  { value: 'House',              label: 'House' },
-  { value: 'Flat/Apartment',   label: 'Bedsitter' },
-  { value: 'Single Room',      label: 'Single Room' },
-  { value: 'Self-Contained',   label: 'Self-Contained' },
-  { value: 'Plot of Land',      label: 'Plot of Land' },
-  { value: 'Commercial Space',  label: 'Commercial Space' },
+  { value: 'House',             label: 'House',           icon: 'fa-solid fa-house' },
+  { value: 'Flat/Apartment',    label: 'Bedsitter',        icon: 'fa-solid fa-building' },
+  { value: 'Single Room',       label: 'Single Room',      icon: 'fa-solid fa-door-closed' },
+  { value: 'Self-Contained',    label: 'Self-Contained',   icon: 'fa-solid fa-house-chimney' },
+  { value: 'Plot of Land',      label: 'Plot of Land',     icon: 'fa-solid fa-map' },
+  { value: 'Commercial Space',  label: 'Commercial Space', icon: 'fa-solid fa-shop' },
 ];
 
 const HOUSE_AMENITIES = [
@@ -480,7 +480,7 @@ const CreateProperty = () => {
                   className={`cp-type-pill${form.propertyType === pt.value ? ' active' : ''}`}
                   onClick={() => set('propertyType', pt.value)}
                 >
-                  <span className="cp-type-pill-icon">{pt.icon}</span>
+                  <span className="cp-type-pill-icon"><i className={pt.icon} /></span>
                   <span>{pt.label}</span>
                 </button>
               ))}

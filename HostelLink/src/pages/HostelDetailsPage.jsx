@@ -379,7 +379,7 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div><span className="hd-bar-logo-text">PezaNyumba</span></Link>
         <div />
       </nav>
       <div className="hd-center"><div className="hd-spinner" /><p style={{ color: '#4b5563' }}>Loading...</p></div>
@@ -391,13 +391,13 @@ export default function HostelDetailsPage() {
       <style>{styles}</style>
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
-        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div><span className="hd-bar-logo-text">PezaHostel</span></Link>
+        <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div><span className="hd-bar-logo-text">PezaNyumba</span></Link>
         <div />
       </nav>
       <div className="hd-center">
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><i className="fa-solid fa-house" /></div>
-        <p className="hd-error">Hostel not found.</p>
-        <button className="hd-bar-btn hd-bar-btn-solid" style={{ margin: '0 auto', display: 'inline-flex' }} onClick={() => navigate('/hostels')}>Browse All Hostels</button>
+        <p className="hd-error">Property not found.</p>
+        <button className="hd-bar-btn hd-bar-btn-solid" style={{ margin: '0 auto', display: 'inline-flex' }} onClick={() => navigate('/properties')}>Browse All Properties</button>
       </div>
     </>
   );
@@ -406,7 +406,8 @@ export default function HostelDetailsPage() {
   const prevImg = () => setImgIndex(p => (p - 1 + images.length) % images.length);
   const nextImg = () => setImgIndex(p => (p + 1) % images.length);
   const rating = currentHostel.averageRating || 4.5;
-  const starsStr = '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
   const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(currentHostel.address || currentHostel.name)}&output=embed`;
   const rooms = currentHostel.rooms || [];
   const totalBedspaces = rooms.reduce((a, r) => a + (r.totalBedspaces || 0), 0);
@@ -509,8 +510,8 @@ export default function HostelDetailsPage() {
       <nav className="hd-bar">
         <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
         <Link to="/" className="hd-bar-logo">
-          <div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaHostel" /></div>
-          <span className="hd-bar-logo-text">PezaHostel</span>
+          <div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
+          <span className="hd-bar-logo-text">PezaNyumba</span>
         </Link>
         <div className="hd-bar-right">
           <Link to="/about" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-info-circle" /> About</Link>
@@ -570,7 +571,11 @@ export default function HostelDetailsPage() {
             <div className="detail-name">{currentHostel.name}</div>
             <div className="detail-location"><i className="fa fa-map-marker-alt" /> {currentHostel.address}</div>
             <div className="detail-rating">
-              <span className="stars-gold">{starsStr}</span>
+              <span className="stars-gold">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <i key={i} className={i < fullStars ? 'fa-solid fa-star' : (i === fullStars && hasHalfStar ? 'fa-solid fa-star-half-stroke' : 'fa-regular fa-star')} />
+                ))}
+              </span>
               <span className="rating-count">{rating.toFixed(1)} · {currentHostel.reviewCount || 0} reviews</span>
               {currentHostel.verified && (
                 <span style={{ marginLeft: '0.5rem', background: 'rgba(34,197,94,0.12)', color: '#22c55e', fontSize: '0.78rem', fontWeight: 700, padding: '2px 8px', borderRadius: '20px' }}>
@@ -598,7 +603,7 @@ export default function HostelDetailsPage() {
                 </div>
               ))}
             </div>
-            <p className="section-heading">About this Hostel</p>
+            <p className="section-heading">About this Property</p>
             <p className="detail-desc">{currentHostel.description}</p>
             {currentHostel.amenities?.length > 0 && (
               <>
@@ -663,7 +668,7 @@ export default function HostelDetailsPage() {
           {/* MAP */}
           <div className="map-card">
             <h3><i className="fa fa-map-marked-alt" style={{ color: 'var(--teal-mid)', marginRight: '0.4rem' }} /> Location on Map</h3>
-            <iframe className="map-embed" title="Hostel Location" src={mapEmbedUrl} allowFullScreen loading="lazy" />
+            <iframe className="map-embed" title="Property Location" src={mapEmbedUrl} allowFullScreen loading="lazy" />
             <div className="map-address"><i className="fa fa-map-marker-alt" /><span>{currentHostel.address}</span></div>
           </div>
 
@@ -684,7 +689,7 @@ export default function HostelDetailsPage() {
             )}
             {isAuthenticated && user?.role === 'owner' && (
               <div style={{ background: 'var(--teal-pale)', borderRadius: 8, padding: '0.75rem', textAlign: 'center', fontSize: '0.85rem', color: '#4b5563', fontWeight: 600 }}>
-                Only students can book hostels
+                Only students can book properties
               </div>
             )}
             {isAuthenticated && user?.role === 'student' && (
@@ -716,7 +721,7 @@ export default function HostelDetailsPage() {
           </div>
 
           <form className={`booking-form-container${showBookingForm ? ' open' : ''}`} onSubmit={handleCreateBooking}>
-            <h3><i className="fa-solid fa-calendar-check" /> Book This Hostel</h3>
+            <h3><i className="fa-solid fa-calendar-check" /> Book This Property</h3>
             {bookingError && <div className="form-error"><i className="fa fa-exclamation-circle" /> {bookingError}</div>}
             {bookingSuccess && <div className="form-success"><i className="fa fa-check-circle" /> {bookingSuccess}</div>}
             <div className="form-group">
@@ -759,7 +764,7 @@ export default function HostelDetailsPage() {
               <div>
                 <div className="owner-info-role">Listed by</div>
                 <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
-                <div className="owner-online"><div className="owner-dot" /> Active on PezaHostel</div>
+                <div className="owner-online"><div className="owner-dot" /> Active on PezaNyumba</div>
               </div>
             </div>
             <div className="owner-btns">
@@ -800,7 +805,7 @@ export default function HostelDetailsPage() {
           </div>
 
           <button
-            onClick={() => toast.info('Thank you for helping keep PezaHostel safe.')}
+            onClick={() => toast.info('Thank you for helping keep PezaNyumba safe.')}
             style={{ width: '100%', padding: '0.65rem', background: 'transparent', border: '1px solid var(--gray-light)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', fontFamily: 'Manrope, sans-serif' }}
           >
             <i className="fa fa-flag" /> Report this listing

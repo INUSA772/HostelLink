@@ -322,7 +322,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
                   <div className="pm-section-title">Booking Summary</div>
                   <div className="pm-summary-card">
                     {[
-                      { label: 'Hostel',     value: hostel.name },
+                      { label: 'Property',   value: hostel.name },
                       { label: 'Room Type',  value: hostel.type },
                       { label: 'Check-in',   value: new Date(booking.checkInDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) },
                       { label: 'Duration',   value: `${booking.duration} month${booking.duration !== 1 ? 's' : ''}` },
@@ -354,7 +354,7 @@ const PaymentModal = ({ booking, hostel, isOpen, onClose, onSuccess }) => {
                         <span className="amount">MK {breakdown.totalAmount.toLocaleString()}</span>
                       </div>
                       <p className="pm-fee-note">
-                        <i className="fa-regular fa-lightbulb" /> The MK 2,000 platform fee protects both students and hostel owners from fraud.
+                        <i className="fa-regular fa-lightbulb" /> The MK 2,000 platform fee protects both students and property owners from fraud.
                       </p>
                     </div>
                   </div>

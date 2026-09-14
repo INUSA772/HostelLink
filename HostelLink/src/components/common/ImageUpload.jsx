@@ -115,7 +115,7 @@ const ImageUpload = ({ images, onImagesChange, maxImages = 10 }) => {
         color: '#4b5563', textTransform: 'uppercase',
         letterSpacing: '0.5px', marginBottom: '0.5rem'
       }}>
-        Hostel Images {images.length > 0 && `(${images.length}/${maxImages})`}
+        Property Images {images.length > 0 && `(${images.length}/${maxImages})`}
       </label>
 
       {images.length < maxImages && (
@@ -192,7 +192,7 @@ const ImageUpload = ({ images, onImagesChange, maxImages = 10 }) => {
             }}>
               <img
                 src={imageUrl}
-                alt={`Hostel ${index + 1}`}
+                alt={`Property ${index + 1}`}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
               <button

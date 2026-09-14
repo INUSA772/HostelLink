@@ -109,7 +109,7 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
 
 /* ═══════════════════════════════════════
    PROPERTY CARD
-   ★ Description with "Show more / Show less"
+   Description with "Show more / Show less"
 ═══════════════════════════════════════ */
 function PropertyCard({ property }) {
   const p = normalise(property);

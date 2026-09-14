@@ -510,9 +510,9 @@ const Contact = () => {
                   <a href="/about" style={{ fontSize: '0.9rem', color: 'var(--orange)', fontWeight: '600' }}
                     onMouseEnter={(e) => (e.target.style.opacity = '0.8')}
                     onMouseLeave={(e) => (e.target.style.opacity = '1')}>→ About Us</a>
-                  <a href="/hostels" style={{ fontSize: '0.9rem', color: 'var(--orange)', fontWeight: '600' }}
+                  <a href="/properties" style={{ fontSize: '0.9rem', color: 'var(--orange)', fontWeight: '600' }}
                     onMouseEnter={(e) => (e.target.style.opacity = '0.8')}
-                    onMouseLeave={(e) => (e.target.style.opacity = '1')}>→ Browse Hostels</a>
+                    onMouseLeave={(e) => (e.target.style.opacity = '1')}>→ Browse Properties</a>
                   <a href="/register" style={{ fontSize: '0.9rem', color: 'var(--orange)', fontWeight: '600' }}
                     onMouseEnter={(e) => (e.target.style.opacity = '0.8')}
                     onMouseLeave={(e) => (e.target.style.opacity = '1')}>→ Create Account</a>

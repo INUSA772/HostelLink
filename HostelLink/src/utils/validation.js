@@ -95,7 +95,7 @@ export const registerSchema = Yup.object().shape({
 // Hostel Schema
 export const hostelSchema = Yup.object().shape({
   name: Yup.string()
-    .min(5, 'Hostel name must be at least 5 characters')
+    .min(5, 'Property name must be at least 5 characters')
     .required(VALIDATION_MESSAGES.REQUIRED),
   description: Yup.string()
     .min(20, 'Description must be at least 20 characters')

@@ -218,9 +218,9 @@ const ForgotPassword = () => {
         {/* TOPBAR */}
         <nav className="rp-bar">
           <Link to="/" className="rp-bar-logo">
-            <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="HostelLink" /></div>
+            <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
             <div className="rp-bar-brand">
-              <strong>HOSTELLINK</strong>
+              <strong>PEZANYUMBA</strong>
               <span>OFF-CAMPUS ACCOMODATION</span>
             </div>
           </Link>
@@ -272,9 +272,9 @@ const ForgotPassword = () => {
       {/* TOPBAR */}
       <nav className="rp-bar">
         <Link to="/" className="rp-bar-logo">
-          <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="HostelLink" /></div>
+          <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
           <div className="rp-bar-brand">
-            <strong>HOSTELLINK</strong>
+            <strong>PEZANYUMBA</strong>
             <span>OFF-CAMPUS ACCOMODATION</span>
           </div>
         </Link>
