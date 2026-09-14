@@ -40,7 +40,9 @@ app.use(cors({
   origin: ALLOWED_ORIGINS,
   credentials: true,
 }));
-app.use(express.json({ limit: '10mb' }));
+// Capture the raw request body alongside the parsed one — needed to verify
+// PayChangu's webhook signature, which is an HMAC over the exact raw bytes.
+app.use(express.json({ limit: '10mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 

@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const Transaction = require('../models/Transaction');
 const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
+const verifyPaychanguWebhook = require('../utils/verifyPaychanguWebhook');
 
 const PAYCHANGU_API = process.env.PAYCHANGU_API_BASE || 'https://api.paychangu.com';
 const PLATFORM_FEE = 2000;
@@ -185,13 +186,24 @@ exports.initiatePayment = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.handleWebhook = async (req, res) => {
   try {
-    const { tx_ref } = req.body;
-
-    if (!tx_ref) {
-      return res.status(400).json({ success: false, message: 'Missing tx_ref' });
+    // Once PAYCHANGU_WEBHOOK_SECRET is configured, reject anything that isn't
+    // genuinely signed by PayChangu. Until then, fall back on the re-verify
+    // step below (which independently confirms status with PayChangu's own
+    // API) so this still works correctly during setup.
+    if (process.env.PAYCHANGU_WEBHOOK_SECRET && !verifyPaychanguWebhook(req)) {
+      console.warn('[PAYMENT WEBHOOK] Invalid signature — rejected');
+      return res.status(401).json({ success: false, message: 'Invalid signature' });
     }
 
-    const transaction = await Transaction.findOne({ transactionId: tx_ref });
+    const tx_ref = req.body.tx_ref || req.body.reference || req.body.charge_id;
+
+    if (!tx_ref) {
+      return res.status(400).json({ success: false, message: 'Missing transaction reference' });
+    }
+
+    const transaction = await Transaction.findOne({
+      $or: [{ transactionId: tx_ref }, { paychanguReference: tx_ref }],
+    });
     if (!transaction) {
       return res.status(404).json({ success: false, message: 'Transaction not found' });
     }
