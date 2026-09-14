@@ -75,7 +75,7 @@ const styles = `
     border-radius: 9px; padding: 0.5rem 1rem;
     font-size: 0.82rem; font-weight: 700; cursor: pointer;
     font-family: var(--font); transition: all .2s;
-    backdrop-filter: blur(8px);
+
   }
   .prof-cover-edit-btn:hover { background: rgba(255,255,255,0.2); }
 

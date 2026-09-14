@@ -409,7 +409,7 @@ const styles = `
     background: rgba(15,25,35,.65);
     z-index: 1000; display: flex;
     align-items: center; justify-content: center;
-    padding: 1rem; backdrop-filter: blur(6px);
+    padding: 1rem;
   }
   .a-modal {
     background: white; border-radius: var(--radius-lg);

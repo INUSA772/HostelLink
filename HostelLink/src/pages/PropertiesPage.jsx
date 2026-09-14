@@ -408,7 +408,7 @@ const styles = `
     background: rgba(0,0,0,.55); border-radius: 8px; color: white;
     font-size: .7rem; font-weight: 700; padding: 4px 9px;
     display: flex; align-items: center; gap: 4px; z-index: 1;
-    backdrop-filter: blur(4px);
+
   }
   .pp-img-hint {
     position: absolute; inset: 0; display: flex; align-items: center;
@@ -506,7 +506,7 @@ const styles = `
     background: rgba(255,255,255,.15); color: white; font-size: 1rem;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s; z-index: 2; border: none;
-    backdrop-filter: blur(4px);
+
   }
   .pp-lb-nav:hover { background: rgba(255,255,255,.3); }
   .pp-lb-prev { left: 12px; }

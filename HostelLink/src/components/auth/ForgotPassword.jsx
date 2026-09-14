@@ -43,7 +43,7 @@ const styles = `
     justify-content: space-between;
     padding: 0 2rem;
     background: rgba(8, 18, 48, 0.97);
-    backdrop-filter: blur(8px);
+
     box-shadow: 0 2px 18px rgba(0,0,0,0.4);
   }
   .rp-bar-logo {

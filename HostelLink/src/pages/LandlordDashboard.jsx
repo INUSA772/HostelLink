@@ -92,7 +92,7 @@ const styles = `
   .ld-hamburger:hover { background: rgba(255,255,255,0.1); }
 
   /* ── OVERLAY ── */
-  .ld-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; backdrop-filter: blur(2px); }
+  .ld-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; }
   .ld-overlay.open { display: block; }
 
   /* ── DRAWER ── */
@@ -362,7 +362,7 @@ const styles = `
     position: absolute; top: 0.75rem; left: 0.75rem;
     display: inline-flex; align-items: center; gap: 0.3rem;
     padding: 0.3rem 0.75rem; border-radius: 20px;
-    font-size: 0.7rem; font-weight: 700; backdrop-filter: blur(8px);
+    font-size: 0.7rem; font-weight: 700;
   }
   .ld-hcard-status.verified { background: rgba(5,150,105,0.88); color: white; }
   .ld-hcard-status.pending  { background: rgba(245,166,35,0.9); color: var(--navy); }
@@ -374,7 +374,7 @@ const styles = `
   .ld-hcard-act-btn {
     width: 34px; height: 34px; border-radius: 8px; border: none;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 0.82rem; transition: var(--transition); backdrop-filter: blur(8px);
+    font-size: 0.82rem; transition: var(--transition);
   }
   .ld-hcard-act-btn.view { background: rgba(255,255,255,0.92); color: var(--navy); }
   .ld-hcard-act-btn.edit { background: rgba(15,25,35,0.88); color: white; }
@@ -445,7 +445,7 @@ const styles = `
   .ld-modal-backdrop {
     position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
     display: flex; align-items: center; justify-content: center;
-    padding: 1rem; backdrop-filter: blur(3px);
+    padding: 1rem;
   }
   .ld-modal {
     background: white; border-radius: 18px; padding: 2rem;

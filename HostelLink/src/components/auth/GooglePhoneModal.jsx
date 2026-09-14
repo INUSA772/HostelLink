@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const styles = `
   .gpm-overlay {
     position: fixed; inset: 0; z-index: 1000;
-    background: rgba(15,25,35,.7); backdrop-filter: blur(4px);
+    background: rgba(15,25,35,.7);
     display: flex; align-items: center; justify-content: center;
     padding: 1rem;
   }

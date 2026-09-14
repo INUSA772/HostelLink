@@ -624,7 +624,7 @@ const styles = `
   .ph-lightbox-close:hover { background:#dc2626; color:white; }
   .ph-lightbox-main { position:relative; flex:1; display:flex; align-items:center; justify-content:center; background:#000; min-height:0; overflow:hidden; }
   .ph-lightbox-img { max-width:100%; max-height:55vh; object-fit:contain; display:block; }
-  .ph-lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.15); border:none; color:white; font-size:1rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; z-index:2; backdrop-filter:blur(4px); }
+  .ph-lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.15); border:none; color:white; font-size:1rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s; z-index:2; }
   .ph-lightbox-nav:hover { background:rgba(255,255,255,.3); }
   .ph-lightbox-prev { left:8px; } .ph-lightbox-next { right:8px; }
   .ph-lightbox-thumbs { display:flex; gap:6px; padding:.75rem 1rem; background:#1a1a1a; overflow-x:auto; flex-shrink:0; }
@@ -841,7 +841,7 @@ const styles = `
       display: flex; flex-direction: column; align-items: flex-start;
       gap: .45rem; box-shadow: 0 8px 28px rgba(0,0,0,.12);
       border: 1px solid rgba(255,255,255,.8);
-      background: rgba(255,255,255,.95); backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.95);
       flex-shrink: 0;
     }
     .ph-anim-card.with-image { padding: 0; }
@@ -975,7 +975,7 @@ const styles = `
   /* ══════════════════════════════
      BROWSE DRAWER
   ══════════════════════════════ */
-  .ph-browse-overlay { position: fixed; inset: 0; background: rgba(15,25,35,.65); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); animation: fadeIn .25s ease; }
+  .ph-browse-overlay { position: fixed; inset: 0; background: rgba(15,25,35,.65); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn .25s ease; }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   .ph-browse-drawer { background: white; width: 100%; max-width: 1100px; max-height: 92vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; animation: slideUp .3s cubic-bezier(.34,1.56,.64,1); overflow: hidden; }
   @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
@@ -1024,11 +1024,11 @@ const styles = `
     font-size: .62rem; font-weight: 800;
     padding: 3px 9px; border-radius: 20px;
     display: flex; align-items: center; gap: 4px;
-    backdrop-filter: blur(4px); z-index: 2;
+ z-index: 2;
     letter-spacing: .2px;
   }
   .ph-prop-verified-badge i { font-size: .58rem; }
-  .ph-prop-img-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.55); border-radius: 8px; color: white; font-size: .7rem; font-weight: 700; padding: 4px 9px; display: flex; align-items: center; gap: 4px; z-index: 1; backdrop-filter: blur(4px); }
+  .ph-prop-img-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.55); border-radius: 8px; color: white; font-size: .7rem; font-weight: 700; padding: 4px 9px; display: flex; align-items: center; gap: 4px; z-index: 1; }
   .ph-prop-body { padding: 1rem; flex: 1; }
   .ph-prop-name { font-size: .95rem; font-weight: 800; color: var(--navy); margin-bottom: .3rem; line-height: 1.3; }
   .ph-prop-loc { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }

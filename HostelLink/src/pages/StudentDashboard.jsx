@@ -67,7 +67,7 @@ const styles = `
   .td-hamburger:hover { background: rgba(255,255,255,0.1); }
 
   /* ── LAYOUT ── */
-  .td-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; backdrop-filter: blur(2px); }
+  .td-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; }
   .td-overlay.open { display: block; }
 
   .td-page { padding-top: var(--nav-h); display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
@@ -159,7 +159,7 @@ const styles = `
   .td-prop-card:hover .td-prop-img img { transform: scale(1.06); }
   .td-prop-no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--teal-mid); opacity: 0.4; }
   .td-prop-badges { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
-  .td-prop-badge { font-size: 0.67rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; backdrop-filter: blur(6px); }
+  .td-prop-badge { font-size: 0.67rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
   .td-badge-verified { background: rgba(5,150,105,0.9); color: white; }
   .td-badge-price    { background: rgba(13,74,64,0.88); color: white; }
   .td-badge-rooms    { background: rgba(34,197,94,0.88); color: white; }
