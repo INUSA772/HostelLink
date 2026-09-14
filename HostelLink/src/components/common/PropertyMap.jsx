@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -16,6 +17,11 @@ L.Marker.prototype.options.icon = L.icon({
 
 export default function PropertyMap({ lat, lng, name, address }) {
   const hasPosition = typeof lat === 'number' && typeof lng === 'number' && !(lat === 0 && lng === 0);
+  // Stable array reference so react-leaflet doesn't re-center/reset the map
+  // (visible as flicker) on every parent re-render when lat/lng haven't
+  // actually changed value.
+  const position = useMemo(() => [lat, lng], [lat, lng]);
+
   if (!hasPosition) return null;
 
   const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
@@ -23,12 +29,12 @@ export default function PropertyMap({ lat, lng, name, address }) {
   return (
     <div>
       <div style={{ borderRadius: 12, overflow: 'hidden', border: '1.5px solid #e2ede9', height: 260 }}>
-        <MapContainer center={[lat, lng]} zoom={15} style={{ width: '100%', height: '100%' }} scrollWheelZoom={false}>
+        <MapContainer center={position} zoom={15} style={{ width: '100%', height: '100%' }} scrollWheelZoom={false}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[lat, lng]}>
+          <Marker position={position}>
             <Popup>{name || address}</Popup>
           </Marker>
         </MapContainer>

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useMemo } from 'react';
 import bookingService from '../services/bookingService';
 import { toast } from 'react-toastify';
 import { handleApiError } from '../utils/helpers';
@@ -137,7 +137,7 @@ export const BookingProvider = ({ children }) => {
     }
   };
 
-  const value = {
+  const value = useMemo(() => ({
     bookings,
     currentBooking,
     loading,
@@ -149,7 +149,11 @@ export const BookingProvider = ({ children }) => {
     confirmMoveIn,
     fetchHostelBookings,
     setCurrentBooking
-  };
+    // Action functions are plain re-declarations each render (not wrapped in
+    // useCallback) but always close over the same stable setters, so they're
+    // safe to omit here — including them would defeat the memoization above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [bookings, currentBooking, loading]);
 
   return <BookingContext.Provider value={value}>{children}</BookingContext.Provider>;
 };

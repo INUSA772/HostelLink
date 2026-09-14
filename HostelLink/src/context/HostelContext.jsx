@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useMemo } from 'react';
 import hostelService from '../services/hostelService';
 import { toast } from 'react-toastify';
 import { handleApiError } from '../utils/helpers';
@@ -133,7 +133,11 @@ export const HostelProvider = ({ children }) => {
     setFilters({ ...filters, page });
   };
 
-  const value = {
+  // Memoized so consumers only re-render when the actual data changes, not on
+  // every render of this provider (an unmemoized object literal here was
+  // causing every useHostel() consumer — including property detail pages with
+  // an embedded map — to re-render constantly, which made the map flicker).
+  const value = useMemo(() => ({
     hostels,
     currentHostel,
     loading,
@@ -148,7 +152,11 @@ export const HostelProvider = ({ children }) => {
     resetFilters,
     changePage,
     setCurrentHostel
-  };
+    // Action functions are plain re-declarations each render (not wrapped in
+    // useCallback) but always close over the same stable setters, so they're
+    // safe to omit here — including them would defeat the memoization above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [hostels, currentHostel, loading, filters, pagination]);
 
   return <HostelContext.Provider value={value}>{children}</HostelContext.Provider>;
 };

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import authService from '../services/authService';
 import { storage } from '../utils/helpers';
 
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     storage.set('user', updatedUser);
   };
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     token,
     loading,
@@ -92,7 +92,11 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     getDashboardUrl,
-  };
+    // Action functions are plain re-declarations each render (not wrapped in
+    // useCallback) but always close over the same stable setters, so they're
+    // safe to omit here — including them would defeat the memoization above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [user, token, loading, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={value}>
