@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import userService from '../../services/userService';
+import {
+  FaIdCard,
+  FaFileInvoice,
+  FaCircleCheck,
+  FaHourglassHalf,
+  FaCircleXmark,
+  FaShieldHalved,
+  FaTriangleExclamation,
+  FaCheck,
+  FaSpinner,
+  FaPaperPlane,
+} from 'react-icons/fa6';
 
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`;
 const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
@@ -43,9 +55,9 @@ const styles = `
 `;
 
 const SLOTS = [
-  { key: 'idFrontUrl', label: 'National ID — Front', icon: 'fa-id-card' },
-  { key: 'idBackUrl', label: 'National ID — Back', icon: 'fa-id-card' },
-  { key: 'waterBillUrl', label: 'Water Bill', icon: 'fa-file-invoice' },
+  { key: 'idFrontUrl', label: 'National ID — Front', icon: FaIdCard },
+  { key: 'idBackUrl', label: 'National ID — Back', icon: FaIdCard },
+  { key: 'waterBillUrl', label: 'Water Bill', icon: FaFileInvoice },
 ];
 
 export default function OwnerVerificationCard() {

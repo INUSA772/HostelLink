@@ -5,6 +5,14 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import PropertyMap from '../components/common/PropertyMap';
 import ContactButtons from '../components/payment/ContactButtons';
+import {
+  FaChevronLeft, FaChevronRight, FaBed, FaDoorOpen, FaBan, FaArrowLeft, FaHouse,
+  FaCircleInfo, FaPhone, FaBookmark, FaTableCellsLarge, FaImage, FaHeart, FaRegHeart,
+  FaShareNodes, FaLocationDot, FaStar, FaStarHalfStroke, FaRegStar, FaCircleCheck,
+  FaVenusMars, FaEye, FaWifi, FaDroplet, FaBolt, FaShieldHalved, FaVideo, FaCar,
+  FaUtensils, FaShirt, FaBook, FaUsers, FaCouch, FaWind, FaShower, FaCheck,
+  FaCircleXmark, FaMapLocationDot, FaRegUser, FaCommentDots, FaWhatsapp, FaEnvelope, FaFlag,
+} from 'react-icons/fa6';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -166,11 +174,11 @@ const styles = `
 `;
 
 const AMENITY_ICONS = {
-  'WiFi': 'fa-wifi', 'Water 24/7': 'fa-tint', 'Electricity Backup': 'fa-bolt',
-  'Security Guard': 'fa-shield-alt', 'CCTV': 'fa-video', 'Parking': 'fa-car',
-  'Kitchen': 'fa-utensils', 'Laundry': 'fa-tshirt', 'Study Room': 'fa-book',
-  'Common Area': 'fa-users', 'Furniture Included': 'fa-couch',
-  'Air Conditioning': 'fa-wind', 'Hot Shower': 'fa-shower',
+  'WiFi': FaWifi, 'Water 24/7': FaDroplet, 'Electricity Backup': FaBolt,
+  'Security Guard': FaShieldHalved, 'CCTV': FaVideo, 'Parking': FaCar,
+  'Kitchen': FaUtensils, 'Laundry': FaShirt, 'Study Room': FaBook,
+  'Common Area': FaUsers, 'Furniture Included': FaCouch,
+  'Air Conditioning': FaWind, 'Hot Shower': FaShower,
 };
 
 
