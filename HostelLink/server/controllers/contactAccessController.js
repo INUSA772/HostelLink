@@ -18,6 +18,7 @@ exports.getPublicSettings = async (req, res) => {
       data: {
         enabled: settings.contactAccessPaymentEnabled,
         fee: settings.contactAccessFee,
+        ownerVerificationEnabled: settings.ownerVerificationEnabled,
       },
     });
   } catch (error) {

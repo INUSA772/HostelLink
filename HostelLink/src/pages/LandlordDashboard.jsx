@@ -9,6 +9,7 @@ import {
   FaSpinner, FaExclamationTriangle, FaSync, FaChartLine,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import OwnerVerificationCard from '../components/verification/OwnerVerificationCard';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -818,6 +819,8 @@ const LandlordDashboard = () => {
         </div>
 
         <div className="ld-main">
+          <OwnerVerificationCard />
+
           {error && (
             <div className="ld-error-box">
               <FaExclamationTriangle size={18} style={{ flexShrink: 0 }} />

@@ -121,7 +121,7 @@ exports.getAdminStats = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find({ role: { $ne: 'admin' } })
-      .select('firstName lastName email phone role isActive createdAt verified verificationStatus whatsapp')
+      .select('firstName lastName email phone role isActive createdAt verified verificationStatus whatsapp verificationDocuments verificationSubmittedAt verificationRejectionReason')
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit) || 200);
     res.json({ success: true, users });
@@ -135,7 +135,7 @@ exports.getUsers = async (req, res) => {
 // @route PATCH /api/admin/users/:id/verify
 exports.verifyUser = async (req, res) => {
   try {
-    const { action } = req.body;
+    const { action, reason } = req.body;
     if (!['approve', 'reject'].includes(action)) {
       return res.status(400).json({ success: false, message: 'Action must be approve or reject' });
     }
@@ -145,6 +145,7 @@ exports.verifyUser = async (req, res) => {
 
     user.verificationStatus = action === 'approve' ? 'verified' : 'rejected';
     user.verified           = action === 'approve';
+    user.verificationRejectionReason = action === 'reject' ? (reason || '') : '';
     await user.save({ validateBeforeSave: false });
 
     res.json({ success: true, message: action === 'approve' ? 'User verified' : 'User rejected', user });
@@ -245,6 +246,7 @@ exports.getSettings = async (req, res) => {
       data: {
         contactAccessPaymentEnabled: settings.contactAccessPaymentEnabled,
         contactAccessFee: settings.contactAccessFee,
+        ownerVerificationEnabled: settings.ownerVerificationEnabled,
       },
     });
   } catch (error) {
@@ -257,7 +259,7 @@ exports.getSettings = async (req, res) => {
 // @route PATCH /api/admin/settings
 exports.updateSettings = async (req, res) => {
   try {
-    const { contactAccessPaymentEnabled, contactAccessFee } = req.body;
+    const { contactAccessPaymentEnabled, contactAccessFee, ownerVerificationEnabled } = req.body;
     const settings = await Settings.getSingleton();
 
     if (contactAccessPaymentEnabled !== undefined) {
@@ -269,6 +271,9 @@ exports.updateSettings = async (req, res) => {
       }
       settings.contactAccessFee = Number(contactAccessFee);
     }
+    if (ownerVerificationEnabled !== undefined) {
+      settings.ownerVerificationEnabled = !!ownerVerificationEnabled;
+    }
 
     await settings.save();
     res.json({
@@ -276,6 +281,7 @@ exports.updateSettings = async (req, res) => {
       data: {
         contactAccessPaymentEnabled: settings.contactAccessPaymentEnabled,
         contactAccessFee: settings.contactAccessFee,
+        ownerVerificationEnabled: settings.ownerVerificationEnabled,
       },
     });
   } catch (error) {

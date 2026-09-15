@@ -17,6 +17,10 @@ const settingsSchema = new mongoose.Schema(
       default: 500,
       min: 0,
     },
+    ownerVerificationEnabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

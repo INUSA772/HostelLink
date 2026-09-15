@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Hostel = require('../models/Hostel');
+const Settings = require('../models/Settings');
 const { v2: cloudinary } = require('cloudinary');
 const streamifier = require('streamifier');
 
@@ -242,6 +243,69 @@ exports.deleteAccount = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+// ── SUBMIT OWNER VERIFICATION DOCUMENTS ───────────
+// Images are uploaded directly to Cloudinary from the frontend (same
+// pattern as property photos); this endpoint just records the resulting
+// URLs and moves the account into the review queue.
+exports.submitVerification = async (req, res) => {
+  try {
+    if (!['landlord', 'land_seller'].includes(req.user.role)) {
+      return res.status(403).json({ success: false, message: 'Only property owners can submit verification documents' });
+    }
+
+    const settings = await Settings.getSingleton();
+    if (!settings.ownerVerificationEnabled) {
+      return res.status(400).json({ success: false, message: 'Owner verification is not currently enabled' });
+    }
+
+    const { idFrontUrl, idBackUrl, waterBillUrl } = req.body;
+    if (!idFrontUrl || !idBackUrl || !waterBillUrl) {
+      return res.status(400).json({ success: false, message: 'ID front, ID back, and water bill are all required' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: {
+          verificationDocuments: { idFrontUrl, idBackUrl, waterBillUrl },
+          verificationStatus: 'pending',
+          verificationSubmittedAt: new Date(),
+          verificationRejectionReason: '',
+        },
+      },
+      { new: true }
+    ).select('-password');
+
+    res.json({ success: true, message: 'Documents submitted — an admin will review them shortly', user });
+  } catch (error) {
+    console.error('submitVerification error:', error);
+    res.status(500).json({ success: false, message: 'Server error submitting verification documents' });
+  }
+};
+
+// ── GET OWN VERIFICATION STATUS ───────────────────
+exports.getVerificationStatus = async (req, res) => {
+  try {
+    const settings = await Settings.getSingleton();
+    const user = await User.findById(req.user._id)
+      .select('verificationStatus verificationDocuments verificationSubmittedAt verificationRejectionReason');
+
+    res.json({
+      success: true,
+      data: {
+        enabled: settings.ownerVerificationEnabled,
+        status: user.verificationStatus,
+        documents: user.verificationDocuments,
+        submittedAt: user.verificationSubmittedAt,
+        rejectionReason: user.verificationRejectionReason,
+      },
+    });
+  } catch (error) {
+    console.error('getVerificationStatus error:', error);
+    res.status(500).json({ success: false, message: 'Server error fetching verification status' });
+  }
+};
+
 // ── UPDATE PHONE ──────────────────────────────────
 exports.updatePhone = async (req, res) => {
   try {

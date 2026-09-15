@@ -57,7 +57,13 @@ const userSchema = new mongoose.Schema(
         return (this.role === 'landlord' || this.role === 'land_seller') ? 'pending' : 'verified';
       }
     },
-    verificationDocuments: [{ type: String }],
+    verificationDocuments: {
+      idFrontUrl:   { type: String, default: '' },
+      idBackUrl:    { type: String, default: '' },
+      waterBillUrl: { type: String, default: '' },
+    },
+    verificationSubmittedAt: { type: Date },
+    verificationRejectionReason: { type: String, default: '' },
     isActive: {
       type: Boolean,
       default: true

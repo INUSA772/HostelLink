@@ -12,6 +12,8 @@ const {
   getAllUsers,
   deleteAccount,
   updatePhone,
+  submitVerification,
+  getVerificationStatus,
 } = require('../controllers/userController');
 
 const upload = multer({
@@ -32,6 +34,9 @@ router.put('/profile',         protect, updateProfile);
 router.put('/profile/avatar',  protect, upload.single('profilePicture'), updateAvatar);
 router.put('/change-password', protect, changePassword);
 router.delete('/account',      protect, deleteAccount);
+
+router.get('/verification',    protect, getVerificationStatus);
+router.post('/verification',   protect, submitVerification);
 
 router.get('/dashboard/student',  protect, authorize('student'),           getStudentDashboard);
 router.get('/dashboard/landlord', protect, authorize('owner', 'landlord'),  getLandlordDashboard);

@@ -45,14 +45,12 @@ const userService = {
     }
   },
 
-  // Submit verification documents (Owner)
-  submitVerification: async (formData) => {
+  // Submit verification documents (Owner) — idFrontUrl/idBackUrl/waterBillUrl
+  // are Cloudinary URLs already uploaded from the browser, same pattern as
+  // property photos.
+  submitVerification: async ({ idFrontUrl, idBackUrl, waterBillUrl }) => {
     try {
-      const response = await api.post('/users/verification', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await api.post('/users/verification', { idFrontUrl, idBackUrl, waterBillUrl });
       return response.data;
     } catch (error) {
       throw error;
@@ -62,7 +60,7 @@ const userService = {
   // Get verification status
   getVerificationStatus: async () => {
     try {
-      const response = await api.get('/users/verification/status');
+      const response = await api.get('/users/verification');
       return response.data;
     } catch (error) {
       throw error;

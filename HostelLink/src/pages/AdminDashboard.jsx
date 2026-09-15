@@ -620,7 +620,7 @@ export default function AdminDashboard() {
   const [userFilter,     setUserFilter]     = useState('all');
   const [propSearch,     setPropSearch]     = useState('');
   const [propFilter,     setPropFilter]     = useState('all');
-  const [settings,       setSettings]       = useState({ contactAccessPaymentEnabled: false, contactAccessFee: 500 });
+  const [settings,       setSettings]       = useState({ contactAccessPaymentEnabled: false, contactAccessFee: 500, ownerVerificationEnabled: false });
   const [savingSettings, setSavingSettings] = useState(false);
 
   /* ── auth guard ── */
@@ -816,7 +816,7 @@ export default function AdminDashboard() {
     { id: 'verify',     label: 'Verify',     icon: 'fa-shield-alt', count: pendingVerification.length, urgent: true },
     { id: 'properties', label: 'Properties', icon: 'fa-building',   count: properties.length },
     { id: 'scams',      label: 'Flagged',    icon: 'fa-flag',       count: flaggedProps.length, urgent: flaggedProps.length > 0 },
-    { id: 'settings',   label: 'Payment Settings', icon: 'fa-sliders-h' },
+    { id: 'settings',   label: 'Platform Settings', icon: 'fa-sliders-h' },
   ];
 
   return (
@@ -1168,6 +1168,30 @@ export default function AdminDashboard() {
                             {properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length} propert{properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length !== 1 ? 'ies' : 'y'} listed under this account
                           </div>
                         )}
+                        {u.verificationDocuments && (u.verificationDocuments.idFrontUrl || u.verificationDocuments.idBackUrl || u.verificationDocuments.waterBillUrl) && (
+                          <div style={{ marginTop: '.85rem' }}>
+                            <div style={{ fontSize: '.7rem', fontWeight: 800, color: 'var(--mid)', textTransform: 'uppercase', letterSpacing: .5, marginBottom: '.5rem' }}>
+                              Submitted Documents
+                            </div>
+                            <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap' }}>
+                              {[
+                                { url: u.verificationDocuments.idFrontUrl, label: 'ID Front' },
+                                { url: u.verificationDocuments.idBackUrl, label: 'ID Back' },
+                                { url: u.verificationDocuments.waterBillUrl, label: 'Water Bill' },
+                              ].filter(d => d.url).map((doc, k) => (
+                                <a key={k} href={doc.url} target="_blank" rel="noopener noreferrer"
+                                  style={{ display: 'block', textDecoration: 'none' }}>
+                                  <div style={{ width: 110, height: 80, borderRadius: 8, overflow: 'hidden', border: '1.5px solid var(--border, #e8eaed)' }}>
+                                    <img src={doc.url} alt={doc.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                  </div>
+                                  <div style={{ fontSize: '.68rem', fontWeight: 700, color: 'var(--mid)', marginTop: 4, textAlign: 'center' }}>
+                                    {doc.label} <i className="fa-solid fa-up-right-from-square" style={{ fontSize: '.6rem' }} />
+                                  </div>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                       <div style={{ display: 'flex', gap: '.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
                         <button className="a-btn a-btn-green"
@@ -1395,10 +1419,10 @@ export default function AdminDashboard() {
         {tab === 'settings' && (
           <>
             <div className="a-page-hd">
-              <h1>Payment <em>Settings</em></h1>
-              <p>Control whether tenants must pay to unlock a landlord's WhatsApp &amp; call details</p>
+              <h1>Platform <em>Settings</em></h1>
+              <p>Control contact-access payments and owner identity verification</p>
             </div>
-            <div className="a-panel" style={{ padding: '1.5rem', maxWidth: 480 }}>
+            <div className="a-panel" style={{ padding: '1.5rem', maxWidth: 480, marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--dark)' }}>Contact Access Payment</div>
@@ -1452,6 +1476,43 @@ export default function AdminDashboard() {
                 This fee is charged once per listing via PayChangu before a tenant can see that landlord's
                 WhatsApp number or phone number. Toggling this off immediately restores free, direct contact
                 everywhere on the site.
+              </p>
+            </div>
+
+            <div className="a-panel" style={{ padding: '1.5rem', maxWidth: 480 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--dark)' }}>Owner Identity Verification</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--mid)', marginTop: 2 }}>
+                    {settings.ownerVerificationEnabled
+                      ? 'Enabled — landlords/land sellers can submit ID + water bill for review'
+                      : 'Disabled — no document upload is shown to property owners'}
+                  </div>
+                </div>
+                <label style={{ position: 'relative', display: 'inline-block', width: 46, height: 26, flexShrink: 0, cursor: savingSettings ? 'not-allowed' : 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={settings.ownerVerificationEnabled}
+                    disabled={savingSettings}
+                    onChange={(e) => saveSettings({ ...settings, ownerVerificationEnabled: e.target.checked })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: 'absolute', inset: 0, borderRadius: 999,
+                    background: settings.ownerVerificationEnabled ? '#22c55e' : '#d1d5db',
+                    transition: 'background .2s',
+                  }} />
+                  <span style={{
+                    position: 'absolute', top: 3, left: settings.ownerVerificationEnabled ? 23 : 3,
+                    width: 20, height: 20, borderRadius: '50%', background: 'white',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.3)', transition: 'left .2s',
+                  }} />
+                </label>
+              </div>
+              <p style={{ fontSize: '0.72rem', color: 'var(--mid)', marginTop: 10, lineHeight: 1.6 }}>
+                When enabled, landlords and land sellers see a prompt on their dashboard to upload a national
+                ID (front + back) and a water bill. Submissions land in the <strong>Verify</strong> tab for
+                you to approve or reject by hand — nothing is auto-approved.
               </p>
             </div>
           </>
