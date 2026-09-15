@@ -9,7 +9,7 @@ import {
   FaHeart, FaBell, FaSignOutAlt, FaSave,
   FaTimes, FaLock, FaEye, FaEyeSlash, FaCheckCircle,
   FaSpinner, FaUser, FaShieldAlt, FaKey, FaBars,
-  FaChartLine, FaBuilding,
+  FaChartLine, FaBuilding, FaCheck, FaHourglassHalf, FaTimesCircle,
 } from 'react-icons/fa';
 
 const styles = `
@@ -584,7 +584,6 @@ const ProfilePage = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <div className="prof-page">
 
@@ -721,7 +720,7 @@ const ProfilePage = () => {
                     bg: displayUser?.verified ? 'rgba(5,150,105,0.1)' : 'rgba(245,158,11,0.1)',
                     color: displayUser?.verified ? '#059669' : '#d97706',
                     label: 'Status',
-                    value: displayUser?.verified ? <>Verified <i className="fa-solid fa-check" /></> : 'Pending Verification' },
+                    value: displayUser?.verified ? <>Verified <FaCheck /></> : 'Pending Verification' },
                 ].map((item, i) => (
                   <div key={i} className="prof-info-row">
                     <div className="prof-info-icon" style={{ background: item.bg, color: item.color }}>
@@ -823,7 +822,7 @@ const ProfilePage = () => {
                           borderRadius: 20, padding: '2px 10px',
                           fontSize: '.7rem', fontWeight: 800,
                         }}>
-                          {isOwner ? <><i className="fa-solid fa-house" /> Property Owner</> : <><i className="fa-regular fa-user" /> Member</>}
+                          {isOwner ? <><FaHome /> Property Owner</> : <><FaUser /> Member</>}
                         </span>
                       </div>
                     </div>
@@ -849,7 +848,7 @@ const ProfilePage = () => {
                       { label: 'Phone',        value: displayUser?.phone || 'Not added'               },
                       { label: 'Role',         value: isOwner ? 'Property Owner' : 'Member'           },
                       { label: 'Member Since', value: joinDate                                        },
-                      { label: 'Status',       value: displayUser?.verified ? <><i className="fa-solid fa-circle-check" /> Verified</> : <><i className="fa-solid fa-hourglass-half" /> Pending</> },
+                      { label: 'Status',       value: displayUser?.verified ? <><FaCheckCircle /> Verified</> : <><FaHourglassHalf /> Pending</> },
                     ].map((item, i) => (
                       <div key={i} style={{
                         background: 'var(--off-white)', borderRadius: 9,
@@ -1028,10 +1027,10 @@ const ProfilePage = () => {
                         </button>
                       </div>
                       {pwdData.confirmPassword && pwdData.newPassword !== pwdData.confirmPassword && (
-                        <p style={{ fontSize: '.75rem', color: 'var(--danger)', marginTop: 4, fontWeight: 700 }}><i className="fa-solid fa-circle-xmark" /> Passwords do not match</p>
+                        <p style={{ fontSize: '.75rem', color: 'var(--danger)', marginTop: 4, fontWeight: 700 }}><FaTimesCircle /> Passwords do not match</p>
                       )}
                       {pwdData.confirmPassword && pwdData.newPassword === pwdData.confirmPassword && (
-                        <p style={{ fontSize: '.75rem', color: 'var(--success)', marginTop: 4, fontWeight: 700 }}><i className="fa-solid fa-circle-check" /> Passwords match</p>
+                        <p style={{ fontSize: '.75rem', color: 'var(--success)', marginTop: 4, fontWeight: 700 }}><FaCheckCircle /> Passwords match</p>
                       )}
                     </div>
 
@@ -1050,7 +1049,7 @@ const ProfilePage = () => {
                         'Avoid using personal information',
                       ].map((tip, i) => (
                         <div key={i} style={{ fontSize: '.78rem', color: 'var(--mid)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.4rem', marginTop: 4 }}>
-                          <span style={{ color: 'var(--success)', fontSize: '.7rem' }}><i className="fa-solid fa-check" /></span> {tip}
+                          <span style={{ color: 'var(--success)', fontSize: '.7rem' }}><FaCheck /></span> {tip}
                         </div>
                       ))}
                     </div>

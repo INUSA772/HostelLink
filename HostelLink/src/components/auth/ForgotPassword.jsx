@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
+import { FaRightToBracket, FaUserPlus, FaCheck } from 'react-icons/fa6';
 import authService from '../../services/authService';
 import { handleApiError } from '../../utils/helpers';
 import '../../styles/global.css';
@@ -213,7 +214,6 @@ const ForgotPassword = () => {
     return (
       <>
         <style>{styles}</style>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
         {/* TOPBAR */}
         <nav className="rp-bar">
@@ -225,15 +225,15 @@ const ForgotPassword = () => {
             </div>
           </Link>
           <div className="rp-bar-actions">
-            <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
-            <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
+            <Link to="/login" className="rp-bar-login"><FaRightToBracket /> Login</Link>
+            <Link to="/register" className="rp-bar-signup"><FaUserPlus /> Sign Up</Link>
           </div>
         </nav>
 
         {/* MAIN CONTENT - CENTERED FORM */}
         <div className="rp-main">
           <div className="rp-card" style={{ textAlign: 'center' }}>
-            <div className="rp-success-icon"><i className="fa-solid fa-check" /></div>
+            <div className="rp-success-icon"><FaCheck /></div>
             
             <h2 style={{ 
               fontSize: '1.5rem', 
@@ -255,7 +255,7 @@ const ForgotPassword = () => {
 
             <Link to="/login" style={{ textDecoration: 'none' }}>
               <button className="rp-submit">
-                <i className="fa fa-sign-in-alt"></i> Back to Login
+                <FaRightToBracket /> Back to Login
               </button>
             </Link>
           </div>
@@ -267,7 +267,6 @@ const ForgotPassword = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       {/* TOPBAR */}
       <nav className="rp-bar">
@@ -279,8 +278,8 @@ const ForgotPassword = () => {
           </div>
         </Link>
         <div className="rp-bar-actions">
-          <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt"></i> Login</Link>
-          <Link to="/register" className="rp-bar-signup"><i className="fa fa-user-plus"></i> Sign Up</Link>
+          <Link to="/login" className="rp-bar-login"><FaRightToBracket /> Login</Link>
+          <Link to="/register" className="rp-bar-signup"><FaUserPlus /> Sign Up</Link>
         </div>
       </nav>
 
@@ -298,7 +297,7 @@ const ForgotPassword = () => {
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="email">Email Address</label>
               <div className="rp-wrap">
-                <i className="fa fa-envelope rp-ico"></i>
+                <FaEnvelope className="rp-ico" />
                 <input
                   id="email"
                   className="rp-input"

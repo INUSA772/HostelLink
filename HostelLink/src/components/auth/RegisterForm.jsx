@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { storage } from '../../utils/helpers';
 import GooglePhoneModal from './GooglePhoneModal';
 import { handleApiError } from '../../utils/helpers';
+import { FaRightToBracket, FaHouse, FaSeedling, FaUser, FaPhone, FaWhatsapp, FaTriangleExclamation, FaBolt, FaCheck, FaLock, FaEye, FaEyeSlash, FaCircleCheck, FaShieldHalved, FaUserPlus } from 'react-icons/fa6';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -104,7 +105,7 @@ const styles = `
   .rp-cap-l { display: flex; align-items: center; gap: .35rem; }
   .rp-cap-box { width: 14px; height: 14px; border: 2px solid #9ca3af; border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all .2s; flex-shrink: 0; }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box i { color: #fff; font-size: .52rem; }
+  .rp-cap-box i, .rp-cap-box svg { color: #fff; font-size: .52rem; }
   .rp-cap-txt { font-size: .65rem; font-weight: 600; color: var(--text-dark); }
   .rp-cap-note { font-size: .42rem; color: #9ca3af; text-align: right; line-height: 1.3; }
   .rp-spin { width: 10px; height: 10px; border: 2px solid #e5e7eb; border-top-color: var(--amber); border-radius: 50%; animation: rpspin .7s linear infinite; display: inline-block; }
@@ -203,7 +204,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
   return (
     <div className="otp-wrap">
       <div className="rp-hdr"><h2>Verify Your Phone</h2><p>Enter the 6-digit code sent to</p><div className="rp-line" /></div>
-      <div className="otp-phone-badge"><i className="fa fa-phone" /> {phone}</div>
+      <div className="otp-phone-badge"><FaPhone /> {phone}</div>
       <div className="otp-inputs" onPaste={handlePaste}>
         {otp.map((d,i) => (
           <input key={i} ref={el => inputRefs.current[i]=el} className="otp-input"
@@ -214,7 +215,7 @@ const OtpScreen = ({ userId, phone, onSuccess }) => {
       </div>
       <div className="otp-timer">{timeLeft > 0 ? <>Expires in <span>{fmt(timeLeft)}</span></> : <span style={{color:'#dc2626'}}>Code expired</span>}</div>
       <button className="rp-submit" onClick={verify} disabled={loading || otp.join('').length!==6}>
-        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><i className="fa fa-check" /> Verify & Continue</>}
+        {loading ? <><div className="rp-submit-spin" /> Verifying...</> : <><FaCheck /> Verify & Continue</>}
       </button>
       <div style={{marginTop:'.5rem',textAlign:'center'}}>
         <span style={{fontSize:'.67rem',color:'#6b7280'}}>Didn't get it? </span>
@@ -324,14 +325,13 @@ const RegisterForm = () => {
         <div className="rp-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
         <div className="rp-bar-brand"><strong>PezaNyumba</strong></div>
       </Link>
-      <Link to="/login" className="rp-bar-login"><i className="fa fa-sign-in-alt" /> Login</Link>
+      <Link to="/login" className="rp-bar-login"><FaRightToBracket /> Login</Link>
     </nav>
   );
 
   if (showOtp) return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <Navbar />
       <div className="rp-main"><div className="rp-card"><OtpScreen userId={otpUserId} phone={formData.phone} onSuccess={handleOtpSuccess} /></div></div>
     </>
@@ -340,7 +340,6 @@ const RegisterForm = () => {
  return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       {showPhoneModal && (
         <GooglePhoneModal
           user={googleUser}
@@ -363,10 +362,10 @@ const RegisterForm = () => {
 
           {/* Role */}
           <div className="rp-role-row">
-            {[{value:'landlord',icon:'fa-home',label:'Landlord'},{value:'land_seller',icon:'fa-seedling',label:'Land Seller'}].map(r => (
+            {[{value:'landlord',icon:FaHouse,label:'Landlord'},{value:'land_seller',icon:FaSeedling,label:'Land Seller'}].map(r => (
               <div className="rp-role-opt" key={r.value}>
                 <input type="radio" id={`role_${r.value}`} name="role" value={r.value} checked={formData.role===r.value} onChange={handleChange} />
-                <label className="rp-role-btn" htmlFor={`role_${r.value}`}><i className={`fa ${r.icon}`} /> {r.label}</label>
+                <label className="rp-role-btn" htmlFor={`role_${r.value}`}><r.icon /> {r.label}</label>
               </div>
             ))}
           </div>
@@ -377,7 +376,7 @@ const RegisterForm = () => {
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="fullName">Full Name</label>
               <div className="rp-wrap">
-                <i className="fa fa-user rp-ico" />
+                <FaUser className="rp-ico" />
                 <input id="fullName" className="rp-input" type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="John Banda" required autoComplete="name" />
               </div>
             </div>
@@ -387,7 +386,7 @@ const RegisterForm = () => {
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="phone">Phone</label>
                 <div className="rp-wrap">
-                  <i className="fa fa-phone rp-ico" />
+                  <FaPhone className="rp-ico" />
                   <input id="phone" className="rp-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="0888123456" required autoComplete="tel" />
                 </div>
               </div>
@@ -399,7 +398,7 @@ const RegisterForm = () => {
                   </label>
                 </label>
                 <div className="rp-wrap">
-                  <i className="fab fa-whatsapp rp-wa-ico" />
+                  <FaWhatsapp className="rp-wa-ico" />
                   <input id="whatsapp" className="rp-input wa-field" type="tel" name="whatsapp"
                     value={formData.sameAsPhone ? formData.phone : formData.whatsapp}
                     onChange={handleChange} placeholder="0888123456"
@@ -413,25 +412,29 @@ const RegisterForm = () => {
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="password">
                   Password
-                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength==='weak'?<><i className="fa-solid fa-triangle-exclamation" /> Weak</>:pwStrength==='medium'?<><i className="fa-solid fa-bolt" /> Ok</>:<><i className="fa-solid fa-check" /> Strong</>}</span>}
+                  {pwStrength && <span className={`rp-strength ${pwStrength}`}>{pwStrength==='weak'?<><FaTriangleExclamation /> Weak</>:pwStrength==='medium'?<><FaBolt /> Ok</>:<><FaCheck /> Strong</>}</span>}
                 </label>
                 <div className="rp-wrap">
-                  <i className="fa fa-lock rp-ico" />
+                  <FaLock className="rp-ico" />
                   <input id="password" className={`rp-input${pwStrength ? ` password-${pwStrength}` : ''}`}
                     type={showPw ? 'text' : 'password'} name="password" value={formData.password}
                     onChange={handleChange} placeholder="Min. 8 chars" required autoComplete="new-password" />
-                  <i className={`fa ${showPw?'fa-eye-slash':'fa-eye'} rp-toggle`} onClick={() => setShowPw(!showPw)} />
+                  {showPw
+                    ? <FaEyeSlash className="rp-toggle" onClick={() => setShowPw(!showPw)} />
+                    : <FaEye className="rp-toggle" onClick={() => setShowPw(!showPw)} />}
                 </div>
               </div>
               <div className="rp-grp">
                 <label className="rp-lbl" htmlFor="confirmPassword">Confirm</label>
                 <div className="rp-wrap">
-                  <i className="fa fa-check-circle rp-ico" />
+                  <FaCircleCheck className="rp-ico" />
                   <input id="confirmPassword" className="rp-input"
                     type={showCpw ? 'text' : 'password'} name="confirmPassword"
                     value={formData.confirmPassword} onChange={handleChange}
                     placeholder="Repeat" required autoComplete="new-password" />
-                  <i className={`fa ${showCpw?'fa-eye-slash':'fa-eye'} rp-toggle`} onClick={() => setShowCpw(!showCpw)} />
+                  {showCpw
+                    ? <FaEyeSlash className="rp-toggle" onClick={() => setShowCpw(!showCpw)} />
+                    : <FaEye className="rp-toggle" onClick={() => setShowCpw(!showCpw)} />}
                 </div>
               </div>
             </div>
@@ -440,13 +443,13 @@ const RegisterForm = () => {
             <div className="rp-footer-row">
               <button type="button" className="rp-captcha" onClick={handleCaptcha}>
                 <div className="rp-cap-l">
-                  <div className={`rp-cap-box${captcha?' on':''}`}>{captcha && <i className="fa-solid fa-check" />}</div>
+                  <div className={`rp-cap-box${captcha?' on':''}`}>{captcha && <FaCheck />}</div>
                   {captchaLoading
                     ? <span className="rp-cap-txt"><div className="rp-spin" /> Checking…</span>
-                    : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "Not a robot"}</span>
+                    : <span className="rp-cap-txt">{captcha ? <>Verified <FaCheck /></> : "Not a robot"}</span>
                   }
                 </div>
-                <div><i className="fa fa-shield-alt" style={{color:'var(--amber)',fontSize:'.95rem'}} /><div className="rp-cap-note">Security<br/>Check</div></div>
+                <div><FaShieldHalved style={{color:'var(--amber)',fontSize:'.95rem'}} /><div className="rp-cap-note">Security<br/>Check</div></div>
               </button>
               <label className="rp-terms">
                 <input type="checkbox" required />
@@ -455,7 +458,7 @@ const RegisterForm = () => {
             </div>
 
             <button type="submit" className="rp-submit" disabled={loading}>
-              {loading ? <><div className="rp-submit-spin" /> Creating Account…</> : <><i className="fa fa-user-plus" /> Create Account</>}
+              {loading ? <><div className="rp-submit-spin" /> Creating Account…</> : <><FaUserPlus /> Create Account</>}
             </button>
 
             <div className="or-div">or continue with</div>

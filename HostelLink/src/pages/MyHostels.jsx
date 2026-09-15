@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import hostelService from '../services/hostelService';
-import { FaPlus, FaEdit, FaTrash, FaEye, FaHome } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaEye, FaHome, FaExclamationTriangle } from 'react-icons/fa';
 import Button from '../components/common/Button';
 import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
@@ -346,7 +346,7 @@ const MyHostels = () => {
           Are you sure you want to delete <strong>{deleteModal.hostelName}</strong>?
         </p>
         <p style={{ color: 'var(--error)' }}>
-          <i className="fa-solid fa-triangle-exclamation" /> This action cannot be undone. All data including images, reviews, and bookings will be permanently deleted.
+          <FaExclamationTriangle /> This action cannot be undone. All data including images, reviews, and bookings will be permanently deleted.
         </p>
       </Modal>
     </div>

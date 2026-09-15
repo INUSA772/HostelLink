@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { storage } from '../../utils/helpers';
+import { FaMobileScreenButton, FaPhone, FaWhatsapp, FaCheck } from 'react-icons/fa6';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -104,11 +105,10 @@ const GooglePhoneModal = ({ user, token, onComplete }) => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <div className="gpm-overlay">
         <div className="gpm-card">
           <div className="gpm-hdr">
-            <h2>One Last Step <i className="fa-solid fa-mobile-screen-button" /></h2>
+            <h2>One Last Step <FaMobileScreenButton /></h2>
             <p>Add your phone number so buyers and tenants can contact you via WhatsApp or call.</p>
             <div className="gpm-line" />
           </div>
@@ -116,7 +116,7 @@ const GooglePhoneModal = ({ user, token, onComplete }) => {
           <div className="gpm-grp">
             <label className="gpm-lbl">Phone Number</label>
             <div className="gpm-wrap">
-              <i className="fa fa-phone gpm-ico" />
+              <FaPhone className="gpm-ico" />
               <input className="gpm-input" type="tel" value={phone}
                 onChange={handlePhoneChange} placeholder="0888123456" />
             </div>
@@ -131,7 +131,7 @@ const GooglePhoneModal = ({ user, token, onComplete }) => {
               </label>
             </div>
             <div className="gpm-wrap">
-              <i className="fab fa-whatsapp gpm-wa-ico" />
+              <FaWhatsapp className="gpm-wa-ico" />
               <input className="gpm-input" type="tel"
                 value={sameAsPhone ? phone : whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
@@ -141,7 +141,7 @@ const GooglePhoneModal = ({ user, token, onComplete }) => {
           </div>
 
           <button className="gpm-btn" onClick={handleSubmit} disabled={loading}>
-            {loading ? <><div className="gpm-spin" /> Saving…</> : <><i className="fa fa-check" /> Save & Continue</>}
+            {loading ? <><div className="gpm-spin" /> Saving…</> : <><FaCheck /> Save & Continue</>}
           </button>
           <button className="gpm-skip" onClick={() => onComplete(user)}>
             Skip for now

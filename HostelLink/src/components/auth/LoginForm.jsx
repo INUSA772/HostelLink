@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { storage } from '../../utils/helpers';
 import GooglePhoneModal from './GooglePhoneModal';
 import { handleApiError } from '../../utils/helpers';
+import { FaUserPlus, FaHouse, FaSeedling, FaPhone, FaLock, FaEye, FaEyeSlash, FaCheck, FaShieldHalved, FaRightToBracket } from 'react-icons/fa6';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -166,7 +167,7 @@ const styles = `
     transition: all .2s;
   }
   .rp-cap-box.on { background: var(--navy); border-color: var(--navy); }
-  .rp-cap-box i { color: #fff; font-size: .6rem; }
+  .rp-cap-box i, .rp-cap-box svg { color: #fff; font-size: .6rem; }
   .rp-cap-txt { font-size: .74rem; font-weight: 600; color: var(--text-dark); }
   .rp-spin {
     width: 11px; height: 11px; border: 2px solid #e5e7eb;
@@ -342,7 +343,6 @@ const LoginForm = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       {showPhoneModal && (
   <GooglePhoneModal
     user={googleUser}
@@ -364,7 +364,7 @@ const LoginForm = () => {
           </div>
         </Link>
         <Link to="/register" className="rp-bar-login">
-          <i className="fa fa-user-plus" /> Register
+          <FaUserPlus /> Register
         </Link>
       </nav>
 
@@ -381,14 +381,14 @@ const LoginForm = () => {
           <span className="rp-role-lbl">I am a</span>
           <div className="rp-role-row">
             {[
-              { value: 'landlord',    icon: 'fa-home',     label: 'Landlord'    },
-              { value: 'land_seller', icon: 'fa-seedling', label: 'Land Seller' },
+              { value: 'landlord',    icon: FaHouse,     label: 'Landlord'    },
+              { value: 'land_seller', icon: FaSeedling, label: 'Land Seller' },
             ].map(r => (
               <div className="rp-role-opt" key={r.value}>
                 <input type="radio" id={`role_${r.value}`} name="role"
                   value={r.value} checked={formData.role === r.value} onChange={handleChange} />
                 <label className="rp-role-btn" htmlFor={`role_${r.value}`}>
-                  <i className={`fa ${r.icon}`} /> {r.label}
+                  <r.icon /> {r.label}
                 </label>
               </div>
             ))}
@@ -400,7 +400,7 @@ const LoginForm = () => {
             <div className="rp-grp">
               <label className="rp-lbl" htmlFor="phone">Phone Number</label>
               <div className="rp-wrap">
-                <i className="fa fa-phone rp-ico" />
+                <FaPhone className="rp-ico" />
                 <input id="phone" className="rp-input" type="text" name="phone"
                   value={formData.phone} onChange={handleChange}
                   placeholder="0888123456 or admin@email.com"
@@ -415,14 +415,15 @@ const LoginForm = () => {
                 <Link to="/forgot-password" className="rp-forgot">Forgot Password?</Link>
               </label>
               <div className="rp-wrap">
-                <i className="fa fa-lock rp-ico" />
+                <FaLock className="rp-ico" />
                 <input id="password" className="rp-input"
                   type={showPassword ? 'text' : 'password'}
                   name="password" value={formData.password} onChange={handleChange}
                   placeholder="Enter your password"
                   required autoComplete="current-password" />
-                <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'} rp-toggle`}
-                  onClick={() => setShowPassword(!showPassword)} />
+                {showPassword
+                  ? <FaEyeSlash className="rp-toggle" onClick={() => setShowPassword(!showPassword)} />
+                  : <FaEye className="rp-toggle" onClick={() => setShowPassword(!showPassword)} />}
               </div>
             </div>
 
@@ -436,14 +437,14 @@ const LoginForm = () => {
             {/* Captcha */}
             <button type="button" className="rp-captcha" onClick={handleCaptcha}>
               <div className="rp-cap-l">
-                <div className={`rp-cap-box${captcha ? ' on' : ''}`}>{captcha && <i className="fa-solid fa-check" />}</div>
+                <div className={`rp-cap-box${captcha ? ' on' : ''}`}>{captcha && <FaCheck />}</div>
                 {captchaLoading
                   ? <span className="rp-cap-txt"><div className="rp-spin" /> Verifying…</span>
-                  : <span className="rp-cap-txt">{captcha ? <>Verified <i className="fa-solid fa-check" /></> : "I'm not a robot"}</span>
+                  : <span className="rp-cap-txt">{captcha ? <>Verified <FaCheck /></> : "I'm not a robot"}</span>
                 }
               </div>
               <div>
-                <i className="fa fa-shield-alt" style={{ color: 'var(--amber)', fontSize: '1.05rem' }} />
+                <FaShieldHalved style={{ color: 'var(--amber)', fontSize: '1.05rem' }} />
                 <div className="rp-cap-note">Security<br />Check</div>
               </div>
             </button>
@@ -452,7 +453,7 @@ const LoginForm = () => {
             <button type="submit" className="rp-submit" disabled={loading}>
               {loading
                 ? <><div className="rp-submit-spin" /> Signing in…</>
-                : <><i className="fa fa-sign-in-alt" /> Sign In</>
+                : <><FaRightToBracket /> Sign In</>
               }
             </button>
 

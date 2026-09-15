@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { FaArrowLeft, FaBolt, FaBuilding, FaCalendarDays, FaChartBar, FaChartLine, FaCheck, FaCircle, FaCircleCheck, FaCircleXmark, FaClipboard, FaClock, FaEnvelope, FaFlag, FaGlobe, FaHourglassHalf, FaHouse, FaMagnifyingGlass, FaPhone, FaShieldHalved, FaTag, FaTrash, FaTriangleExclamation, FaUpRightFromSquare, FaUser, FaUserPlus, FaUsers, FaWhatsapp } from 'react-icons/fa6';
+import { FaMapMarkerAlt, FaShieldAlt, FaSlidersH, FaSyncAlt } from 'react-icons/fa';
 
 /* ─── helpers ─────────────────────────────────────────────────────────────── */
 const fmt = (n) => n?.toLocaleString() ?? '0';
@@ -229,7 +231,7 @@ const styles = `
     font-size: .88rem; font-weight: 800;
     color: var(--dark); display: flex; align-items: center; gap: 7px;
   }
-  .a-panel-title i { color: var(--amber-dark); }
+  .a-panel-title svg { color: var(--amber-dark); }
   .a-count {
     background: var(--navy); color: white;
     font-size: .63rem; font-weight: 700;
@@ -253,7 +255,7 @@ const styles = `
     font-family: var(--font); font-size: .8rem;
     color: var(--dark); background: transparent; width: 100%;
   }
-  .a-search i { color: var(--mid); font-size: .78rem; }
+  .a-search svg { color: var(--mid); font-size: .78rem; }
   .a-filter {
     border: 1.5px solid var(--border); border-radius: 9px;
     padding: .42rem .8rem; font-size: .8rem;
@@ -512,7 +514,7 @@ const styles = `
     display: flex; align-items: center; gap: 5px;
     font-size: .78rem; color: var(--mid);
   }
-  .a-verify-detail-row i { color: var(--amber-dark); width: 14px; text-align: center; }
+  .a-verify-detail-row svg { color: var(--amber-dark); width: 14px; }
 
   /* ════════════════════════════════════════
      FLAGGED CARD
@@ -527,7 +529,7 @@ const styles = `
     display: flex; align-items: center; gap: 4px;
     font-size: .78rem; color: var(--mid);
   }
-  .a-flag-detail-row i { color: var(--amber-dark); width: 14px; text-align: center; }
+  .a-flag-detail-row svg { color: var(--amber-dark); width: 14px; }
 
   /* ════════════════════════════════════════
      RESPONSIVE
@@ -569,9 +571,9 @@ function useToast() {
 }
 function Toasts({ toasts }) {
   const icons = {
-    success: <i className="fa-solid fa-circle-check" />,
-    error: <i className="fa-solid fa-circle-xmark" />,
-    warn: <i className="fa-solid fa-triangle-exclamation" />
+    success: <FaCircleCheck />,
+    error: <FaCircleXmark />,
+    warn: <FaTriangleExclamation />
   };
   return (
     <div className="a-toast-wrap">
@@ -588,7 +590,7 @@ function ConfirmModal({ config, onConfirm, onCancel, loading }) {
   return (
     <div className="a-modal-bg" onClick={e => e.target === e.currentTarget && !loading && onCancel()}>
       <div className="a-modal">
-        <div className={`a-modal-ico ${config.type || 'danger'}`}>{config.icon || <i className="fa-solid fa-trash" />}</div>
+        <div className={`a-modal-ico ${config.type || 'danger'}`}>{config.icon || <FaTrash />}</div>
         <h3>{config.title}</h3>
         <p>{config.message}</p>
         <div className="a-modal-btns">
@@ -785,15 +787,15 @@ export default function AdminDashboard() {
   /* ── stats ── */
   const stats = data?.stats || {};
   const statCards = [
-    { ico: <i className="fa-solid fa-users" />, lbl: 'Total Users',       val: fmt(users.length),                         accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: `+${stats.newUsersToday || 0} today`,             up: true  },
-    { ico: <i className="fa-solid fa-house" />, lbl: 'Properties Listed', val: fmt(properties.length),                    accent: 'var(--blue)',   ico_bg: 'var(--blue-pale)', badge: `${properties.filter(p=>p.verified).length} verified`, up: false },
-    { ico: <i className="fa-solid fa-hourglass-half" />, lbl: 'Pending Verify',    val: fmt(pendingVerification.length),           accent: 'var(--amber)',  ico_bg: 'var(--amber-light)',badge: 'needs action',                                    up: false },
-    { ico: <i className="fa-solid fa-flag" />, lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                  accent: 'var(--red)',    ico_bg: 'var(--red-pale)',   badge: 'investigate',                                    up: false },
-    { ico: <i className="fa-solid fa-circle-check" />, lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),   accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'approved',                                       up: true  },
-    { ico: <i className="fa-solid fa-clipboard" />, lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),             accent: 'var(--purple)', ico_bg: 'var(--purple-pale)',badge: `${stats.pendingBookings || 0} pending`,           up: false },
-    { ico: <i className="fa-solid fa-globe" />, lbl: 'Total Visitors',    val: fmt(stats.totalVisitors || 0),             accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: 'all time',                                       up: true  },
-    { ico: <i className="fa-solid fa-calendar-days" />, lbl: "Today's Visitors",  val: fmt(stats.todayVisitors || 0),             accent: '#6366f1',       ico_bg: '#eef2ff',           badge: 'since midnight',                                 up: false },
-    { ico: <i className="fa-solid fa-circle" />, lbl: 'Online Now',        val: fmt(stats.onlineNow || 0),                 accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'last 5 mins',                                    up: true  },
+    { ico: <FaUsers />, lbl: 'Total Users',       val: fmt(users.length),                         accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: `+${stats.newUsersToday || 0} today`,             up: true  },
+    { ico: <FaHouse />, lbl: 'Properties Listed', val: fmt(properties.length),                    accent: 'var(--blue)',   ico_bg: 'var(--blue-pale)', badge: `${properties.filter(p=>p.verified).length} verified`, up: false },
+    { ico: <FaHourglassHalf />, lbl: 'Pending Verify',    val: fmt(pendingVerification.length),           accent: 'var(--amber)',  ico_bg: 'var(--amber-light)',badge: 'needs action',                                    up: false },
+    { ico: <FaFlag />, lbl: 'Flagged Scams',     val: fmt(flaggedProps.length),                  accent: 'var(--red)',    ico_bg: 'var(--red-pale)',   badge: 'investigate',                                    up: false },
+    { ico: <FaCircleCheck />, lbl: 'Verified Users',    val: fmt(users.filter(u=>u.verified).length),   accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'approved',                                       up: true  },
+    { ico: <FaClipboard />, lbl: 'Total Bookings',    val: fmt(stats.totalBookings || 0),             accent: 'var(--purple)', ico_bg: 'var(--purple-pale)',badge: `${stats.pendingBookings || 0} pending`,           up: false },
+    { ico: <FaGlobe />, lbl: 'Total Visitors',    val: fmt(stats.totalVisitors || 0),             accent: 'var(--navy)',   ico_bg: 'var(--off-white)', badge: 'all time',                                       up: true  },
+    { ico: <FaCalendarDays />, lbl: "Today's Visitors",  val: fmt(stats.todayVisitors || 0),             accent: '#6366f1',       ico_bg: '#eef2ff',           badge: 'since midnight',                                 up: false },
+    { ico: <FaCircle />, lbl: 'Online Now',        val: fmt(stats.onlineNow || 0),                 accent: 'var(--green)',  ico_bg: 'var(--green-pale)', badge: 'last 5 mins',                                    up: true  },
   ];
 
   const regByMonth = data?.registrationsByMonth || [];
@@ -811,18 +813,17 @@ export default function AdminDashboard() {
   );
 
   const TABS = [
-    { id: 'overview',   label: 'Overview',   icon: 'fa-chart-line' },
-    { id: 'users',      label: 'Users',      icon: 'fa-users',      count: users.length },
-    { id: 'verify',     label: 'Verify',     icon: 'fa-shield-alt', count: pendingVerification.length, urgent: true },
-    { id: 'properties', label: 'Properties', icon: 'fa-building',   count: properties.length },
-    { id: 'scams',      label: 'Flagged',    icon: 'fa-flag',       count: flaggedProps.length, urgent: flaggedProps.length > 0 },
-    { id: 'settings',   label: 'Platform Settings', icon: 'fa-sliders-h' },
+    { id: 'overview',   label: 'Overview',   icon: FaChartLine },
+    { id: 'users',      label: 'Users',      icon: FaUsers,      count: users.length },
+    { id: 'verify',     label: 'Verify',     icon: FaShieldAlt, count: pendingVerification.length, urgent: true },
+    { id: 'properties', label: 'Properties', icon: FaBuilding,   count: properties.length },
+    { id: 'scams',      label: 'Flagged',    icon: FaFlag,       count: flaggedProps.length, urgent: flaggedProps.length > 0 },
+    { id: 'settings',   label: 'Platform Settings', icon: FaSlidersH },
   ];
 
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <Toasts toasts={toast.toasts} />
       <ConfirmModal
@@ -843,11 +844,11 @@ export default function AdminDashboard() {
         </div>
         <div className="a-top-right">
           <button className="a-top-btn" onClick={() => loadAll(true)} disabled={refreshing}>
-            <i className={`fa fa-sync-alt${refreshing ? ' fa-spin' : ''}`} />
+            <FaSyncAlt style={refreshing ? { animation: 'spin 1s linear infinite' } : undefined} />
             {refreshing ? 'Refreshing…' : 'Refresh'}
           </button>
           <button className="a-top-btn danger" onClick={() => navigate('/')}>
-            <i className="fa fa-arrow-left" /> Exit
+            <FaArrowLeft /> Exit
           </button>
         </div>
       </nav>
@@ -856,7 +857,7 @@ export default function AdminDashboard() {
       <div className="a-tabs">
         {TABS.map(t => (
           <button key={t.id} className={`a-tab${tab === t.id ? ' active' : ''}`} onClick={() => setTab(t.id)}>
-            <i className={`fa ${t.icon}`} />
+            <t.icon />
             {t.label}
             {t.count !== undefined && (
               <span
@@ -898,12 +899,12 @@ export default function AdminDashboard() {
               {/* Registrations chart */}
               <div className="a-panel">
                 <div className="a-panel-hd">
-                  <div className="a-panel-title"><i className="fa fa-chart-bar" /> Registrations</div>
+                  <div className="a-panel-title"><FaChartBar /> Registrations</div>
                   <span style={{ fontSize: '.72rem', color: 'var(--mid)' }}>Last 6 months</span>
                 </div>
                 <div style={{ padding: '1.25rem' }}>
                   {regByMonth.length === 0
-                    ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-chart-line" /></div><h4>No data yet</h4></div>
+                    ? <div className="a-empty"><div className="a-empty-ico"><FaChartLine /></div><h4>No data yet</h4></div>
                     : regByMonth.map((r, i) => (
                         <div key={i} className="a-bar-row">
                           <div className="a-bar-label">{r.month}</div>
@@ -923,14 +924,14 @@ export default function AdminDashboard() {
               {/* Quick actions */}
               <div className="a-panel">
                 <div className="a-panel-hd">
-                  <div className="a-panel-title"><i className="fa fa-bolt" /> Quick Actions</div>
+                  <div className="a-panel-title"><FaBolt /> Quick Actions</div>
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                   {[
-                    { ico: <i className="fa-solid fa-hourglass-half" />, label: 'Users pending verification', val: pendingVerification.length, valColor: 'var(--amber-dark)', action: () => setTab('verify'),     btnLabel: 'Review Now',  btnClass: 'a-btn-amber'   },
-                    { ico: <i className="fa-solid fa-flag" />, label: 'Flagged / scam properties',  val: flaggedProps.length,        valColor: 'var(--red)',        action: () => setTab('scams'),      btnLabel: 'Investigate', btnClass: 'a-btn-red'     },
-                    { ico: <i className="fa-solid fa-building" />, label: 'Unverified properties',      val: properties.filter(p => !p.verified).length, valColor: 'var(--blue)', action: () => setTab('properties'), btnLabel: 'Review', btnClass: 'a-btn-outline' },
-                    { ico: <i className="fa-solid fa-users" />, label: 'Total registered owners',    val: users.filter(u => u.role === 'landlord' || u.role === 'land_seller').length, valColor: 'var(--navy)', action: () => setTab('users'), btnLabel: 'View All', btnClass: 'a-btn-teal' },
+                    { ico: <FaHourglassHalf />, label: 'Users pending verification', val: pendingVerification.length, valColor: 'var(--amber-dark)', action: () => setTab('verify'),     btnLabel: 'Review Now',  btnClass: 'a-btn-amber'   },
+                    { ico: <FaFlag />, label: 'Flagged / scam properties',  val: flaggedProps.length,        valColor: 'var(--red)',        action: () => setTab('scams'),      btnLabel: 'Investigate', btnClass: 'a-btn-red'     },
+                    { ico: <FaBuilding />, label: 'Unverified properties',      val: properties.filter(p => !p.verified).length, valColor: 'var(--blue)', action: () => setTab('properties'), btnLabel: 'Review', btnClass: 'a-btn-outline' },
+                    { ico: <FaUsers />, label: 'Total registered owners',    val: users.filter(u => u.role === 'landlord' || u.role === 'land_seller').length, valColor: 'var(--navy)', action: () => setTab('users'), btnLabel: 'View All', btnClass: 'a-btn-teal' },
                   ].map((item, i) => (
                     <div key={i} className="a-qa-row">
                       <div className="a-qa-icon">{item.ico}</div>
@@ -949,7 +950,7 @@ export default function AdminDashboard() {
             {/* Recent users */}
             <div className="a-panel">
               <div className="a-panel-hd">
-                <div className="a-panel-title"><i className="fa fa-user-plus" /> Recent Registrations</div>
+                <div className="a-panel-title"><FaUserPlus /> Recent Registrations</div>
                 <button className="a-btn a-btn-outline a-btn-sm" onClick={() => setTab('users')}>View All</button>
               </div>
               <div className="a-tbl-wrap">
@@ -973,10 +974,10 @@ export default function AdminDashboard() {
                         <td style={{ fontSize: '.78rem', color: 'var(--mid)' }}>{u.phone || '—'}</td>
                         <td>
                           {u.verified || u.verificationStatus === 'verified'
-                            ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Verified</span>
+                            ? <span className="a-badge a-badge-v"><FaCheck /> Verified</span>
                             : u.verificationStatus === 'rejected'
-                              ? <span className="a-badge a-badge-r"><i className="fa-solid fa-circle-xmark" /> Rejected</span>
-                              : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
+                              ? <span className="a-badge a-badge-r"><FaCircleXmark /> Rejected</span>
+                              : <span className="a-badge a-badge-p"><FaHourglassHalf /> Pending</span>
                           }
                         </td>
                         <td style={{ fontSize: '.75rem', color: 'var(--mid)' }}>{timeAgo(u.createdAt)}</td>
@@ -984,7 +985,7 @@ export default function AdminDashboard() {
                           {!u.verified && u.verificationStatus !== 'rejected' && (
                             <button className="a-btn a-btn-green a-btn-sm"
                               onClick={() => setConfirm({
-                                icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify User',
+                                icon: <FaCircleCheck />, type: 'success', title: 'Verify User',
                                 message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}?`,
                                 confirmLabel: 'Verify', btnClass: 'green',
                                 onConfirm: () => verifyUser(u._id, 'approve'),
@@ -1012,12 +1013,12 @@ export default function AdminDashboard() {
             <div className="a-panel">
               <div className="a-panel-hd">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
-                  <div className="a-panel-title"><i className="fa fa-users" /> Users</div>
+                  <div className="a-panel-title"><FaUsers /> Users</div>
                   <span className="a-count">{filteredUsers.length}</span>
                 </div>
                 <div className="a-panel-tools">
                   <div className="a-search">
-                    <i className="fa fa-search" />
+                    <FaMagnifyingGlass />
                     <input placeholder="Search name, phone, email…" value={userSearch} onChange={e => setUserSearch(e.target.value)} />
                   </div>
                   <select className="a-filter" value={userFilter} onChange={e => setUserFilter(e.target.value)}>
@@ -1031,7 +1032,7 @@ export default function AdminDashboard() {
               </div>
               <div className="a-tbl-wrap">
                 {filteredUsers.length === 0
-                  ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-users" /></div><h4>No users found</h4><p>Try adjusting your search or filter</p></div>
+                  ? <div className="a-empty"><div className="a-empty-ico"><FaUsers /></div><h4>No users found</h4><p>Try adjusting your search or filter</p></div>
                   : <table className="a-tbl">
                       <thead>
                         <tr><th>User</th><th>Role</th><th>Phone</th><th>WhatsApp</th><th>Verification</th><th>Active</th><th>Joined</th><th>Actions</th></tr>
@@ -1055,16 +1056,16 @@ export default function AdminDashboard() {
                                 ? <a href={`https://wa.me/${u.whatsapp.replace(/\D/g, '').replace(/^0/, '265')}`}
                                     target="_blank" rel="noopener noreferrer"
                                     style={{ color: '#25D366', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 3 }}>
-                                    <i className="fab fa-whatsapp" /> {u.whatsapp}
+                                    <FaWhatsapp /> {u.whatsapp}
                                   </a>
                                 : '—'}
                             </td>
                             <td>
                               {u.verified || u.verificationStatus === 'verified'
-                                ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Verified</span>
+                                ? <span className="a-badge a-badge-v"><FaCheck /> Verified</span>
                                 : u.verificationStatus === 'rejected'
-                                  ? <span className="a-badge a-badge-r"><i className="fa-solid fa-circle-xmark" /> Rejected</span>
-                                  : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
+                                  ? <span className="a-badge a-badge-r"><FaCircleXmark /> Rejected</span>
+                                  : <span className="a-badge a-badge-p"><FaHourglassHalf /> Pending</span>
                               }
                             </td>
                             <td>
@@ -1080,7 +1081,7 @@ export default function AdminDashboard() {
                                 {!u.verified && u.verificationStatus !== 'rejected' && (
                                   <button className="a-btn a-btn-green a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify User',
+                                      icon: <FaCircleCheck />, type: 'success', title: 'Verify User',
                                       message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}?`,
                                       confirmLabel: 'Verify', btnClass: 'green',
                                       onConfirm: () => verifyUser(u._id, 'approve'),
@@ -1091,7 +1092,7 @@ export default function AdminDashboard() {
                                 {u.verificationStatus !== 'rejected' && !u.verified && (
                                   <button className="a-btn a-btn-amber a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: <i className="fa-solid fa-triangle-exclamation" />, type: 'warn', title: 'Reject User',
+                                      icon: <FaTriangleExclamation />, type: 'warn', title: 'Reject User',
                                       message: `Reject ${u.firstName}'s verification? They will be notified.`,
                                       confirmLabel: 'Reject', btnClass: 'amber',
                                       onConfirm: () => verifyUser(u._id, 'reject'),
@@ -1101,7 +1102,7 @@ export default function AdminDashboard() {
                                 )}
                                 <button className="a-btn a-btn-red a-btn-sm"
                                   onClick={() => setConfirm({
-                                    icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete User',
+                                    icon: <FaTrash />, type: 'danger', title: 'Delete User',
                                     message: `Permanently delete ${u.firstName} ${u.lastName}? All their properties will also be removed.`,
                                     confirmLabel: 'Delete', btnClass: 'red',
                                     onConfirm: () => deleteUser(u._id),
@@ -1130,7 +1131,7 @@ export default function AdminDashboard() {
             {pendingVerification.length === 0 ? (
               <div className="a-panel">
                 <div className="a-empty" style={{ padding: '4rem' }}>
-                  <div className="a-empty-ico"><i className="fa-solid fa-circle-check" /></div>
+                  <div className="a-empty-ico"><FaCircleCheck /></div>
                   <h4>All clear!</h4>
                   <p>No accounts pending verification right now.</p>
                 </div>
@@ -1147,24 +1148,24 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.3rem', flexWrap: 'wrap' }}>
                           <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--dark)' }}>{u.firstName} {u.lastName}</span>
                           <span className={`a-badge a-badge-${u.role}`}>{u.role?.replace('_', ' ')}</span>
-                          <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
+                          <span className="a-badge a-badge-p"><FaHourglassHalf /> Pending</span>
                         </div>
                         <div className="a-verify-detail">
                           {[
-                            { ico: 'fa-phone',        val: u.phone    || '—' },
-                            { ico: 'fab fa-whatsapp', val: u.whatsapp || '—', color: '#25D366' },
-                            { ico: 'fa-envelope',     val: u.email    || '—' },
-                            { ico: 'fa-clock',        val: `Registered ${timeAgo(u.createdAt)}` },
+                            { ico: FaPhone,        val: u.phone    || '—' },
+                            { ico: FaWhatsapp, val: u.whatsapp || '—', color: '#25D366' },
+                            { ico: FaEnvelope,     val: u.email    || '—' },
+                            { ico: FaClock,        val: `Registered ${timeAgo(u.createdAt)}` },
                           ].map((row, j) => (
                             <div key={j} className="a-verify-detail-row">
-                              <i className={`fa ${row.ico}`} style={row.color ? { color: row.color } : {}} />
+                              <row.ico style={row.color ? { color: row.color } : {}} />
                               {row.val}
                             </div>
                           ))}
                         </div>
                         {properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length > 0 && (
                           <div style={{ marginTop: '.75rem', padding: '.65rem .85rem', background: 'var(--amber-light)', borderRadius: 9, border: '1px solid rgba(245,166,35,.3)', fontSize: '.78rem', color: 'var(--amber-dark)', fontWeight: 600 }}>
-                            <i className="fa fa-home" style={{ marginRight: 5 }} />
+                            <FaHouse style={{ marginRight: 5 }} />
                             {properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length} propert{properties.filter(p => p.owner?._id === u._id || p.owner === u._id).length !== 1 ? 'ies' : 'y'} listed under this account
                           </div>
                         )}
@@ -1185,7 +1186,7 @@ export default function AdminDashboard() {
                                     <img src={doc.url} alt={doc.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                   </div>
                                   <div style={{ fontSize: '.68rem', fontWeight: 700, color: 'var(--mid)', marginTop: 4, textAlign: 'center' }}>
-                                    {doc.label} <i className="fa-solid fa-up-right-from-square" style={{ fontSize: '.6rem' }} />
+                                    {doc.label} <FaUpRightFromSquare style={{ fontSize: '.6rem' }} />
                                   </div>
                                 </a>
                               ))}
@@ -1196,21 +1197,21 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', gap: '.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
                         <button className="a-btn a-btn-green"
                           onClick={() => setConfirm({
-                            icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Verify Account',
+                            icon: <FaCircleCheck />, type: 'success', title: 'Verify Account',
                             message: `Approve ${u.firstName} ${u.lastName} as a verified ${u.role?.replace('_', ' ')}? Their listings will go live.`,
-                            confirmLabel: <><i className="fa-solid fa-check" /> Verify</>, btnClass: 'green',
+                            confirmLabel: <><FaCheck /> Verify</>, btnClass: 'green',
                             onConfirm: () => verifyUser(u._id, 'approve'),
                           })}>
-                          <i className="fa-solid fa-check" /> Approve
+                          <FaCheck /> Approve
                         </button>
                         <button className="a-btn a-btn-red"
                           onClick={() => setConfirm({
-                            icon: <i className="fa-solid fa-circle-xmark" />, type: 'danger', title: 'Reject Account',
+                            icon: <FaCircleXmark />, type: 'danger', title: 'Reject Account',
                             message: `Reject ${u.firstName}'s verification request? They will be notified and cannot list properties.`,
-                            confirmLabel: <><i className="fa-solid fa-circle-xmark" /> Reject</>, btnClass: 'red',
+                            confirmLabel: <><FaCircleXmark /> Reject</>, btnClass: 'red',
                             onConfirm: () => verifyUser(u._id, 'reject'),
                           })}>
-                          <i className="fa-solid fa-circle-xmark" /> Reject
+                          <FaCircleXmark /> Reject
                         </button>
                       </div>
                     </div>
@@ -1231,12 +1232,12 @@ export default function AdminDashboard() {
             <div className="a-panel">
               <div className="a-panel-hd">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
-                  <div className="a-panel-title"><i className="fa fa-building" /> Properties</div>
+                  <div className="a-panel-title"><FaBuilding /> Properties</div>
                   <span className="a-count">{filteredProps.length}</span>
                 </div>
                 <div className="a-panel-tools">
                   <div className="a-search">
-                    <i className="fa fa-search" />
+                    <FaMagnifyingGlass />
                     <input placeholder="Search name, district…" value={propSearch} onChange={e => setPropSearch(e.target.value)} />
                   </div>
                   <select className="a-filter" value={propFilter} onChange={e => setPropFilter(e.target.value)}>
@@ -1249,7 +1250,7 @@ export default function AdminDashboard() {
               </div>
               <div className="a-tbl-wrap">
                 {filteredProps.length === 0
-                  ? <div className="a-empty"><div className="a-empty-ico"><i className="fa-solid fa-house" /></div><h4>No properties found</h4></div>
+                  ? <div className="a-empty"><div className="a-empty-ico"><FaHouse /></div><h4>No properties found</h4></div>
                   : <table className="a-tbl">
                       <thead>
                         <tr><th>Property</th><th>Owner</th><th>District</th><th>Price</th><th>Status</th><th>Views</th><th>WhatsApp</th><th>Calls</th><th>Listed</th><th>Actions</th></tr>
@@ -1264,7 +1265,7 @@ export default function AdminDashboard() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
                                   {img
                                     ? <img src={img} alt={p.name} className="a-prop-img" />
-                                    : <div className="a-prop-no-img"><i className="fa fa-home" /></div>
+                                    : <div className="a-prop-no-img"><FaHouse /></div>
                                   }
                                   <div>
                                     <div className="a-cell-name">{p.name}</div>
@@ -1282,10 +1283,10 @@ export default function AdminDashboard() {
                               </td>
                               <td>
                                 {p.flagged
-                                  ? <div className="a-scam-flag"><i className="fa fa-flag" /> Scam</div>
+                                  ? <div className="a-scam-flag"><FaFlag /> Scam</div>
                                   : p.verified
-                                    ? <span className="a-badge a-badge-v"><i className="fa-solid fa-check" /> Live</span>
-                                    : <span className="a-badge a-badge-p"><i className="fa-solid fa-hourglass-half" /> Pending</span>
+                                    ? <span className="a-badge a-badge-v"><FaCheck /> Live</span>
+                                    : <span className="a-badge a-badge-p"><FaHourglassHalf /> Pending</span>
                                 }
                               </td>
                               <td style={{ fontSize: '.8rem' }}>{p.viewCount ?? 0}</td>
@@ -1297,17 +1298,17 @@ export default function AdminDashboard() {
                                   {!p.flagged && (
                                     <button className="a-btn a-btn-amber a-btn-sm"
                                       onClick={() => setConfirm({
-                                        icon: <i className="fa-solid fa-flag" />, type: 'warn', title: 'Flag as Scam',
+                                        icon: <FaFlag />, type: 'warn', title: 'Flag as Scam',
                                         message: `Flag "${p.name}" as a scam listing? It will be hidden from public view immediately.`,
-                                        confirmLabel: <><i className="fa-solid fa-flag" /> Flag Scam</>, btnClass: 'amber',
+                                        confirmLabel: <><FaFlag /> Flag Scam</>, btnClass: 'amber',
                                         onConfirm: () => flagScam(p._id),
                                       })}>
-                                      <i className="fa-solid fa-flag" /> Flag
+                                      <FaFlag /> Flag
                                     </button>
                                   )}
                                   <button className="a-btn a-btn-red a-btn-sm"
                                     onClick={() => setConfirm({
-                                      icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete Property',
+                                      icon: <FaTrash />, type: 'danger', title: 'Delete Property',
                                       message: `Permanently remove "${p.name}"? The owner will be notified.`,
                                       confirmLabel: 'Delete', btnClass: 'red',
                                       onConfirm: () => deleteProperty(p._id),
@@ -1337,7 +1338,7 @@ export default function AdminDashboard() {
             {flaggedProps.length === 0 ? (
               <div className="a-panel">
                 <div className="a-empty" style={{ padding: '4rem' }}>
-                  <div className="a-empty-ico"><i className="fa-solid fa-shield-halved" /></div>
+                  <div className="a-empty-ico"><FaShieldHalved /></div>
                   <h4>All clear!</h4>
                   <p>No flagged listings at the moment. The platform is clean.</p>
                 </div>
@@ -1352,22 +1353,22 @@ export default function AdminDashboard() {
                       <div style={{ padding: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
                         {img
                           ? <img src={img} alt={p.name} style={{ width: 80, height: 64, borderRadius: 9, objectFit: 'cover', flexShrink: 0, border: '2px solid var(--border)' }} />
-                          : <div className="a-prop-no-img" style={{ width: 80, height: 64, borderRadius: 9 }}><i className="fa fa-home" /></div>
+                          : <div className="a-prop-no-img" style={{ width: 80, height: 64, borderRadius: 9 }}><FaHouse /></div>
                         }
                         <div style={{ flex: 1, minWidth: 200 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.35rem', flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--dark)' }}>{p.name}</span>
-                            <div className="a-scam-flag"><i className="fa fa-flag" /> Flagged Scam</div>
+                            <div className="a-scam-flag"><FaFlag /> Flagged Scam</div>
                           </div>
                           <div className="a-flag-detail">
                             {[
-                              { ico: 'fa-map-marker-alt', val: p.district || p.address || '—' },
-                              { ico: 'fa-tag',            val: `MWK ${p.price?.toLocaleString() || '—'}` },
-                              { ico: 'fa-user',           val: p.owner?.firstName ? `${p.owner.firstName} ${p.owner.lastName}` : '—' },
-                              { ico: 'fa-phone',          val: p.owner?.phone || p.contactPhone || '—' },
+                              { ico: FaMapMarkerAlt, val: p.district || p.address || '—' },
+                              { ico: FaTag,            val: `MWK ${p.price?.toLocaleString() || '—'}` },
+                              { ico: FaUser,           val: p.owner?.firstName ? `${p.owner.firstName} ${p.owner.lastName}` : '—' },
+                              { ico: FaPhone,          val: p.owner?.phone || p.contactPhone || '—' },
                             ].map((row, j) => (
                               <div key={j} className="a-flag-detail-row">
-                                <i className={`fa ${row.ico}`} />
+                                <row.ico />
                                 {row.val}
                               </div>
                             ))}
@@ -1381,7 +1382,7 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', gap: '.5rem', flexShrink: 0, flexWrap: 'wrap' }}>
                           <button className="a-btn a-btn-outline"
                             onClick={() => setConfirm({
-                              icon: <i className="fa-solid fa-circle-check" />, type: 'success', title: 'Unflag Listing',
+                              icon: <FaCircleCheck />, type: 'success', title: 'Unflag Listing',
                               message: `Remove the scam flag from "${p.name}" and make it live again?`,
                               confirmLabel: 'Unflag', btnClass: 'green',
                               onConfirm: async () => {
@@ -1395,16 +1396,16 @@ export default function AdminDashboard() {
                                 } finally { setConfirmLoading(false); setConfirm(null); }
                               },
                             })}>
-                            <i className="fa-solid fa-check" /> Unflag
+                            <FaCheck /> Unflag
                           </button>
                           <button className="a-btn a-btn-red"
                             onClick={() => setConfirm({
-                              icon: <i className="fa-solid fa-trash" />, type: 'danger', title: 'Delete Scam Listing',
+                              icon: <FaTrash />, type: 'danger', title: 'Delete Scam Listing',
                               message: `Permanently delete "${p.name}" from the platform? This cannot be undone.`,
-                              confirmLabel: <><i className="fa-solid fa-trash" /> Delete</>, btnClass: 'red',
+                              confirmLabel: <><FaTrash /> Delete</>, btnClass: 'red',
                               onConfirm: () => deleteProperty(p._id),
                             })}>
-                            <i className="fa-solid fa-trash" /> Delete
+                            <FaTrash /> Delete
                           </button>
                         </div>
                       </div>

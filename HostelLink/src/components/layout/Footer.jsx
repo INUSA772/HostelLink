@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope, FaPhone, FaMapMarkerAlt, FaFlag, FaHeart } from 'react-icons/fa';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -165,7 +165,7 @@ const Footer = () => {
 
             {/* ── BRAND ── */}
             <div className="pf-brand-col">
-              <div className="pf-brand-name">PezaNyumba <i className="fa-solid fa-flag" /></div>
+              <div className="pf-brand-name">PezaNyumba <FaFlag /></div>
               <p className="pf-brand-desc">
                 Malawi's platform for finding and listing houses, flats, rooms and plots.
                 Your money is protected. No middlemen. No walking door to door.
@@ -227,7 +227,7 @@ const Footer = () => {
               © {currentYear} PezaNyumba. All rights reserved.
             </p>
             <p className="pf-credit">
-              Made with <i className="fa-solid fa-heart" /> in Malawi by <strong>ForjiTech</strong>
+              Made with <FaHeart /> in Malawi by <strong>ForjiTech</strong>
             </p>
           </div>
 

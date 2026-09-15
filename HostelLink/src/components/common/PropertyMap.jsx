@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { FaMapLocationDot } from 'react-icons/fa6';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -48,7 +49,7 @@ export default function PropertyMap({ lat, lng, name, address }) {
           fontSize: '0.85rem', fontWeight: 700, color: '#1a5c52', textDecoration: 'none',
         }}
       >
-        <i className="fa fa-map-location-dot" /> Open in Google Maps
+        <FaMapLocationDot /> Open in Google Maps
       </a>
     </div>
   );

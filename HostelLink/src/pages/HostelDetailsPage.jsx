@@ -48,7 +48,7 @@ const styles = `
   .carousel-stage { position: relative; width: 100%; background: #111; aspect-ratio: 16/10; overflow: hidden; }
   .carousel-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity 0.3s; }
   .carousel-no-image { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--teal-light); color: var(--text-mid); font-size: 1rem; flex-direction: column; gap: 0.5rem; }
-  .carousel-no-image i { font-size: 3rem; opacity: 0.4; color: var(--teal-mid); }
+  .carousel-no-image i, .carousel-no-image svg { font-size: 3rem; opacity: 0.4; color: var(--teal-mid); }
   .car-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(13,74,64,0.75); color: var(--white); border: none; width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: background 0.2s; z-index: 10; }
   .car-btn:hover { background: rgba(13,74,64,0.95); }
   .car-prev { left: 12px; } .car-next { right: 12px; }
@@ -67,7 +67,7 @@ const styles = `
   .detail-price span { font-size: 1rem; font-weight: 500; color: var(--text-mid); }
   .detail-name { font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.5rem; }
   .detail-location { display: flex; align-items: center; gap: 0.5rem; color: var(--text-mid); font-size: 0.9rem; margin-bottom: 0.75rem; }
-  .detail-location i { color: var(--teal-mid); }
+  .detail-location i, .detail-location svg { color: var(--teal-mid); }
   .detail-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; }
   .stars-gold { color: #f59e0b; letter-spacing: 2px; } .rating-count { color: var(--text-mid); font-size: 0.85rem; }
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; border-top: 1px solid var(--gray-light); border-bottom: 1px solid var(--gray-light); padding: 1.25rem 0; margin-bottom: 1.25rem; }
@@ -79,7 +79,7 @@ const styles = `
   .detail-desc { color: var(--text-mid); line-height: 1.7; font-size: 0.92rem; margin-bottom: 1.25rem; }
   .amenities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.5rem; }
   .amenity-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.8rem; background: var(--teal-pale); border-radius: 8px; font-size: 0.85rem; color: var(--text-dark); font-weight: 500; border: 1px solid var(--gray-light); }
-  .amenity-chip i { color: var(--teal); width: 16px; text-align: center; }
+  .amenity-chip i, .amenity-chip svg { color: var(--teal); width: 16px; text-align: center; }
 
   .rooms-section { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-top: 1rem; }
   .rooms-section h3 { font-size: 1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -97,7 +97,7 @@ const styles = `
   .room-img-btn:hover { background: rgba(13,74,64,0.9); }
   .room-img-counter { position: absolute; bottom: 6px; right: 8px; background: rgba(13,74,64,0.7); color: white; font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
   .room-no-img { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--teal-mid); gap: 0.4rem; font-size: 0.8rem; }
-  .room-no-img i { font-size: 2rem; opacity: 0.35; }
+  .room-no-img i, .room-no-img svg { font-size: 2rem; opacity: 0.35; }
   .room-card-body { padding: 0.9rem; }
   .room-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
   .room-card-name { font-size: 0.92rem; font-weight: 800; color: var(--teal-dark); }
@@ -115,7 +115,7 @@ const styles = `
   .map-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-dark); }
   .map-embed { width: 100%; height: 300px; border-radius: 10px; overflow: hidden; border: none; }
   .map-address { margin-top: 0.75rem; color: var(--text-mid); font-size: 0.87rem; display: flex; gap: 0.4rem; align-items: flex-start; }
-  .map-address i { color: var(--teal-mid); margin-top: 2px; }
+  .map-address i, .map-address svg { color: var(--teal-mid); margin-top: 2px; }
 
   .sidebar { position: sticky; top: 72px; height: fit-content; display: flex; flex-direction: column; gap: 1rem; }
   .owner-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
@@ -199,21 +199,21 @@ function RoomCard({ room, hostelPrice }) {
             {images.length > 1 && (
               <>
                 <div className="room-card-imgs-nav">
-                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p - 1 + images.length) % images.length)}><i className="fa fa-chevron-left" /></button>
-                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p + 1) % images.length)}><i className="fa fa-chevron-right" /></button>
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p - 1 + images.length) % images.length)}><FaChevronLeft /></button>
+                  <button className="room-img-btn" onClick={() => setImgIdx(p => (p + 1) % images.length)}><FaChevronRight /></button>
                 </div>
                 <div className="room-img-counter">{imgIdx + 1}/{images.length}</div>
               </>
             )}
           </>
         ) : (
-          <div className="room-no-img"><i className="fa fa-bed" /><span>No photos</span></div>
+          <div className="room-no-img"><FaBed /><span>No photos</span></div>
         )}
       </div>
 
       <div className="room-card-body">
         <div className="room-card-header">
-          <span className="room-card-name"><i className="fa-solid fa-door-open" /> {room.roomNumber}</span>
+          <span className="room-card-name"><FaDoorOpen /> {room.roomNumber}</span>
           <span className={`room-avail-badge ${isAvailable ? 'available' : 'full'}`}>
             {isAvailable ? `${room.availableBedspaces} free` : 'Full'}
           </span>
@@ -239,13 +239,13 @@ function RoomCard({ room, hostelPrice }) {
         {/* Bedspace visual */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.75rem' }}>
           {Array.from({ length: room.totalBedspaces }).map((_, i) => (
-            <span key={i} style={{ fontSize: '1.1rem', opacity: i < bookedBeds ? 0.3 : 1 }} title={i < bookedBeds ? 'Occupied' : 'Available'}><i className="fa-solid fa-bed" /></span>
+            <span key={i} style={{ fontSize: '1.1rem', opacity: i < bookedBeds ? 0.3 : 1 }} title={i < bookedBeds ? 'Occupied' : 'Available'}><FaBed /></span>
           ))}
         </div>
 
         {!isAvailable && (
           <div style={{ fontSize: '0.75rem', color: '#dc2626', textAlign: 'center', padding: '0.4rem', background: '#fef2f2', borderRadius: 6, fontWeight: 700 }}>
-<i className="fa-solid fa-ban" /> This room is fully occupied
+<FaBan /> This room is fully occupied
           </div>
         )}
       </div>
@@ -269,7 +269,7 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <button className="hd-bar-back" onClick={() => navigate(-1)}><FaArrowLeft /> Back</button>
         <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div><span className="hd-bar-logo-text">PezaNyumba</span></Link>
         <div />
       </nav>
@@ -281,12 +281,12 @@ export default function HostelDetailsPage() {
     <>
       <style>{styles}</style>
       <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <button className="hd-bar-back" onClick={() => navigate(-1)}><FaArrowLeft /> Back</button>
         <Link to="/" className="hd-bar-logo"><div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div><span className="hd-bar-logo-text">PezaNyumba</span></Link>
         <div />
       </nav>
       <div className="hd-center">
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><i className="fa-solid fa-house" /></div>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}><FaHouse /></div>
         <p className="hd-error">Property not found.</p>
         <button className="hd-bar-btn hd-bar-btn-solid" style={{ margin: '0 auto', display: 'inline-flex' }} onClick={() => navigate('/properties')}>Browse All Properties</button>
       </div>
@@ -317,21 +317,20 @@ export default function HostelDetailsPage() {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <nav className="hd-bar">
-        <button className="hd-bar-back" onClick={() => navigate(-1)}><i className="fa fa-arrow-left" /> Back</button>
+        <button className="hd-bar-back" onClick={() => navigate(-1)}><FaArrowLeft /> Back</button>
         <Link to="/" className="hd-bar-logo">
           <div className="hd-bar-logo-img"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
           <span className="hd-bar-logo-text">PezaNyumba</span>
         </Link>
         <div className="hd-bar-right">
-          <Link to="/about" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-info-circle" /> About</Link>
-          <Link to="/contact" className="hd-bar-btn hd-bar-btn-nav"><i className="fa fa-phone" /> Contact</Link>
+          <Link to="/about" className="hd-bar-btn hd-bar-btn-nav"><FaCircleInfo /> About</Link>
+          <Link to="/contact" className="hd-bar-btn hd-bar-btn-nav"><FaPhone /> Contact</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/bookings" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-bookmark" /> My Bookings</Link>
-              <Link to="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><i className="fa fa-th-large" /> Dashboard</Link>
+              <Link to="/bookings" className="hd-bar-btn hd-bar-btn-ghost"><FaBookmark /> My Bookings</Link>
+              <Link to="/dashboard" className="hd-bar-btn hd-bar-btn-ghost"><FaTableCellsLarge /> Dashboard</Link>
             </>
           ) : (
             <>
@@ -350,20 +349,20 @@ export default function HostelDetailsPage() {
             <div className="carousel-stage">
               {images.length > 0
                 ? <img className="carousel-img" src={images[imgIndex]} alt={`${currentHostel.name} photo ${imgIndex + 1}`} />
-                : <div className="carousel-no-image"><i className="fa fa-image" /><span>No photos uploaded yet</span></div>
+                : <div className="carousel-no-image"><FaImage /><span>No photos uploaded yet</span></div>
               }
               {images.length > 1 && (
                 <>
-                  <button className="car-btn car-prev" onClick={prevImg}><i className="fa fa-chevron-left" /></button>
-                  <button className="car-btn car-next" onClick={nextImg}><i className="fa fa-chevron-right" /></button>
+                  <button className="car-btn car-prev" onClick={prevImg}><FaChevronLeft /></button>
+                  <button className="car-btn car-next" onClick={nextImg}><FaChevronRight /></button>
                   <div className="car-counter">{imgIndex + 1} / {images.length}</div>
                 </>
               )}
               <div className="car-actions">
                 <button className={`car-action-btn${liked ? ' liked' : ''}`} onClick={() => setLiked(l => !l)}>
-                  <i className={liked ? 'fa fa-heart' : 'far fa-heart'} />
+                  {liked ? <FaHeart /> : <FaRegHeart />}
                 </button>
-                <button className="car-action-btn" onClick={handleShare}><i className="fa fa-share-alt" /></button>
+                <button className="car-action-btn" onClick={handleShare}><FaShareNodes /></button>
               </div>
             </div>
             {images.length > 1 && (
@@ -381,32 +380,33 @@ export default function HostelDetailsPage() {
           <div className="detail-card">
             <div className="detail-price">MK {currentHostel.price.toLocaleString()} <span>/ month</span></div>
             <div className="detail-name">{currentHostel.name}</div>
-            <div className="detail-location"><i className="fa fa-map-marker-alt" /> {currentHostel.address}</div>
+            <div className="detail-location"><FaLocationDot /> {currentHostel.address}</div>
             <div className="detail-rating">
               <span className="stars-gold">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <i key={i} className={i < fullStars ? 'fa-solid fa-star' : (i === fullStars && hasHalfStar ? 'fa-solid fa-star-half-stroke' : 'fa-regular fa-star')} />
-                ))}
+                {Array.from({ length: 5 }, (_, i) => {
+                  const StarIcon = i < fullStars ? FaStar : (i === fullStars && hasHalfStar ? FaStarHalfStroke : FaRegStar);
+                  return <StarIcon key={i} />;
+                })}
               </span>
               <span className="rating-count">{rating.toFixed(1)} · {currentHostel.reviewCount || 0} reviews</span>
               {currentHostel.verified && (
                 <span style={{ marginLeft: '0.5rem', background: 'rgba(34,197,94,0.12)', color: '#22c55e', fontSize: '0.78rem', fontWeight: 700, padding: '2px 8px', borderRadius: '20px' }}>
-                  <i className="fa fa-check-circle" /> Verified
+                  <FaCircleCheck /> Verified
                 </span>
               )}
             </div>
             <div className="detail-grid">
               {[
-                { icon: 'fa-door-open',    label: 'Total Rooms',   value: currentHostel.totalRooms },
-                { icon: 'fa-check-circle', label: 'Available Now', value: `${currentHostel.availableRooms} rooms`, color: '#22c55e', bg: 'rgba(34,197,94,0.1)' },
-                { icon: 'fa-home',         label: 'Room Type',     value: currentHostel.type },
-                { icon: 'fa-venus-mars',   label: 'Gender',        value: currentHostel.gender },
-                { icon: 'fa-phone',        label: 'Contact Phone', value: currentHostel.contactPhone },
-                { icon: 'fa-eye',          label: 'Total Views',   value: currentHostel.viewCount || 0 },
+                { icon: FaDoorOpen,    label: 'Total Rooms',   value: currentHostel.totalRooms },
+                { icon: FaCircleCheck, label: 'Available Now', value: `${currentHostel.availableRooms} rooms`, color: '#22c55e', bg: 'rgba(34,197,94,0.1)' },
+                { icon: FaHouse,       label: 'Room Type',     value: currentHostel.type },
+                { icon: FaVenusMars,   label: 'Gender',        value: currentHostel.gender },
+                { icon: FaPhone,       label: 'Contact Phone', value: currentHostel.contactPhone },
+                { icon: FaEye,         label: 'Total Views',   value: currentHostel.viewCount || 0 },
               ].map((item, i) => (
                 <div key={i} className="dg-item">
                   <div className="dg-icon" style={item.bg ? { background: item.bg } : {}}>
-                    <i className={`fa ${item.icon}`} style={item.color ? { color: item.color } : {}} />
+                    <item.icon style={item.color ? { color: item.color } : {}} />
                   </div>
                   <div className="dg-text">
                     <small>{item.label}</small>
@@ -421,9 +421,10 @@ export default function HostelDetailsPage() {
               <>
                 <p className="section-heading">Amenities & Features</p>
                 <div className="amenities-grid">
-                  {currentHostel.amenities.map(a => (
-                    <div key={a} className="amenity-chip"><i className={`fa ${AMENITY_ICONS[a] || 'fa-check'}`} /> {a}</div>
-                  ))}
+                  {currentHostel.amenities.map(a => {
+                    const AmenityIcon = AMENITY_ICONS[a] || FaCheck;
+                    return <div key={a} className="amenity-chip"><AmenityIcon /> {a}</div>;
+                  })}
                 </div>
               </>
             )}
@@ -443,22 +444,22 @@ export default function HostelDetailsPage() {
           {/* ROOMS SECTION */}
           {rooms.length > 0 && (
             <div className="rooms-section">
-              <h3><i className="fa fa-bed" /> Available Rooms & Bedspaces</h3>
+              <h3><FaBed /> Available Rooms & Bedspaces</h3>
               <div className="rooms-summary-bar">
                 <div className="rooms-summary-item">
-                  <i className="fa fa-door-open" style={{ color: 'var(--teal)' }} />
+                  <FaDoorOpen style={{ color: 'var(--teal)' }} />
                   <span>{rooms.length}</span> Rooms
                 </div>
                 <div className="rooms-summary-item">
-                  <i className="fa fa-bed" style={{ color: 'var(--teal)' }} />
+                  <FaBed style={{ color: 'var(--teal)' }} />
                   <span>{totalBedspaces}</span> Total Bedspaces
                 </div>
                 <div className="rooms-summary-item">
-                  <i className="fa fa-check-circle" style={{ color: '#15803d' }} />
+                  <FaCircleCheck style={{ color: '#15803d' }} />
                   <span style={{ color: '#15803d' }}>{availableBedspaces}</span> Available
                 </div>
                 <div className="rooms-summary-item">
-                  <i className="fa fa-times-circle" style={{ color: '#dc2626' }} />
+                  <FaCircleXmark style={{ color: '#dc2626' }} />
                   <span style={{ color: '#dc2626' }}>{totalBedspaces - availableBedspaces}</span> Occupied
                 </div>
               </div>
@@ -476,9 +477,9 @@ export default function HostelDetailsPage() {
 
           {/* MAP */}
           <div className="map-card">
-            <h3><i className="fa fa-map-marked-alt" style={{ color: 'var(--teal-mid)', marginRight: '0.4rem' }} /> Location on Map</h3>
+            <h3><FaMapLocationDot style={{ color: 'var(--teal-mid)', marginRight: '0.4rem' }} /> Location on Map</h3>
             <iframe className="map-embed" title="Property Location" src={mapEmbedUrl} allowFullScreen loading="lazy" />
-            <div className="map-address"><i className="fa fa-map-marker-alt" /><span>{currentHostel.address}</span></div>
+            <div className="map-address"><FaLocationDot /><span>{currentHostel.address}</span></div>
           </div>
 
         </div>
@@ -506,14 +507,14 @@ export default function HostelDetailsPage() {
             <div className="book-info-row">
               <span>Status</span>
               <strong style={{ color: currentHostel.verified ? '#22c55e' : '#6b7280' }}>
-                {currentHostel.verified ? <><i className="fa-solid fa-check" /> Verified</> : 'Unverified'}
+                {currentHostel.verified ? <><FaCheck /> Verified</> : 'Unverified'}
               </strong>
             </div>
           </div>
 
           <div className="owner-card">
             <div className="owner-top">
-              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || <i className="fa-regular fa-user" />}</div>
+              <div className="owner-avatar">{currentHostel.owner?.firstName?.[0]?.toUpperCase() || <FaRegUser />}</div>
               <div>
                 <div className="owner-info-role">Listed by</div>
                 <div className="owner-info-name">{currentHostel.owner?.firstName} {currentHostel.owner?.lastName}</div>
@@ -521,23 +522,23 @@ export default function HostelDetailsPage() {
               </div>
             </div>
             <div className="owner-btns">
-              <button className="owner-btn owner-btn-blue" onClick={handleMessage}><i className="fa fa-comment-dots" /> Message Owner</button>
+              <button className="owner-btn owner-btn-blue" onClick={handleMessage}><FaCommentDots /> Message Owner</button>
               <ContactButtons
                 hostel={currentHostel}
                 renderWhatsapp={({ href, onClick }) => (
                   <a href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
-                    <i className="fab fa-whatsapp" /> WhatsApp
+                    <FaWhatsapp /> WhatsApp
                   </a>
                 )}
                 renderCall={({ href, onClick }) => (
                   <a href={href} onClick={onClick} className="owner-btn owner-btn-green" style={{ textDecoration: 'none' }}>
-                    <i className="fa fa-phone" /> Call{href.startsWith('tel:') ? `: ${href.slice(4)}` : ''}
+                    <FaPhone /> Call{href.startsWith('tel:') ? `: ${href.slice(4)}` : ''}
                   </a>
                 )}
               />
               {currentHostel.owner?.email && (
                 <a href={`mailto:${currentHostel.owner.email}`} className="owner-btn owner-btn-ghost" style={{ textDecoration: 'none' }}>
-                  <i className="fa fa-envelope" /> Email Owner
+                  <FaEnvelope /> Email Owner
                 </a>
               )}
             </div>
@@ -545,14 +546,14 @@ export default function HostelDetailsPage() {
 
           <div style={{ background: 'var(--white)', borderRadius: 'var(--radius)', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <Link to="/about" style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
-              <i className="fa fa-info-circle" /> About PezaNyumba
+              <FaCircleInfo /> About PezaNyumba
             </Link>
             <Link to="/contact" style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
-              <i className="fa fa-phone" /> Contact Us
+              <FaPhone /> Contact Us
             </Link>
             {isAuthenticated && (
               <Link to="/bookings" style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0' }}>
-                <i className="fa fa-bookmark" /> My Bookings
+                <FaBookmark /> My Bookings
               </Link>
             )}
           </div>
@@ -561,7 +562,7 @@ export default function HostelDetailsPage() {
             onClick={() => toast.info('Thank you for helping keep PezaNyumba safe.')}
             style={{ width: '100%', padding: '0.65rem', background: 'transparent', border: '1px solid var(--gray-light)', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-mid)', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.2s', fontFamily: 'Manrope, sans-serif' }}
           >
-            <i className="fa fa-flag" /> Report this listing
+            <FaFlag /> Report this listing
           </button>
         </div>
       </div>

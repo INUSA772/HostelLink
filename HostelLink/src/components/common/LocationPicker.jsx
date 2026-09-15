@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FaLocationCrosshairs } from 'react-icons/fa6';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -85,7 +86,7 @@ export default function LocationPicker({ lat, lng, onChange }) {
             cursor: locating ? 'not-allowed' : 'pointer',
           }}
         >
-          <i className="fa fa-location-crosshairs" /> {locating ? 'Locating…' : 'Use my location'}
+          <FaLocationCrosshairs /> {locating ? 'Locating…' : 'Use my location'}
         </button>
       </div>
     </div>

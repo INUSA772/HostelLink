@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ContactButtons from "../components/payment/ContactButtons";
+import {
+  FaImages, FaXmark, FaChevronLeft, FaChevronRight, FaHouse, FaWhatsapp, FaPhone,
+  FaLocationDot, FaBed, FaBath, FaDoorOpen, FaArrowLeft, FaBuilding, FaMagnifyingGlass, FaSort,
+} from "react-icons/fa6";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -84,14 +88,14 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
       onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="pp-lb-box">
         <div className="pp-lb-header">
-          <div className="pp-lb-title"><i className="fa fa-images" style={{color:"#f5a623",marginRight:8}}/>{propertyName}</div>
+          <div className="pp-lb-title"><FaImages style={{color:"#f5a623",marginRight:8}}/>{propertyName}</div>
           <div className="pp-lb-counter">{idx + 1} of {images.length}</div>
-          <button className="pp-lb-close" onClick={onClose}><i className="fa fa-times"/></button>
+          <button className="pp-lb-close" onClick={onClose}><FaXmark/></button>
         </div>
         <div className="pp-lb-main">
-          {images.length > 1 && <button className="pp-lb-nav pp-lb-prev" onClick={() => setIdx(i => (i-1+images.length)%images.length)}><i className="fa fa-chevron-left"/></button>}
+          {images.length > 1 && <button className="pp-lb-nav pp-lb-prev" onClick={() => setIdx(i => (i-1+images.length)%images.length)}><FaChevronLeft/></button>}
           <img src={images[idx]} alt={`${propertyName} ${idx+1}`} className="pp-lb-img"/>
-          {images.length > 1 && <button className="pp-lb-nav pp-lb-next" onClick={() => setIdx(i => (i+1)%images.length)}><i className="fa fa-chevron-right"/></button>}
+          {images.length > 1 && <button className="pp-lb-nav pp-lb-next" onClick={() => setIdx(i => (i+1)%images.length)}><FaChevronRight/></button>}
         </div>
         {images.length > 1 && (
           <div className="pp-lb-thumbs">
@@ -133,23 +137,23 @@ function PropertyCard({ property }) {
       >
         {p.images[0]
           ? <img src={p.images[0]} alt={p.name} loading="lazy"/>
-          : <div className="pp-card-no-img"><i className="fa fa-home"/></div>
+          : <div className="pp-card-no-img"><FaHouse/></div>
         }
         <div className="pp-card-badges">
           <span className={`pp-badge ${isForSale ? "sale" : "rent"}`}>{isForSale ? "For Sale" : "For Rent"}</span>
           {p.type && <span className="pp-badge type">{p.type}</span>}
         </div>
         {p.images.length > 1 && (
-          <div className="pp-img-count"><i className="fa fa-images"/> {p.images.length}</div>
+          <div className="pp-img-count"><FaImages/> {p.images.length}</div>
         )}
         {p.images.length > 0 && (
-          <div className="pp-img-hint"><span><i className="fa fa-images"/> View photos</span></div>
+          <div className="pp-img-hint"><span><FaImages/> View photos</span></div>
         )}
       </div>
 
       <div className="pp-card-body">
         <div className="pp-card-name">{p.name}</div>
-        <div className="pp-card-loc"><i className="fa fa-map-marker-alt"/> {[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
+        <div className="pp-card-loc"><FaLocationDot/> {[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
         <div className="pp-card-price">{formatPrice(p.price, p.listingType)}</div>
 
         {/* ═══ DESCRIPTION with show more/less ═══ */}
@@ -168,9 +172,9 @@ function PropertyCard({ property }) {
         )}
 
         <div className="pp-card-meta">
-          {p.bedrooms  > 0 && <span><i className="fa fa-bed"/>  {p.bedrooms} bed</span>}
-          {p.bathrooms > 0 && <span><i className="fa fa-bath"/> {p.bathrooms} bath</span>}
-          {p.availableRooms > 0 && <span><i className="fa fa-door-open"/> {p.availableRooms} avail.</span>}
+          {p.bedrooms  > 0 && <span><FaBed/>  {p.bedrooms} bed</span>}
+          {p.bathrooms > 0 && <span><FaBath/> {p.bathrooms} bath</span>}
+          {p.availableRooms > 0 && <span><FaDoorOpen/> {p.availableRooms} avail.</span>}
         </div>
       </div>
 
@@ -181,11 +185,11 @@ function PropertyCard({ property }) {
           onCallClick={() => trackClick(p._id, 'call')}
           renderWhatsapp={({ href, onClick }) => (
             <a className="pp-wa" href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick}>
-              <i className="fab fa-whatsapp"/> WhatsApp
+              <FaWhatsapp/> WhatsApp
             </a>
           )}
           renderCall={({ href, onClick }) => (
-            <a className="pp-call" href={href} onClick={onClick}><i className="fa fa-phone"/> Call</a>
+            <a className="pp-call" href={href} onClick={onClick}><FaPhone/> Call</a>
           )}
           renderEmpty={() => <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>No contact info</span>}
         />
@@ -297,7 +301,7 @@ const styles = `
     transition: border-color .2s;
   }
   .pp-filter-search:focus-within { border-color: var(--amber); }
-  .pp-filter-search i { color: var(--amber-dark); font-size: .85rem; }
+  .pp-filter-search i, .pp-filter-search svg { color: var(--amber-dark); font-size: .85rem; }
   .pp-filter-search input {
     border: none; background: transparent; font-size: .85rem;
     color: var(--dark); font-family: inherit; font-weight: 500;
@@ -424,7 +428,7 @@ const styles = `
   .pp-card-body { padding: 1rem; flex: 1; }
   .pp-card-name  { font-size: .95rem; font-weight: 800; color: var(--navy); margin-bottom: .3rem; line-height: 1.3; }
   .pp-card-loc   { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }
-  .pp-card-loc i { color: var(--amber-dark); font-size: .72rem; }
+  .pp-card-loc i, .pp-card-loc svg { color: var(--amber-dark); font-size: .72rem; }
   .pp-card-price { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
 
   /* ═══ DESCRIPTION with show more/less ═══ */
@@ -442,7 +446,7 @@ const styles = `
 
   .pp-card-meta  { display: flex; gap: .8rem; margin-top: .5rem; flex-wrap: wrap; }
   .pp-card-meta span { font-size: .72rem; color: var(--mid); display: flex; align-items: center; gap: 3px; }
-  .pp-card-meta i { color: var(--amber-dark); }
+  .pp-card-meta i, .pp-card-meta svg { color: var(--amber-dark); }
   .pp-card-actions {
     padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; gap: .5rem;
   }
@@ -630,13 +634,12 @@ export default function PropertiesPage() {
   return (
     <div className="pp-page">
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
       {/* ── HEADER ── */}
       <div className="pp-header">
         <div className="pp-header-inner">
           <button className="pp-back" onClick={() => navigate("/")}>
-            <i className="fa fa-arrow-left"/> Back to Home
+            <FaArrowLeft/> Back to Home
           </button>
           <div className="pp-header-title">
             <h1>Properties {contextLabel}</h1>
@@ -644,7 +647,7 @@ export default function PropertiesPage() {
           </div>
           {!loading && (
             <div className="pp-header-count">
-              <i className="fa fa-building" style={{marginRight:6}}/>{filtered.length} listings
+              <FaBuilding style={{marginRight:6}}/>{filtered.length} listings
             </div>
           )}
         </div>
@@ -654,7 +657,7 @@ export default function PropertiesPage() {
       <div className="pp-filters">
         <div className="pp-filters-inner">
           <div className="pp-filter-search">
-            <i className="fa fa-search"/>
+            <FaMagnifyingGlass/>
             <input
               type="text"
               placeholder="Search name, district, address…"
@@ -664,7 +667,7 @@ export default function PropertiesPage() {
           </div>
 
           <div className="pp-filter-group">
-            <label><i className="fa fa-map-marker-alt"/> District</label>
+            <label><FaLocationDot/> District</label>
             <select value={district} onChange={e => { setDistrict(e.target.value); applyFilter("district", e.target.value); }}>
               <option value="">All Districts</option>
               {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
@@ -672,7 +675,7 @@ export default function PropertiesPage() {
           </div>
 
           <div className="pp-filter-group">
-            <label><i className="fa fa-home"/> Type</label>
+            <label><FaHouse/> Type</label>
             <select value={type} onChange={e => { setType(e.target.value); applyFilter("type", e.target.value); }}>
               <option value="">All Types</option>
               {PROPERTY_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -691,7 +694,7 @@ export default function PropertiesPage() {
 
           {hasFilters && (
             <button className="pp-filter-clear" onClick={clearFilters}>
-              <i className="fa fa-times"/> Clear filters
+              <FaXmark/> Clear filters
             </button>
           )}
         </div>
@@ -706,7 +709,7 @@ export default function PropertiesPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="pp-empty">
-            <div className="pp-empty-icon"><i className="fa fa-search"/></div>
+            <div className="pp-empty-icon"><FaMagnifyingGlass/></div>
             <h3>No properties found</h3>
             <p>{hasFilters ? "Try adjusting your filters or search terms." : "No listings available yet. Check back soon!"}</p>
             {hasFilters && <button className="pp-empty-btn" onClick={clearFilters}>Clear all filters</button>}
@@ -716,7 +719,7 @@ export default function PropertiesPage() {
             <div className="pp-result-info">
               <p>Showing <strong>{paged.length}</strong> of <strong>{filtered.length}</strong> properties</p>
               <div className="pp-sort">
-                <i className="fa fa-sort"/> Sort:
+                <FaSort/> Sort:
                 <select value={sort} onChange={e => { setSort(e.target.value); setPage(1); }}>
                   <option value="newest">Newest first</option>
                   <option value="price-asc">Price: Low to high</option>
@@ -734,7 +737,7 @@ export default function PropertiesPage() {
             {totalPages > 1 && (
               <div className="pp-pagination">
                 <button className="pp-page-btn" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1}>
-                  <i className="fa fa-chevron-left"/>
+                  <FaChevronLeft/>
                 </button>
                 {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                   const p = totalPages <= 7 ? i + 1 : page <= 4 ? i + 1 : page >= totalPages - 3 ? totalPages - 6 + i : page - 3 + i;
@@ -746,7 +749,7 @@ export default function PropertiesPage() {
                   );
                 })}
                 <button className="pp-page-btn" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages}>
-                  <i className="fa fa-chevron-right"/>
+                  <FaChevronRight/>
                 </button>
               </div>
             )}

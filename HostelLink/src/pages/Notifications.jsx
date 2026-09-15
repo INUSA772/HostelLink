@@ -420,7 +420,7 @@ const Notifications = () => {
             <div className="notif-empty-ico"><FaBellSlash /></div>
             <h3>
               {activeTab === 'unread'
-                ? (<>You're all caught up! <i className="fa-solid fa-circle-check"></i></>)
+                ? (<>You're all caught up! <FaCheckCircle /></>)
                 : 'No notifications yet'}
             </h3>
             <p>

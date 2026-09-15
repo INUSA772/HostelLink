@@ -1,5 +1,13 @@
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 import ContactButtons from "../components/payment/ContactButtons";
+import {
+  FaXmark, FaCheck, FaImages, FaChevronLeft, FaChevronRight, FaHeart, FaUser,
+  FaHouse, FaCircleCheck, FaLocationDot, FaBed, FaBath, FaDoorOpen, FaWhatsapp,
+  FaPhone, FaMagnifyingGlass, FaTableCells, FaShieldHalved, FaBuilding, FaStar,
+  FaArrowRight, FaCircleInfo, FaEnvelope, FaHeadset, FaTag, FaLock, FaDoorClosed,
+  FaSeedling, FaStore, FaCity, FaLandmark, FaMountain, FaWater, FaScaleBalanced,
+  FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn,
+} from "react-icons/fa6";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -392,7 +400,7 @@ function ToastContainer({ toasts }) {
           display: "flex", alignItems: "center", gap: ".5rem",
           whiteSpace: "nowrap",
         }}>
-          {t.type === "error" ? <i className="fa-solid fa-xmark" /> : <i className="fa-solid fa-check" />} {t.msg}
+          {t.type === "error" ? <FaXmark /> : <FaCheck />} {t.msg}
         </div>
       ))}
     </div>
@@ -552,8 +560,8 @@ const styles = `
   }
   .pn-mobile-nav-link:active, .pn-mobile-nav-link:hover { background: var(--off-white); }
   .pn-mobile-nav-link.active { background: var(--amber-light); color: var(--amber-dark); }
-  .pn-mobile-nav-link i { width: 20px; text-align: center; font-size: .95rem; color: var(--mid); }
-  .pn-mobile-nav-link.active i { color: var(--amber-dark); }
+  .pn-mobile-nav-link i, .pn-mobile-nav-link svg { width: 20px; text-align: center; font-size: .95rem; color: var(--mid); }
+  .pn-mobile-nav-link.active i, .pn-mobile-nav-link.active svg { color: var(--amber-dark); }
   .pn-mobile-nav-link.fav-link { position: relative; }
   .pn-mobile-nav-link.fav-link .mob-fav-count {
     margin-left: auto;
@@ -756,7 +764,7 @@ const styles = `
 
   .ph-hero-trust { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.5rem; }
   .ph-hero-trust-item { display: flex; align-items: center; gap: 7px; font-size: .82rem; font-weight: 600; color: var(--mid); }
-  .ph-hero-trust-item i { color: var(--dark); font-size: .9rem; flex-shrink: 0; }
+  .ph-hero-trust-item i, .ph-hero-trust-item svg { color: var(--dark); font-size: .9rem; flex-shrink: 0; }
 
   /* ── FIX 2: Stats — white text on mobile (glass card has semi-dark bg behind it),
               navy on desktop (white bg) ── */
@@ -941,7 +949,7 @@ const styles = `
     background: #dcfce7; padding: 2px 8px; border-radius: 20px;
     margin-top: .35rem; width: fit-content;
   }
-  .ph-slide-verified i { font-size: .58rem; }
+  .ph-slide-verified i, .ph-slide-verified svg { font-size: .58rem; }
 
   @media(min-width: 520px) { .ph-slide-card { width: calc((100vw - 3rem) / 2); } }
   @media(min-width: 768px) { .ph-slide-card { width: calc((100vw - 3.6rem) / 3); } }
@@ -964,8 +972,8 @@ const styles = `
   .ph-type-card { background: var(--off-white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; text-align: center; color: var(--dark); transition: all .25s; display: flex; flex-direction: column; align-items: center; -webkit-tap-highlight-color: transparent; }
   .ph-type-card:active { background: var(--navy); border-color: var(--navy); color: white; }
   .ph-type-card:hover { background: var(--navy); border-color: var(--navy); color: white; transform: translateY(-5px); box-shadow: 0 12px 28px rgba(15,25,35,.18); }
-  .ph-type-card i { font-size: 1.5rem; color: var(--amber); display: block; margin-bottom: .6rem; transition: color .25s; }
-  .ph-type-card:hover i, .ph-type-card:active i { color: var(--amber); }
+  .ph-type-card i, .ph-type-card svg { font-size: 1.5rem; color: var(--amber); display: block; margin-bottom: .6rem; transition: color .25s; }
+  .ph-type-card:hover i, .ph-type-card:active i, .ph-type-card:hover svg, .ph-type-card:active svg { color: var(--amber); }
   .ph-type-card h4 { font-size: .88rem; font-weight: 800; margin-bottom: .3rem; }
   .ph-type-card span { font-size: .7rem; color: var(--mid); transition: color .25s; line-height: 1.3; }
   .ph-type-card:hover span, .ph-type-card:active span { color: rgba(255,255,255,.65); }
@@ -1027,12 +1035,12 @@ const styles = `
  z-index: 2;
     letter-spacing: .2px;
   }
-  .ph-prop-verified-badge i { font-size: .58rem; }
+  .ph-prop-verified-badge i, .ph-prop-verified-badge svg { font-size: .58rem; }
   .ph-prop-img-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.55); border-radius: 8px; color: white; font-size: .7rem; font-weight: 700; padding: 4px 9px; display: flex; align-items: center; gap: 4px; z-index: 1; }
   .ph-prop-body { padding: 1rem; flex: 1; }
   .ph-prop-name { font-size: .95rem; font-weight: 800; color: var(--navy); margin-bottom: .3rem; line-height: 1.3; }
   .ph-prop-loc { font-size: .76rem; color: var(--mid); display: flex; align-items: center; gap: 4px; margin-bottom: .6rem; }
-  .ph-prop-loc i { color: var(--amber-dark); font-size: .72rem; }
+  .ph-prop-loc i, .ph-prop-loc svg { color: var(--amber-dark); font-size: .72rem; }
   .ph-prop-price { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
   .ph-prop-desc {
     font-size: .75rem; color: var(--mid); line-height: 1.55; margin-top: .5rem;
@@ -1040,7 +1048,7 @@ const styles = `
   }
   .ph-prop-meta { display: flex; gap: .8rem; margin-top: .5rem; flex-wrap: wrap; }
   .ph-prop-meta-item { font-size: .72rem; color: var(--mid); display: flex; align-items: center; gap: 3px; }
-  .ph-prop-meta-item i { color: var(--amber-dark); }
+  .ph-prop-meta-item i, .ph-prop-meta-item svg { color: var(--amber-dark); }
   .ph-prop-actions { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; gap: .5rem; flex-wrap: wrap; }
   .ph-prop-wa {
     flex: 1; background: var(--wa-green); color: white; border: none;
@@ -1066,8 +1074,8 @@ const styles = `
   }
   .ph-prop-save:hover { border-color: var(--amber); color: var(--amber-dark); background: var(--amber-light); }
   .ph-prop-save.saved { background: var(--amber-light); border-color: var(--amber); color: var(--amber-dark); }
-  .ph-prop-save.saved i { color: var(--amber); }
-  .ph-prop-save i { font-size: .85rem; }
+  .ph-prop-save.saved i, .ph-prop-save.saved svg { color: var(--amber); }
+  .ph-prop-save i, .ph-prop-save svg { font-size: .85rem; }
   .ph-prop-share {
     background: var(--off-white); color: var(--mid);
     border: 1.5px solid var(--border); border-radius: 8px;
@@ -1076,7 +1084,7 @@ const styles = `
     cursor: pointer; transition: all .2s; -webkit-tap-highlight-color: transparent;
   }
   .ph-prop-share:hover { border-color: var(--wa-green); color: var(--wa-green); background: #f0fdf4; }
-  .ph-prop-share i { font-size: .85rem; }
+  .ph-prop-share i, .ph-prop-share svg { font-size: .85rem; }
 
   /* ══════════════════════════════
      LOCATIONS GRID
@@ -1119,10 +1127,10 @@ const styles = `
   .ph-features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; max-width: 1100px; margin: 2rem auto 0; }
   .ph-feature-card { background: var(--off-white); padding: 1.5rem 1.25rem; border-radius: var(--radius-lg); box-shadow: 0 4px 16px rgba(15,25,35,.06); transition: transform .3s, box-shadow .3s; border: 1.5px solid var(--border); text-align: left; }
   .ph-feature-card:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(15,25,35,.1); border-color: var(--amber); }
-  .ph-feature-card i { font-size: 1.6rem; color: var(--amber); display: block; margin-bottom: .8rem; }
+  .ph-feature-card i, .ph-feature-card svg { font-size: 1.6rem; color: var(--amber); display: block; margin-bottom: .8rem; }
   .ph-feature-card h4 { font-size: .93rem; font-weight: 800; color: var(--navy); margin-bottom: .4rem; }
   .ph-feature-card p  { font-size: .82rem; color: var(--mid); line-height: 1.65; font-weight: 500; }
-  @media(min-width: 640px) { .ph-features-grid { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; } .ph-feature-card { text-align: center; } .ph-feature-card i { font-size: 1.9rem; } }
+  @media(min-width: 640px) { .ph-features-grid { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; } .ph-feature-card { text-align: center; } .ph-feature-card i, .ph-feature-card svg { font-size: 1.9rem; } }
 
   /* ══════════════════════════════
      FAQ
@@ -1288,14 +1296,14 @@ function ImageLightbox({ images, startIndex = 0, propertyName, onClose }) {
     <div className="ph-lightbox-overlay" onClick={e => e.target === e.currentTarget && onClose()} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="ph-lightbox-box">
         <div className="ph-lightbox-header">
-          <div className="ph-lightbox-title"><i className="fa fa-images" style={{color:"var(--amber)",marginRight:"8px"}} /><span>{propertyName}</span></div>
+          <div className="ph-lightbox-title"><FaImages style={{color:"var(--amber)",marginRight:"8px"}} /><span>{propertyName}</span></div>
           <div className="ph-lightbox-counter">{idx + 1} {t.lightboxOf} {images.length}</div>
-          <button className="ph-lightbox-close" onClick={onClose}><i className="fa fa-times" /></button>
+          <button className="ph-lightbox-close" onClick={onClose}><FaXmark /></button>
         </div>
         <div className="ph-lightbox-main">
-          {images.length > 1 && <button className="ph-lightbox-nav ph-lightbox-prev" onClick={() => setIdx(i => (i - 1 + images.length) % images.length)}><i className="fa fa-chevron-left" /></button>}
+          {images.length > 1 && <button className="ph-lightbox-nav ph-lightbox-prev" onClick={() => setIdx(i => (i - 1 + images.length) % images.length)}><FaChevronLeft /></button>}
           <img src={images[idx]} alt={`${propertyName} — photo ${idx + 1}`} className="ph-lightbox-img" />
-          {images.length > 1 && <button className="ph-lightbox-nav ph-lightbox-next" onClick={() => setIdx(i => (i + 1) % images.length)}><i className="fa fa-chevron-right" /></button>}
+          {images.length > 1 && <button className="ph-lightbox-nav ph-lightbox-next" onClick={() => setIdx(i => (i + 1) % images.length)}><FaChevronRight /></button>}
         </div>
         {images.length > 1 && (
           <div className="ph-lightbox-thumbs">
@@ -1333,10 +1341,10 @@ function Navbar({ favCount }) {
   }, [menuOpen]);
 
   const navLinks = [
-    { href: "/",           label: t.navHome,       icon: "fa fa-home"        },
-    { href: "/properties", label: t.navProperties, icon: "fa fa-building"    },
-    { href: "/about",      label: t.navAbout,      icon: "fa fa-info-circle" },
-    { href: "/contact",    label: t.navContact,    icon: "fa fa-envelope"    },
+    { href: "/",           label: t.navHome,       icon: FaHouse       },
+    { href: "/properties", label: t.navProperties, icon: FaBuilding    },
+    { href: "/about",      label: t.navAbout,      icon: FaCircleInfo  },
+    { href: "/contact",    label: t.navContact,    icon: FaEnvelope    },
   ];
 
   return (
@@ -1356,7 +1364,7 @@ function Navbar({ favCount }) {
 
           <div className="pn-nav-right">
             <a href="/favorites" className="pn-fav-btn" aria-label="Saved properties">
-              <i className="fa fa-heart" />
+              <FaHeart />
               {t.navFavorites}
               {favCount > 0 && <span className="pn-fav-count">{favCount}</span>}
             </a>
@@ -1375,7 +1383,7 @@ function Navbar({ favCount }) {
                       <button className={`ph-lang-option${lang === l.code ? " active" : ""}`}
                         onClick={() => { setLang(l.code); setLangOpen(false); }}>
                         <span className="ph-lang-opt-label">{l.label}</span>
-                        {lang === l.code && <span className="ph-lang-opt-check"><i className="fa-solid fa-check" /></span>}
+                        {lang === l.code && <span className="ph-lang-opt-check"><FaCheck /></span>}
                       </button>
                     </div>
                   ))}
@@ -1384,7 +1392,7 @@ function Navbar({ favCount }) {
             </div>
 
             <a href="/profile" className="pn-profile-btn">
-              <div className="pn-profile-avatar"><i className="fa fa-user" /></div>
+              <div className="pn-profile-avatar"><FaUser /></div>
               <span>{t.navProfile}</span>
               <span style={{fontSize:".6rem",opacity:.7}}>▼</span>
             </a>
@@ -1408,7 +1416,7 @@ function Navbar({ favCount }) {
               <a key={l.href} href={l.href}
                 className={`pn-mobile-nav-link${l.href === "/" ? " active" : ""}${l.href === "/favorites" ? " fav-link" : ""}`}
                 onClick={() => setMenuOpen(false)}>
-                <i className={l.icon} />
+                <l.icon />
                 {l.label}
                 {l.href === "/favorites" && favCount > 0 && (
                   <span className="mob-fav-count">{favCount}</span>
@@ -1418,9 +1426,9 @@ function Navbar({ favCount }) {
           </div>
           <div className="pn-mobile-divider" />
           <a href="/profile" className="pn-mobile-profile" onClick={() => setMenuOpen(false)}>
-            <div className="pn-mobile-profile-avatar"><i className="fa fa-user" /></div>
+            <div className="pn-mobile-profile-avatar"><FaUser /></div>
             <span>{t.navProfile}</span>
-            <i className="fa fa-chevron-right" style={{marginLeft:"auto",fontSize:".75rem",opacity:.5}} />
+            <FaChevronRight style={{marginLeft:"auto",fontSize:".75rem",opacity:.5}} />
           </a>
         </div>
       </div>
@@ -1472,7 +1480,7 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
       <div className="ph-prop-img-wrap" onClick={() => p.images.length > 0 && setLightbox(true)}>
         {imgSrc
           ? <img src={imgSrc} alt={p.name} loading="lazy" />
-          : <div className="ph-prop-no-img"><i className="fa fa-home" /></div>
+          : <div className="ph-prop-no-img"><FaHouse /></div>
         }
         <div className="ph-prop-badges">
           <span className={`ph-prop-badge ${isForSale ? "sale" : "rent"}`}>{isForSale ? t.forSale : t.forRent}</span>
@@ -1480,24 +1488,24 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
         </div>
         {p.verified && (
           <div className="ph-prop-verified-badge">
-            <i className="fa fa-check-circle" /> {t.verifiedBadge}
+            <FaCircleCheck /> {t.verifiedBadge}
           </div>
         )}
-        {p.images.length > 1 && <div className="ph-prop-img-count"><i className="fa fa-images" /> {p.images.length}</div>}
+        {p.images.length > 1 && <div className="ph-prop-img-count"><FaImages /> {p.images.length}</div>}
       </div>
 
       <div className="ph-prop-body">
         <div className="ph-prop-name">{p.name}</div>
-        <div className="ph-prop-loc"><i className="fa fa-map-marker-alt" />{[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
+        <div className="ph-prop-loc"><FaLocationDot />{[p.address, p.district].filter(Boolean).join(", ") || "Malawi"}</div>
         <div className="ph-prop-price">{formatPrice(p.price, p.listingType, t)}</div>
         {p.description && (
           <div className="ph-prop-desc">{p.description}</div>
         )}
         <div className="ph-prop-meta">
-          {p.bedrooms       > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
-          {p.bathrooms      > 0 && <span className="ph-prop-meta-item"><i className="fa fa-bath"      /> {p.bathrooms} {t.bath}</span>}
-          {p.availableRooms > 0 && <span className="ph-prop-meta-item"><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
-          {p.gender              && <span className="ph-prop-meta-item"><i className="fa fa-user"     /> {p.gender}</span>}
+          {p.bedrooms       > 0 && <span className="ph-prop-meta-item"><FaBed />       {p.bedrooms} {t.bed}</span>}
+          {p.bathrooms      > 0 && <span className="ph-prop-meta-item"><FaBath />      {p.bathrooms} {t.bath}</span>}
+          {p.availableRooms > 0 && <span className="ph-prop-meta-item"><FaDoorOpen /> {p.availableRooms} {t.avail}</span>}
+          {p.gender              && <span className="ph-prop-meta-item"><FaUser />     {p.gender}</span>}
         </div>
       </div>
 
@@ -1507,11 +1515,11 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
           onWhatsappClick={() => trackWhatsappClick(p._id)}
           renderWhatsapp={({ href, onClick }) => (
             <a className="ph-prop-wa" href={href} target={href === '#' ? undefined : '_blank'} rel="noopener noreferrer" onClick={onClick}>
-              <i className="fab fa-whatsapp" /> {t.waBtn}
+              <FaWhatsapp /> {t.waBtn}
             </a>
           )}
           renderCall={({ href, onClick }) => (
-            <a className="ph-prop-call" href={href} onClick={onClick}><i className="fa fa-phone" /> {t.callBtn}</a>
+            <a className="ph-prop-call" href={href} onClick={onClick}><FaPhone /> {t.callBtn}</a>
           )}
           renderEmpty={() => <span style={{fontSize:".75rem",color:"#9ca3af",padding:".5rem"}}>{t.noContact}</span>}
         />
@@ -1522,7 +1530,7 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
           title={isSaved ? t.savedBtn : t.saveBtn}
           aria-label={isSaved ? t.savedBtn : t.saveBtn}
         >
-          <i className={isSaved ? "fa fa-heart" : "far fa-heart"} />
+          <FaHeart />
         </button>
 
         <button
@@ -1531,7 +1539,7 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
           title={t.shareBtn}
           aria-label={t.shareBtn}
         >
-          <i className="fab fa-whatsapp" />
+          <FaWhatsapp />
         </button>
       </div>
 
@@ -1545,7 +1553,7 @@ function PropertyCard({ property, onFavToggle, isSaved, onToast }) {
 /* ═══════════════════════════════════════
    BROWSE DRAWER
 ═══════════════════════════════════════ */
-function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties, favIds, onFavToggle, onToast }) {
+function BrowseDrawer({ filter, filterValue, filterIcon: FilterIcon, onClose, allProperties, favIds, onFavToggle, onToast }) {
   const { t } = useLang();
   const [loading, setLoading]       = useState(true);
   const [properties, setProperties] = useState([]);
@@ -1588,20 +1596,20 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties,
         <div className="ph-browse-handle" />
         <div className="ph-browse-header">
           <div className="ph-browse-header-left">
-            <div className="ph-browse-header-icon"><i className={filterIcon} /></div>
+            <div className="ph-browse-header-icon">{FilterIcon && <FilterIcon />}</div>
             <div>
               <h3>{filter === "district" ? `Properties in ${filterValue}` : `${filterValue} Listings`}</h3>
               <p>{loading ? t.drawerLoading : `${properties.length} listing${properties.length !== 1 ? "s" : ""} found`}</p>
             </div>
           </div>
-          <button className="ph-browse-close" onClick={onClose}><i className="fa-solid fa-xmark" /></button>
+          <button className="ph-browse-close" onClick={onClose}><FaXmark /></button>
         </div>
         <div className="ph-browse-body">
           {loading ? (
             <div className="ph-browse-loading"><div className="ph-spinner" /><span>{t.drawerLoading}</span></div>
           ) : properties.length === 0 ? (
             <div className="ph-browse-empty">
-              <div className="ph-browse-empty-icon"><i className="fa fa-search" /></div>
+              <div className="ph-browse-empty-icon"><FaMagnifyingGlass /></div>
               <h4>{t.drawerEmpty1} "{filterValue}"</h4>
               <p>{t.drawerEmpty2}</p>
             </div>
@@ -1626,7 +1634,7 @@ function BrowseDrawer({ filter, filterValue, filterIcon, onClose, allProperties,
               {filter === "district" ? `${t.drawerPropsIn} ${filterValue}` : `${filterValue} ${t.drawerListings}`}
             </p>
             <a href={viewAllHref} className="ph-browse-see-all">
-              <i className="fa fa-th" /> {t.drawerViewAll}
+              <FaTableCells /> {t.drawerViewAll}
             </a>
           </div>
         )}
@@ -1675,7 +1683,7 @@ function Hero() {
          
           <div className="ph-hero-btns">
             <a className="ph-btn-primary" href="#browse-districts">
-              <i className="fa fa-search" /> {t.heroBrowse}
+              <FaMagnifyingGlass /> {t.heroBrowse}
             </a>
             <a className="ph-btn-ghost" href="/register">
               <span>{t.heroList}</span>
@@ -1684,7 +1692,7 @@ function Hero() {
           <div className="ph-hero-stats">
             <div className="ph-hero-stat"><strong>500+</strong><span>{t.heroStat1}</span></div>
             <div className="ph-hero-stat"><strong>28</strong><span>{t.heroStat2}</span></div>
-            <div className="ph-hero-stat"><strong><i className="fa-solid fa-shield-halved" /></strong><span>{t.heroStat3}</span></div>
+            <div className="ph-hero-stat"><strong><FaShieldHalved /></strong><span>{t.heroStat3}</span></div>
           </div>
         </div>
 
@@ -1727,17 +1735,17 @@ function Hero() {
 ═══════════════════════════════════════ */
 function TrustBar() {
   const items = [
-    { icon:"fa fa-shield-alt", label:"Verified Properties",  sub:"All properties are verified and trusted",  style:"navy"  },
-    { icon:"fa fa-tag",        label:"Best Prices",          sub:"Affordable prices guaranteed",             style:"amber" },
-    { icon:"fa fa-headset",    label:"24/7 Support",         sub:"We're here to help you anytime",           style:"navy"  },
-    { icon:"fa fa-lock",       label:"Safe & Secure",        sub:"Your safety is our top priority",          style:"amber" },
+    { icon:FaShieldHalved, label:"Verified Properties",  sub:"All properties are verified and trusted",  style:"navy"  },
+    { icon:FaTag,          label:"Best Prices",          sub:"Affordable prices guaranteed",             style:"amber" },
+    { icon:FaHeadset,      label:"24/7 Support",         sub:"We're here to help you anytime",           style:"navy"  },
+    { icon:FaLock,         label:"Safe & Secure",        sub:"Your safety is our top priority",          style:"amber" },
   ];
   return (
     <div className="ph-trust-bar">
       <div className="ph-trust-bar-inner">
         {items.map((item, i) => (
           <div key={i} className="ph-trust-item">
-            <div className={`ph-trust-icon ${item.style}`}><i className={item.icon} /></div>
+            <div className={`ph-trust-icon ${item.style}`}><item.icon /></div>
             <div className="ph-trust-text">
               <strong>{item.label}</strong>
               <span>{item.sub}</span>
@@ -1763,12 +1771,12 @@ const FALLBACK_IMGS = [
 function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
   const { t } = useLang();
   const PROPERTY_TYPES_T = [
-    { icon:"fa fa-home",        label:t.ptHouse },
-    { icon:"fa fa-building",    label:t.ptFlat  },
-    { icon:"fa fa-bed",         label:t.ptRoom  },
-    { icon:"fa fa-door-closed", label:t.ptSelf  },
-    { icon:"fa fa-seedling",    label:t.ptPlot  },
-    { icon:"fa fa-store",       label:t.ptComm  },
+    { icon:FaHouse,       label:t.ptHouse },
+    { icon:FaBuilding,    label:t.ptFlat  },
+    { icon:FaBed,         label:t.ptRoom  },
+    { icon:FaDoorClosed,  label:t.ptSelf  },
+    { icon:FaSeedling,    label:t.ptPlot  },
+    { icon:FaStore,       label:t.ptComm  },
   ];
   const [filtered, setFiltered]         = useState([]);
   const [locSearch, setLocSearch]       = useState("");
@@ -1868,7 +1876,7 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
             {PROPERTY_TYPES_T.map(pt => <option key={pt.label} value={pt.label}>{pt.label}</option>)}
           </select>
           <button className="ph-dist-search-btn" onClick={handleSearch}>
-            <i className="fa fa-search" /> {t.distBtn}
+            <FaMagnifyingGlass /> {t.distBtn}
           </button>
         </div>
 
@@ -1878,7 +1886,7 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
           onMouseLeave={() => { dragStartX.current = null; isDragging.current = false; }}>
           {filtered.length === 0 ? (
             <div className="ph-prop-empty">
-              <i className="fa fa-search" style={{fontSize:"2rem",opacity:.3,display:"block",marginBottom:".75rem"}} />
+              <FaMagnifyingGlass style={{fontSize:"2rem",opacity:.3,display:"block",marginBottom:".75rem"}} />
               {(!allProperties || allProperties.length === 0) ? t.distLoading : t.distEmpty}
             </div>
           ) : (
@@ -1889,7 +1897,7 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                 const hasRealImages = p.images.length > 0;
                 return (
                   <button key={p._id || i} className="ph-slide-card"
-                    onClick={() => { if (!isDragging.current) setDrawer({ label: p.district || "All", icon: "fa fa-map-marker-alt" }); }}
+                    onClick={() => { if (!isDragging.current) setDrawer({ label: p.district || "All", icon: FaLocationDot }); }}
                     onDragStart={e => e.preventDefault()}>
                     <div className="ph-slide-img-wrap">
                       <img src={imgSrc} alt={p.name} className="ph-slide-img" draggable="false"
@@ -1898,7 +1906,7 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                         <button className="ph-slide-img-btn"
                           style={{position:"absolute",bottom:8,right:8,background:"rgba(0,0,0,.55)",border:"none",borderRadius:"8px",color:"white",fontSize:".7rem",fontWeight:700,padding:"5px 10px",display:"flex",alignItems:"center",gap:4,cursor:"pointer",backdropFilter:"blur(4px)",fontFamily:"inherit",zIndex:2}}
                           onClick={e => { e.stopPropagation(); setLightboxData({ images: p.images, name: p.name }); }}>
-                          <i className="fa fa-images" />
+                          <FaImages />
                           {p.images.length > 1 ? `${p.images.length} photos` : "View photo"}
                         </button>
                       )}
@@ -1910,15 +1918,15 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
                         <div className="ph-slide-desc">{p.description}</div>
                       )}
                       <div className="ph-slide-meta">
-                        {p.bedrooms       > 0 && <span><i className="fa fa-bed"       /> {p.bedrooms} {t.bed}</span>}
-                        {p.bathrooms      > 0 && <span><i className="fa fa-bath"      /> {p.bathrooms}</span>}
-                        {p.availableRooms > 0 && <span><i className="fa fa-door-open" /> {p.availableRooms} {t.avail}</span>}
+                        {p.bedrooms       > 0 && <span><FaBed />       {p.bedrooms} {t.bed}</span>}
+                        {p.bathrooms      > 0 && <span><FaBath />      {p.bathrooms}</span>}
+                        {p.availableRooms > 0 && <span><FaDoorOpen /> {p.availableRooms} {t.avail}</span>}
                       </div>
                       {p.type && <span className="ph-slide-badge">{p.type}</span>}
                       <div className="ph-slide-price">{formatPrice(p.price, p.listingType, t)}</div>
                       {p.verified && (
                         <div className="ph-slide-verified">
-                          <i className="fa fa-check-circle" /> {t.verifiedBadge}
+                          <FaCircleCheck /> {t.verifiedBadge}
                         </div>
                       )}
                     </div>
@@ -1964,12 +1972,12 @@ function DistrictsSection({ allProperties, favIds, onFavToggle, onToast }) {
 function TypesSection({ allProperties, favIds, onFavToggle, onToast }) {
   const { t } = useLang();
   const PROPERTY_TYPES_T = [
-    { icon:"fa fa-home",        label:t.ptHouse, desc:t.ptHouseDesc },
-    { icon:"fa fa-building",    label:t.ptFlat,  desc:t.ptFlatDesc  },
-    { icon:"fa fa-bed",         label:t.ptRoom,  desc:t.ptRoomDesc  },
-    { icon:"fa fa-door-closed", label:t.ptSelf,  desc:t.ptSelfDesc  },
-    { icon:"fa fa-seedling",    label:t.ptPlot,  desc:t.ptPlotDesc  },
-    { icon:"fa fa-store",       label:t.ptComm,  desc:t.ptCommDesc  },
+    { icon:FaHouse,       label:t.ptHouse, desc:t.ptHouseDesc },
+    { icon:FaBuilding,    label:t.ptFlat,  desc:t.ptFlatDesc  },
+    { icon:FaBed,         label:t.ptRoom,  desc:t.ptRoomDesc  },
+    { icon:FaDoorClosed,  label:t.ptSelf,  desc:t.ptSelfDesc  },
+    { icon:FaSeedling,    label:t.ptPlot,  desc:t.ptPlotDesc  },
+    { icon:FaStore,       label:t.ptComm,  desc:t.ptCommDesc  },
   ];
   const [drawer, setDrawer] = useState(null);
   return (
@@ -1981,7 +1989,7 @@ function TypesSection({ allProperties, favIds, onFavToggle, onToast }) {
         <div className="ph-types-grid">
           {PROPERTY_TYPES_T.map(pt => (
             <button key={pt.label} className="ph-type-card" onClick={() => setDrawer(pt)}>
-              <i className={pt.icon} /><h4>{pt.label}</h4><span>{pt.desc}</span>
+              <pt.icon /><h4>{pt.label}</h4><span>{pt.desc}</span>
             </button>
           ))}
         </div>
@@ -2001,11 +2009,11 @@ function TypesSection({ allProperties, favIds, onFavToggle, onToast }) {
 function LocationsSection({ onDistrictClick }) {
   const { t } = useLang();
   const locs = [
-    { img:"https://images.openai.com/static-rsc-4/7GSO5MGOD68caHQdI44Y3hLe4MyxyuQMTUiZUgWmK4NBa7fI2vaAGp7RK3U3lO8e1hLwTx4w7LM5cMn4clIDUd9KH3B9-mOb6jCIZ_Q5LlL5OAv7uUCScacYuWrz7BPiQXmxlBp0STdOhl7a4896qivZSTXavn9Z-6NFCX7tTYQs8Ky-hP98DQ7-uE-w9dS0?purpose=fullsize", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:"fa fa-city"       },
-    { img:"https://images.openai.com/static-rsc-4/CMD9954ds4_6BOPsvHM844Clq9dykeax-l3-cXWhTJ6ckL7cOflCUZza4w_f7KFSrJi08eoopWewEVWfPPkSvGODEcOPu2LG_CJcbxfN-J1NS9sVi4HS6ulnvDAqXG3FCIR_K0dhPSOBSF36Ev51ksmzT7V21WQN2szPdOyieQ5KkNKJP3fmauDceVJ6TQxi?purpose=fullsize",          count:"9 Properties",   name:"Blantyre", desc:"Commercial ",           icon:"fa fa-building"   },
-    { img:"https://images.openai.com/static-rsc-4/_Lh70gzg7xEH5YOvg0AnAhSlPO581JjkelrC0vorj6ALz9B9GPXEfji49zdNynL48g2njFKHACKFqXnMLudLlr2ycoe2Dbo2wiyjw5bLkJvVuXZRCWrRFb7MJg8Ntr6qLZJ_t7D2xPs6MVc3bbTinSEtoXTOvVYoWfWABh_U5BHZI5Yh8cY48GliPd66ID0x?purpose=fullsize",          count:"5 Properties",   name:"Zomba",    desc:"land for sale",          icon:"fa fa-university" },
-    { img:"https://images.openai.com/static-rsc-4/nv_QlhwWZCv955PL3xGwEgfwJDi5j8U1Gi-986mweT31XYLRQ09DqHXzPZUSft9WY0nnOAvUPfDbLOl-brmg3wsNRcjVEDYsm89QSMf_00rp0Xddt5Jo8zGB81BMgvDkwkU-ppX590f8P4vdj4HNIeYTVJ-PlLotWGjgcpxhZvlw5q03MJRl0NqKRJGZkaDP?purpose=fullsize",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region",      icon:"fa fa-mountain"   },
-    { img:"https://images.openai.com/static-rsc-4/Vh-2gQ3WSgCRZ0kspbOnsOpa9fSnFlQvKawKL5fpyloVLCZxufa0na82xBX8m6DSELpxmtFnkygdtlmlbiydqEtSv5XBPrVInCYczRaF5rWTJDSVgb2rlXbNN8N9ckZtEr73GaMJtz8Sa0weJ4_-b7G8OMlnI_AvQ-__jnIhuzZGrVM_ENseGJ2MKiprwCON?purpose=fullsize",          count:"6 Properties",   name:"Mangochi", desc:"Mangochi",         icon:"fa fa-water"      },
+    { img:"https://images.openai.com/static-rsc-4/7GSO5MGOD68caHQdI44Y3hLe4MyxyuQMTUiZUgWmK4NBa7fI2vaAGp7RK3U3lO8e1hLwTx4w7LM5cMn4clIDUd9KH3B9-mOb6jCIZ_Q5LlL5OAv7uUCScacYuWrz7BPiQXmxlBp0STdOhl7a4896qivZSTXavn9Z-6NFCX7tTYQs8Ky-hP98DQ7-uE-w9dS0?purpose=fullsize", big:true, count:"12+ Properties", name:"Lilongwe", desc:"Capital City — All Types",  icon:FaCity     },
+    { img:"https://images.openai.com/static-rsc-4/CMD9954ds4_6BOPsvHM844Clq9dykeax-l3-cXWhTJ6ckL7cOflCUZza4w_f7KFSrJi08eoopWewEVWfPPkSvGODEcOPu2LG_CJcbxfN-J1NS9sVi4HS6ulnvDAqXG3FCIR_K0dhPSOBSF36Ev51ksmzT7V21WQN2szPdOyieQ5KkNKJP3fmauDceVJ6TQxi?purpose=fullsize",          count:"9 Properties",   name:"Blantyre", desc:"Commercial ",           icon:FaBuilding },
+    { img:"https://images.openai.com/static-rsc-4/_Lh70gzg7xEH5YOvg0AnAhSlPO581JjkelrC0vorj6ALz9B9GPXEfji49zdNynL48g2njFKHACKFqXnMLudLlr2ycoe2Dbo2wiyjw5bLkJvVuXZRCWrRFb7MJg8Ntr6qLZJ_t7D2xPs6MVc3bbTinSEtoXTOvVYoWfWABh_U5BHZI5Yh8cY48GliPd66ID0x?purpose=fullsize",          count:"5 Properties",   name:"Zomba",    desc:"land for sale",          icon:FaLandmark },
+    { img:"https://images.openai.com/static-rsc-4/nv_QlhwWZCv955PL3xGwEgfwJDi5j8U1Gi-986mweT31XYLRQ09DqHXzPZUSft9WY0nnOAvUPfDbLOl-brmg3wsNRcjVEDYsm89QSMf_00rp0Xddt5Jo8zGB81BMgvDkwkU-ppX590f8P4vdj4HNIeYTVJ-PlLotWGjgcpxhZvlw5q03MJRl0NqKRJGZkaDP?purpose=fullsize",          count:"4 Properties",   name:"Mzuzu",    desc:"Northern Region",      icon:FaMountain },
+    { img:"https://images.openai.com/static-rsc-4/Vh-2gQ3WSgCRZ0kspbOnsOpa9fSnFlQvKawKL5fpyloVLCZxufa0na82xBX8m6DSELpxmtFnkygdtlmlbiydqEtSv5XBPrVInCYczRaF5rWTJDSVgb2rlXbNN8N9ckZtEr73GaMJtz8Sa0weJ4_-b7G8OMlnI_AvQ-__jnIhuzZGrVM_ENseGJ2MKiprwCON?purpose=fullsize",          count:"6 Properties",   name:"Mangochi", desc:"Mangochi",         icon:FaWater    },
   ];
   return (
     <section className="ph-locs-sec">
@@ -2033,16 +2041,16 @@ function DualSection() {
   return (
     <div className="ph-dual-sec">
       <div className="ph-dual-card">
-        <div className="ph-dual-icon tenant"><i className="fa fa-user" /></div>
+        <div className="ph-dual-icon tenant"><FaUser /></div>
         <h3>{t.tenantTitle}</h3>
-        <div className="ph-dual-note"><i className="fa-solid fa-check" /> {t.tenantNote}</div>
+        <div className="ph-dual-note"><FaCheck /> {t.tenantNote}</div>
         <p>{t.tenantDesc}</p>
         <a href="#browse-districts" className="ph-btn-outline">{t.tenantBtn}</a>
       </div>
       <div className="ph-dual-card">
-        <div className="ph-dual-icon landlord"><i className="fa fa-building" /></div>
+        <div className="ph-dual-icon landlord"><FaBuilding /></div>
         <h3>{t.landlordTitle}</h3>
-        <div className="ph-dual-note"><i className="fa-solid fa-check" /> {t.landlordNote}</div>
+        <div className="ph-dual-note"><FaCheck /> {t.landlordNote}</div>
         <p>{t.landlordDesc}</p>
         <a href="/register" className="ph-btn-outline">{t.landlordBtn}</a>
       </div>
@@ -2056,10 +2064,10 @@ function DualSection() {
 function FeaturesSection() {
   const { t } = useLang();
   const features = [
-    { icon:"fa fa-search",        title:t.feat1Title, desc:t.feat1Desc },
-    { icon:"fab fa-whatsapp",     title:t.feat2Title, desc:t.feat2Desc },
-    { icon:"fa fa-shield-alt",    title:t.feat3Title, desc:t.feat3Desc },
-    { icon:"fa fa-balance-scale", title:t.feat4Title, desc:t.feat4Desc },
+    { icon:FaMagnifyingGlass, title:t.feat1Title, desc:t.feat1Desc },
+    { icon:FaWhatsapp,        title:t.feat2Title, desc:t.feat2Desc },
+    { icon:FaShieldHalved,    title:t.feat3Title, desc:t.feat3Desc },
+    { icon:FaScaleBalanced,   title:t.feat4Title, desc:t.feat4Desc },
   ];
   return (
     <section className="ph-features-sec">
@@ -2068,7 +2076,7 @@ function FeaturesSection() {
       <div className="ph-features-grid">
         {features.map(f => (
           <div className="ph-feature-card" key={f.title}>
-            <i className={f.icon} /><h4>{f.title}</h4><p>{f.desc}</p>
+            <f.icon /><h4>{f.title}</h4><p>{f.desc}</p>
           </div>
         ))}
       </div>
@@ -2123,16 +2131,16 @@ function FavoritesPage({ favIds, allProperties, onFavToggle, onToast }) {
   return (
     <div className="ph-favpage">
       <div className="ph-favpage-head">
-        <h2><i className="fa fa-heart" style={{color:"var(--amber)",marginRight:".5rem"}} /> {t.navFavorites}</h2>
+        <h2><FaHeart style={{color:"var(--amber)",marginRight:".5rem"}} /> {t.navFavorites}</h2>
         <p>{saved.length > 0 ? `${saved.length} saved propert${saved.length === 1 ? "y" : "ies"}` : ""}</p>
       </div>
       {saved.length === 0 ? (
         <div className="ph-favpage-empty">
-          <div className="ph-favpage-empty-icon"><i className="fa fa-heart" /></div>
+          <div className="ph-favpage-empty-icon"><FaHeart /></div>
           <h3>No saved properties yet</h3>
           <p>Tap the heart icon on any listing to save it here. No account needed.</p>
           <a href="#browse-districts" className="ph-btn-primary" style={{display:"inline-flex",width:"auto",padding:".75rem 1.8rem",borderRadius:"var(--radius)",textDecoration:"none"}}>
-            <i className="fa fa-search" /> Browse Properties
+            <FaMagnifyingGlass /> Browse Properties
           </a>
         </div>
       ) : (
@@ -2166,8 +2174,8 @@ function Footer() {
           </div>
           <p>Your trusted platform for finding the best properties in Malawi.</p>
           <div className="ph-footer-socials">
-            {["fa-facebook-f","fa-instagram","fa-twitter","fa-linkedin-in"].map(ic => (
-              <div key={ic} className="ph-footer-social"><i className={`fab ${ic}`} /></div>
+            {[FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn].map((Ic, i) => (
+              <div key={i} className="ph-footer-social"><Ic /></div>
             ))}
           </div>
         </div>
@@ -2192,7 +2200,7 @@ function Footer() {
           <p>Get the latest updates and offers straight to your inbox.</p>
           <div className="ph-footer-email-row">
             <input type="email" placeholder="Enter your email" />
-            <button aria-label="Subscribe"><i className="fa fa-arrow-right" /></button>
+            <button aria-label="Subscribe"><FaArrowRight /></button>
           </div>
         </div>
       </div>
@@ -2243,7 +2251,6 @@ export default function Home() {
   return (
     <LangContext.Provider value={langState}>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <ToastContainer toasts={toasts} />
 
@@ -2270,7 +2277,7 @@ export default function Home() {
           <section className="ph-cta-sec">
             <div className="ph-cta-inner">
               <div className="ph-cta-left">
-                <div className="ph-cta-icon"><i className="fa fa-home" /></div>
+                <div className="ph-cta-icon"><FaHouse /></div>
                 <h2>{langState.t.ctaTitle}</h2>
                 <p>{langState.t.ctaSub}</p>
               </div>
@@ -2278,11 +2285,11 @@ export default function Home() {
                 <div className="ph-cta-stat"><strong>500+</strong><span>Listed Properties</span></div>
                 <div className="ph-cta-stat"><strong>10K+</strong><span>Happy Users</span></div>
                 <div className="ph-cta-stat"><strong>28</strong><span>Districts Covered</span></div>
-                <div className="ph-cta-stat"><strong>4.6 <i className="fa-solid fa-star" /></strong><span>Average Rating</span></div>
+                <div className="ph-cta-stat"><strong>4.6 <FaStar /></strong><span>Average Rating</span></div>
               </div>
               <div className="ph-cta-actions">
                 <a href="/register" className="ph-cta-btn-main">
-                  {langState.t.ctaBtn} <i className="fa fa-arrow-right" />
+                  {langState.t.ctaBtn} <FaArrowRight />
                 </a>
                 <p className="ph-cta-note">
                   {langState.t.ctaNote}{" "}

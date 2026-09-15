@@ -8,6 +8,7 @@ import {
   FaPaperPlane, FaSearch, FaArrowLeft,
   FaCircle, FaSpinner, FaTrash,
   FaEllipsisV, FaSmile, FaCheck, FaCheckDouble,
+  FaCommentDots, FaHome, FaHandPointLeft, FaHandPaper,
 } from 'react-icons/fa';
 
 const styles = `
@@ -767,7 +768,7 @@ const Messages = () => {
           <div className={`wa-left${!showSidebar ? ' hidden' : ''}`}>
             <div className="wa-left-head">
               <div className="wa-left-title">
-                <span><i className="fa-solid fa-comment-dots"></i> Chats</span>
+                <span><FaCommentDots /> Chats</span>
                 {filtered.length > 0 && (
                   <span className="wa-conv-count">{filtered.length}</span>
                 )}
@@ -791,7 +792,7 @@ const Messages = () => {
                 </div>
               ) : filtered.length === 0 ? (
                 <div className="wa-empty">
-                  <div className="wa-empty-ico"><i className="fa-solid fa-comment-dots"></i></div>
+                  <div className="wa-empty-ico"><FaCommentDots /></div>
                   <h4>No conversations yet</h4>
                   <p>Browse properties and tap "Chat with Owner" to start a conversation</p>
                 </div>
@@ -830,7 +831,7 @@ const Messages = () => {
                             {formatConvTime(conv.lastMessage?.createdAt || conv.updatedAt)}
                           </span>
                         </div>
-                        <div className="wa-conv-hostel"><i className="fa-solid fa-house"></i> {conv.hostel?.name}</div>
+                        <div className="wa-conv-hostel"><FaHome /> {conv.hostel?.name}</div>
                         <div className="wa-conv-preview-row">
                           <span className={`wa-conv-preview${unread > 0 ? ' unread' : ''}`}>
                             {conv.lastMessage?.text || 'Tap to start chatting'}
@@ -853,11 +854,11 @@ const Messages = () => {
           <div className="wa-right">
             {!activeConv ? (
               <div className="wa-welcome">
-                <div className="wa-welcome-ico"><i className="fa-solid fa-comment-dots"></i></div>
+                <div className="wa-welcome-ico"><FaCommentDots /></div>
                 <h3>PezaNyumba Chats</h3>
                 <p>Send and receive messages from property owners and students in real time</p>
                 <div className="wa-welcome-hint">
-                  <i className="fa-solid fa-hand-point-left"></i> Select a conversation to start chatting
+                  <FaHandPointLeft /> Select a conversation to start chatting
                 </div>
               </div>
             ) : (
@@ -898,7 +899,7 @@ const Messages = () => {
                             ? <span className="wa-online-text">● Online</span>
                             : <span className="wa-offline-text">● Offline</span>
                           }
-                          <span className="wa-hostel-tag"><i className="fa-solid fa-house"></i> {activeConv.hostel?.name}</span>
+                          <span className="wa-hostel-tag"><FaHome /> {activeConv.hostel?.name}</span>
                         </div>
                       </div>
 
@@ -924,7 +925,7 @@ const Messages = () => {
                     </div>
                   ) : messages.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}><i className="fa-regular fa-hand"></i></div>
+                      <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}><FaHandPaper /></div>
                       <p style={{ fontWeight: 700, fontSize: '0.9rem', color: '#54656f' }}>
                         Say hi to {getOther(activeConv)?.firstName}!
                       </p>

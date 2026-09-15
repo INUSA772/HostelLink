@@ -4,6 +4,7 @@ import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FaArrowLeft, FaSave, FaSpinner, FaCheckCircle, FaTrash, FaUpload } from 'react-icons/fa';
+import { FaPen, FaClipboard, FaSackDollar, FaWandMagicSparkles, FaCamera } from 'react-icons/fa6';
 import LocationPicker from '../components/common/LocationPicker';
 
 const styles = `
@@ -447,7 +448,7 @@ const EditHostel = () => {
         {/* ── BANNER ── */}
         <section className="eh-banner">
           <div className="eh-banner-inner">
-            <div className="eh-banner-eyebrow"><i className="fa-solid fa-pen" /> Edit Property</div>
+            <div className="eh-banner-eyebrow"><FaPen /> Edit Property</div>
             <h1>Update <em>Your Listing</em></h1>
             <p>Edit your property details, pricing, amenities, and photos</p>
           </div>
@@ -466,7 +467,7 @@ const EditHostel = () => {
             {/* ── BASIC INFORMATION ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon"><i className="fa-solid fa-clipboard" /></div>
+                <div className="eh-section-icon"><FaClipboard /></div>
                 <h2>Basic Information</h2>
               </div>
               <div className="eh-section-body">
@@ -529,7 +530,7 @@ const EditHostel = () => {
             {/* ── PRICING & CONTRACT ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon"><i className="fa-solid fa-sack-dollar" /></div>
+                <div className="eh-section-icon"><FaSackDollar /></div>
                 <h2>Pricing &amp; Contract</h2>
               </div>
               <div className="eh-section-body">
@@ -557,7 +558,7 @@ const EditHostel = () => {
             {/* ── AMENITIES ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon"><i className="fa-solid fa-wand-magic-sparkles" /></div>
+                <div className="eh-section-icon"><FaWandMagicSparkles /></div>
                 <h2>Amenities</h2>
               </div>
               <div className="eh-section-body">
@@ -581,7 +582,7 @@ const EditHostel = () => {
             {/* ── PHOTOS ── */}
             <div className="eh-section">
               <div className="eh-section-head">
-                <div className="eh-section-icon"><i className="fa-solid fa-camera" /></div>
+                <div className="eh-section-icon"><FaCamera /></div>
                 <h2>Photos</h2>
               </div>
               <div className="eh-section-body">

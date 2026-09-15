@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaMapMarkerAlt, FaCalendarAlt, FaClock, FaUser, FaPhone, FaCheckCircle, FaClock as FaClock2, FaTimesCircle, FaEye, FaTrash, FaDownload } from 'react-icons/fa';
+import { FaArrowLeft, FaMapMarkerAlt, FaCalendarAlt, FaClock, FaUser, FaPhone, FaCheckCircle, FaClock as FaClock2, FaTimesCircle, FaEye, FaTrash, FaDownload, FaInbox, FaCommentDots } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const styles = `
@@ -532,7 +532,7 @@ const MyBookings = () => {
           {/* Bookings List */}
           {filteredBookings.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon"><i className="fa-solid fa-inbox"></i></div>
+              <div className="empty-state-icon"><FaInbox /></div>
               <h3>No {filter !== 'all' ? filter : ''} bookings</h3>
               <p>You don't have any {filter !== 'all' ? filter : ''} bookings yet. Start exploring properties today!</p>
               <button
@@ -623,7 +623,7 @@ const MyBookings = () => {
                             onClick={handleContact}
                             style={{ cursor: 'pointer' }}
                           >
-                            <i className="fa-solid fa-comment-dots"></i> Send Message
+                            <FaCommentDots /> Send Message
                           </div>
                         </div>
                       </div>

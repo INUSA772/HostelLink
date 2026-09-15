@@ -4,6 +4,7 @@ import { useHostel } from '../context/HostelContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FaWhatsapp, FaCamera, FaTimes, FaCheckCircle, FaMapMarkerAlt, FaTag, FaHome } from 'react-icons/fa';
+import { FaArrowLeft, FaTableCellsLarge, FaHouse, FaBuilding, FaDoorClosed, FaHouseChimney, FaMap, FaShop, FaKey, FaPen, FaWallet, FaPhone, FaListCheck, FaCheck, FaPaperPlane } from 'react-icons/fa6';
 import ImageUpload from '../components/common/ImageUpload';
 import LocationPicker from '../components/common/LocationPicker';
 
@@ -19,12 +20,12 @@ const MALAWI_DISTRICTS = [
 ];
 
 const PROPERTY_TYPES = [
-  { value: 'House',             label: 'House',           icon: 'fa-solid fa-house' },
-  { value: 'Flat/Apartment',    label: 'Bedsitter',        icon: 'fa-solid fa-building' },
-  { value: 'Single Room',       label: 'Single Room',      icon: 'fa-solid fa-door-closed' },
-  { value: 'Self-Contained',    label: 'Self-Contained',   icon: 'fa-solid fa-house-chimney' },
-  { value: 'Plot of Land',      label: 'Plot of Land',     icon: 'fa-solid fa-map' },
-  { value: 'Commercial Space',  label: 'Commercial Space', icon: 'fa-solid fa-shop' },
+  { value: 'House',             label: 'House',           icon: FaHouse },
+  { value: 'Flat/Apartment',    label: 'Bedsitter',        icon: FaBuilding },
+  { value: 'Single Room',       label: 'Single Room',      icon: FaDoorClosed },
+  { value: 'Self-Contained',    label: 'Self-Contained',   icon: FaHouseChimney },
+  { value: 'Plot of Land',      label: 'Plot of Land',     icon: FaMap },
+  { value: 'Commercial Space',  label: 'Commercial Space', icon: FaShop },
 ];
 
 const HOUSE_AMENITIES = [
@@ -440,7 +441,6 @@ const CreateProperty = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       {/* ══ TOP BAR ══ */}
       <nav className="cp-bar">
@@ -450,7 +450,7 @@ const CreateProperty = () => {
         </Link>
         <span className="cp-bar-title">List a Property</span>
         <Link to="/landlord-dashboard" className="cp-bar-back">
-          <i className="fa fa-arrow-left" /> Dashboard
+          <FaArrowLeft /> Dashboard
         </Link>
       </nav>
 
@@ -470,7 +470,7 @@ const CreateProperty = () => {
           {/* ── 1. What are you listing? ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-th-large" /> What are you listing?
+              <FaTableCellsLarge /> What are you listing?
             </div>
             <div className="cp-type-row">
               {PROPERTY_TYPES.map(pt => (
@@ -480,7 +480,7 @@ const CreateProperty = () => {
                   className={`cp-type-pill${form.propertyType === pt.value ? ' active' : ''}`}
                   onClick={() => set('propertyType', pt.value)}
                 >
-                  <span className="cp-type-pill-icon"><i className={pt.icon} /></span>
+                  <span className="cp-type-pill-icon"><pt.icon /></span>
                   <span>{pt.label}</span>
                 </button>
               ))}
@@ -490,7 +490,7 @@ const CreateProperty = () => {
           {/* ── 2. For Rent / For Sale ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-tag" /> Listing purpose
+              <FaTag /> Listing purpose
             </div>
             <div className="cp-listing-toggle">
               <button
@@ -498,14 +498,14 @@ const CreateProperty = () => {
                 className={`cp-listing-btn${form.listingType === 'For Rent' ? ' active' : ''}`}
                 onClick={() => set('listingType', 'For Rent')}
               >
-                <i className="fa fa-key" /> For Rent
+                <FaKey /> For Rent
               </button>
               <button
                 type="button"
                 className={`cp-listing-btn${form.listingType === 'For Sale' ? ' active' : ''}`}
                 onClick={() => set('listingType', 'For Sale')}
               >
-                <i className="fa fa-tag" /> For Sale
+                <FaTag /> For Sale
               </button>
             </div>
           </div>
@@ -513,7 +513,7 @@ const CreateProperty = () => {
           {/* ── 3. Basic Info ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-pen" /> Property details
+              <FaPen /> Property details
             </div>
 
             <div className="cp-field">
@@ -574,7 +574,7 @@ const CreateProperty = () => {
           {/* ── 4. Price & Availability ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-wallet" /> Price 
+              <FaWallet /> Price
             </div>
 
             <div className={showRooms ? 'cp-row-3' : 'cp-row-2'}>
@@ -591,7 +591,7 @@ const CreateProperty = () => {
                 />
                 {formattedPrice && (
                   <div className="cp-price-preview">
-                    <i className="fa fa-check-circle" /> {formattedPrice}
+                    <FaCheckCircle /> {formattedPrice}
                   </div>
                 )}
               </div>
@@ -602,7 +602,7 @@ const CreateProperty = () => {
           {/* ── 5. Contact ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-phone" /> Contact info
+              <FaPhone /> Contact info
             </div>
 
             <div className="cp-row-2">
@@ -649,7 +649,7 @@ const CreateProperty = () => {
           {!isLand && (
             <div className="cp-section">
               <div className="cp-section-label">
-                <i className="fa fa-list-check" /> Amenities & features
+                <FaListCheck /> Amenities & features
               </div>
               <div className="cp-amenity-grid">
                 {HOUSE_AMENITIES.map(a => (
@@ -660,7 +660,7 @@ const CreateProperty = () => {
                     onClick={() => toggleAmenity(a)}
                   >
                     {form.amenities.includes(a) && (
-                      <i className="fa fa-check cp-amenity-check" />
+                      <FaCheck className="cp-amenity-check" />
                     )}
                     {a}
                   </button>
@@ -677,7 +677,7 @@ const CreateProperty = () => {
           {/* ── 7. Photos ── */}
           <div className="cp-section">
             <div className="cp-section-label">
-              <i className="fa fa-camera" /> Photos
+              <FaCamera /> Photos
               <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, marginLeft: 4 }}>(recommended)</span>
             </div>
             <ImageUpload
@@ -704,7 +704,7 @@ const CreateProperty = () => {
               >
                 {loading
                   ? <><span className="cp-spinner" /> Publishing…</>
-                  : <><i className="fa fa-paper-plane" /> Publish listing</>
+                  : <><FaPaperPlane /> Publish listing</>
                 }
               </button>
             </div>

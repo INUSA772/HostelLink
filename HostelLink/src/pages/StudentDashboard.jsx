@@ -8,7 +8,7 @@ import {
   FaCog, FaSignOutAlt, FaArrowRight,
   FaCheckCircle, FaMapMarkerAlt, FaStar, FaPhone,
   FaSearch, FaBars, FaTimes, FaInfoCircle, FaPhoneAlt,
-  FaHeart, FaUser, FaBed, FaDoorOpen, FaEye
+  FaHeart, FaUser, FaBed, FaDoorOpen, FaEye, FaCheck
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Pagination from '../components/common/Pagination';
@@ -320,7 +320,7 @@ const StudentDashboard = () => {
             : <div className="td-prop-no-img"><FaHome /></div>
           }
           <div className="td-prop-badges">
-            {hostel.verified && <span className="td-prop-badge td-badge-verified"><i className="fa-solid fa-check" /> Verified</span>}
+            {hostel.verified && <span className="td-prop-badge td-badge-verified"><FaCheck /> Verified</span>}
             {hostel.availableRooms > 0 && <span className="td-prop-badge td-badge-rooms">{hostel.availableRooms} free</span>}
           </div>
         </div>
@@ -431,7 +431,7 @@ const StudentDashboard = () => {
           <div className="td-banner">
             <div className="td-banner-inner">
               <div className="td-banner-left">
-                <h1>Welcome back, {user?.firstName}! <i className="fa-solid fa-house" /></h1>
+                <h1>Welcome back, {user?.firstName}! <FaHome /></h1>
                 <p>Discover your perfect home across Malawi</p>
               </div>
               <div className="td-banner-actions">

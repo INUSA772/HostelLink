@@ -7,6 +7,7 @@ import {
   FaStar, FaMapMarkerAlt, FaCheckCircle,
   FaBell, FaUser, FaSearch, FaBars, FaTimes, FaBuilding,
   FaSpinner, FaExclamationTriangle, FaSync, FaChartLine,
+  FaHourglassHalf, FaSeedling,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import OwnerVerificationCard from '../components/verification/OwnerVerificationCard';
@@ -564,7 +565,7 @@ function HostelCard({ hostel, onView, onEdit, onDelete }) {
           : <div className="ld-hcard-img-placeholder"><FaBuilding /></div>
         }
         <span className={`ld-hcard-status ${hostel.verified ? 'verified' : 'pending'}`}>
-          {hostel.verified ? <><FaCheckCircle /> Verified</> : <><i className="fa-solid fa-hourglass-half" /> Pending</>}
+          {hostel.verified ? <><FaCheckCircle /> Verified</> : <><FaHourglassHalf /> Pending</>}
         </span>
         <div className="ld-hcard-actions-overlay">
           <button className="ld-hcard-act-btn view" title="View"   onClick={onView}><FaEye /></button>
@@ -805,7 +806,7 @@ const LandlordDashboard = () => {
           <div className="ld-banner-inner">
             <div>
               <div className="ld-banner-eyebrow">
-                {user?.role === 'land_seller' ? <><i className="fa-solid fa-seedling" /> Land Seller Portal</> : <><i className="fa-solid fa-building" /> Landlord Portal</>}
+                {user?.role === 'land_seller' ? <><FaSeedling /> Land Seller Portal</> : <><FaBuilding /> Landlord Portal</>}
               </div>
               <h1>Welcome back, <em>{user?.firstName}!</em></h1>
               <p>Manage your properties and connect with tenants across Malawi</p>

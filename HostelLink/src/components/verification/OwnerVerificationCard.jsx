@@ -29,6 +29,8 @@ async function uploadToCloudinary(file) {
 }
 
 const styles = `
+  @keyframes ovc-spin { to { transform: rotate(360deg); } }
+  .ovc-spin { animation: ovc-spin 0.8s linear infinite; }
   .ovc-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
   .ovc-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
   .ovc-head h3 { font-size: 1.05rem; font-weight: 800; color: #0f1923; }
@@ -122,18 +124,18 @@ export default function OwnerVerificationCard() {
   };
 
   const badge = {
-    verified: { cls: 'verified', icon: 'fa-circle-check', text: 'Verified' },
-    pending: { cls: 'pending', icon: 'fa-hourglass-half', text: 'Under Review' },
-    rejected: { cls: 'rejected', icon: 'fa-circle-xmark', text: 'Rejected — resubmit below' },
-    unverified: { cls: 'unverified', icon: 'fa-shield-halved', text: 'Not Verified Yet' },
-  }[status] || { cls: 'unverified', icon: 'fa-shield-halved', text: 'Not Verified Yet' };
+    verified: { cls: 'verified', icon: FaCircleCheck, text: 'Verified' },
+    pending: { cls: 'pending', icon: FaHourglassHalf, text: 'Under Review' },
+    rejected: { cls: 'rejected', icon: FaCircleXmark, text: 'Rejected — resubmit below' },
+    unverified: { cls: 'unverified', icon: FaShieldHalved, text: 'Not Verified Yet' },
+  }[status] || { cls: 'unverified', icon: FaShieldHalved, text: 'Not Verified Yet' };
 
   return (
     <div className="ovc-card">
       <style>{styles}</style>
       <div className="ovc-head">
-        <h3><i className="fa-solid fa-shield-halved" style={{ color: '#f5a623', marginRight: 6 }} /> Identity Verification</h3>
-        <span className={`ovc-badge ${badge.cls}`}><i className={`fa-solid ${badge.icon}`} /> {badge.text}</span>
+        <h3><FaShieldHalved style={{ color: '#f5a623', marginRight: 6 }} /> Identity Verification</h3>
+        <span className={`ovc-badge ${badge.cls}`}><badge.icon /> {badge.text}</span>
       </div>
       <p className="ovc-sub">
         Verified owners get a trust badge on their listings. Upload a clear photo of both sides of your
@@ -142,13 +144,13 @@ export default function OwnerVerificationCard() {
 
       {status === 'rejected' && rejectionReason && (
         <div className="ovc-rejection">
-          <i className="fa-solid fa-triangle-exclamation" /> <strong>Rejected:</strong> {rejectionReason}
+          <FaTriangleExclamation /> <strong>Rejected:</strong> {rejectionReason}
         </div>
       )}
 
       {status === 'verified' ? (
         <p style={{ fontSize: '0.85rem', color: '#059669', fontWeight: 600 }}>
-          <i className="fa-solid fa-circle-check" /> Your identity has been verified.
+          <FaCircleCheck /> Your identity has been verified.
         </p>
       ) : status === 'pending' ? (
         <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>
@@ -163,13 +165,13 @@ export default function OwnerVerificationCard() {
                   <>
                     <img src={docs[slot.key]} alt={slot.label} />
                     <div className="ovc-slot-overlay">Click to replace</div>
-                    <div className="ovc-slot-check"><i className="fa-solid fa-check" /></div>
+                    <div className="ovc-slot-check"><FaCheck /></div>
                   </>
                 ) : uploadingKey === slot.key ? (
-                  <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '1.4rem', color: '#f5a623' }} />
+                  <FaSpinner className="ovc-spin" style={{ fontSize: '1.4rem', color: '#f5a623' }} />
                 ) : (
                   <>
-                    <i className={`fa-solid ${slot.icon}`} style={{ fontSize: '1.4rem', color: '#9ca3af' }} />
+                    <slot.icon style={{ fontSize: '1.4rem', color: '#9ca3af' }} />
                     <div className="ovc-slot-label">{slot.label}</div>
                   </>
                 )}
@@ -184,7 +186,7 @@ export default function OwnerVerificationCard() {
             ))}
           </div>
           <button className="ovc-submit" disabled={!allUploaded || submitting} onClick={handleSubmit}>
-            {submitting ? <><i className="fa-solid fa-spinner fa-spin" /> Submitting…</> : <><i className="fa-solid fa-paper-plane" /> Submit for Verification</>}
+            {submitting ? <><FaSpinner className="ovc-spin" /> Submitting…</> : <><FaPaperPlane /> Submit for Verification</>}
           </button>
           <p className="ovc-note">Your documents are only visible to PezaNyumba admins reviewing your account.</p>
         </>

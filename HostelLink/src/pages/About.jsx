@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  FaComments, FaLock, FaBullseye, FaStar, FaLightbulb,
+  FaTag, FaHandshake, FaBolt, FaUsers, FaChartLine, FaAward,
+  FaArrowLeft, FaArrowRight,
+} from 'react-icons/fa6';
+import { FaShieldAlt, FaMapMarkerAlt, FaCheckCircle, FaMobileAlt, FaHome } from 'react-icons/fa';
 
 /* ─────────────────────────────────────────────
    DESIGN TOKENS — exact match to Home.jsx
@@ -441,25 +447,25 @@ const TEAM = [
 ];
 
 const TRUST_ITEMS = [
-  { icon: "fa fa-shield-alt",  label: "Fully Verified",      sub: "All properties checked",     style: "navy"  },
-  { icon: "fa fa-map-marker-alt", label: "28 Districts",     sub: "All Malawi covered",         style: "amber" },
-  { icon: "fa fa-comments",    label: "WhatsApp Direct",     sub: "No middlemen, ever",         style: "navy"  },
-  { icon: "fa fa-lock",        label: "Dispute Protection",  sub: "Fair mediation built-in",    style: "amber" },
+  { icon: FaShieldAlt,  label: "Fully Verified",      sub: "All properties checked",     style: "navy"  },
+  { icon: FaMapMarkerAlt, label: "28 Districts",     sub: "All Malawi covered",         style: "amber" },
+  { icon: FaComments,    label: "WhatsApp Direct",     sub: "No middlemen, ever",         style: "navy"  },
+  { icon: FaLock,        label: "Dispute Protection",  sub: "Fair mediation built-in",    style: "amber" },
 ];
 
 const MVV = [
-  { icon: "fa-solid fa-bullseye", title: "Our Mission",  body: "Simplify property search by giving every Malawian a trusted, transparent way to find safe, verified homes — no account required to browse." },
-  { icon: "fa-solid fa-star", title: "Our Vision",   body: "Become Malawi's leading property platform — the first name tenants and landlords reach for across all 28 districts." },
-  { icon: "fa-regular fa-lightbulb", title: "Our Values",   body: "Transparency, safety, affordability, and community. Every feature we build is guided by what's genuinely best for tenants and landlords alike." },
+  { icon: FaBullseye, title: "Our Mission",  body: "Simplify property search by giving every Malawian a trusted, transparent way to find safe, verified homes — no account required to browse." },
+  { icon: FaStar, title: "Our Vision",   body: "Become Malawi's leading property platform — the first name tenants and landlords reach for across all 28 districts." },
+  { icon: FaLightbulb, title: "Our Values",   body: "Transparency, safety, affordability, and community. Every feature we build is guided by what's genuinely best for tenants and landlords alike." },
 ];
 
 const VALUES = [
-  { icon: "fa fa-check-circle",  title: "Trust & Transparency",   body: "Every listing is verified. No hidden fees, no surprises."     },
-  { icon: "fa fa-shield-alt",    title: "Tenant Safety",          body: "We verify all landlords before their listings go live."        },
-  { icon: "fa fa-tag",           title: "Affordability",          body: "Quality housing shouldn't break the bank — for anyone."        },
-  { icon: "fa fa-handshake",     title: "Community",              body: "Building trust between tenants and owners, one listing at a time." },
-  { icon: "fa fa-bolt",          title: "Speed & Efficiency",     body: "Find your perfect home in minutes, not weeks."                 },
-  { icon: "fa fa-mobile-alt",    title: "Innovation",             body: "Using technology to solve real, everyday housing problems."    },
+  { icon: FaCheckCircle,  title: "Trust & Transparency",   body: "Every listing is verified. No hidden fees, no surprises."     },
+  { icon: FaShieldAlt,    title: "Tenant Safety",          body: "We verify all landlords before their listings go live."        },
+  { icon: FaTag,           title: "Affordability",          body: "Quality housing shouldn't break the bank — for anyone."        },
+  { icon: FaHandshake,     title: "Community",              body: "Building trust between tenants and owners, one listing at a time." },
+  { icon: FaBolt,          title: "Speed & Efficiency",     body: "Find your perfect home in minutes, not weeks."                 },
+  { icon: FaMobileAlt,    title: "Innovation",             body: "Using technology to solve real, everyday housing problems."    },
 ];
 
 const STATS = [
@@ -470,10 +476,10 @@ const STATS = [
 ];
 
 const STORY_PILLS = [
-  { icon: "fa fa-lightbulb", title: "Born in Malawi",       sub: "Built for local realities, not imports." },
-  { icon: "fa fa-users",     title: "Community First",      sub: "Tenants and landlords, equally served."  },
-  { icon: "fa fa-chart-line",title: "Growing Fast",         sub: "New listings every single day."          },
-  { icon: "fa fa-award",     title: "Trusted Platform",     sub: "Verified landlords, safe outcomes."      },
+  { icon: FaLightbulb, title: "Born in Malawi",       sub: "Built for local realities, not imports." },
+  { icon: FaUsers,     title: "Community First",      sub: "Tenants and landlords, equally served."  },
+  { icon: FaChartLine, title: "Growing Fast",         sub: "New listings every single day."          },
+  { icon: FaAward,     title: "Trusted Platform",     sub: "Verified landlords, safe outcomes."      },
 ];
 
 /* ─────────────────────────────────────────────
@@ -486,13 +492,12 @@ const About = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       {/* ── NAV ── */}
       <nav className="ab-nav">
         <div className="ab-nav-inner">
           <button className="ab-back" onClick={() => navigate(-1)}>
-            <i className="fa fa-arrow-left" /> Back
+            <FaArrowLeft /> Back
           </button>
           <a href="/" className="ab-logo">
             <div className="ab-logo-icon"><img src="/pezanyumba2.png" alt="PezaNyumba" /></div>
@@ -530,7 +535,7 @@ const About = () => {
         <div className="ab-trust-inner">
           {TRUST_ITEMS.map(item => (
             <div className="ab-trust-item" key={item.label}>
-              <div className={`ab-trust-icon ${item.style}`}><i className={item.icon} /></div>
+              <div className={`ab-trust-icon ${item.style}`}><item.icon /></div>
               <div className="ab-trust-text">
                 <strong>{item.label}</strong>
                 <span>{item.sub}</span>
@@ -558,7 +563,7 @@ const About = () => {
         <div className="ab-story-visual">
           {STORY_PILLS.map(pill => (
             <div className="ab-story-pill" key={pill.title}>
-              <div className="ab-story-pill-icon"><i className={pill.icon} /></div>
+              <div className="ab-story-pill-icon"><pill.icon /></div>
               <div className="ab-story-pill-text">
                 <strong>{pill.title}</strong>
                 <span>{pill.sub}</span>
@@ -577,7 +582,7 @@ const About = () => {
           <div className="ab-mvv-grid">
             {MVV.map(card => (
               <div className="ab-mvv-card" key={card.title}>
-                <i className={`ab-mvv-emoji ${card.icon}`}></i>
+                <card.icon className="ab-mvv-emoji" />
                 <h3>{card.title}</h3>
                 <p>{card.body}</p>
               </div>
@@ -595,7 +600,7 @@ const About = () => {
           <div className="ab-values-grid">
             {VALUES.map(v => (
               <div className="ab-val-card" key={v.title}>
-                <div className="ab-val-icon"><i className={v.icon} /></div>
+                <div className="ab-val-icon"><v.icon /></div>
                 <div>
                   <h4>{v.title}</h4>
                   <p>{v.body}</p>
@@ -638,7 +643,7 @@ const About = () => {
                 <div className="ab-team-info">
                   <div className="ab-team-name">{member.name}</div>
                   <div className="ab-team-role">
-                    <i className="fa fa-star" style={{fontSize:'.6rem'}} /> {member.role}
+                    <FaStar style={{fontSize:'.6rem'}} /> {member.role}
                   </div>
                 </div>
               </div>
@@ -650,11 +655,11 @@ const About = () => {
       {/* ── CTA ── */}
       <section className="ab-cta">
         <div className="ab-cta-inner">
-          <div className="ab-cta-icon"><i className="fa fa-home" /></div>
+          <div className="ab-cta-icon"><FaHome /></div>
           <h2>Ready to Find Your Perfect Home?</h2>
           <p>Join hundreds of tenants who have already found their ideal property on PezaNyumba — no account needed to start browsing.</p>
           <button className="ab-cta-btn" onClick={() => navigate('/properties')}>
-            Browse Properties <i className="fa fa-arrow-right" />
+            Browse Properties <FaArrowRight />
           </button>
           <p className="ab-cta-note">
             Are you a landlord? <a href="/register">Register here →</a>

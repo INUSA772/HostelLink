@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaUserPlus } from 'react-icons/fa6';
+import { FaSignInAlt, FaHome, FaSearch } from 'react-icons/fa';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -179,7 +181,6 @@ const NotFound = () => {
   return (
     <>
       <style>{styles}</style>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       {/* NAV */}
       <nav className="rp-bar">
@@ -193,10 +194,10 @@ const NotFound = () => {
         </Link>
         <div className="rp-bar-actions">
           <Link to="/login"    className="rp-bar-login">
-            <i className="fa fa-sign-in-alt" /> Login
+            <FaSignInAlt /> Login
           </Link>
           <Link to="/register" className="rp-bar-signup">
-            <i className="fa fa-user-plus" /> Register
+            <FaUserPlus /> Register
           </Link>
         </div>
       </nav>
@@ -217,10 +218,10 @@ const NotFound = () => {
 
             <div className="rp-404-btns">
               <Link to="/" className="rp-404-btn-primary">
-                <i className="fa fa-home" /> Back to Home
+                <FaHome /> Back to Home
               </Link>
               <Link to="/properties" className="rp-404-btn-ghost">
-                <i className="fa fa-search" /> Browse Properties
+                <FaSearch /> Browse Properties
               </Link>
             </div>
 

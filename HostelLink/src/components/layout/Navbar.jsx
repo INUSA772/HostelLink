@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import '../../styles/global.css';
+import { FaCircleUser, FaChevronDown, FaUser, FaTableCellsLarge, FaBuilding, FaHeart, FaList, FaEnvelope, FaRightFromBracket, FaRightToBracket, FaUserPlus, FaXmark, FaBars } from 'react-icons/fa6';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -307,8 +308,6 @@ const Navbar = () => {
         }
       `}</style>
 
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
       <nav className="pn-nav">
 
         {/* LOGO */}
@@ -343,43 +342,43 @@ const Navbar = () => {
                   className="pn-profile-btn"
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 >
-                  <i className="fa fa-user-circle" />
+                  <FaCircleUser />
                   {user?.firstName || 'Account'}
-                  <i className="fa fa-chevron-down" style={{ fontSize: '0.65rem', opacity: 0.7 }} />
+                  <FaChevronDown style={{ fontSize: '0.65rem', opacity: 0.7 }} />
                 </button>
 
                 {isProfileMenuOpen && (
                   <div className="pn-dropdown">
                     <Link to="/profile" onClick={() => setIsProfileMenuOpen(false)}>
-                      <i className="fa fa-user" /> Profile
+                      <FaUser /> Profile
                     </Link>
                     <Link
                       to={user?.role === 'landlord' ? '/landlord-dashboard' : '/dashboard'}
                       onClick={() => setIsProfileMenuOpen(false)}
                     >
-                      <i className="fa fa-th-large" /> Dashboard
+                      <FaTableCellsLarge /> Dashboard
                     </Link>
                     {user?.role === 'landlord' && (
                       <Link to="/my-properties" onClick={() => setIsProfileMenuOpen(false)}>
-                        <i className="fa fa-building" /> My Properties
+                        <FaBuilding /> My Properties
                       </Link>
                     )}
                     {user?.role === 'tenant' && (
                       <>
                         <Link to="/favorites" onClick={() => setIsProfileMenuOpen(false)}>
-                          <i className="fa fa-heart" /> Saved
+                          <FaHeart /> Saved
                         </Link>
                         <Link to="/inquiries" onClick={() => setIsProfileMenuOpen(false)}>
-                          <i className="fa fa-list" /> My Inquiries
+                          <FaList /> My Inquiries
                         </Link>
                       </>
                     )}
                     <Link to="/messages" onClick={() => setIsProfileMenuOpen(false)}>
-                      <i className="fa fa-envelope" /> Messages
+                      <FaEnvelope /> Messages
                     </Link>
                     <div className="pn-dropdown-divider" />
                     <button onClick={handleLogout}>
-                      <i className="fa fa-sign-out-alt" /> Logout
+                      <FaRightFromBracket /> Logout
                     </button>
                   </div>
                 )}
@@ -388,10 +387,10 @@ const Navbar = () => {
           ) : (
             <>
               {/*<Link to="/login" className="pn-btn-login">
-                <i className="fa fa-sign-in-alt" /> Login
+                <FaRightToBracket /> Login
               </Link>
               <Link to="/register" className="pn-btn-signup">
-                <i className="fa fa-user-plus" /> Sign Up
+                <FaUserPlus /> Sign Up
               </Link>*/}
             </>
           )}
@@ -402,7 +401,7 @@ const Navbar = () => {
           className="pn-mobile-btn"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <i className={isMobileMenuOpen ? 'fa fa-times' : 'fa fa-bars'} />
+          {isMobileMenuOpen ? <FaXmark /> : <FaBars />}
         </button>
       </nav>
 
